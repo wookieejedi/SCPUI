@@ -1,0 +1,169 @@
+body
+{
+	font-family: Arial;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 15;
+	color: white;
+	width: 100%;
+	height: 100%;
+	background-decorator: image;
+	background-image: bg.png;
+	z-index: bottom;
+	z-index: -1;
+}
+
+div#pilot_select
+{
+	margin: auto;
+	margin-top: 15%;
+	width: 50%;
+	height: auto;
+	overflow: hidden;
+}
+
+div#pilot_select img
+{
+	display: block;
+	max-width: 1911px;
+	max-height: 737px;
+	width: 100%;
+	height: auto;
+}
+
+div#gtva_wings
+{
+	position: absolute;
+	bottom: 2%;
+
+	margin: auto;
+
+	width: 70%;
+	height: auto;
+	overflow: hidden;
+	border: 1px solid white;
+}
+
+div#gtva_wings img
+{
+	display: block;
+	max-width: 2819px;
+	max-height: 626px;
+	width: 100%;
+	height: auto;
+}
+
+div#player_select
+{
+	position: relative;
+	height: 0;
+}
+
+div#button_wrapper
+{
+	float: left;
+}
+
+div#arrow_cont
+{
+	float: left;
+	width: 5%;
+	height: auto;
+}
+
+button#player_previous img
+{
+	z-index: -1;
+
+}
+
+button#player_previous
+{
+	background-decorator: image;
+	background-image: up-arrow.png;
+	display: block;
+	max-width: 99px;
+	max-height: 88px;
+	width: 100%;
+	height: auto;
+
+}
+
+button#player_previous:hover
+{
+	background-decorator: image;
+	background-image: up-arrow-h.png;
+}
+
+button#player_previous:active
+{
+	background-decorator: image;
+	background-image: up-arrow-o.png;
+}
+
+button#player_next img
+{
+	z-index: -1;
+
+}
+
+button#player_next
+{
+	background-decorator: image;
+	background-image: down-arrow.png;
+	display: block;
+	max-width: 99px;
+	max-height: 88px;
+	width: 100%;
+	height: auto;
+
+}
+
+button#player_next:hover
+{
+	background-decorator: image;
+	background-image: down-arrow-h.png;
+}
+
+button#player_next:active
+{
+	background-decorator: image;
+	background-image: down-arrow-o.png;
+}
+
+div#player_commit_cont
+{
+	float: left;
+	width: 9%;
+	height: auto;
+}
+
+button#player_commit img
+{
+	z-index: -1;
+
+}
+
+button#player_commit
+{
+	background-decorator: image;
+	background-image: select.png;
+	display: block;
+	max-width: 176px;
+	max-height: 141px;
+	width: 100%;
+	height: auto;
+
+}
+
+button#player_commit:hover
+{
+	background-decorator: image;
+	background-image: select-h.png;
+}
+
+button#player_commit:active
+{
+	background-decorator: image;
+	background-image: select-o.png;
+}

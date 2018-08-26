@@ -1,0 +1,42 @@
+<rml>
+	<head>
+		<title>Main Menu</title>
+		<link type="text/rcss" href="rkt.rcss"/>
+		<link type="text/rcss" href="invader.rcss"/>
+		<style>
+
+		</style>
+	</head>
+    <body>
+		<div id=pilot_select>
+			<div id=player_type_select>
+			</div>
+			<div id=player_control>
+			</div>
+			<div id=player_select>
+				<div id=button_wrapper>
+					<div id=arrow_cont>
+						<button id="player_previous">
+							<img src="up-arrow.png"></img>
+						</button>
+					</div>
+					<div id=arrow_cont>
+						<button id="player_next">
+							<img src="down-arrow.png"></img>
+						</button>
+					</div>
+					<div id=player_commit_cont>
+						<button id="player_commit" onclick="ba.postGameEvent(ba.GameEvents["GS_EVENT_QUIT_GAME"])">
+							<img src="select.png"></img>
+						</button>
+					</div>
+				</div>
+			</div>
+			<img src="pilot-select-window.png"></img>
+		</div>
+		<div id=gtva_wings>
+			<img src="gtva-logo-wings.png"></img>
+		</div>
+	</body>
+
+</rml>

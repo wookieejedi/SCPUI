@@ -1,0 +1,37 @@
+#Conditional Hooks
+
+$Application: FS2_Open
+$State: GS_STATE_MAIN_MENU
+$On State Start:
+[
+if not UI_SWITCHED then
+    ba.postGameEvent(ba.GameEvents["GS_EVENT_SCRIPTING"])
+    UI_SWITCHED = true
+end
+]
+
+$State: GS_STATE_SCRIPTING
+$On State Start:
+[
+TestContext = rocket:CreateContext("tutorial", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
+
+TestContext:LoadDocument("data/interface/markup/main_menu.rml"):Show()
+
+ui.enableInput(TestContext)
+]
+
+$State: GS_STATE_SCRIPTING
+$On Frame:
+[
+TestContext:Update()
+TestContext:Render()
+]
+
+$State: GS_STATE_SCRIPTING
+$On State End:
+[
+ui.disableInput()
+TestContext = nil
+]
+
+#End
