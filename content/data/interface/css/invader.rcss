@@ -11,6 +11,42 @@ body
 	background-image: bg.png;
 	z-index: bottom;
 	z-index: -1;
+	color: #7b7b7b;
+}
+
+.psuedo_img
+{
+	z-index: -1;
+}
+
+.button_text
+{
+	text-align: center;
+}
+
+.below p
+{
+	padding-top:5%;
+}
+
+div#gtva_wings
+{
+	position: absolute;
+	bottom: 2%;
+	margin: auto;
+	width: 70%;
+	height: auto;
+	overflow: hidden;
+	font-size: 10px;
+}
+
+div#gtva_wings img
+{
+	display: block;
+	max-width: 2819px;
+	max-height: 626px;
+	width: 100%;
+	height: auto;
 }
 
 div#pilot_select
@@ -32,26 +68,21 @@ div#pilot_select img
 	height: auto;
 }
 
-div#gtva_wings
+div#choosepilot
 {
 	position: absolute;
-	bottom: 2%;
-
-	margin: auto;
-
-	width: 70%;
-	height: auto;
-	overflow: hidden;
-	font-size: 10px;
+	top: 0;
+	margin-top: 4%;
+	margin-left: 4%;
 }
 
-div#gtva_wings img
+div#pilotlist
 {
-	display: block;
-	max-width: 2819px;
-	max-height: 626px;
-	width: 100%;
-	height: auto;
+	position: absolute;
+	top: 0;
+	margin-top: 20%;
+	margin-left: 2%;
+	color: white;
 }
 
 div#player_select
@@ -60,10 +91,41 @@ div#player_select
 	bottom: 0;
 }
 
-div#button_wrapper
+div#player_type_select
 {
-	position: relative;
+	position: absolute;
+	top: 0;
 }
+
+div#player_control
+{
+	position: absolute;
+	bottom: 0;
+}
+
+/*Button Highlight Colors*/
+
+button:hover .red
+{
+	color: #946565;
+}
+
+button:active .red
+{
+	color: #dd9393;
+}
+
+button:hover .green
+{
+	color: #abbbab;
+}
+
+button:active .green
+{
+	color: #c9e4c9;
+}
+
+/*Arrow Buttons*/
 
 div#arrow_cont
 {
@@ -75,16 +137,8 @@ div#arrow_cont
 	margin-top: 7%;
 }
 
-button#player_previous img
+.arrowbuttons
 {
-	z-index: -1;
-
-}
-
-button#player_previous
-{
-	background-decorator: image;
-	background-image: up-arrow.png;
 	display: block;
 	max-width: 99px;
 	max-height: 88px;
@@ -93,60 +147,43 @@ button#player_previous
 
 }
 
-button#player_previous:hover
+#playerprev_img
+{
+	background-decorator: image;
+	background-image: up-arrow.png;
+}
+
+#playernext_img
+{
+	background-decorator: image;
+	background-image: down-arrow.png;
+}
+
+button#playerprev_btn:hover #playerprev_img
 {
 	background-decorator: image;
 	background-image: up-arrow-h.png;
 }
 
-button#player_previous:active
-{
-	background-decorator: image;
-	background-image: up-arrow-o.png;
-}
-
-button#player_next img
-{
-	z-index: -1;
-
-}
-
-button#player_next
-{
-	background-decorator: image;
-	background-image: down-arrow.png;
-	display: block;
-	max-width: 99px;
-	max-height: 88px;
-	width: 100%;
-	height: auto;
-
-}
-
-button#player_next:hover
+button#playernext_btn:hover #playernext_img
 {
 	background-decorator: image;
 	background-image: down-arrow-h.png;
 }
 
-button#player_next:active
+button#playerprev_btn:active #playerprev_img
+{
+	background-decorator: image;
+	background-image: up-arrow-o.png;
+}
+
+button#playernext_btn:active #playernext_img
 {
 	background-decorator: image;
 	background-image: down-arrow-o.png;
 }
 
-div#player_commit_text
-{
-
-	width: 100%;
-	margin-bottom: -20%;
-	text-align: center;
-}
-
-div#player_commit_text p
-{
-	padding-top: 4px;
-}
+/*Commit Button*/
 
 div#player_commit_cont
 {
@@ -155,19 +192,11 @@ div#player_commit_cont
 	height: auto;
 	margin-right: 1%;
 	top: 0;
-	color: #7b7b7b;
+	margin-bottom: -8%;
 }
 
-button#player_commit img
+.playercommit
 {
-	z-index: -1;
-
-}
-
-button#player_commit
-{
-	background-decorator: image;
-	background-image: select.png;
 	display: block;
 	max-width: 176px;
 	max-height: 141px;
@@ -176,25 +205,238 @@ button#player_commit
 
 }
 
-#player_commit_cont:hover button#player_commit
+#playercommit_img
+{
+	background-decorator: image;
+	background-image: select.png;
+}
+
+button#playercommit_btn:hover #playercommit_img
 {
 	background-decorator: image;
 	background-image: select-h.png;
 }
 
-#player_commit_cont:hover
-{
-	color: #946565;
-}
-
-#player_commit_cont:active button#player_commit
+button#playercommit_btn:active #playercommit_img
 {
 	background-decorator: image;
 	background-image: select-o.png;
 }
 
-#player_commit_cont:active
+/*Singleplayer Selection Button*/
+
+div#single_player_cont
 {
-	color: #dd9393;
+	float: right;
+	width: 6%;
+	height: auto;
+	margin-right: 4%;
+	margin-bottom: 1%;
+	margin-top: 1%;
 }
+
+.singleplayer
+{
+	display: block;
+	max-width: 93px;
+	max-height: 83px;
+	width: 100%;
+	height: auto;
+
+}
+
+#singleplayer_img
+{
+	background-decorator: image;
+	background-image: single-player.png;
+}
+
+button#singleplayer_btn:hover #singleplayer_img
+{
+	background-decorator: image;
+	background-image: single-player-h.png;
+}
+
+button#singleplayer_btn:active #singleplayer_img
+{
+	background-decorator: image;
+	background-image: single-player-o.png;
+}
+
+input#singleplayer_btn:hover #singleplayer_img
+{
+	background-decorator: image;
+	background-image: single-player-h.png;
+}
+
+input#singleplayer_btn:checked #singleplayer_img
+{
+	background-decorator: image;
+	background-image: single-player-o.png;
+}
+
+/*Multiplayer Selection Button*/
+
+div#multi_player_cont
+{
+	float: right;
+	width: 6%;
+	height: auto;
+	margin-right: 4%;
+	margin-bottom: 1%;
+	margin-top: 1%;
+}
+
+.multiplayer
+{
+	display: block;
+	max-width: 93px;
+	max-height: 83px;
+	width: 100%;
+	height: auto;
+
+}
+
+#multiplayer_img
+{
+	background-decorator: image;
+	background-image: multiplayer.png;
+}
+
+button#multiplayer_btn:hover #multiplayer_img
+{
+	background-decorator: image;
+	background-image: multiplayer-h.png;
+}
+
+button#multiplayer_btn:active #multiplayer_img
+{
+	background-decorator: image;
+	background-image: multiplayer-o.png;
+}
+
+/*Create Player Button*/
+
+div#create_player_cont
+{
+	float: left;
+	width: 7%;
+	height: auto;
+	margin-right: 1%;
+	margin-left: 4%;
+	top: 0;
+	margin-bottom: -3%;
+	z-index: 1;
+}
+
+.createplayer
+{
+	display: block;
+	max-width: 95px;
+	max-height: 108px;
+	width: 100%;
+	height: auto;
+
+}
+
+#createplayer_img
+{
+	background-decorator: image;
+	background-image: create-pilot.png;
+}
+
+button#createplayer_btn:hover #createplayer_img
+{
+	background-decorator: image;
+	background-image: create-pilot-h.png;
+}
+
+button#createplayer_btn:active #createplayer_img
+{
+	background-decorator: image;
+	background-image: create-pilot-o.png;
+}
+
+/*Clone Player Button*/
+
+div#clone_player_cont
+{
+	float: left;
+	width: 7.3%;
+	height: auto;
+	margin-right: 1%;
+	margin-left: 4%;
+	top: 0;
+	margin-bottom: -3%;
+	z-index: 1;
+}
+
+.cloneplayer
+{
+	display: block;
+	max-width: 95px;
+	max-height: 108px;
+	width: 100%;
+	height: auto;
+
+}
+
+#cloneplayer_img
+{
+	background-decorator: image;
+	background-image: clone-pilot.png;
+}
+
+button#cloneplayer_btn:hover #cloneplayer_img
+{
+	background-decorator: image;
+	background-image: clone-pilot-h.png;
+}
+
+button#cloneplayer_btn:active #cloneplayer_img
+{
+	background-decorator: image;
+	background-image: clone-pilot-o.png;
+}
+
+/*Delete Player Button*/
+
+div#delete_player_cont
+{
+	float: left;
+	width: 8.1%;
+	height: auto;
+	margin-right: 1%;
+	margin-left: 4%;
+	top: 0;
+	margin-bottom: -3%;
+	z-index: 1;
+}
+
+.deleteplayer
+{
+	display: block;
+	max-width: 95px;
+	max-height: 108px;
+	width: 100%;
+	height: auto;
+
+}
+
+#deleteplayer_img
+{
+	background-decorator: image;
+	background-image: delete-pilot.png;
+}
+
+button#deleteplayer_btn:hover #deleteplayer_img
+{
+	background-decorator: image;
+	background-image: delete-pilot-h.png;
+}
+
+button#deleteplayer_btn:active #deleteplayer_img
+{
+	background-decorator: image;
+	background-image: delete-pilot-o.png;
 }

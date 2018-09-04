@@ -9,28 +9,100 @@
 	</head>
     <body>
 		<div id=pilot_select>
+			<div id=choosepilot>
+				<p>Choose Pilot</p>
+			</div>
+			<div id=pilotlist>
+				<p>MjnMixael</p>
+				<p>M!M</p>
+				<p>Axem</p>
+				<p>Somehow</p>
+				<p>This</p>
+				<p>Must</p>
+				<p>Scroll</p>
+			</div>
 			<div id=player_type_select>
+				<div id=button_wrapper>
+					<div id=multi_player_cont>
+						<button id="multiplayer_btn" class="multiplayer">
+							<span id="multiplayer_img" class="multiplayer">
+								<img src="multiplayer.png" class="psuedo_img"></img>
+							</span>
+							<span class="green button_text">
+								<p>Multi</p>
+							</span>
+						</button>
+					</div>
+					<div id=single_player_cont>
+						<button id="singleplayer_btn" class="singleplayer">
+							<span id="singleplayer_img" class="singleplayer">
+								<img src="single-player.png" class="psuedo_img"></img>
+							</span>
+							<span class="green button_text">
+								<p>Single</p>
+							</span>
+						</button>
+					</div>
+				</div>
 			</div>
 			<div id=player_control>
+				<div id=button_wrapper>
+					<div id=create_player_cont>
+						<button id="createplayer_btn" class="createplayer">
+							<span id="createplayer_img" class="createplayer">
+								<img src="create-pilot.png" class="psuedo_img"></img>
+							</span>
+							<span class="green button_text">
+								<p>Create</p>
+							</span>
+						</button>
+					</div>
+					<div id=clone_player_cont>
+						<button id="cloneplayer_btn" class="cloneplayer">
+							<span id="cloneplayer_img" class="cloneplayer">
+								<img src="clone-pilot.png" class="psuedo_img"></img>
+							</span>
+							<span class="green button_text">
+								<p>Clone</p>
+							</span>
+						</button>
+					</div>
+					<div id=delete_player_cont>
+						<button id="deleteplayer_btn" class="deleteplayer">
+							<span id="deleteplayer_img" class="deleteplayer">
+								<img src="delete-pilot.png" class="psuedo_img"></img>
+							</span>
+							<span class="green button_text">
+								<p>Delete</p>
+							</span>
+						</button>
+					</div>
+				</div>
 			</div>
 			<div id=player_select>
 				<div id=button_wrapper>
 					<div id=player_commit_cont>
-						<button id="player_commit" onclick="ba.postGameEvent(ba.GameEvents['GS_EVENT_QUIT_GAME'])">
-							<img src="select.png"></img>
-						</button>
-						<div id=player_commit_text>
-							<p>Select</p>
-						</div>
-					</div>
-					<div id=arrow_cont>
-						<button id="player_next">
-							<img src="down-arrow.png"></img>
+						<button id="playercommit_btn" class="playercommit" onclick="ba.postGameEvent(ba.GameEvents['GS_EVENT_QUIT_GAME'])">
+							<span id="playercommit_img" class="playercommit">
+								<img src="select.png" class="psuedo_img"></img>
+							</span>
+							<span class="red button_text below">
+								<p>Select</p>
+							</span>
 						</button>
 					</div>
 					<div id=arrow_cont>
-						<button id="player_previous">
-							<img src="up-arrow.png"></img>
+						<button id="playernext_btn" class="arrowbuttons">
+							<span id="playernext_img" class="arrowbuttons">
+								<img src="down-arrow.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+					<div id=arrow_cont>
+						<button id="playerprev_btn" class="arrowbuttons">
+							<span id="playerprev_img" class="arrowbuttons">
+								<img src="up-arrow.png" class="psuedo_img"></img>
+							</span>
 						</button>
 					</div>
 				</div>
