@@ -3,7 +3,7 @@ body
 	font-family: Arial;
 	font-weight: normal;
 	font-style: normal;
-	font-size: 15em;
+	font-size: 1em;
 	color: white;
 	width: 100%;
 	height: 100%;
@@ -20,6 +20,7 @@ div#pilot_select
 	width: 50%;
 	height: auto;
 	overflow: hidden;
+	position: relative;
 }
 
 div#pilot_select img
@@ -41,8 +42,7 @@ div#gtva_wings
 	width: 70%;
 	height: auto;
 	overflow: hidden;
-	border-color: white;
-	border-width: 2px;
+	font-size: 10px;
 }
 
 div#gtva_wings img
@@ -56,21 +56,23 @@ div#gtva_wings img
 
 div#player_select
 {
-	position: relative;
-	height: 0;
+	position: absolute;
+	bottom: 0;
 }
 
 div#button_wrapper
 {
-	float: left;
-	background-color: white;
+	position: relative;
 }
 
 div#arrow_cont
 {
-	float: left;
+	float: right;
 	width: 5%;
 	height: auto;
+	margin-right: 1%;
+	margin-bottom: 1%;
+	margin-top: 7%;
 }
 
 button#player_previous img
@@ -133,11 +135,27 @@ button#player_next:active
 	background-image: down-arrow-o.png;
 }
 
+div#player_commit_text
+{
+
+	width: 100%;
+	margin-bottom: -20%;
+	text-align: center;
+}
+
+div#player_commit_text p
+{
+	padding-top: 4px;
+}
+
 div#player_commit_cont
 {
-	float: left;
+	float: right;
 	width: 9%;
 	height: auto;
+	margin-right: 1%;
+	top: 0;
+	color: #7b7b7b;
 }
 
 button#player_commit img
@@ -158,14 +176,25 @@ button#player_commit
 
 }
 
-button#player_commit:hover
+#player_commit_cont:hover button#player_commit
 {
 	background-decorator: image;
 	background-image: select-h.png;
 }
 
-button#player_commit:active
+#player_commit_cont:hover
+{
+	color: #946565;
+}
+
+#player_commit_cont:active button#player_commit
 {
 	background-decorator: image;
 	background-image: select-o.png;
+}
+
+#player_commit_cont:active
+{
+	color: #dd9393;
+}
 }

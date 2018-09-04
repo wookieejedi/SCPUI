@@ -15,19 +15,22 @@
 			</div>
 			<div id=player_select>
 				<div id=button_wrapper>
-					<div id=arrow_cont>
-						<button id="player_previous">
-							<img src="up-arrow.png"></img>
+					<div id=player_commit_cont>
+						<button id="player_commit" onclick="ba.postGameEvent(ba.GameEvents['GS_EVENT_QUIT_GAME'])">
+							<img src="select.png"></img>
 						</button>
+						<div id=player_commit_text>
+							<p>Select</p>
+						</div>
 					</div>
 					<div id=arrow_cont>
 						<button id="player_next">
 							<img src="down-arrow.png"></img>
 						</button>
 					</div>
-					<div id=player_commit_cont>
-						<button id="player_commit" onclick="ba.postGameEvent(ba.GameEvents['GS_EVENT_QUIT_GAME'])">
-							<img src="select.png"></img>
+					<div id=arrow_cont>
+						<button id="player_previous">
+							<img src="up-arrow.png"></img>
 						</button>
 					</div>
 				</div>
@@ -35,6 +38,7 @@
 			<img src="pilot-select-window.png"></img>
 		</div>
 		<div id=gtva_wings>
+		<p>ctrl-shift-r/ctrl-shift-d</p>
 			<img src="gtva-logo-wings.png"></img>
 		</div>
 	</body>
