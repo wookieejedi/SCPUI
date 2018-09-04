@@ -41,7 +41,8 @@ div#gtva_wings
 	width: 70%;
 	height: auto;
 	overflow: hidden;
-	border: 1px solid white;
+	border-color: white;
+	border-width: 2px;
 }
 
 div#gtva_wings img

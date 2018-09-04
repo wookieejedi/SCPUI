@@ -26,7 +26,7 @@
 						</button>
 					</div>
 					<div id=player_commit_cont>
-						<button id="player_commit" onclick="ba.postGameEvent(ba.GameEvents["GS_EVENT_QUIT_GAME"])">
+						<button id="player_commit" onclick="ba.postGameEvent(ba.GameEvents['GS_EVENT_QUIT_GAME'])">
 							<img src="select.png"></img>
 						</button>
 					</div>
