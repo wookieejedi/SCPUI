@@ -103,6 +103,13 @@ div#player_control
 	bottom: 0;
 }
 
+/* Button sounds */
+button
+{
+	mouseover-sound: ControlHover;
+	click-sound: ControlClick;
+}
+
 /*Button Highlight Colors*/
 
 button:hover .red
@@ -209,6 +216,10 @@ div#player_commit_cont
 {
 	background-decorator: image;
 	background-image: select.png;
+}
+button#playercommit_btn #playercommit_img
+{
+	click-sound: CommitButton;
 }
 
 button#playercommit_btn:hover #playercommit_img

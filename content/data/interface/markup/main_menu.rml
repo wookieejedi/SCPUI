@@ -82,7 +82,7 @@
 			<div id=player_select>
 				<div id=button_wrapper>
 					<div id=player_commit_cont>
-						<button id="playercommit_btn" class="playercommit" onclick="ba.postGameEvent(ba.GameEvents['GS_EVENT_QUIT_GAME'])">
+						<button id="playercommit_btn" class="playercommit" onclick="ba.postGameEvent(ba.GameEvents['GS_EVENT_MAIN_MENU'])">
 							<span id="playercommit_img" class="playercommit">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
