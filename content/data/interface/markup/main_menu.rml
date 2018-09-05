@@ -3,23 +3,19 @@
 		<title>Main Menu</title>
 		<link type="text/rcss" href="rkt.rcss"/>
 		<link type="text/rcss" href="invader.rcss"/>
+		<script src="pilotSelect.lua"></script>
 		<style>
 
 		</style>
 	</head>
-    <body>
+    <body onload="pilot_select.initialize(document)">
 		<div id=pilot_select>
 			<div id=choosepilot>
 				<p>Choose Pilot</p>
 			</div>
 			<div id=pilotlist>
-				<p>MjnMixael</p>
-				<p>M!M</p>
-				<p>Axem</p>
-				<p>Somehow</p>
-				<p>This</p>
-				<p>Must</p>
-				<p>Scroll</p>
+				<ul id=pilotlist_ul>
+				</ul>
 			</div>
 			<div id=player_type_select>
 				<div id=button_wrapper>

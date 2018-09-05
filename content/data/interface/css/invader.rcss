@@ -457,3 +457,17 @@ button#deleteplayer_btn:active #deleteplayer_img
 	background-decorator: image;
 	background-image: delete-pilot-o.png;
 }
+
+.pilotlist_element
+{
+	display: block;
+	color: #7b7b7b;
+}
+.pilotlist_element:hover
+{
+	color: #abbbab;
+}
+.pilotlist_element:active
+{
+	color: #c9e4c9;
+}
