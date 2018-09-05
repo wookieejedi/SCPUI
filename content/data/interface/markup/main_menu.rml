@@ -23,8 +23,8 @@
 			</div>
 			<div id=player_type_select>
 				<div id=button_wrapper>
-					<div id=multi_player_cont>
-						<button id="multiplayer_btn" class="multiplayer">
+					<div id=single_multi_cont>
+						<button id="multiplayer_btn" class="multiplayer button_1">
 							<span id="multiplayer_img" class="multiplayer">
 								<img src="multiplayer.png" class="psuedo_img"></img>
 							</span>
@@ -33,8 +33,8 @@
 							</span>
 						</button>
 					</div>
-					<div id=single_player_cont>
-						<button id="singleplayer_btn" class="singleplayer">
+					<div id=single_multi_cont>
+						<button id="singleplayer_btn" class="singleplayer button_1">
 							<span id="singleplayer_img" class="singleplayer">
 								<img src="single-player.png" class="psuedo_img"></img>
 							</span>
@@ -46,9 +46,9 @@
 				</div>
 			</div>
 			<div id=player_control>
-				<div id=button_wrapper>
-					<div id=create_player_cont>
-						<button id="createplayer_btn" class="createplayer">
+				<div id="player_control_wrapper">
+					<div id=player_control_cont>
+						<button id="createplayer_btn" class="createplayer button_1">
 							<span id="createplayer_img" class="createplayer">
 								<img src="create-pilot.png" class="psuedo_img"></img>
 							</span>
@@ -57,8 +57,8 @@
 							</span>
 						</button>
 					</div>
-					<div id=clone_player_cont>
-						<button id="cloneplayer_btn" class="cloneplayer">
+					<div id=player_control_cont>
+						<button id="cloneplayer_btn" class="cloneplayer button_1">
 							<span id="cloneplayer_img" class="cloneplayer">
 								<img src="clone-pilot.png" class="psuedo_img"></img>
 							</span>
@@ -67,8 +67,8 @@
 							</span>
 						</button>
 					</div>
-					<div id=delete_player_cont>
-						<button id="deleteplayer_btn" class="deleteplayer">
+					<div id=player_control_cont>
+						<button id="deleteplayer_btn" class="deleteplayer button_1">
 							<span id="deleteplayer_img" class="deleteplayer">
 								<img src="delete-pilot.png" class="psuedo_img"></img>
 							</span>
@@ -82,7 +82,7 @@
 			<div id=player_select>
 				<div id=button_wrapper>
 					<div id=player_commit_cont>
-						<button id="playercommit_btn" class="playercommit" onclick="ba.postGameEvent(ba.GameEvents['GS_EVENT_QUIT_GAME'])">
+						<button id="playercommit_btn" class="playercommit button_2" onclick="ba.postGameEvent(ba.GameEvents['GS_EVENT_QUIT_GAME'])">
 							<span id="playercommit_img" class="playercommit">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
@@ -92,14 +92,14 @@
 						</button>
 					</div>
 					<div id=arrow_cont>
-						<button id="playernext_btn" class="arrowbuttons">
+						<button id="playernext_btn" class="arrowbuttons button_1">
 							<span id="playernext_img" class="arrowbuttons">
 								<img src="down-arrow.png" class="psuedo_img"></img>
 							</span>
 						</button>
 					</div>
 					<div id=arrow_cont>
-						<button id="playerprev_btn" class="arrowbuttons">
+						<button id="playerprev_btn" class="arrowbuttons button_1">
 							<span id="playerprev_img" class="arrowbuttons">
 								<img src="up-arrow.png" class="psuedo_img"></img>
 							</span>

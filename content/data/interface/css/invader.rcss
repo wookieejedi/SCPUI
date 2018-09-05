@@ -26,7 +26,19 @@ body
 
 .below p
 {
-	padding-top:5%;
+	padding-top:8%;
+}
+
+.button_1
+{
+	mouseover-sound: 17;
+	click-sound: 0;
+}
+
+.button_2
+{
+	mouseover-sound: 17;
+	click-sound: 7;
 }
 
 div#gtva_wings
@@ -101,6 +113,11 @@ div#player_control
 {
 	position: absolute;
 	bottom: 0;
+}
+
+div#player_control_wrapper
+{
+	margin-bottom: 4%;
 }
 
 /*Button Highlight Colors*/
@@ -225,7 +242,7 @@ button#playercommit_btn:active #playercommit_img
 
 /*Singleplayer Selection Button*/
 
-div#single_player_cont
+div#single_multi_cont
 {
 	float: right;
 	width: 6%;
@@ -277,16 +294,6 @@ input#singleplayer_btn:checked #singleplayer_img
 
 /*Multiplayer Selection Button*/
 
-div#multi_player_cont
-{
-	float: right;
-	width: 6%;
-	height: auto;
-	margin-right: 4%;
-	margin-bottom: 1%;
-	margin-top: 1%;
-}
-
 .multiplayer
 {
 	display: block;
@@ -317,7 +324,7 @@ button#multiplayer_btn:active #multiplayer_img
 
 /*Create Player Button*/
 
-div#create_player_cont
+div#player_control_cont
 {
 	float: left;
 	width: 6%;
@@ -325,19 +332,17 @@ div#create_player_cont
 	margin-right: 1%;
 	margin-left: 5%;
 	top: 0;
-	margin-top: 3%;
-	margin-bottom: -4%;
+	margin-bottom: -6%;
 	z-index: 1;
 }
 
 .createplayer
 {
 	display: block;
-	max-width: 95px;
-	max-height: 108px;
+	max-width: 125px;
+	max-height: 136px;
 	width: 100%;
 	height: auto;
-	padding-bottom: 8%;
 
 }
 
@@ -361,27 +366,13 @@ button#createplayer_btn:active #createplayer_img
 
 /*Clone Player Button*/
 
-div#clone_player_cont
-{
-	float: left;
-	width: 6.3%;
-	height: auto;
-	margin-right: 1%;
-	margin-left: 5%;
-	top: 0;
-	margin-top: 3%;
-	margin-bottom: -4%;
-	z-index: 1;
-}
-
 .cloneplayer
 {
 	display: block;
-	max-width: 95px;
-	max-height: 108px;
+	max-width: 125px;
+	max-height: 136px;
 	width: 100%;
 	height: auto;
-	padding-bottom: 8%;
 
 }
 
@@ -405,27 +396,13 @@ button#cloneplayer_btn:active #cloneplayer_img
 
 /*Delete Player Button*/
 
-div#delete_player_cont
-{
-	float: left;
-	width: 7.1%;
-	height: auto;
-	margin-right: 1%;
-	margin-left: 5%;
-	top: 0;
-	margin-top: 3%;
-	margin-bottom: -4%;
-	z-index: 1;
-}
-
 .deleteplayer
 {
 	display: block;
-	max-width: 95px;
-	max-height: 108px;
+	max-width: 125px;
+	max-height: 136px;
 	width: 100%;
 	height: auto;
-	padding-bottom: 8%;
 
 }
 
