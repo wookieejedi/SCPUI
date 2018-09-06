@@ -260,25 +260,19 @@ div#single_multi_cont
 	background-image: single-player.png;
 }
 
-button#singleplayer_btn:hover #singleplayer_img
+#singleplayer_btn:hover #singleplayer_img
 {
 	background-decorator: image;
 	background-image: single-player-h.png;
 }
 
-button#singleplayer_btn:active #singleplayer_img
+#singleplayer_btn:active #singleplayer_img
 {
 	background-decorator: image;
 	background-image: single-player-o.png;
 }
 
-input#singleplayer_btn:hover #singleplayer_img
-{
-	background-decorator: image;
-	background-image: single-player-h.png;
-}
-
-input#singleplayer_btn:checked #singleplayer_img
+#singleplayer_btn:checked #singleplayer_img
 {
 	background-decorator: image;
 	background-image: single-player-o.png;
@@ -309,6 +303,12 @@ button#multiplayer_btn:hover #multiplayer_img
 }
 
 button#multiplayer_btn:active #multiplayer_img
+{
+	background-decorator: image;
+	background-image: multiplayer-o.png;
+}
+
+button#multiplayer_btn:checked #multiplayer_img
 {
 	background-decorator: image;
 	background-image: multiplayer-o.png;

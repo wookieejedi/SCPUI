@@ -8,7 +8,7 @@
 
 		</style>
 	</head>
-    <body onload="pilot_select.initialize(document)">
+    <body onload="pilot_select:initialize(document)">
 		<div id=pilot_select>
 			<div id=choosepilot>
 				<p>Choose Pilot</p>
@@ -20,7 +20,7 @@
 			<div id=player_type_select>
 				<div id=button_wrapper>
 					<div id=single_multi_cont>
-						<button id="multiplayer_btn" class="multiplayer button_1">
+						<button id="multiplayer_btn" class="multiplayer button_1" onclick="pilot_select:set_player_mode('multi')">
 							<span id="multiplayer_img" class="multiplayer">
 								<img src="multiplayer.png" class="psuedo_img"></img>
 							</span>
@@ -30,7 +30,7 @@
 						</button>
 					</div>
 					<div id=single_multi_cont>
-						<button id="singleplayer_btn" class="singleplayer button_1">
+						<button id="singleplayer_btn" class="singleplayer button_1" onclick="pilot_select:set_player_mode('single')">
 							<span id="singleplayer_img" class="singleplayer">
 								<img src="single-player.png" class="psuedo_img"></img>
 							</span>
@@ -78,7 +78,7 @@
 			<div id=player_select>
 				<div id=button_wrapper>
 					<div id=player_commit_cont>
-						<button id="playercommit_btn" class="playercommit button_2" onclick="ba.postGameEvent(ba.GameEvents['GS_EVENT_MAIN_MENU'])">
+						<button id="playercommit_btn" class="playercommit button_2" onclick="pilot_select:commit_pressed()">
 							<span id="playercommit_img" class="playercommit">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
