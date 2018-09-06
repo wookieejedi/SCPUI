@@ -52,6 +52,10 @@ function pilot_select:set_player_mode(mode)
 			multi = "multiplayer_btn",
 			single = "singleplayer_btn"
 		},
+		{
+			multi = "multiplayer_text",
+			single = "singleplayer_text"
+		},
 	}
 
 	local is_single = mode == "single"

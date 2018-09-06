@@ -61,6 +61,24 @@ div#gtva_wings img
 	height: auto;
 }
 
+.player_type_text
+{
+	color: white;
+	display: none;
+	text-align: center;
+	margin: 5%;
+}
+
+div#singleplayer_text:checked
+{
+	display: block;
+}
+
+div#multiplayer_text:checked
+{
+	display: block;
+}
+
 div#pilot_select
 {
 	margin: auto;
@@ -124,12 +142,22 @@ button:active .red
 	color: #dd9393;
 }
 
+button:checked .red
+{
+	color: #dd9393;
+}
+
 button:hover .green
 {
 	color: #abbbab;
 }
 
 button:active .green
+{
+	color: #c9e4c9;
+}
+
+button:checked .green
 {
 	color: #c9e4c9;
 }

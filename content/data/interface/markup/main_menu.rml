@@ -105,8 +105,14 @@
 			</div>
 			<img src="pilot-select-window.png"></img>
 		</div>
+		<div id="singleplayer_text" class="player_type_text">
+			<p>Single Player Mode</p>
+		</div>
+		<div id="multiplayer_text" class="player_type_text">
+			<p>Multi Player Mode</p>
+		</div>
 		<div id=gtva_wings>
-		<p>ctrl-shift-r/ctrl-shift-d</p>
+			<p>ctrl-shift-r/ctrl-shift-d</p>
 			<img src="gtva-logo-wings.png"></img>
 		</div>
 	</body>
