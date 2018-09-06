@@ -8,6 +8,10 @@ function pilot_select.initialize(document)
 	local pilot_ul = document:GetElementById("pilotlist_ul")
 	local pilots = ui.PilotSelect.enumeratePilots()
 
+	for i=1, 20 do
+		table.insert(pilots, "test " .. tostring(i))
+	end
+
 	for _, v in ipairs(pilots) do
 		local li_el = document:CreateElement("li")
 		li_el.inner_rml = v
