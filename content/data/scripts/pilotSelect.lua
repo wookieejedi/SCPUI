@@ -47,13 +47,21 @@ end
 function pilot_select:set_player_mode(mode)
 	assert(tblUtil.contains(VALID_MODES, mode), "Mode " .. tostring(mode) .. " is not valid!")
 
-	local multi_btn = self.document:GetElementById("multiplayer_btn")
-	local single_btn = self.document:GetElementById("singleplayer_btn")
+	local elements = {
+		{
+			multi = "multiplayer_btn",
+			single = "singleplayer_btn"
+		},
+	}
 
 	local is_single = mode == "single"
-
-	multi_btn:SetPseudoClass("checked", not is_single)
-	single_btn:SetPseudoClass("checked", is_single)
-
 	self.current_mode = mode
+
+	for _, v in ipairs(elements) do
+		local multi_el = self.document:GetElementById(v.multi)
+		local single_el = self.document:GetElementById(v.single)
+	
+		multi_el:SetPseudoClass("checked", not is_single)
+		single_el:SetPseudoClass("checked", is_single)
+	end
 end
