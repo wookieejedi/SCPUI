@@ -1,8 +1,8 @@
 <rml>
 	<head>
-		<title>Main Menu</title>
-		<link type="text/rcss" href="rkt.rcss"/>
-		<link type="text/rcss" href="invader.rcss"/>
+		<title>Pilot Select</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="pilot_select.rcss"/>
 		<script src="pilotSelect.lua"></script>
 		<style>
 

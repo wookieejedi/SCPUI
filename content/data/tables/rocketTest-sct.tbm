@@ -6,7 +6,7 @@ $On State Start:
 [
 TestContext = rocket:CreateContext("tutorial", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
 
-TestContext:LoadDocument("data/interface/markup/main_menu.rml"):Show()
+TestContext:LoadDocument("data/interface/markup/pilot_select.rml"):Show()
 
 ui.enableInput(TestContext)
 ]
