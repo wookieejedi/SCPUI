@@ -4,7 +4,10 @@ local tblUtil = utils.table
 
 local VALID_MODES = { "single", "multi" }
 
-pilot_select = {}
+pilot_select = {
+	selection = nil,
+	elements = {}
+}
 
 function pilot_select:initialize(document)
 	self.document = document
@@ -34,14 +37,38 @@ function pilot_select:initialize(document)
 
 	for _, v in ipairs(pilots) do
 		local li_el = document:CreateElement("li")
+
 		li_el.inner_rml = v
 		li_el:SetClass("pilotlist_element", true)
+		li_el:AddEventListener("click", function(_, _, _) self:selectPilot(v) end)
+
+		self.elements[v] = li_el
+
 		pilot_ul:AppendChild(li_el)
+	end
+
+	document:GetElementById("fso_version_info").inner_rml = ba.getVersionString()
+	if last ~= nil then
+		self:selectPilot(last.callsign)
+	end
+end
+
+function pilot_select:selectPilot(pilot)
+	if self.selection ~= nil and self.elements[self.selection] ~= nil then
+		self.elements[self.selection]:SetPseudoClass("checked", false)
+	end
+
+	self.selection = pilot
+
+	if self.selection ~= nil and self.elements[self.selection] ~= nil then
+		self.elements[pilot]:SetPseudoClass("checked", true)
 	end
 end
 
 function pilot_select:commit_pressed()
-	ba.postGameEvent(ba.GameEvents['GS_EVENT_MAIN_MENU'])
+	if self.selection ~= nil then
+		ui.PilotSelect.selectPilot(self.selection, self.current_mode == "multi")
+	end
 end
 
 function pilot_select:set_player_mode(mode)
@@ -68,4 +95,30 @@ function pilot_select:set_player_mode(mode)
 		multi_el:SetPseudoClass("checked", not is_single)
 		single_el:SetPseudoClass("checked", is_single)
 	end
+end
+
+function pilot_select:create_player()
+end
+
+function pilot_select:clone_player()
+end
+
+function pilot_select:delete_player()
+	if self.selection == nil then
+		return
+	end
+	
+	if self.current_mode == "multi" then
+		-- TODO: Add code for displaying a popup to let the player know that deleting only works in single player mode
+		return
+	end
+
+	-- ui.PilotSelect.deletePilot(self.selection)
+
+	-- Remove the element from the list
+	local removed_el = self.elements[self.selection]
+	removed_el.parent_node:RemoveChild(removed_el)
+	self.elements[self.selection] = nil
+
+	self:selectPilot(nil)
 end
