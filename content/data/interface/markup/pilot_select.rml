@@ -112,8 +112,11 @@
 			<p>Multi Player Mode</p>
 		</div>
 		<div id=gtva_wings>
-			<p>ctrl-shift-r/ctrl-shift-d</p>
 			<img src="gtva-logo-wings.png"></img>
+		</div>
+		<div id=copyright_info>
+			<p>FSO Build Info</p>
+			<p>FSO Copyright Info</p>
 		</div>
 	</body>
 

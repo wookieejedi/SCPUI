@@ -61,6 +61,18 @@ div#gtva_wings img
 	height: auto;
 }
 
+div#copyright_info
+{
+	position: absolute;
+	bottom: 1%;
+	margin: auto;
+	width: 70%;
+	height: auto;
+	overflow: hidden;
+	font-size: 10px;
+	text-align: center;
+}
+
 .player_type_text
 {
 	color: white;
