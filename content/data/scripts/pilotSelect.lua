@@ -6,7 +6,8 @@ local VALID_MODES = { "single", "multi" }
 
 pilot_select = {
 	selection = nil,
-	elements = {}
+	elements = {},
+	callsign_input_active = false
 }
 
 function pilot_select:initialize(document)
@@ -35,14 +36,9 @@ function pilot_select:initialize(document)
 		table.insert(pilots, "test " .. tostring(i))
 	end
 
-	for _, v in ipairs(pilots) do
-		local li_el = document:CreateElement("li")
-
-		li_el.inner_rml = v
-		li_el:SetClass("pilotlist_element", true)
-		li_el:AddEventListener("click", function(_, _, _) self:selectPilot(v) end)
-
-		self.elements[v] = li_el
+	self.pilots = pilots
+	for _, v in ipairs(self.pilots) do
+		local li_el = self:create_pilot_li(v)
 
 		pilot_ul:AppendChild(li_el)
 	end
@@ -51,6 +47,18 @@ function pilot_select:initialize(document)
 	if last ~= nil then
 		self:selectPilot(last.callsign)
 	end
+end
+
+function pilot_select:create_pilot_li(pilot_name)
+	local li_el = self.document:CreateElement("li")
+
+	li_el.inner_rml = pilot_name
+	li_el:SetClass("pilotlist_element", true)
+	li_el:AddEventListener("click", function(_, _, _) self:selectPilot(pilot_name) end)
+
+	self.elements[pilot_name] = li_el
+
+	return li_el
 end
 
 function pilot_select:selectPilot(pilot)
@@ -97,10 +105,91 @@ function pilot_select:set_player_mode(mode)
 	end
 end
 
+function pilot_select:callsign_input_focus_lost()
+end
+
+function pilot_select:callsign_input_cancel()
+	local input_el = Element.As.ElementFormControlInput(self.document:GetElementById("pilot_name_input"))
+	input_el:SetClass("hidden", true) -- Show the element
+	input_el.value = ""
+
+	self.callsign_input_active = false
+	self.callsign_submit_action = nil
+end
+
+function pilot_select:callsign_input_change(event)
+	if not self.callsign_input_active then
+		-- Only process enter events when we are actually inputting something
+		return
+	end
+
+	if event.parameters.linebreak ~= 1 then
+		return
+	end
+
+	event:StopPropagation()
+	self.callsign_submit_action(event.parameters.value)
+	self:callsign_input_cancel()
+end
+
+function pilot_select:begin_callsign_input(end_action)
+	local input_el = self.document:GetElementById("pilot_name_input")
+	input_el:SetClass("hidden", false) -- Show the element
+	input_el:Focus()
+
+	self.callsign_input_active = true
+
+	-- This is the function that will be executed when the name has been entered and submitted
+	self.callsign_submit_action = end_action
+end
+
 function pilot_select:create_player()
+	self:begin_callsign_input(function(callsign)
+		if tblUtil.contains(self.pilots, callsign, function(left, right) return left:lower() == right:lower() end) then
+			-- TODO: Add a popup asking the user for confirmation here
+			return
+		end
+
+		if not ui.PilotSelect.createPilot(callsign, self.current_mode == "multi") then
+			-- TODO: Play a fail sound here
+			return
+		end
+
+		local pilot_ul = self.document:GetElementById("pilotlist_ul")
+		local new_li = self:create_pilot_li(callsign)
+		-- If first_child is nil then this will add at the end of the list
+		pilot_ul:InsertBefore(new_li, pilot_ul.first_child)
+
+		self:selectPilot(callsign)
+	end)
 end
 
 function pilot_select:clone_player()
+	local current = self.selection
+
+	if current == nil then
+		-- TODO: Add dialog here to let the player know that they need to select a pilot!
+		return
+	end
+
+	self:begin_callsign_input(function(callsign)
+		if tblUtil.contains(self.pilots, callsign, function(left, right) return left:lower() == right:lower() end) then
+			-- TODO: Add a popup asking the user for confirmation here
+			return
+		end
+
+		if not ui.PilotSelect.createPilot(callsign, self.current_mode == "multi", current) then
+			-- TODO: Play a fail sound here
+			return
+		end
+
+		local pilot_ul = self.document:GetElementById("pilotlist_ul")
+		local new_li = self:create_pilot_li(callsign)
+		-- If first_child is nil then this will add at the end of the list
+		pilot_ul:InsertBefore(new_li, pilot_ul.first_child)
+
+		self:selectPilot(callsign)
+	end)
 end
 
 function pilot_select:delete_player()
@@ -119,6 +208,8 @@ function pilot_select:delete_player()
 	local removed_el = self.elements[self.selection]
 	removed_el.parent_node:RemoveChild(removed_el)
 	self.elements[self.selection] = nil
+
+	tblUtil.iremove_el(self.pilots, self.selection)
 
 	self:selectPilot(nil)
 end

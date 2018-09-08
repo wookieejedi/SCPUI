@@ -14,7 +14,8 @@
 				<p>Choose Pilot</p>
 			</div>
 			<div id=pilotlist>
-				<input id=pilot_name_input class="hidden" type="text"></input>
+				<input id=pilot_name_input class="hidden" type="text" onblur="pilot_select:callsign_input_focus_lost()"
+						onchange="pilot_select:callsign_input_change(event)"></input>
 				<ul id=pilotlist_ul>
 				</ul>
 			</div>
