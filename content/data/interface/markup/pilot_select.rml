@@ -115,12 +115,10 @@
 		</div>
 		<div id=gtva_wings>
 			<img src="gtva-logo-wings.png"></img>
-			<p id=fso_version_info></p>
-			<p>Copyright © 1999, Volition, Inc.  All rights reserved.</p>
 		</div>
 		<div id=copyright_info>
-			<p>FSO Build Info</p>
-			<p>FSO Copyright Info</p>
+			<p id=fso_version_info></p>
+			<p>Copyright © 1999, Volition, Inc.  All rights reserved.</p>
 		</div>
 	</body>
 
