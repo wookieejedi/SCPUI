@@ -15,16 +15,6 @@ body
 	color: #7b7b7b;
 }
 
-.psuedo_img
-{
-	z-index: -1;
-}
-
-.button_text
-{
-	text-align: center;
-}
-
 .below p
 {
 	padding-top:8%;
@@ -141,38 +131,6 @@ div#player_control
 div#player_control_wrapper
 {
 	margin-bottom: 4%;
-}
-
-/*Button Highlight Colors*/
-
-button:hover .red
-{
-	color: #946565;
-}
-
-button:active .red
-{
-	color: #dd9393;
-}
-
-button:checked .red
-{
-	color: #dd9393;
-}
-
-button:hover .green
-{
-	color: #abbbab;
-}
-
-button:active .green
-{
-	color: #c9e4c9;
-}
-
-button:checked .green
-{
-	color: #c9e4c9;
 }
 
 /*Arrow Buttons*/
@@ -481,11 +439,6 @@ div#pilotlist
 .pilotlist_element:checked
 {
 	color: #c9e4c9;
-}
-
-.hidden
-{
-	display: none;
 }
 
 /*Scrollbars*/

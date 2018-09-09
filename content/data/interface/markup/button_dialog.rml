@@ -1,0 +1,31 @@
+<rml>
+	<head>
+		<title>Button dialog</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="dialog.rcss"/>
+	</head>
+    <body>
+		<div class="hidden">
+			<!-- Container for templates used below -->
+			<button id="button_template" class="dialog_button">
+				<span>
+					<img id="button_image" class="psuedo_img"></img>
+				</span>
+				<span class="green button_text">
+					<p id="button_text"></p>
+				</span>
+			</button>
+		</div>
+		<div id=content>
+			<div>
+				<p id=title_container></p>
+			</div>
+			<div>
+				<p id=text_container></p>
+			</div>
+			<div id=button_container>
+			</div>
+		</div>
+	</body>
+</rml>

@@ -2,6 +2,7 @@
 	<head>
 		<title>Pilot Select</title>
 		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="pilot_select.rcss"/>
 		<script src="pilotSelect.lua"></script>
 		<style>
@@ -90,14 +91,14 @@
 						</button>
 					</div>
 					<div id=arrow_cont>
-						<button id="playernext_btn" class="arrowbuttons button_1">
+						<button id="playernext_btn" class="arrowbuttons button_1" onclick="pilot_select:up_button_pressed()">
 							<span id="playernext_img" class="arrowbuttons">
 								<img src="down-arrow.png" class="psuedo_img"></img>
 							</span>
 						</button>
 					</div>
 					<div id=arrow_cont>
-						<button id="playerprev_btn" class="arrowbuttons button_1">
+						<button id="playerprev_btn" class="arrowbuttons button_1"  onclick="pilot_select:down_button_pressed()">
 							<span id="playerprev_img" class="arrowbuttons">
 								<img src="up-arrow.png" class="psuedo_img"></img>
 							</span>
