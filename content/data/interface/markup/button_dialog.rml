@@ -5,7 +5,7 @@
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="dialog.rcss"/>
 	</head>
-    <body>
+	<body>
 		<div class="hidden">
 			<!-- Container for templates used below -->
 			<button id="button_template" class="dialog_button">
@@ -18,14 +18,15 @@
 			</button>
 		</div>
 		<div id=content>
-			<div>
+			<div id=title_wrapper>
 				<p id=title_container></p>
 			</div>
-			<div>
+			<div id=text_wrapper>
 				<p id=text_container></p>
 			</div>
 			<div id=button_container>
 			</div>
+			<img src="dialog-box.png"></img>
 		</div>
 	</body>
 </rml>

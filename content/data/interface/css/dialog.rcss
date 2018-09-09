@@ -20,3 +20,39 @@ div#content
 	overflow: hidden;
 	position: relative;
 }
+
+div#content img
+{
+	display: block;
+	max-width: 1914px;
+	max-height: 910px;
+	width: 100%;
+	height: auto;
+}
+
+div#title_wrapper
+{
+	position: absolute;
+	top: 0;
+	margin-top: 4%;
+	margin-left: 4%;
+	width: 10%;
+	z-index: 4;
+}
+
+div#text_wrapper
+{
+	position: absolute;
+	top: 0;
+	margin-top: 23%;
+	margin-left: 2%;
+	margin-right: 5%;
+	color: white;
+	overflow: auto;
+	height: 52%;
+}
+
+p
+{
+	width: 100%;
+}

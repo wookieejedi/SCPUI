@@ -45,3 +45,17 @@ button:checked .green
 {
 	color: #c9e4c9;
 }
+
+/*Button Sounds*/
+
+.button_1 /*General Select*/
+{
+	mouseover-sound: 17;
+	click-sound: 0;
+}
+
+.button_2 /*Commit*/
+{
+	mouseover-sound: 17;
+	click-sound: 7;
+}

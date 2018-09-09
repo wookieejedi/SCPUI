@@ -9,7 +9,7 @@
 
 		</style>
 	</head>
-    <body onload="pilot_select:initialize(document)">
+	<body onload="pilot_select:initialize(document)">
 		<div id=pilot_select>
 			<div id=choosepilot>
 				<p>Choose Pilot</p>

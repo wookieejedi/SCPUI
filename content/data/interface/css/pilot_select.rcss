@@ -20,18 +20,6 @@ body
 	padding-top:8%;
 }
 
-.button_1
-{
-	mouseover-sound: 17;
-	click-sound: 0;
-}
-
-.button_2
-{
-	mouseover-sound: 17;
-	click-sound: 7;
-}
-
 div#gtva_wings
 {
 	position: absolute;
@@ -57,6 +45,7 @@ div#copyright_info
 	position: absolute;
 	bottom: 1%;
 	margin: auto;
+	width: 70%;
 	width: 70%;
 	height: auto;
 	overflow: hidden;
@@ -222,13 +211,13 @@ div#player_commit_cont
 button#playercommit_btn:hover #playercommit_img
 {
 	background-decorator: image;
-	background-image: select-h.png;
+	background-image: select-red-h.png;
 }
 
 button#playercommit_btn:active #playercommit_img
 {
 	background-decorator: image;
-	background-image: select-o.png;
+	background-image: select-red-o.png;
 }
 
 /*Singleplayer Selection Button*/
