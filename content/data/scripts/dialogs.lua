@@ -13,7 +13,7 @@ module.BUTTON_MAPPING = {
         image = "up-arrow.png",
     },
     [module.BUTTON_TYPE_NEGATIVE] = {
-        class = "button_positive",
+        class = "button_negative",
         image = "down-arrow.png",
     }
 }
