@@ -226,14 +226,14 @@ function pilot_select:select_first()
 end
 
 function pilot_select:up_button_pressed()
-    local builder = dialogs.new(function(result)
-        ba.print(tostring(result))
-    end)
+    local builder = dialogs.new()
     builder:title("Title!")
     builder:text("Text!")
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Yes!")
     builder:button(dialogs.BUTTON_TYPE_NEGATIVE, "No!")
-    builder:show(self.document.context)
+    builder:show(self.document.context, function(result)
+        ba.print(tostring(result))
+    end)
 
     if self.selection == nil then
         self:select_first()

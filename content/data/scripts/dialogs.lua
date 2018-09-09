@@ -18,7 +18,7 @@ module.BUTTON_MAPPING = {
     }
 }
 
-local function initialize_buttons(document, properties)
+local function initialize_buttons(document, properties, finish_func)
     local button_template = document:GetElementById("button_template")
     local button_container = document:GetElementById("button_container")
     local image_el = button_template:GetElementById("button_image")
@@ -37,7 +37,7 @@ local function initialize_buttons(document, properties)
         end
 
         actual_el:AddEventListener("click", function(_, _, _)
-            properties.finish_func(v.value)
+            finish_func(v.value)
             document:Close()
         end)
 
@@ -45,14 +45,14 @@ local function initialize_buttons(document, properties)
     end
 end
 
-local function show_dialog(context, properties)
+local function show_dialog(context, properties, finish_func)
     local dialog_doc = TestContext:LoadDocument("data/interface/markup/button_dialog.rml")
 
     dialog_doc:GetElementById("title_container").inner_rml = properties.title
     dialog_doc:GetElementById("text_container").inner_rml = properties.text
 
     if #properties.buttons > 0 then
-        initialize_buttons(dialog_doc, properties)
+        initialize_buttons(dialog_doc, properties, finish_func)
     end
 
     dialog_doc:Show(DocumentFocus.FOCUS) -- MODAL would be better than FOCUS but then the debugger cannot be used anymore
@@ -87,15 +87,14 @@ function factory_mt:button(type, text, value)
     return self
 end
 
-function factory_mt:show(context)
-    show_dialog(context, self)
+function factory_mt:show(context, finish_func)
+    show_dialog(context, self, finish_func)
 end
 
-function module.new(finish_func)
+function module.new()
     local factory = {
         type = module.TYPE_SIMPLE,
         buttons = {},
-        finish_func = finish_func,
     }
     setmetatable(factory, factory_mt)
     return factory
