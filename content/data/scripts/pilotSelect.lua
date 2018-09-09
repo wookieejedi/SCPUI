@@ -71,6 +71,7 @@ function pilot_select:selectPilot(pilot)
 
     if self.selection ~= nil and self.elements[self.selection] ~= nil then
         self.elements[pilot]:SetPseudoClass("checked", true)
+        self.elements[pilot]:ScrollIntoView()
     end
 end
 
@@ -215,11 +216,50 @@ function pilot_select:delete_player()
     self:selectPilot(nil)
 end
 
+function pilot_select:select_first()
+    if #self.pilots <= 0 then
+        self:selectPilot(nil)
+        return
+    end
+
+    self:selectPilot(self.pilots[1])
+end
+
 function pilot_select:up_button_pressed()
-    dialogs.new(function(result)
+    local builder = dialogs.new(function(result)
         ba.print(tostring(result))
-    end):title("Title!"):text("Text!"):button(dialogs.BUTTON_TYPE_POSITIVE, "Yes!"):button(dialogs.BUTTON_TYPE_NEGATIVE, "No!"):show(self.document.context)
+    end)
+    builder:title("Title!")
+    builder:text("Text!")
+    builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Yes!")
+    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, "No!")
+    builder:show(self.document.context)
+
+    if self.selection == nil then
+        self:select_first()
+        return
+    end
+
+    local idx = tblUtil.ifind(self.pilots, self.selection)
+    idx = idx + 1
+    if idx > #self.pilots then
+        idx = 1
+    end
+
+    self:selectPilot(self.pilots[idx])
 end
 
 function pilot_select:down_button_pressed()
+    if self.selection == nil then
+        self:select_first()
+        return
+    end
+
+    local idx = tblUtil.ifind(self.pilots, self.selection)
+    idx = idx - 1
+    if idx < 1 then
+        idx = #self.pilots
+    end
+
+    self:selectPilot(self.pilots[idx])
 end
