@@ -51,7 +51,7 @@ button:checked .pos
 .button_1 /*General Select*/
 {
 	mouseover-sound: 17;
-	click-sound: 0;
+	click-sound: 0,(error)15,(commit)0;
 }
 
 .button_2 /*Commit*/
