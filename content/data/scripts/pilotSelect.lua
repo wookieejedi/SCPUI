@@ -126,6 +126,14 @@ function pilot_select:set_player_mode(element, mode)
     end
 end
 
+function pilot_select:global_keydown(element, event)
+    if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+        event:StopPropagation()
+
+        ba.postGameEvent(ba.GameEvents["GS_EVENT_QUIT_GAME"])
+    end
+end
+
 function pilot_select:callsign_input_focus_lost()
 end
 
@@ -136,6 +144,19 @@ function pilot_select:callsign_input_cancel()
 
     self.callsign_input_active = false
     self.callsign_submit_action = nil
+end
+
+function pilot_select:callsign_keyup(element, event)
+    if not self.callsign_input_active then
+        return
+    end
+
+    if event.parameters.key_identifier ~= rocket.key_identifier.ESCAPE then
+        return
+    end
+    event:StopPropagation()
+
+    self:callsign_input_cancel()
 end
 
 function pilot_select:callsign_input_change(event)
