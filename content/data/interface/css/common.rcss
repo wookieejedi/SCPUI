@@ -16,32 +16,32 @@
 
 /*Button Highlight Colors*/
 
-button:hover .red
+button:hover .neg
 {
 	color: #946565;
 }
 
-button:active .red
+button:active .neg
 {
 	color: #dd9393;
 }
 
-button:checked .red
+button:checked .neg
 {
 	color: #dd9393;
 }
 
-button:hover .green
+button:hover .pos
 {
 	color: #abbbab;
 }
 
-button:active .green
+button:active .pos
 {
 	color: #c9e4c9;
 }
 
-button:checked .green
+button:checked .pos
 {
 	color: #c9e4c9;
 }

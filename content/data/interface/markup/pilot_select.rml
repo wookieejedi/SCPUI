@@ -28,7 +28,7 @@
 							<span id="multiplayer_img" class="multiplayer">
 								<img src="multiplayer.png" class="psuedo_img"></img>
 							</span>
-							<span class="green button_text">
+							<span class="pos button_text">
 								<p>Multi</p>
 							</span>
 						</button>
@@ -38,7 +38,7 @@
 							<span id="singleplayer_img" class="singleplayer">
 								<img src="single-player.png" class="psuedo_img"></img>
 							</span>
-							<span class="green button_text">
+							<span class="pos button_text">
 								<p>Single</p>
 							</span>
 						</button>
@@ -52,7 +52,7 @@
 							<span id="createplayer_img" class="createplayer">
 								<img src="create-pilot.png" class="psuedo_img"></img>
 							</span>
-							<span class="green button_text below">
+							<span class="pos button_text below">
 								<p>Create</p>
 							</span>
 						</button>
@@ -62,7 +62,7 @@
 							<span id="cloneplayer_img" class="cloneplayer">
 								<img src="clone-pilot.png" class="psuedo_img"></img>
 							</span>
-							<span class="green button_text below">
+							<span class="pos button_text below">
 								<p>Clone</p>
 							</span>
 						</button>
@@ -72,7 +72,7 @@
 							<span id="deleteplayer_img" class="deleteplayer">
 								<img src="delete-pilot.png" class="psuedo_img"></img>
 							</span>
-							<span class="green button_text below">
+							<span class="pos button_text below">
 								<p>Delete</p>
 							</span>
 						</button>
@@ -86,7 +86,7 @@
 							<span id="playercommit_img" class="playercommit">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
-							<span class="red button_text below">
+							<span class="neg button_text below">
 								<p>Select</p>
 							</span>
 						</button>
