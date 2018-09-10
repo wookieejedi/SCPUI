@@ -23,18 +23,19 @@ local function initialize_buttons(document, properties, finish_func)
     local button_container = document:GetElementById("button_container")
 
     for _, v in ipairs(properties.buttons) do
+        local image_vals = module.BUTTON_MAPPING[v.type]
+
         local actual_el = button_template:Clone()
         button_container:AppendChild(actual_el)
 
-        local text_el = actual_el:GetElementById("button_text")
+        local text_el = actual_el:GetElementsByClassName("button_text_id")[1]
         text_el.inner_rml = v.text
 
-        local image_vals = module.BUTTON_MAPPING[v.type]
+        actual_el:SetClass(image_vals.class, true)
 
         if image_vals ~= nil then
-            local image_el = actual_el:GetElementById("button_image")
+            local image_el = actual_el:GetElementsByClassName("button_image_id")[1]
             image_el:SetAttribute("src", image_vals.image)
-            image_el:SetClass(image_vals.class, true)
         end
 
         actual_el:AddEventListener("click", function(_, _, _)

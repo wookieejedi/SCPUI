@@ -27,9 +27,9 @@ function pilot_select:initialize(document)
         end
 
         if last.is_multi then
-            self:set_player_mode("multi")
+            self:set_player_mode(nil, "multi")
         else
-            self:set_player_mode("single")
+            self:set_player_mode(nil, "single")
         end
     end
 
@@ -48,6 +48,8 @@ function pilot_select:initialize(document)
     if last ~= nil then
         self:selectPilot(last.callsign)
     end
+
+    ui.MainHall.startAmbientSound()
 end
 
 function pilot_select:create_pilot_li(pilot_name)
@@ -87,8 +89,15 @@ function pilot_select:commit_pressed()
     ui.playElementSound(button, "click", "commit")
 end
 
-function pilot_select:set_player_mode(mode)
+function pilot_select:set_player_mode(element, mode)
     assert(tblUtil.contains(VALID_MODES, mode), "Mode " .. tostring(mode) .. " is not valid!")
+
+    if self.current_mode == mode then
+        if element ~= nil then
+            ui.playElementSound(element, "click", "error")
+        end
+        return
+    end
 
     local elements = {
         {
@@ -111,6 +120,18 @@ function pilot_select:set_player_mode(mode)
         multi_el:SetPseudoClass("checked", not is_single)
         single_el:SetPseudoClass("checked", is_single)
     end
+
+    if element ~= nil then
+        ui.playElementSound(element, "click", "success")
+    end
+end
+
+function pilot_select:global_keydown(element, event)
+    if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+        event:StopPropagation()
+
+        ba.postGameEvent(ba.GameEvents["GS_EVENT_QUIT_GAME"])
+    end
 end
 
 function pilot_select:callsign_input_focus_lost()
@@ -123,6 +144,19 @@ function pilot_select:callsign_input_cancel()
 
     self.callsign_input_active = false
     self.callsign_submit_action = nil
+end
+
+function pilot_select:callsign_keyup(element, event)
+    if not self.callsign_input_active then
+        return
+    end
+
+    if event.parameters.key_identifier ~= rocket.key_identifier.ESCAPE then
+        return
+    end
+    event:StopPropagation()
+
+    self:callsign_input_cancel()
 end
 
 function pilot_select:callsign_input_change(event)
@@ -144,6 +178,7 @@ function pilot_select:begin_callsign_input(end_action)
     local input_el = self.document:GetElementById("pilot_name_input")
     input_el:SetClass("hidden", false) -- Show the element
     input_el:Focus()
+    ui.playElementSound(input_el, "click", "success")
 
     self.callsign_input_active = true
 
@@ -151,7 +186,11 @@ function pilot_select:begin_callsign_input(end_action)
     self.callsign_submit_action = end_action
 end
 
-function pilot_select:create_player()
+function pilot_select:create_player(element)
+    if #self.pilots >= ui.PilotSelect.MAX_PILOTS then
+        ui.playElementSound(element, "click", "error")
+    end
+
     self:begin_callsign_input(function(callsign)
         if tblUtil.contains(self.pilots, callsign, function(left, right) return left:lower() == right:lower() end) then
             -- TODO: Add a popup asking the user for confirmation here
@@ -159,7 +198,7 @@ function pilot_select:create_player()
         end
 
         if not ui.PilotSelect.createPilot(callsign, self.current_mode == "multi") then
-            -- TODO: Play a fail sound here
+            ui.playElementSound(element, "click", "error")
             return
         end
 
@@ -172,7 +211,11 @@ function pilot_select:create_player()
     end)
 end
 
-function pilot_select:clone_player()
+function pilot_select:clone_player(element)
+    if #self.pilots >= ui.PilotSelect.MAX_PILOTS then
+        ui.playElementSound(element, "click", "error")
+    end
+
     local current = self.selection
 
     if current == nil then
@@ -187,7 +230,7 @@ function pilot_select:clone_player()
         end
 
         if not ui.PilotSelect.createPilot(callsign, self.current_mode == "multi", current) then
-            -- TODO: Play a fail sound here
+            ui.playElementSound(element, "click", "error")
             return
         end
 
@@ -200,7 +243,7 @@ function pilot_select:clone_player()
     end)
 end
 
-function pilot_select:delete_player()
+function pilot_select:delete_player(element)
     if self.selection == nil then
         return
     end
