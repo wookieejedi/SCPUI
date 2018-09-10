@@ -27,9 +27,9 @@ function pilot_select:initialize(document)
         end
 
         if last.is_multi then
-            self:set_player_mode("multi")
+            self:set_player_mode(nil, "multi")
         else
-            self:set_player_mode("single")
+            self:set_player_mode(nil, "single")
         end
     end
 
@@ -93,7 +93,9 @@ function pilot_select:set_player_mode(element, mode)
     assert(tblUtil.contains(VALID_MODES, mode), "Mode " .. tostring(mode) .. " is not valid!")
 
     if self.current_mode == mode then
-        ui.playElementSound(element, "click", "error")
+        if element ~= nil then
+            ui.playElementSound(element, "click", "error")
+        end
         return
     end
 
@@ -119,7 +121,9 @@ function pilot_select:set_player_mode(element, mode)
         single_el:SetPseudoClass("checked", is_single)
     end
 
-    ui.playElementSound(element, "click", "success")
+    if element ~= nil then
+        ui.playElementSound(element, "click", "success")
+    end
 end
 
 function pilot_select:callsign_input_focus_lost()
