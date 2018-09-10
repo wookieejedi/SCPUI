@@ -76,9 +76,15 @@ function pilot_select:selectPilot(pilot)
 end
 
 function pilot_select:commit_pressed()
-    if self.selection ~= nil then
-        ui.PilotSelect.selectPilot(self.selection, self.current_mode == "multi")
+    local button = self.document:GetElementById("playercommit_btn")
+
+    if self.selection == nil then
+        ui.playElementSound(button, "click", "error")
+        return
     end
+
+    ui.PilotSelect.selectPilot(self.selection, self.current_mode == "multi")
+    ui.playElementSound(button, "click", "commit")
 end
 
 function pilot_select:set_player_mode(mode)

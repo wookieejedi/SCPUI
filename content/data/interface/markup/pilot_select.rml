@@ -81,7 +81,7 @@
 			<div id=player_select>
 				<div id=button_wrapper>
 					<div id=player_commit_cont>
-						<button id="playercommit_btn" class="playercommit button_2" onclick="pilot_select:commit_pressed()">
+						<button id="playercommit_btn" class="playercommit" onclick="pilot_select:commit_pressed()">
 							<span id="playercommit_img" class="playercommit">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>

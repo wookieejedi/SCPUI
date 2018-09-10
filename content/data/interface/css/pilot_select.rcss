@@ -208,6 +208,11 @@ div#player_commit_cont
 	background-image: select.png;
 }
 
+#playercommit_btn {
+	click-sound: (error)10,(commit)7;
+    mouseover-sound: 17;
+}
+
 button#playercommit_btn:hover #playercommit_img
 {
 	background-decorator: image;
