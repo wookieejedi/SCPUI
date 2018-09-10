@@ -28,13 +28,13 @@ local function initialize_buttons(document, properties, finish_func)
         local actual_el = button_template:Clone()
         button_container:AppendChild(actual_el)
 
-        local text_el = actual_el:GetElementById("button_text")
+        local text_el = actual_el:GetElementsByClassName("button_text_id")[1]
         text_el.inner_rml = v.text
 
         actual_el:SetClass(image_vals.class, true)
 
         if image_vals ~= nil then
-            local image_el = actual_el:GetElementById("button_image")
+            local image_el = actual_el:GetElementsByClassName("button_image_id")[1]
             image_el:SetAttribute("src", image_vals.image)
         end
 
