@@ -122,6 +122,10 @@ div#player_control_wrapper
 	margin-bottom: 4%;
 }
 
+#pilot_name_input {
+	click-sound: (success)9,(error)10;
+}
+
 /*Arrow Buttons*/
 
 div#arrow_cont
@@ -329,6 +333,10 @@ div#player_control_cont
 	width: 100%;
 	height: auto;
 
+}
+
+#createplayer_btn {
+	click-sound: (error)10;
 }
 
 #createplayer_img

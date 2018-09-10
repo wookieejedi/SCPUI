@@ -23,7 +23,7 @@
 			<div id=player_type_select>
 				<div id=button_wrapper>
 					<div id=single_multi_cont>
-						<button id="multiplayer_btn" class="multiplayer button_1" onclick="pilot_select:set_player_mode('multi')">
+						<button id="multiplayer_btn" class="multiplayer button_1" onclick="pilot_select:set_player_mode(element, 'multi')">
 							<span id="multiplayer_img" class="multiplayer">
 								<img src="multiplayer.png" class="psuedo_img"></img>
 							</span>
@@ -33,7 +33,7 @@
 						</button>
 					</div>
 					<div id=single_multi_cont>
-						<button id="singleplayer_btn" class="singleplayer button_1" onclick="pilot_select:set_player_mode('single')">
+						<button id="singleplayer_btn" class="singleplayer button_1" onclick="pilot_select:set_player_mode(element 'single')">
 							<span id="singleplayer_img" class="singleplayer">
 								<img src="single-player.png" class="psuedo_img"></img>
 							</span>
@@ -47,7 +47,7 @@
 			<div id=player_control>
 				<div id="player_control_wrapper">
 					<div id=player_control_cont>
-						<button id="createplayer_btn" class="createplayer button_1" onclick="pilot_select:create_player()">
+						<button id="createplayer_btn" class="createplayer button_1" onclick="pilot_select:create_player(element)">
 							<span id="createplayer_img" class="createplayer">
 								<img src="create-pilot.png" class="psuedo_img"></img>
 							</span>
@@ -57,7 +57,7 @@
 						</button>
 					</div>
 					<div id=player_control_cont>
-						<button id="cloneplayer_btn" class="cloneplayer button_1" onclick="pilot_select:clone_player()">
+						<button id="cloneplayer_btn" class="cloneplayer button_1" onclick="pilot_select:clone_player(element)">
 							<span id="cloneplayer_img" class="cloneplayer">
 								<img src="clone-pilot.png" class="psuedo_img"></img>
 							</span>
@@ -67,7 +67,7 @@
 						</button>
 					</div>
 					<div id=player_control_cont>
-						<button id="deleteplayer_btn" class="deleteplayer button_1" onclick="pilot_select:delete_player()">
+						<button id="deleteplayer_btn" class="deleteplayer button_1" onclick="pilot_select:delete_player(element)">
 							<span id="deleteplayer_img" class="deleteplayer">
 								<img src="delete-pilot.png" class="psuedo_img"></img>
 							</span>
