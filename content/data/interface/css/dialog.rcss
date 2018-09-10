@@ -11,33 +11,87 @@ body
 	color: #7b7b7b;
 }
 
+#content
+{
+	position: relative;
+}
+
 #button_container
 {
-	float: right;
-	width: 9%;
+	float: left;
+	width: 7%;
 	height: auto;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	margin-bottom: 2%;
 	margin-right: 1%;
-	top: 0;
-	margin-bottom: -8%;
 	z-index: 4;
 }
 
-.button_positive
+.button_text p
+{
+	position: absolute;
+	margin-top: -30%;
+	margin-left: -140%;
+	text-align: right;
+}
+
+
+.button_positive div
 {
 	background-decorator: image;
 	background-image: select.png;
 }
 
-.button_positive:hover
+.button_positive:hover div
 {
 	background-decorator: image;
-	background-image: select-red-h.png;
+	background-image: select-green-h.png;
 }
 
-.button_positive:active
+.button_positive:active div
 {
 	background-decorator: image;
-	background-image: select-red-o.png;
+	background-image: select-green-o.png;
+}
+
+.button_negative div
+{
+	background-decorator: image;
+	background-image: decline.png;
+}
+
+.button_negative:hover div
+{
+	background-decorator: image;
+	background-image: decline-h.png;
+}
+
+.button_negative:active div
+{
+	background-decorator: image;
+	background-image: decline-o.png;
+}
+
+.button_positive:hover p
+{
+	color: #abbbab;
+}
+
+.button_positive:active p
+{
+	color: #c9e4c9;
+}
+
+.button_negative:hover p
+{
+	color: #946565;
+}
+
+.button_negative:active p
+{
+	color: #dd9393;
 }
 
 div#content
@@ -63,7 +117,7 @@ div#title_wrapper
 {
 	position: absolute;
 	top: 0;
-	margin-top: 4%;
+	margin-top: 2%;
 	margin-left: 4%;
 	width: 10%;
 	z-index: 4;
@@ -73,8 +127,9 @@ div#text_wrapper
 {
 	position: absolute;
 	top: 0;
-	margin-top: 23%;
-	margin-left: 2%;
+	margin-top: 10%;
+	margin-left: 1%;
+	padding: 1%;
 	margin-right: 5%;
 	color: white;
 	overflow: auto;

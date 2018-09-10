@@ -9,8 +9,10 @@
 		<div class="hidden">
 			<!-- Container for templates used below -->
 			<button id="button_template" class="dialog_button">
-                <img class="button_image_id psuedo_img"></img>
-				<span class="green button_text">
+				<div>
+					<img class="button_image_id psuedo_img"></img>
+				</div>
+				<span class="button_text">
 					<p class="button_text_id"></p>
 				</span>
 			</button>

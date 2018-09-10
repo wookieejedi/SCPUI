@@ -10,11 +10,11 @@ module.BUTTON_TYPE_NEGATIVE = 2
 module.BUTTON_MAPPING = {
     [module.BUTTON_TYPE_POSITIVE] = {
         class = "button_positive",
-        image = "up-arrow.png",
+        image = "select.png",
     },
     [module.BUTTON_TYPE_NEGATIVE] = {
         class = "button_negative",
-        image = "down-arrow.png",
+        image = "decline.png",
     }
 }
 
