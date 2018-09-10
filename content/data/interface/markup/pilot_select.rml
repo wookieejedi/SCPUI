@@ -34,7 +34,7 @@
 						</button>
 					</div>
 					<div id=single_multi_cont>
-						<button id="singleplayer_btn" class="singleplayer button_1" onclick="pilot_select:set_player_mode(element 'single')">
+						<button id="singleplayer_btn" class="singleplayer button_1" onclick="pilot_select:set_player_mode(element, 'single')">
 							<span id="singleplayer_img" class="singleplayer">
 								<img src="single-player.png" class="psuedo_img"></img>
 							</span>
