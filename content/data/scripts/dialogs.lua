@@ -21,10 +21,10 @@ module.BUTTON_MAPPING = {
 local function initialize_buttons(document, properties, finish_func)
     local button_template = document:GetElementById("button_template")
     local button_container = document:GetElementById("button_container")
-    local image_el = button_template:GetElementById("button_image")
 
     for _, v in ipairs(properties.buttons) do
         local actual_el = button_template:Clone()
+        button_container:AppendChild(actual_el)
 
         local text_el = actual_el:GetElementById("button_text")
         text_el.inner_rml = v.text
@@ -32,6 +32,7 @@ local function initialize_buttons(document, properties, finish_func)
         local image_vals = module.BUTTON_MAPPING[v.type]
 
         if image_vals ~= nil then
+            local image_el = actual_el:GetElementById("button_image")
             image_el:SetAttribute("src", image_vals.image)
             image_el:SetClass(image_vals.class, true)
         end
@@ -40,8 +41,6 @@ local function initialize_buttons(document, properties, finish_func)
             finish_func(v.value)
             document:Close()
         end)
-
-        button_container:AppendChild(actual_el)
     end
 end
 
