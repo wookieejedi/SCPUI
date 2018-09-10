@@ -11,6 +11,35 @@ body
 	color: #7b7b7b;
 }
 
+#button_container
+{
+	float: right;
+	width: 9%;
+	height: auto;
+	margin-right: 1%;
+	top: 0;
+	margin-bottom: -8%;
+	z-index: 4;
+}
+
+.button_positive
+{
+	background-decorator: image;
+	background-image: select.png;
+}
+
+.button_positive:hover
+{
+	background-decorator: image;
+	background-image: select-red-h.png;
+}
+
+.button_positive:active
+{
+	background-decorator: image;
+	background-image: select-red-o.png;
+}
+
 div#content
 {
 	margin: auto;

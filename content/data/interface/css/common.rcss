@@ -56,6 +56,6 @@ button:checked .green
 
 .button_2 /*Commit*/
 {
+	click-sound: (error)15,(commit)7;
 	mouseover-sound: 17;
-	click-sound: 7;
 }
