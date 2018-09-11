@@ -33,10 +33,6 @@ function pilot_select:initialize(document)
         end
     end
 
-    for i = 1, 20 do
-        table.insert(pilots, "test " .. tostring(i))
-    end
-
     self.pilots = pilots
     for _, v in ipairs(self.pilots) do
         local li_el = self:create_pilot_li(v)
@@ -50,6 +46,20 @@ function pilot_select:initialize(document)
     end
 
     ui.MainHall.startAmbientSound()
+
+    if ui.PilotSelect.WarningCount > 10 or ui.PilotSelect.ErrorCount > 0 then
+        local text = string.format("The currently active mod has generated %d warnings and/or errors during"
+                .. "program startup.  These could have been caused by anything from incorrectly formated table files to"
+                .. " corrupt models.  While FreeSpace Open will attempt to compensate for these issues, it cannot"
+                .. " guarantee a trouble-free gameplay experience.  Source Code Project staff cannot provide assistance"
+                .. " or support for these problems, as they are caused by the mod's data files, not FreeSpace Open's"
+                .. " source code.", ui.PilotSelect.WarningCount + ui.PilotSelect.ErrorCount)
+        local builder = dialogs.new()
+        builder:title("Warning!")
+        builder:text(text)
+        builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Ok")
+        builder:show(self.document.context)
+    end
 end
 
 function pilot_select:create_pilot_li(pilot_name)
@@ -82,6 +92,22 @@ function pilot_select:commit_pressed()
 
     if self.selection == nil then
         ui.playElementSound(button, "click", "error")
+
+        local builder = dialogs.new()
+        builder:text("You must select a valid pilot first")
+        builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Ok")
+        builder:show(self.document.context)
+        return
+    end
+
+    if not ui.PilotSelect.checkPilotLanguage(self.selection) then
+        ui.playElementSound(button, "click", "error")
+
+        local builder = dialogs.new()
+        builder:text("Selected pilot was created with a different language to the currently active language." ..
+                "\n\nPlease select a different pilot or change the language")
+        builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Ok")
+        builder:show(self.document.context)
         return
     end
 
@@ -186,60 +212,64 @@ function pilot_select:begin_callsign_input(end_action)
     self.callsign_submit_action = end_action
 end
 
+function pilot_select:finish_pilot_create(element, callsign, clone_from)
+    if not ui.PilotSelect.createPilot(callsign, self.current_mode == "multi", clone_from) then
+        ui.playElementSound(element, "click", "error")
+        return
+    end
+
+    local pilot_ul = self.document:GetElementById("pilotlist_ul")
+    local new_li = self:create_pilot_li(callsign)
+    -- If first_child is nil then this will add at the end of the list
+    pilot_ul:InsertBefore(new_li, pilot_ul.first_child)
+
+    self:selectPilot(callsign)
+end
+
+function pilot_select:actual_pilot_create(element, callsign, clone_from)
+    if tblUtil.contains(self.pilots, callsign, function(left, right) return left:lower() == right:lower() end) then
+        local builder = dialogs.new()
+        builder:title("Warning")
+        builder:text("A duplicate pilot exists\nOverwrite?")
+        builder:button(dialogs.BUTTON_TYPE_NEGATIVE, "No", false)
+        builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Yes", true)
+        builder:show(self.document.context, function(result)
+            if not result then
+                return
+            end
+            self:finish_pilot_create(element, callsign, clone_from)
+        end)
+        return
+    end
+
+    self:finish_pilot_create(element, callsign, clone_from)
+end
+
 function pilot_select:create_player(element)
     if #self.pilots >= ui.PilotSelect.MAX_PILOTS then
         ui.playElementSound(element, "click", "error")
+        return
     end
 
     self:begin_callsign_input(function(callsign)
-        if tblUtil.contains(self.pilots, callsign, function(left, right) return left:lower() == right:lower() end) then
-            -- TODO: Add a popup asking the user for confirmation here
-            return
-        end
-
-        if not ui.PilotSelect.createPilot(callsign, self.current_mode == "multi") then
-            ui.playElementSound(element, "click", "error")
-            return
-        end
-
-        local pilot_ul = self.document:GetElementById("pilotlist_ul")
-        local new_li = self:create_pilot_li(callsign)
-        -- If first_child is nil then this will add at the end of the list
-        pilot_ul:InsertBefore(new_li, pilot_ul.first_child)
-
-        self:selectPilot(callsign)
+        self:actual_pilot_create(element, callsign)
     end)
 end
 
 function pilot_select:clone_player(element)
     if #self.pilots >= ui.PilotSelect.MAX_PILOTS then
         ui.playElementSound(element, "click", "error")
+        return
     end
 
     local current = self.selection
 
     if current == nil then
-        -- TODO: Add dialog here to let the player know that they need to select a pilot!
         return
     end
 
     self:begin_callsign_input(function(callsign)
-        if tblUtil.contains(self.pilots, callsign, function(left, right) return left:lower() == right:lower() end) then
-            -- TODO: Add a popup asking the user for confirmation here
-            return
-        end
-
-        if not ui.PilotSelect.createPilot(callsign, self.current_mode == "multi", current) then
-            ui.playElementSound(element, "click", "error")
-            return
-        end
-
-        local pilot_ul = self.document:GetElementById("pilotlist_ul")
-        local new_li = self:create_pilot_li(callsign)
-        -- If first_child is nil then this will add at the end of the list
-        pilot_ul:InsertBefore(new_li, pilot_ul.first_child)
-
-        self:selectPilot(callsign)
+        self:actual_pilot_create(element, callsign, current)
     end)
 end
 
@@ -269,7 +299,14 @@ function pilot_select:delete_player(element)
             return
         end
 
-        ui.PilotSelect.deletePilot(self.selection)
+        if not ui.PilotSelect.deletePilot(self.selection) then
+            local builder = dialogs.new()
+            builder:title("Error")
+            builder:text("Failed to delete pilot file. File may be read-only.")
+            builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Ok")
+            builder:show(self.document.context)
+            return
+        end
 
         -- Remove the element from the list
         local removed_el = self.elements[self.selection]

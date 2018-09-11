@@ -51,8 +51,8 @@ end
 local function show_dialog(context, properties, finish_func)
     local dialog_doc = TestContext:LoadDocument("data/interface/markup/dialog.rml")
 
-    dialog_doc:GetElementById("title_container").inner_rml = properties.title
-    dialog_doc:GetElementById("text_container").inner_rml = properties.text
+    dialog_doc:GetElementById("title_container").inner_rml = properties.title_string
+    dialog_doc:GetElementById("text_container").inner_rml = properties.text_string
 
     if #properties.buttons > 0 then
         initialize_buttons(dialog_doc, properties, finish_func)
@@ -67,17 +67,17 @@ local factory_mt = {}
 factory_mt.__index = factory_mt
 
 function factory_mt:type(type)
-    self.type = type
+    self.type_val = type
     return self
 end
 
 function factory_mt:title(title)
-    self.title = title
+    self.title_string = title
     return self
 end
 
 function factory_mt:text(text)
-    self.text = text
+    self.text_string = text
     return self
 end
 
@@ -100,8 +100,10 @@ end
 
 function module.new()
     local factory = {
-        type = module.TYPE_SIMPLE,
+        type_val = module.TYPE_SIMPLE,
         buttons = {},
+        title_string = "",
+        text_string = ""
     }
     setmetatable(factory, factory_mt)
     return factory
