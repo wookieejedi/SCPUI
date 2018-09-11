@@ -8,7 +8,7 @@
 	<body>
 		<div class="hidden">
 			<!-- Container for templates used below -->
-			<button id="button_template" class="dialog_button">
+			<button id="button_template" class="dialog_button button_1">
 				<div>
 					<img class="button_image_id psuedo_img"></img>
 				</div>

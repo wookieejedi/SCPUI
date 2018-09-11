@@ -26,6 +26,7 @@ local function initialize_buttons(document, properties, finish_func)
         local image_vals = module.BUTTON_MAPPING[v.type]
 
         local actual_el = button_template:Clone()
+        actual_el.id = "" -- Reset the ID so that there are no duplicate IDs
         button_container:AppendChild(actual_el)
 
         local text_el = actual_el:GetElementsByClassName("button_text_id")[1]
