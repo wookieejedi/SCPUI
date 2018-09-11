@@ -3,8 +3,8 @@
 		<title>Pilot Select</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
-		<link type="text/rcss" href="pilot_select.rcss"/>
-		<script src="pilotSelect.lua"></script>
+		<link type="text/rcss" href="barracks.rcss"/>
+		<script src="barracks.lua"></script>
 		<style>
 
 		</style>
@@ -12,7 +12,7 @@
 	<body onload="pilot_select:initialize(document)" onkeyup="pilot_select:global_keydown(element, event)">
 		<div id=pilot_select>
 			<div id=choosepilot>
-				<p>Choose Pilot</p>
+				<p>Barracks</p>
 			</div>
 			<div id=pilotlist>
 				<input id=pilot_name_input class="hidden" type="text" onblur="pilot_select:callsign_input_focus_lost()"
@@ -115,8 +115,8 @@
 		<div id="multiplayer_text" class="player_type_text">
 			<p>Multi Player Mode</p>
 		</div>
-		<div id=gtva_wings>
-			<img src="gtva-logo-wings.png"></img>
+		<div id=logo_wide>
+			<img src="logo-wide.png"></img>
 		</div>
 		<div id=copyright_info>
 			<p id=fso_version_info></p>
