@@ -40,7 +40,9 @@ local function initialize_buttons(document, properties, finish_func)
         end
 
         actual_el:AddEventListener("click", function(_, _, _)
-            finish_func(v.value)
+            if finish_func then
+                finish_func(v.value)
+            end
             document:Close()
         end)
     end
@@ -80,10 +82,14 @@ function factory_mt:text(text)
 end
 
 function factory_mt:button(type, text, value)
+    if value == nil then
+        value = #self.buttons + 1
+    end
+
     table.insert(self.buttons, {
         type = type,
         text = text,
-        value = value or #self.buttons + 1
+        value = value
     })
     return self
 end

@@ -249,20 +249,37 @@ function pilot_select:delete_player(element)
     end
 
     if self.current_mode == "multi" then
-        -- TODO: Add code for displaying a popup to let the player know that deleting only works in single player mode
+        local builder = dialogs.new()
+        builder:title("Disabled!")
+        builder:text("Multi and single player pilots are now identical. Deleting a multi-player pilot will also delete" ..
+                " all single-player data for that pilot.\n\nAs a safety precaution, pilots can only be deleted from the" ..
+                " single-player menu.")
+        builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Ok")
+        builder:show(self.document.context)
         return
     end
 
-    -- ui.PilotSelect.deletePilot(self.selection)
+    local builder = dialogs.new()
+    builder:title("Warning!")
+    builder:text("Are you sure you wish to delete this pilot?")
+    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, "No", false)
+    builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Yes", true)
+    builder:show(self.document.context, function(result)
+        if not result then
+            return
+        end
 
-    -- Remove the element from the list
-    local removed_el = self.elements[self.selection]
-    removed_el.parent_node:RemoveChild(removed_el)
-    self.elements[self.selection] = nil
+        ui.PilotSelect.deletePilot(self.selection)
 
-    tblUtil.iremove_el(self.pilots, self.selection)
+        -- Remove the element from the list
+        local removed_el = self.elements[self.selection]
+        removed_el.parent_node:RemoveChild(removed_el)
+        self.elements[self.selection] = nil
 
-    self:selectPilot(nil)
+        tblUtil.iremove_el(self.pilots, self.selection)
+
+        self:selectPilot(nil)
+    end)
 end
 
 function pilot_select:select_first()
@@ -275,15 +292,6 @@ function pilot_select:select_first()
 end
 
 function pilot_select:up_button_pressed()
-    local builder = dialogs.new()
-    builder:title("Title!")
-    builder:text("Text!")
-    builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Yes!")
-    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, "No!")
-    builder:show(self.document.context, function(result)
-        ba.print(tostring(result))
-    end)
-
     if self.selection == nil then
         self:select_first()
         return
