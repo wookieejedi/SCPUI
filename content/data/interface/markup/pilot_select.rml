@@ -1,6 +1,6 @@
 <rml>
 	<head>
-		<title>Pilot Select</title>
+		<title>XSTR("Pilot Select", -1)</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="pilot_select.rcss"/>
@@ -12,7 +12,7 @@
 	<body onload="pilot_select:initialize(document)" onkeyup="pilot_select:global_keydown(element, event)">
 		<div id=pilot_select>
 			<div id=choosepilot>
-				<p>Choose Pilot</p>
+				<p>XSTR("Choose Pilot", -1)</p>
 			</div>
 			<div id=pilotlist>
 				<input id=pilot_name_input class="hidden" type="text" onblur="pilot_select:callsign_input_focus_lost()"
@@ -29,7 +29,7 @@
 								<img src="multiplayer.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text">
-								<p>Multi</p>
+								<p>XSTR("Multi", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -39,7 +39,7 @@
 								<img src="single-player.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text">
-								<p>Single</p>
+								<p>XSTR("Single", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -53,7 +53,7 @@
 								<img src="create-pilot.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text below">
-								<p>Create</p>
+								<p>XSTR("Create", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -63,7 +63,7 @@
 								<img src="clone-pilot.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text below">
-								<p>Clone</p>
+								<p>XSTR("Clone", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -73,7 +73,7 @@
 								<img src="delete-pilot.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text below">
-								<p>Delete</p>
+								<p>XSTR("Delete", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -87,7 +87,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text below">
-								<p>Select</p>
+								<p>XSTR("Select", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -110,17 +110,17 @@
 			<img src="pilot-select-window.png"></img>
 		</div>
 		<div id="singleplayer_text" class="player_type_text">
-			<p>Single Player Mode</p>
+			<p>XSTR("Single Player Mode", -1)</p>
 		</div>
 		<div id="multiplayer_text" class="player_type_text">
-			<p>Multi Player Mode</p>
+			<p>XSTR("Multi Player Mode", -1)</p>
 		</div>
 		<div id=gtva_wings>
 			<img src="gtva-logo-wings.png"></img>
 		</div>
 		<div id=copyright_info>
 			<p id=fso_version_info></p>
-			<p>Copyright © 1999, Volition, Inc.  All rights reserved.</p>
+			<p>XSTR("Copyright © 1999, Volition, Inc.  All rights reserved.", -1)</p>
 		</div>
 	</body>
 

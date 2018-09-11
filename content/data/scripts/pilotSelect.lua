@@ -48,16 +48,16 @@ function pilot_select:initialize(document)
     ui.MainHall.startAmbientSound()
 
     if ui.PilotSelect.WarningCount > 10 or ui.PilotSelect.ErrorCount > 0 then
-        local text = string.format("The currently active mod has generated %d warnings and/or errors during"
+        local text = string.format(ba.XSTR("The currently active mod has generated %d warnings and/or errors during"
                 .. "program startup.  These could have been caused by anything from incorrectly formated table files to"
                 .. " corrupt models.  While FreeSpace Open will attempt to compensate for these issues, it cannot"
                 .. " guarantee a trouble-free gameplay experience.  Source Code Project staff cannot provide assistance"
                 .. " or support for these problems, as they are caused by the mod's data files, not FreeSpace Open's"
-                .. " source code.", ui.PilotSelect.WarningCount + ui.PilotSelect.ErrorCount)
+                .. " source code.", -1), ui.PilotSelect.WarningCount + ui.PilotSelect.ErrorCount)
         local builder = dialogs.new()
-        builder:title("Warning!")
+        builder:title(ba.XSTR("Warning!", -1))
         builder:text(text)
-        builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Ok")
+        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1))
         builder:show(self.document.context)
     end
 end
@@ -94,8 +94,8 @@ function pilot_select:commit_pressed()
         ui.playElementSound(button, "click", "error")
 
         local builder = dialogs.new()
-        builder:text("You must select a valid pilot first")
-        builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Ok")
+        builder:text(ba.XSTR("You must select a valid pilot first", -1))
+        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1))
         builder:show(self.document.context)
         return
     end
@@ -104,9 +104,9 @@ function pilot_select:commit_pressed()
         ui.playElementSound(button, "click", "error")
 
         local builder = dialogs.new()
-        builder:text("Selected pilot was created with a different language to the currently active language." ..
-                "\n\nPlease select a different pilot or change the language")
-        builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Ok")
+        builder:text(ba.XSTR("Selected pilot was created with a different language to the currently active language." ..
+                "\n\nPlease select a different pilot or change the language", -1))
+        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1))
         builder:show(self.document.context)
         return
     end
@@ -236,10 +236,10 @@ end
 function pilot_select:actual_pilot_create(element, callsign, clone_from)
     if tblUtil.contains(self.pilots, callsign, function(left, right) return left:lower() == right:lower() end) then
         local builder = dialogs.new()
-        builder:title("Warning")
-        builder:text("A duplicate pilot exists\nOverwrite?")
-        builder:button(dialogs.BUTTON_TYPE_NEGATIVE, "No", false)
-        builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Yes", true)
+        builder:title(ba.XSTR("Warning", -1))
+        builder:text(ba.XSTR("A duplicate pilot exists\nOverwrite?", -1))
+        builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", -1), false)
+        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Yes", -1), true)
         builder:show(self.document.context, function(result)
             if not result then
                 return
@@ -287,18 +287,18 @@ function pilot_select:delete_player(element)
 
     if self.current_mode == "multi" then
         local builder = dialogs.new()
-        builder:title("Disabled!")
-        builder:text("Multi and single player pilots are now identical. Deleting a multi-player pilot will also delete" ..
+        builder:title(ba.XSTR("Disabled!", -1))
+        builder:text(ba.XSTR("Multi and single player pilots are now identical. Deleting a multi-player pilot will also delete" ..
                 " all single-player data for that pilot.\n\nAs a safety precaution, pilots can only be deleted from the" ..
-                " single-player menu.")
-        builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Ok")
+                " single-player menu.", -1))
+        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1))
         builder:show(self.document.context)
         return
     end
 
     local builder = dialogs.new()
-    builder:title("Warning!")
-    builder:text("Are you sure you wish to delete this pilot?")
+    builder:title(ba.XSTR("Warning!", -1))
+    builder:text(ba.XSTR("Are you sure you wish to delete this pilot?", -1))
     builder:button(dialogs.BUTTON_TYPE_NEGATIVE, "No", false)
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Yes", true)
     builder:show(self.document.context, function(result)
@@ -308,9 +308,9 @@ function pilot_select:delete_player(element)
 
         if not ui.PilotSelect.deletePilot(self.selection) then
             local builder = dialogs.new()
-            builder:title("Error")
-            builder:text("Failed to delete pilot file. File may be read-only.")
-            builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Ok")
+            builder:title(ba.XSTR("Error", -1))
+            builder:text(ba.XSTR("Failed to delete pilot file. File may be read-only.", -1))
+            builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1))
             builder:show(self.document.context)
             return
         end
