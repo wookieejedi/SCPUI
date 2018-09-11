@@ -20,7 +20,7 @@ body
 	padding-top:8%;
 }
 
-div#gtva_wings
+div#logo_wide
 {
 	position: absolute;
 	bottom: 2%;
@@ -31,7 +31,7 @@ div#gtva_wings
 	font-size: 10px;
 }
 
-div#gtva_wings img
+div#logo_wide img
 {
 	display: block;
 	max-width: 2819px;
