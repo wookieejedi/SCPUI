@@ -1,11 +1,13 @@
 #Conditional Hooks
 
 $Application: FS2_Open
+$On Game Init: [
+TestContext = rocket:CreateContext("tutorial", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
+]
+
 $State: GS_STATE_INITIAL_PLAYER_SELECT
 $On State Start:
 [
-TestContext = rocket:CreateContext("tutorial", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
-
 TestContext:LoadDocument("data/interface/markup/pilot_select.rml"):Show()
 
 ui.enableInput(TestContext)
@@ -24,7 +26,30 @@ $State: GS_STATE_INITIAL_PLAYER_SELECT
 $On State End:
 [
 ui.disableInput()
-TestContext = nil
+]
++Override: true
+
+$State: GS_STATE_BARRACKS_MENU
+$On State Start:
+[
+TestContext:LoadDocument("data/interface/markup/barracks.rml"):Show()
+
+ui.enableInput(TestContext)
+]
++Override: true
+
+$State: GS_STATE_BARRACKS_MENU
+$On Frame:
+[
+TestContext:Update()
+TestContext:Render()
+]
++Override: true
+
+$State: GS_STATE_BARRACKS_MENU
+$On State End:
+[
+ui.disableInput()
 ]
 +Override: true
 
