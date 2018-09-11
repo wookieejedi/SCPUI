@@ -213,7 +213,14 @@ function pilot_select:begin_callsign_input(end_action)
 end
 
 function pilot_select:finish_pilot_create(element, callsign, clone_from)
-    if not ui.PilotSelect.createPilot(callsign, self.current_mode == "multi", clone_from) then
+    local result
+    if clone_from ~= nil then
+        result = ui.PilotSelect.createPilot(callsign, self.current_mode == "multi", clone_from)
+    else
+        result = ui.PilotSelect.createPilot(callsign, self.current_mode == "multi")
+    end
+
+    if not result then
         ui.playElementSound(element, "click", "error")
         return
     end
