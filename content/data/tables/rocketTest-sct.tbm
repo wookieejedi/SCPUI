@@ -1,56 +1,33 @@
 #Conditional Hooks
 
 $Application: FS2_Open
-$On Game Init: [
-TestContext = rocket:CreateContext("tutorial", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
-]
+$On Game Init: [[ui_system.lua]]
 
-$State: GS_STATE_INITIAL_PLAYER_SELECT
 $On State Start:
 [
-TestContext:LoadDocument("data/interface/markup/pilot_select.rml"):Show()
-
-ui.enableInput(TestContext)
+if RocketUiSystem == nil then
+    return
+end
+RocketUiSystem:stateStart()
 ]
-+Override: true
++Override: RocketUiSystem ~= nil and RocketUiSystem:hasOverrideForCurrentState()
 
-$State: GS_STATE_INITIAL_PLAYER_SELECT
 $On Frame:
 [
-TestContext:Update()
-TestContext:Render()
+if RocketUiSystem == nil then
+    return
+end
+RocketUiSystem:stateFrame()
 ]
-+Override: true
++Override: RocketUiSystem ~= nil and RocketUiSystem:hasOverrideForCurrentState()
 
-$State: GS_STATE_INITIAL_PLAYER_SELECT
 $On State End:
 [
-ui.disableInput()
+if RocketUiSystem == nil then
+    return
+end
+RocketUiSystem:stateEnd()
 ]
-+Override: true
-
-$State: GS_STATE_BARRACKS_MENU
-$On State Start:
-[
-TestContext:LoadDocument("data/interface/markup/barracks.rml"):Show()
-
-ui.enableInput(TestContext)
-]
-+Override: true
-
-$State: GS_STATE_BARRACKS_MENU
-$On Frame:
-[
-TestContext:Update()
-TestContext:Render()
-]
-+Override: true
-
-$State: GS_STATE_BARRACKS_MENU
-$On State End:
-[
-ui.disableInput()
-]
-+Override: true
++Override: RocketUiSystem ~= nil and RocketUiSystem:hasOverrideForCurrentState()
 
 #End
