@@ -146,37 +146,37 @@ div#arrow_cont
 #playerprev_img
 {
 	background-decorator: image;
-	background-image: up-arrow.png;
+	background-image: arrow-up.png;
 }
 
 #playernext_img
 {
 	background-decorator: image;
-	background-image: down-arrow.png;
+	background-image: arrow-down.png;
 }
 
 button#playerprev_btn:hover #playerprev_img
 {
 	background-decorator: image;
-	background-image: up-arrow-h.png;
+	background-image: arrow-up-h.png;
 }
 
 button#playernext_btn:hover #playernext_img
 {
 	background-decorator: image;
-	background-image: down-arrow-h.png;
+	background-image: arrow-down-h.png;
 }
 
 button#playerprev_btn:active #playerprev_img
 {
 	background-decorator: image;
-	background-image: up-arrow-o.png;
+	background-image: arrow-up-o.png;
 }
 
 button#playernext_btn:active #playernext_img
 {
 	background-decorator: image;
-	background-image: down-arrow-o.png;
+	background-image: arrow-down-o.png;
 }
 
 /*Commit Button*/
