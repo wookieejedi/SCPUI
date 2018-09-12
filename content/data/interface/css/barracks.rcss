@@ -693,7 +693,7 @@ div#bottom_panel_wrapper
 
 div#bottom_panel_a
 {
-	width: 60%;
+	width: 66%;
 	height: auto;
 	position: relative;
 	float: right;
@@ -710,9 +710,9 @@ div#bottom_panel_a img
 
 div#bottom_panel_b
 {
-	width: 40%;
+	width: 34%;
 	height: auto;
-	margin-top: 1%;
+	margin-top: 1.1%;
 	position: relative;
 	float: left;
 }
@@ -724,21 +724,67 @@ div#bottom_panel_b img
 	max-height: 236px;
 	width: 100%;
 	height: auto;
-	position: absolute;
+
 }
+
+/*Accept Button*/
+
+div#a_panel_wrapper
+{
+	position: absolute;
+	bottom: 0;
+}
+
+div#accept_cont
+{
+	width: 100%;
+	height: auto;
+
+}
+
+.accept
+{
+	display: block;
+	max-width: 298px;
+	max-height: 212px;
+	width: 100%;
+	height: auto;
+
+}
+
+#accept_img
+{
+	background-decorator: image;
+	background-image: select.png;
+}
+button#accept_btn:hover #accept_img
+{
+	background-decorator: image;
+	background-image: select-red-h.png;
+}
+
+button#accept_btn:active #accept_img
+{
+	background-decorator: image;
+	background-image: select-red-o.png;
+}
+
+/*B Panel Buttons*/
 
 div#b_panel_wrapper
 {
 	position: absolute;
-	bottom: 0;
+	bottom: 5%;
+
 }
 
 /*Help Button*/
 
 div#help_cont
 {
-	width: 8%;
+	width: 70%;
 	height: auto;
+	margin: auto;
 
 }
 
@@ -773,8 +819,9 @@ button#help_btn:active #help_img
 
 div#options_cont
 {
-	width: 8%;
+	width: 70%;
 	height: auto;
+	margin: auto;
 }
 
 .options

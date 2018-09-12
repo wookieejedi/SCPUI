@@ -198,6 +198,15 @@
 		</div>
 		<div id=bottom_panel_wrapper>
 			<div id=bottom_panel_a>
+				<div id=a_panel_wrapper>
+					<div id=accept_cont>
+						<button id="accept_btn" class="accept button_1">
+							<span id="accept_img" class="accept">
+								<img src="select.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+				</div>
 				<img src="bottom-panel-a.png"></img>
 			</div>
 			<div id=bottom_panel_b>
