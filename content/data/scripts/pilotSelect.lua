@@ -186,7 +186,11 @@ function PilotSelectController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
 
-        ba.postGameEvent(ba.GameEvents["GS_EVENT_QUIT_GAME"])
+        if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
+            ba.postGameEvent(ba.GameEvents["GS_EVENT_QUIT_GAME"])
+        else
+            ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+        end
     end
 end
 
