@@ -31,6 +31,8 @@ function pilot_select:initialize(document)
         else
             self:set_player_mode(nil, "single")
         end
+    else
+        self:set_player_mode(nil, "single")
     end
 
     self.pilots = pilots
