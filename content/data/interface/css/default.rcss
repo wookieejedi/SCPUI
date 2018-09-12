@@ -2,11 +2,6 @@
 * Default styles for all the basic elements.
 */
 
-body
-{
-	font-family: BankGothic Lt BT;
-}
-
 div
 {
 	display: block;
