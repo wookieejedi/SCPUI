@@ -4,28 +4,27 @@
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="barracks.rcss"/>
-		<script src="barracks.lua"></script>
-		<style>
-
-		</style>
+		<script>
+            controller = require("barracks")()
+		</script>
 	</head>
-	<body onload="pilot_select:initialize(document)" onkeyup="pilot_select:global_keydown(element, event)">
+	<body onload="controller:initialize(document)" onkeyup="controller:global_keydown(element, event)">
 		<div id="upper_windows" class="window_container">
 			<div id=pilot_select>
 				<div id="pilot_select_title" class="window_title">
 					<p>Barracks</p>
 				</div>
 				<div id=pilotlist>
-					<input id=pilot_name_input class="hidden" type="text" onblur="pilot_select:callsign_input_focus_lost()"
-							onchange="pilot_select:callsign_input_change(event)"
-							onkeyup="pilot_select:callsign_keyup(element, event)"></input>
+					<input id=pilot_name_input class="hidden" type="text" onblur="controller:callsign_input_focus_lost()"
+							onchange="controller:callsign_input_change(event)"
+							onkeyup="controller:callsign_keyup(element, event)"></input>
 					<ul id=pilotlist_ul>
 					</ul>
 				</div>
 				<div id=player_type_select>
 					<div id=button_wrapper>
 						<div id=single_multi_cont>
-							<button id="multiplayer_btn" class="multiplayer button_1" onclick="pilot_select:set_player_mode(element, 'multi')">
+							<button id="multiplayer_btn" class="multiplayer button_1" onclick="controller:set_player_mode(element, 'multi')">
 								<span id="multiplayer_img" class="multiplayer">
 									<img src="multiplayer.png" class="psuedo_img"></img>
 								</span>
@@ -35,7 +34,7 @@
 							</button>
 						</div>
 						<div id=single_multi_cont>
-							<button id="singleplayer_btn" class="singleplayer button_1" onclick="pilot_select:set_player_mode(element, 'single')">
+							<button id="singleplayer_btn" class="singleplayer button_1" onclick="controller:set_player_mode(element, 'single')">
 								<span id="singleplayer_img" class="singleplayer">
 									<img src="single-player.png" class="psuedo_img"></img>
 								</span>
@@ -49,7 +48,7 @@
 				<div id=player_control>
 					<div id="player_control_wrapper">
 						<div id=player_control_cont>
-							<button id="createplayer_btn" class="createplayer button_1" onclick="pilot_select:create_player(element)">
+							<button id="createplayer_btn" class="createplayer button_1" onclick="controller:create_player(element)">
 								<span id="createplayer_img" class="createplayer">
 									<img src="create-pilot.png" class="psuedo_img"></img>
 								</span>
@@ -59,7 +58,7 @@
 							</button>
 						</div>
 						<div id=player_control_cont>
-							<button id="cloneplayer_btn" class="cloneplayer button_1" onclick="pilot_select:clone_player(element)">
+							<button id="cloneplayer_btn" class="cloneplayer button_1" onclick="controller:clone_player(element)">
 								<span id="cloneplayer_img" class="cloneplayer">
 									<img src="clone-pilot.png" class="psuedo_img"></img>
 								</span>
@@ -69,7 +68,7 @@
 							</button>
 						</div>
 						<div id=player_control_cont>
-							<button id="deleteplayer_btn" class="deleteplayer button_1" onclick="pilot_select:delete_player(element)">
+							<button id="deleteplayer_btn" class="deleteplayer button_1" onclick="controller:delete_player(element)">
 								<span id="deleteplayer_img" class="deleteplayer">
 									<img src="delete-pilot.png" class="psuedo_img"></img>
 								</span>
@@ -83,7 +82,7 @@
 				<div id=player_select>
 					<div id=button_wrapper>
 						<div id=player_commit_cont>
-							<button id="playercommit_btn" class="playercommit button_2" onclick="pilot_select:commit_pressed()">
+							<button id="playercommit_btn" class="playercommit button_2" onclick="controller:commit_pressed()">
 								<span id="playercommit_img" class="playercommit">
 									<img src="select.png" class="psuedo_img"></img>
 								</span>
@@ -93,14 +92,14 @@
 							</button>
 						</div>
 						<div id=arrow_cont>
-							<button id="playernext_btn" class="arrowbuttons button_1" onclick="pilot_select:up_button_pressed()">
+							<button id="playernext_btn" class="arrowbuttons button_1" onclick="controller:up_button_pressed()">
 								<span id="playernext_img" class="arrowbuttons">
 									<img src="arrow-down.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=arrow_cont>
-							<button id="playerprev_btn" class="arrowbuttons button_1"  onclick="pilot_select:down_button_pressed()">
+							<button id="playerprev_btn" class="arrowbuttons button_1"  onclick="controller:down_button_pressed()">
 								<span id="playerprev_img" class="arrowbuttons">
 									<img src="arrow-up.png" class="psuedo_img"></img>
 								</span>

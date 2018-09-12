@@ -3,15 +3,24 @@ local tblUtil = utils.table
 
 local dialogs = require("dialogs")
 
+local class = require("class")
+
 local VALID_MODES = { "single", "multi" }
 
-pilot_select = {
-    selection = nil,
-    elements = {},
-    callsign_input_active = false
-}
+local PilotSelectController = class()
 
-function pilot_select:initialize(document)
+PilotSelectController.MODE_PLAYER_SELECT = 1
+PilotSelectController.MODE_BARRACKS = 2
+
+function PilotSelectController:init()
+    self.selection = nil
+    self.elements = {}
+    self.callsign_input_active = false
+
+    self.mode = PilotSelectController.MODE_PLAYER_SELECT
+end
+
+function PilotSelectController:initialize(document)
     self.document = document
 
     local pilot_ul = document:GetElementById("pilotlist_ul")
@@ -42,9 +51,11 @@ function pilot_select:initialize(document)
         pilot_ul:AppendChild(li_el)
     end
 
-    document:GetElementById("fso_version_info").inner_rml = ba.getVersionString()
-    if last ~= nil then
-        self:selectPilot(last.callsign)
+    if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
+        document:GetElementById("fso_version_info").inner_rml = ba.getVersionString()
+        if last ~= nil then
+            self:selectPilot(last.callsign)
+        end
     end
 
     ui.MainHall.startAmbientSound()
@@ -63,12 +74,14 @@ function pilot_select:initialize(document)
         builder:show(self.document.context)
     end
 
-    if ui.PilotSelect.isAutoselect() then
-        self.document:GetElementById("playercommit_btn"):Click()
+    if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
+        if ui.PilotSelect.isAutoselect() then
+            self.document:GetElementById("playercommit_btn"):Click()
+        end
     end
 end
 
-function pilot_select:create_pilot_li(pilot_name)
+function PilotSelectController:create_pilot_li(pilot_name)
     local li_el = self.document:CreateElement("li")
 
     li_el.inner_rml = pilot_name
@@ -80,7 +93,7 @@ function pilot_select:create_pilot_li(pilot_name)
     return li_el
 end
 
-function pilot_select:selectPilot(pilot)
+function PilotSelectController:selectPilot(pilot)
     if self.selection ~= nil and self.elements[self.selection] ~= nil then
         self.elements[self.selection]:SetPseudoClass("checked", false)
     end
@@ -93,7 +106,7 @@ function pilot_select:selectPilot(pilot)
     end
 end
 
-function pilot_select:commit_pressed()
+function PilotSelectController:commit_pressed()
     local button = self.document:GetElementById("playercommit_btn")
 
     if self.selection == nil then
@@ -121,7 +134,7 @@ function pilot_select:commit_pressed()
     ui.playElementSound(button, "click", "commit")
 end
 
-function pilot_select:set_player_mode(element, mode)
+function PilotSelectController:set_player_mode(element, mode)
     assert(tblUtil.contains(VALID_MODES, mode), "Mode " .. tostring(mode) .. " is not valid!")
 
     if self.current_mode == mode then
@@ -131,16 +144,27 @@ function pilot_select:set_player_mode(element, mode)
         return
     end
 
-    local elements = {
-        {
-            multi = "multiplayer_btn",
-            single = "singleplayer_btn"
-        },
-        {
-            multi = "multiplayer_text",
-            single = "singleplayer_text"
-        },
-    }
+    local elements
+
+    if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
+        elements = {
+            {
+                multi = "multiplayer_btn",
+                single = "singleplayer_btn"
+            },
+            {
+                multi = "multiplayer_text",
+                single = "singleplayer_text"
+            },
+        }
+    else
+        elements = {
+            {
+                multi = "multiplayer_btn",
+                single = "singleplayer_btn"
+            },
+        }
+    end
 
     local is_single = mode == "single"
     self.current_mode = mode
@@ -158,7 +182,7 @@ function pilot_select:set_player_mode(element, mode)
     end
 end
 
-function pilot_select:global_keydown(element, event)
+function PilotSelectController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
 
@@ -166,10 +190,10 @@ function pilot_select:global_keydown(element, event)
     end
 end
 
-function pilot_select:callsign_input_focus_lost()
+function PilotSelectController:callsign_input_focus_lost()
 end
 
-function pilot_select:callsign_input_cancel()
+function PilotSelectController:callsign_input_cancel()
     local input_el = Element.As.ElementFormControlInput(self.document:GetElementById("pilot_name_input"))
     input_el:SetClass("hidden", true) -- Show the element
     input_el.value = ""
@@ -178,7 +202,7 @@ function pilot_select:callsign_input_cancel()
     self.callsign_submit_action = nil
 end
 
-function pilot_select:callsign_keyup(element, event)
+function PilotSelectController:callsign_keyup(element, event)
     if not self.callsign_input_active then
         return
     end
@@ -191,7 +215,7 @@ function pilot_select:callsign_keyup(element, event)
     self:callsign_input_cancel()
 end
 
-function pilot_select:callsign_input_change(event)
+function PilotSelectController:callsign_input_change(event)
     if not self.callsign_input_active then
         -- Only process enter events when we are actually inputting something
         return
@@ -206,7 +230,7 @@ function pilot_select:callsign_input_change(event)
     self:callsign_input_cancel()
 end
 
-function pilot_select:begin_callsign_input(end_action)
+function PilotSelectController:begin_callsign_input(end_action)
     local input_el = self.document:GetElementById("pilot_name_input")
     input_el:SetClass("hidden", false) -- Show the element
     input_el:Focus()
@@ -218,7 +242,7 @@ function pilot_select:begin_callsign_input(end_action)
     self.callsign_submit_action = end_action
 end
 
-function pilot_select:finish_pilot_create(element, callsign, clone_from)
+function PilotSelectController:finish_pilot_create(element, callsign, clone_from)
     local result
     if clone_from ~= nil then
         result = ui.PilotSelect.createPilot(callsign, self.current_mode == "multi", clone_from)
@@ -239,7 +263,7 @@ function pilot_select:finish_pilot_create(element, callsign, clone_from)
     self:selectPilot(callsign)
 end
 
-function pilot_select:actual_pilot_create(element, callsign, clone_from)
+function PilotSelectController:actual_pilot_create(element, callsign, clone_from)
     if tblUtil.contains(self.pilots, callsign, function(left, right) return left:lower() == right:lower() end) then
         local builder = dialogs.new()
         builder:title(ba.XSTR("Warning", -1))
@@ -258,7 +282,7 @@ function pilot_select:actual_pilot_create(element, callsign, clone_from)
     self:finish_pilot_create(element, callsign, clone_from)
 end
 
-function pilot_select:create_player(element)
+function PilotSelectController:create_player(element)
     if #self.pilots >= ui.PilotSelect.MAX_PILOTS then
         ui.playElementSound(element, "click", "error")
         return
@@ -269,7 +293,7 @@ function pilot_select:create_player(element)
     end)
 end
 
-function pilot_select:clone_player(element)
+function PilotSelectController:clone_player(element)
     if #self.pilots >= ui.PilotSelect.MAX_PILOTS then
         ui.playElementSound(element, "click", "error")
         return
@@ -286,7 +310,7 @@ function pilot_select:clone_player(element)
     end)
 end
 
-function pilot_select:delete_player(element)
+function PilotSelectController:delete_player(element)
     if self.selection == nil then
         return
     end
@@ -332,7 +356,7 @@ function pilot_select:delete_player(element)
     end)
 end
 
-function pilot_select:select_first()
+function PilotSelectController:select_first()
     if #self.pilots <= 0 then
         self:selectPilot(nil)
         return
@@ -341,7 +365,7 @@ function pilot_select:select_first()
     self:selectPilot(self.pilots[1])
 end
 
-function pilot_select:up_button_pressed()
+function PilotSelectController:up_button_pressed()
     if self.selection == nil then
         self:select_first()
         return
@@ -356,7 +380,7 @@ function pilot_select:up_button_pressed()
     self:selectPilot(self.pilots[idx])
 end
 
-function pilot_select:down_button_pressed()
+function PilotSelectController:down_button_pressed()
     if self.selection == nil then
         self:select_first()
         return
@@ -370,3 +394,5 @@ function pilot_select:down_button_pressed()
 
     self:selectPilot(self.pilots[idx])
 end
+
+return PilotSelectController
