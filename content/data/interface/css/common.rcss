@@ -10,6 +10,12 @@ body
 	color: #7b7b7b;
 }
 
+.window_title
+{
+	position: absolute;
+	top: 0;
+}
+
 .button_text
 {
 	text-align: center;

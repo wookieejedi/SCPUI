@@ -107,10 +107,8 @@ div#pilot_select img
 	height: auto;
 }
 
-div#choosepilot
+.window_title
 {
-	position: absolute;
-	top: 0;
 	margin-top: 4%;
 	margin-left: 4%;
 }

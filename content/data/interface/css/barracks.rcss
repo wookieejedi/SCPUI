@@ -56,10 +56,8 @@ div#pilot_select img
 	height: auto;
 }
 
-div#choosepilot
+div#pilot_select_title
 {
-	position: absolute;
-	top: 0;
 	margin-top: 4%;
 	margin-left: 4%;
 }
@@ -416,6 +414,85 @@ div#pilot_head_select img
 	height: auto;
 }
 
+div#pilot_head_images
+{
+	position: absolute;
+	top: 20%;
+	margin: auto;
+	width: 60%;
+}
+
+div#pilot_head_counter
+{
+	position: absolute;
+	bottom: 10%;
+	left: 10%;
+}
+
+/*LR Arrow Buttons*/
+
+div#lr_arrows_wrapper
+{
+	position: absolute;
+	bottom: 0;
+	margin-right: 1%;
+}
+
+div#lr_arrows_cont
+{
+	float: right;
+	width: 12%;
+	height: auto;
+	margin-right: 5%;
+
+}
+
+.lr_arrows
+{
+	display: block;
+	max-width: 108px;
+	max-height: 119px;
+	width: 100%;
+	height: auto;
+
+}
+
+#arrow_left_img
+{
+	background-decorator: image;
+	background-image: arrow-left.png;
+}
+
+#arrow_right_img
+{
+	background-decorator: image;
+	background-image: arrow-right.png;
+}
+
+button#arrow_left_btn:hover #arrow_left_img
+{
+	background-decorator: image;
+	background-image: arrow-left-h.png;
+}
+
+button#arrow_right_btn:hover #arrow_right_img
+{
+	background-decorator: image;
+	background-image: arrow-right-h.png;
+}
+
+button#arrow_left_btn:active #arrow_left_img
+{
+	background-decorator: image;
+	background-image: arrow-left-o.png;
+}
+
+button#arrow_right_btn:active #arrow_right_img
+{
+	background-decorator: image;
+	background-image: arrow-right-o.png;
+}
+
 /*Pilot Squad Select Window Elements*/
 
 div#pilot_squad_select
@@ -434,6 +511,32 @@ div#pilot_squad_select img
 	max-height: 689px;
 	width: 100%;
 	height: auto;
+}
+
+div#pilot_squad_images
+{
+	position: absolute;
+	top: 15%;
+	margin-left: 15%;
+	width: 60%;
+}
+
+/*LR Arrow Buttons*/
+
+div#lr_arrows_wrapper_2
+{
+	position: absolute;
+	bottom: 0;
+	margin-right: 1%;
+}
+
+div#lr_arrows_cont_2
+{
+	float: right;
+	width: 15%;
+	height: auto;
+	margin-right: 7%;
+
 }
 
 /*Pilot Info Window Elements*/
@@ -456,6 +559,126 @@ div#pilot_info img
 	height: auto;
 }
 
+div#pilot_info_title
+{
+	margin-top: 2%;
+	margin-left: 4%;
+}
+
+div#pilot_stats_text
+{
+	position: absolute;
+	top: 0;
+	margin-top: 10%;
+	margin-left: 13%;
+	margin-right: 5%;
+	overflow: auto;
+	height: 52%;
+}
+
+/*Scroll Buttons*/
+
+div#stats_scroll_wrapper
+{
+	position: absolute;
+	top: 16%;
+}
+
+div#stats_scroll_cont
+{
+	width: 8%;
+	height: auto;
+}
+
+.stats_scroll_btns
+{
+	display: block;
+	max-width: 107px;
+	max-height: 121px;
+	width: 100%;
+	height: auto;
+
+}
+
+#scroll_up_img
+{
+	background-decorator: image;
+	background-image: arrow-dbl-up.png;
+}
+
+#scroll_down_img
+{
+	background-decorator: image;
+	background-image: arrow-dbl-down.png;
+}
+
+button#scroll_up_btn:hover #scroll_up_img
+{
+	background-decorator: image;
+	background-image: arrow-dbl-up-h.png;
+}
+
+button#scroll_down_btn:hover #scroll_down_img
+{
+	background-decorator: image;
+	background-image: arrow-dbl-down-h.png;
+}
+
+button#scroll_up_btn:active #scroll_up_img
+{
+	background-decorator: image;
+	background-image: arrow-dbl-up-o.png;
+}
+
+button#scroll_down_btn:active #scroll_down_img
+{
+	background-decorator: image;
+	background-image: arrow-dbl-down-o.png;
+}
+
+/*Medals Button*/
+
+div#medals_btn_wrapper
+{
+	position: absolute;
+	bottom: 3%;
+	margin-right: 0.3%;
+}
+
+div#medals_btn_cont
+{
+	width: 8%;
+	height: auto;
+	float: right;
+}
+
+.medals
+{
+	display: block;
+	max-width: 142px;
+	max-height: 179px;
+	width: 100%;
+	height: auto;
+
+}
+
+#medals_img
+{
+	background-decorator: image;
+	background-image: medals.png;
+}
+button#medals_btn:hover #medals_img
+{
+	background-decorator: image;
+	background-image: medals-h.png;
+}
+
+button#medals_btn:active #medals_img
+{
+	background-decorator: image;
+	background-image: medals-o.png;
+}
+
 /*Bottom Panel Elements*/
 
 div#bottom_panel_wrapper
@@ -472,7 +695,6 @@ div#bottom_panel_a
 {
 	width: 60%;
 	height: auto;
-	overflow: hidden;
 	position: relative;
 	float: right;
 }
@@ -491,7 +713,6 @@ div#bottom_panel_b
 	width: 40%;
 	height: auto;
 	margin-top: 1%;
-	overflow: hidden;
 	position: relative;
 	float: left;
 }
@@ -504,4 +725,81 @@ div#bottom_panel_b img
 	width: 100%;
 	height: auto;
 	position: absolute;
+}
+
+div#b_panel_wrapper
+{
+	position: absolute;
+	bottom: 0;
+}
+
+/*Help Button*/
+
+div#help_cont
+{
+	width: 8%;
+	height: auto;
+
+}
+
+.help
+{
+	display: block;
+	max-width: 104px;
+	max-height: 114px;
+	width: 100%;
+	height: auto;
+
+}
+
+#help_img
+{
+	background-decorator: image;
+	background-image: help.png;
+}
+button#help_btn:hover #help_img
+{
+	background-decorator: image;
+	background-image: help-h.png;
+}
+
+button#help_btn:active #help_img
+{
+	background-decorator: image;
+	background-image: help-o.png;
+}
+
+/*Options Button*/
+
+div#options_cont
+{
+	width: 8%;
+	height: auto;
+}
+
+.options
+{
+	display: block;
+	max-width: 132px;
+	max-height: 120px;
+	width: 100%;
+	height: auto;
+
+}
+
+#options_img
+{
+	background-decorator: image;
+	background-image: options.png;
+}
+button#options_btn:hover #options_img
+{
+	background-decorator: image;
+	background-image: options-h.png;
+}
+
+button#options_btn:active #options_img
+{
+	background-decorator: image;
+	background-image: options-o.png;
 }

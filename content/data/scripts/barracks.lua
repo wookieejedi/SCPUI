@@ -147,7 +147,7 @@ function pilot_select:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
 
-        ba.postGameEvent(ba.GameEvents["GS_EVENT_QUIT_GAME"])
+        ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
     end
 end
 

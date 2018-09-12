@@ -12,7 +12,7 @@
 	<body onload="pilot_select:initialize(document)" onkeyup="pilot_select:global_keydown(element, event)">
 		<div id="upper_windows" class="window_container">
 			<div id=pilot_select>
-				<div id=choosepilot>
+				<div id="pilot_select_title" class="window_title">
 					<p>Barracks</p>
 				</div>
 				<div id=pilotlist>
@@ -111,14 +111,86 @@
 				<img src="pilot-select-window.png"></img>
 			</div>
 			<div id=pilot_head_select>
+				<div id=pilot_head_images>
+					<img src="vas0001.pcx"></img>
+				</div>
+				<div id=pilot_head_counter>
+					<p>1 of N</p>
+				</div>
+				<div id=lr_arrows_wrapper>
+					<div id=lr_arrows_cont>
+						<button id="arrow_right_btn" class="lr_arrows button_1">
+							<span id="arrow_right_img" class="lr_arrows">
+								<img src="arrow-right.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+					<div id=lr_arrows_cont>
+						<button id="arrow_left_btn" class="lr_arrows button_1">
+							<span id="arrow_left_img" class="lr_arrows">
+								<img src="arrow-left.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+				</div>
 				<img src="pilot-head-window.png"></img>
 			</div>
 		</div>
 		<div id="lower_windows" class="window_container">
 			<div id=pilot_info>
+				<div id="pilot_info_title" class="window_title">
+					<p>Pilot Stats</p>
+				</div>
+				<div id=pilot_stats_text>
+					<p>Text Goes Here</p>
+				</div>
+				<div id=stats_scroll_wrapper>
+					<div id=stats_scroll_cont>
+						<button id="scroll_up_btn" class="stats_scroll_btns button_1">
+							<span id="scroll_up_img" class="stats_scroll_btns">
+								<img src="arrow-dbl-up.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+					<div id=stats_scroll_cont>
+						<button id="scroll_down_btn" class="stats_scroll_btns button_1">
+							<span id="scroll_down_img" class="stats_scroll_btns">
+								<img src="arrow-dbl-down.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+				</div>
+				<div id=medals_btn_wrapper>
+					<div id=medals_btn_cont>
+						<button id="medals_btn" class="medals button_1" onclick="ba.postGameEvent(ba.GameEvents['GS_STATE_VIEW_MEDALS'])">
+							<span id="medals_img" class="medals">
+								<img src="medals.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+				</div>
 				<img src="pilot-info-window.png"></img>
 			</div>
 			<div id=pilot_squad_select>
+				<div id=pilot_squad_images>
+					<img src="lion1.pcx"></img>
+				</div>
+				<div id=lr_arrows_wrapper_2>
+					<div id=lr_arrows_cont_2>
+						<button id="arrow_right_btn" class="lr_arrows button_1">
+							<span id="arrow_right_img" class="lr_arrows">
+								<img src="arrow-right.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+					<div id=lr_arrows_cont_2>
+						<button id="arrow_left_btn" class="lr_arrows button_1">
+							<span id="arrow_left_img" class="lr_arrows">
+								<img src="arrow-left.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+				</div>
 				<img src="pilot-squad-window.png"></img>
 			</div>
 		</div>
@@ -130,6 +202,22 @@
 				<img src="bottom-panel-a.png"></img>
 			</div>
 			<div id=bottom_panel_b>
+				<div id=b_panel_wrapper>
+					<div id=help_cont>
+						<button id="help_btn" class="help button_1">
+							<span id="help_img" class="help">
+								<img src="help.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+					<div id=options_cont>
+						<button id="options_btn" class="options button_1">
+							<span id="options_img" class="options">
+								<img src="options.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+				</div>
 				<img src="bottom-panel-b.png"></img>
 			</div>
 		</div>

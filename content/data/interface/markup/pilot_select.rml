@@ -11,7 +11,7 @@
 	</head>
 	<body onload="pilot_select:initialize(document)" onkeyup="pilot_select:global_keydown(element, event)">
 		<div id=pilot_select>
-			<div id=choosepilot>
+			<div class=window_title>
 				<p>XSTR("Choose Pilot", -1)</p>
 			</div>
 			<div id=pilotlist>
