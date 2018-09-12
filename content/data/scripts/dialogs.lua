@@ -49,7 +49,7 @@ local function initialize_buttons(document, properties, finish_func)
 end
 
 local function show_dialog(context, properties, finish_func)
-    local dialog_doc = TestContext:LoadDocument("data/interface/markup/dialog.rml")
+    local dialog_doc = context:LoadDocument("data/interface/markup/dialog.rml")
 
     dialog_doc:GetElementById("title_container").inner_rml = properties.title_string
     dialog_doc:GetElementById("text_container").inner_rml = properties.text_string
