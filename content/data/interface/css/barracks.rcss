@@ -19,65 +19,40 @@ body
 	padding-top:8%;
 }
 
-div#logo_wide
+div#logo
 {
 	position: absolute;
-	bottom: 4%;
-	margin: auto;
-	width: 70%;
+	bottom: 7%;
+	right: 13%;
+	width: 40%;
 	height: auto;
 	overflow: hidden;
 	font-size: 10px;
 }
 
-div#logo_wide img
+div#logo img
 {
 	display: block;
-	max-width: 2819px;
-	max-height: 626px;
+	max-width: 1200px;
+	max-height: 702px;
 	width: 100%;
 	height: auto;
 }
 
-div#copyright_info
+.window_container
 {
-	position: absolute;
-	bottom: 1%;
-	margin: auto;
-	width: 70%;
-	width: 70%;
-	height: auto;
-	overflow: hidden;
-	font-size: 10px;
-	text-align: center;
+	margin: 1%;
 }
 
-.player_type_text
-{
-	color: white;
-	display: none;
-	text-align: center;
-	margin: 5%;
-}
-
-div#singleplayer_text:checked
-{
-	display: block;
-}
-
-div#multiplayer_text:checked
-{
-	display: block;
-}
+/*Pilot Select Window Elements*/
 
 div#pilot_select
 {
-	margin: auto;
-	margin-top: 15%;
 	width: 50%;
 	height: auto;
 	overflow: hidden;
 	position: relative;
+	float: left;
 }
 
 div#pilot_select img
@@ -95,6 +70,32 @@ div#choosepilot
 	top: 0;
 	margin-top: 4%;
 	margin-left: 4%;
+}
+
+div#pilotlist
+{
+	position: absolute;
+	top: 0;
+	margin-top: 23%;
+	margin-left: 2%;
+	margin-right: 5%;
+	color: white;
+	overflow: auto;
+	height: 52%;
+}
+
+.pilotlist_element
+{
+	display: block;
+	color: #7b7b7b;
+}
+.pilotlist_element:hover
+{
+	color: #abbbab;
+}
+.pilotlist_element:checked
+{
+	color: #c9e4c9;
 }
 
 div#player_select
@@ -403,28 +404,112 @@ button#deleteplayer_btn:active #deleteplayer_img
 	background-image: delete-pilot-o.png;
 }
 
-div#pilotlist
+/*Pilot Head Select Window Elements*/
+
+div#pilot_head_select
 {
-	position: absolute;
-	top: 0;
-	margin-top: 23%;
-	margin-left: 2%;
-	margin-right: 5%;
-	color: white;
-	overflow: auto;
-	height: 52%;
+	width: 25%;
+	height: auto;
+	overflow: hidden;
+	position: relative;
+	float: right;
 }
 
-.pilotlist_element
+div#pilot_head_select img
 {
 	display: block;
-	color: #7b7b7b;
+	max-width: 923px;
+	max-height: 768px;
+	width: 100%;
+	height: auto;
 }
-.pilotlist_element:hover
+
+/*Pilot Squad Select Window Elements*/
+
+div#pilot_squad_select
 {
-	color: #abbbab;
+	width: 18%;
+	height: auto;
+	overflow: hidden;
+	position: relative;
+	float: right;
 }
-.pilotlist_element:checked
+
+div#pilot_squad_select img
 {
-	color: #c9e4c9;
+	display: block;
+	max-width: 710px;
+	max-height: 689px;
+	width: 100%;
+	height: auto;
+}
+
+/*Pilot Info Window Elements*/
+
+div#pilot_info
+{
+	width: 45%;
+	height: auto;
+	overflow: hidden;
+	position: relative;
+	float: left;
+}
+
+div#pilot_info img
+{
+	display: block;
+	max-width: 1771px;
+	max-height: 1356px;
+	width: 100%;
+	height: auto;
+}
+
+/*Bottom Panel Elements*/
+
+div#bottom_panel_wrapper
+{
+	width: 15%;
+	height: auto;
+	overflow: hidden;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+div#bottom_panel_a
+{
+	width: 60%;
+	height: auto;
+	overflow: hidden;
+	position: relative;
+	float: right;
+}
+
+div#bottom_panel_a img
+{
+	display: block;
+	max-width: 304px;
+	max-height: 261px;
+	width: 100%;
+	height: auto;
+}
+
+div#bottom_panel_b
+{
+	width: 40%;
+	height: auto;
+	margin-top: 1%;
+	overflow: hidden;
+	position: relative;
+	float: left;
+}
+
+div#bottom_panel_b img
+{
+	display: block;
+	max-width: 153px;
+	max-height: 236px;
+	width: 100%;
+	height: auto;
+	position: absolute;
 }

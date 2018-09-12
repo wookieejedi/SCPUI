@@ -40,11 +40,6 @@ function pilot_select:initialize(document)
         pilot_ul:AppendChild(li_el)
     end
 
-    document:GetElementById("fso_version_info").inner_rml = ba.getVersionString()
-    if last ~= nil then
-        self:selectPilot(last.callsign)
-    end
-
     ui.MainHall.startAmbientSound()
 
     if ui.PilotSelect.WarningCount > 10 or ui.PilotSelect.ErrorCount > 0 then
@@ -129,10 +124,6 @@ function pilot_select:set_player_mode(element, mode)
         {
             multi = "multiplayer_btn",
             single = "singleplayer_btn"
-        },
-        {
-            multi = "multiplayer_text",
-            single = "singleplayer_text"
         },
     }
 

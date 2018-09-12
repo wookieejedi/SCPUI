@@ -52,6 +52,32 @@ div#copyright_info
 	text-align: center;
 }
 
+div#pilotlist
+{
+	position: absolute;
+	top: 0;
+	margin-top: 23%;
+	margin-left: 2%;
+	margin-right: 5%;
+	color: white;
+	overflow: auto;
+	height: 52%;
+}
+
+.pilotlist_element
+{
+	display: block;
+	color: #7b7b7b;
+}
+.pilotlist_element:hover
+{
+	color: #abbbab;
+}
+.pilotlist_element:checked
+{
+	color: #c9e4c9;
+}
+
 .player_type_text
 {
 	color: white;
@@ -401,30 +427,4 @@ button#deleteplayer_btn:active #deleteplayer_img
 {
 	background-decorator: image;
 	background-image: delete-pilot-o.png;
-}
-
-div#pilotlist
-{
-	position: absolute;
-	top: 0;
-	margin-top: 23%;
-	margin-left: 2%;
-	margin-right: 5%;
-	color: white;
-	overflow: auto;
-	height: 52%;
-}
-
-.pilotlist_element
-{
-	display: block;
-	color: #7b7b7b;
-}
-.pilotlist_element:hover
-{
-	color: #abbbab;
-}
-.pilotlist_element:checked
-{
-	color: #c9e4c9;
 }
