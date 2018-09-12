@@ -36,6 +36,12 @@ div#logo img
 	margin: 1%;
 }
 
+#lower_windows
+{
+	position: absolute;
+	bottom: 0;
+}
+
 /*Pilot Select Window Elements*/
 
 div#pilot_select
