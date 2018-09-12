@@ -165,6 +165,9 @@
 							<span id="medals_img" class="medals">
 								<img src="medals.png" class="psuedo_img"></img>
 							</span>
+							<span class="pos button_text_right">
+								<p>Medals</p>
+							</span>
 						</button>
 					</div>
 				</div>
@@ -204,6 +207,9 @@
 							<span id="accept_img" class="accept">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
+							<span class="neg button_text_top">
+								<p>Accept</p>
+							</span>
 						</button>
 					</div>
 				</div>
@@ -216,12 +222,18 @@
 							<span id="help_img" class="help">
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
+							<span class="pos button_text_left">
+								<p>Help</p>
+							</span>
 						</button>
 					</div>
 					<div id=options_cont>
 						<button id="options_btn" class="options button_1">
 							<span id="options_img" class="options">
 								<img src="options.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_left">
+								<p>Options</p>
 							</span>
 						</button>
 					</div>

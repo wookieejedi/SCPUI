@@ -21,6 +21,44 @@ body
 	text-align: center;
 }
 
+.button_text_right
+{
+	text-align: left;
+}
+
+.button_text_right p
+{
+	display: block;
+	margin-left: 140%;
+	margin-top: -50%;
+	position: absolute;
+}
+
+.button_text_left
+{
+	text-align: right;
+}
+
+.button_text_left p
+{
+	display: block;
+	margin-left: -140%;
+	margin-top: -50%;
+	position: absolute;
+}
+
+.button_text_top
+{
+	text-align: center;
+}
+
+.button_text_top p
+{
+	display: block;
+	margin-top: -130%;
+	position: absolute;
+}
+
 .psuedo_img
 {
 	z-index: -1;
