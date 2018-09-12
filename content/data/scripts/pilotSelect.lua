@@ -62,6 +62,10 @@ function pilot_select:initialize(document)
         builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1))
         builder:show(self.document.context)
     end
+
+    if ui.PilotSelect.isAutoselect() then
+        self.document:GetElementById("playercommit_btn"):Click()
+    end
 end
 
 function pilot_select:create_pilot_li(pilot_name)
