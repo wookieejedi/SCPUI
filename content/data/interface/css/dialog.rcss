@@ -16,11 +16,6 @@
 	z-index: 4;
 }
 
-.button_text_left p
-{
-	padding-top: 20%;
-}
-
 .button_positive div
 {
 	background-decorator: image;
