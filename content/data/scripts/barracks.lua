@@ -3,6 +3,8 @@ local tblUtil = utils.table
 
 local dialogs = require("dialogs")
 
+local class = require("class")
+
 local PilotSelectController = require("pilotSelect")
 
 local BarracksScreenController = class(PilotSelectController)
