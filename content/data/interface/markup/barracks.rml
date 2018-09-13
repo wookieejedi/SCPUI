@@ -44,8 +44,14 @@
 							</button>
 						</div>
 					</div>
+					<div class="tooltip">
+						<span class="tooltiptext">Switch between Single and Multiplayer modes</span>
+					</div>
 				</div>
 				<div id=player_control>
+					<div class="tooltip">
+						<span class="tooltiptext">Select, Create, Clone, & Delete Pilots</span>
+					</div>
 					<div id="player_control_wrapper">
 						<div id=player_control_cont>
 							<button id="createplayer_btn" class="createplayer button_1" onclick="controller:create_player(element)">
@@ -131,6 +137,9 @@
 							</span>
 						</button>
 					</div>
+					<div class="tooltip">
+						<span class="tooltiptext">Choose Pilot head image</span>
+					</div>
 				</div>
 				<img src="pilot-head-window.png"></img>
 			</div>
@@ -157,6 +166,9 @@
 								<img src="arrow-dbl-down.png" class="psuedo_img"></img>
 							</span>
 						</button>
+					</div>
+					<div class="tooltip">
+						<span class="tooltiptext">View pilot stats</span>
 					</div>
 				</div>
 				<div id=medals_btn_wrapper>
@@ -191,6 +203,9 @@
 								<img src="arrow-left.png" class="psuedo_img"></img>
 							</span>
 						</button>
+					</div>
+					<div class="tooltip">
+						<span class="tooltiptext">Choose Pilot squad (multiplayer mode only)</span>
 					</div>
 				</div>
 				<img src="pilot-squad-window.png"></img>

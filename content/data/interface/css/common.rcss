@@ -115,6 +115,34 @@ button:checked .pos
 	mouseover-sound: 17;
 }
 
+/*Tooltips*/
+/*Tooltip divs need to be a child of a parent with absolute positioning!*/
+
+.tooltip
+{
+	position: relative;
+	display: inline-block;
+}
+
+.tooltip .tooltiptext
+{
+	visibility: hidden;
+	background-color: black;
+	color: white;
+	text-align: center;
+	padding: 5px 0;
+	border-color: white;
+	border-width: 1px;
+	position: absolute;
+	width: 100%;
+	z-index: 5;
+}
+
+/*div:hover .tooltiptext
+{
+	visibility: visible;
+}*/
+
 /*Scrollbars*/
 
 scrollbarvertical

@@ -862,3 +862,38 @@ button#options_btn:active #options_img
 	background-decorator: image;
 	background-image: options-o.png;
 }
+/*Tooltip placements*/
+
+div#player_type_select .tooltiptext
+{
+	width: 50%;
+	right: 0;
+}
+
+div#player_control .tooltiptext
+{
+	width: 50%;
+	left: 2%;
+	bottom: 0;
+}
+
+div#pilot_info .tooltiptext
+{
+	width: 25%;
+	left: 20%;
+	margin-top: 45%;
+}
+
+div#lr_arrows_wrapper .tooltiptext
+{
+	width: 50%;
+	left: 15%;
+	bottom: 0;
+}
+
+div#lr_arrows_wrapper_2 .tooltiptext
+{
+	width: 70%;
+	left: 15%;
+	bottom: 0;
+}
