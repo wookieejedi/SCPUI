@@ -33,11 +33,11 @@ function RocketUiSystem:getDef(state)
 end
 
 function RocketUiSystem:stateStart()
-    if not self:hasOverrideForCurrentState() then
+    if not self:hasOverrideForState(hv.NewState) then
         return
     end
 
-    local def = self:getDef(ba.getCurrentGameState().Name)
+    local def = self:getDef(hv.NewState.Name)
     def.document = self.context:LoadDocument(def.markup)
     def.document:Show()
 
@@ -54,12 +54,11 @@ function RocketUiSystem:stateFrame()
 end
 
 function RocketUiSystem:stateEnd()
-    ba.print("End state: " .. ba.getCurrentGameState().Name .. "\n")
-    if not self:hasOverrideForCurrentState() then
+    if not self:hasOverrideForState(hv.OldState) then
         return
     end
 
-    local def = self:getDef(ba.getCurrentGameState().Name)
+    local def = self:getDef(hv.OldState.Name)
 
     def.document:Close()
     def.document = nil
@@ -67,8 +66,12 @@ function RocketUiSystem:stateEnd()
     ui.disableInput()
 end
 
+function RocketUiSystem:hasOverrideForState(state)
+    return self:getDef(state.Name) ~= nil
+end
+
 function RocketUiSystem:hasOverrideForCurrentState()
-    return self:getDef(ba.getCurrentGameState().Name) ~= nil
+    return self:hasOverrideForState(ba.getCurrentGameState())
 end
 
 RocketUiSystem:init()

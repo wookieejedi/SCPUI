@@ -10,7 +10,7 @@ if RocketUiSystem == nil then
 end
 RocketUiSystem:stateStart()
 ]
-+Override: RocketUiSystem ~= nil and RocketUiSystem:hasOverrideForCurrentState()
++Override: RocketUiSystem ~= nil and RocketUiSystem:hasOverrideForState(hv.NewState)
 
 $On Frame:
 [
@@ -28,6 +28,6 @@ if RocketUiSystem == nil then
 end
 RocketUiSystem:stateEnd()
 ]
-+Override: RocketUiSystem ~= nil and RocketUiSystem:hasOverrideForCurrentState()
++Override: RocketUiSystem ~= nil and RocketUiSystem:hasOverrideForState(hv.OldState)
 
 #End
