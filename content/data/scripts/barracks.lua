@@ -15,14 +15,15 @@ end
 
 function BarracksScreenController:initialize(document)
     self.pilotImages = ui.Barracks.listPilotImages()
+    self.squadImages = ui.Barracks.listSquadImages()
 
     PilotSelectController.initialize(self, document)
 end
 
 function BarracksScreenController:changeImage(new_img)
     if new_img == nil then
-        document:GetElementById("pilot_head_text_el").inner_rml = ""
-        document:GetElementById("pilot_head_img_el"):SetAttribute("src", "")
+        self.document:GetElementById("pilot_head_text_el").inner_rml = ""
+        self.document:GetElementById("pilot_head_img_el"):SetAttribute("src", "")
         return
     end
 
@@ -140,7 +141,7 @@ function BarracksScreenController:initialize_stats_text()
 
     self:add_heading_element(text_container, "Kills by Ship Type")
     local score_from_kills = 0
-    for i=1,#tb.ShipClasses do
+    for i = 1, #tb.ShipClasses do
         local ship_cls = tb.ShipClasses[i]
         local kills = stats:getShipclassKills(ship_cls)
 
@@ -152,15 +153,23 @@ function BarracksScreenController:initialize_stats_text()
     self:add_value_element(text_container, "Score from kills only:", score_from_kills)
 end
 
-function BarracksScreenController:pilotSelected(pilot)
+function BarracksScreenController:selectPilot(pilot)
+    PilotSelectController.selectPilot(self, pilot)
+
     if self.selectedPilot ~= nil then
         self.selectedPilot:loadCampaignSavefile()
     end
 
     if pilot == nil then
         self:changeImage(nil)
+        self:changeSquad(nil)
     else
         self:changeImage(self.selectedPilot.ImageFilename)
+        if self.current_mode == "multi" then
+            self:changeSquad(self.selectedPilot.MultiSquadFilename)
+        else
+            self:changeSquad(self.selectedPilot.SingleSquadFilename)
+        end
     end
 
     self:initialize_stats_text()
@@ -187,11 +196,102 @@ function BarracksScreenController:commit_pressed(element)
     ui.Barracks.acceptPilot(self.selectedPilot)
 end
 
-function BarracksScreenController:medals_button_clicked(element)
+function BarracksScreenController:medals_button_clicked()
     if self.selectedPilot ~= nil then
         ba.savePlayer(self.selectedPilot) -- Save the player in case there were changes
     end
     ba.postGameEvent(ba.GameEvents['GS_EVENT_VIEW_MEDALS'])
+end
+
+function BarracksScreenController:options_button_clicked()
+    if self.selectedPilot ~= nil then
+        ba.savePlayer(self.selectedPilot) -- Save the player in case there were changes
+    end
+    ba.postGameEvent(ba.GameEvents['GS_EVENT_OPTIONS_MENU'])
+end
+
+function BarracksScreenController:set_player_mode(element, mode)
+    if not PilotSelectController.set_player_mode(self, element, mode) then
+        return false
+    end
+
+    local is_multi = mode == "multi"
+
+    ba.MultiplayerMode = is_multi
+    if self.selectedPilot then
+        self.selectedPilot.IsMultiplayer = is_multi
+    end
+
+    self.document:GetElementById("squad_select_right_btn"):SetClass("hidden", not is_multi)
+    self.document:GetElementById("squad_select_left_btn"):SetClass("hidden", not is_multi)
+
+    ba.print(self.selectedPilot.MultiSquadFilename .. "\n")
+    ba.print(self.selectedPilot.SingleSquadFilename .. "\n")
+    ba.print(self.current_mode .. "\n")
+    if self.current_mode == "multi" then
+        self:changeSquad(self.selectedPilot.MultiSquadFilename)
+    else
+        self:changeSquad(self.selectedPilot.SingleSquadFilename)
+    end
+
+    return true
+end
+
+function BarracksScreenController:changeSquad(new_img)
+    if new_img == nil then
+        self.document:GetElementById("pilot_squad_text_el").inner_rml = ""
+        self.document:GetElementById("pilot_squad_img_el"):SetAttribute("src", "")
+        return
+    end
+
+    new_img = utils.strip_extension(new_img) -- The image may have an extension
+    local index = tblUtil.ifind(self.squadImages, new_img)
+
+    local text_el = self.document:GetElementById("pilot_squad_text_el")
+    text_el.inner_rml = string.format("%d of %d", index, #self.squadImages)
+
+    self.document:GetElementById("pilot_squad_img_el"):SetAttribute("src", new_img)
+end
+
+function BarracksScreenController:change_squad_index(element, diff)
+    if self.selection == nil or #self.squadImages <= 0 then
+        ui.playElementSound(element, "click", "error")
+        return
+    end
+
+    local squad
+    if self.current_mode == "multi" then
+        squad = self.selectedPilot.MultiSquadFilename
+    else
+        squad = self.selectedPilot.SingleSquadFilename
+    end
+
+    local current_img = utils.strip_extension(squad) -- The image may have an extension
+    local index = tblUtil.ifind(self.squadImages, current_img)
+
+    index = index + diff
+    if index > #self.squadImages then
+        index = 1
+    elseif index < 1 then
+        index = #self.squadImages
+    end
+
+    if self.current_mode == "multi" then
+        self.selectedPilot.MultiSquadFilename = self.squadImages[index]
+    else
+        self.selectedPilot.SingleSquadFilename = self.squadImages[index]
+    end
+    self:changeSquad(self.squadImages[index])
+
+    ui.playElementSound(element, "click", "success")
+end
+
+function BarracksScreenController:next_squad_pressed(element)
+    self:change_squad_index(element, 1)
+end
+
+function BarracksScreenController:prev_squad_pressed(element)
+    self:change_squad_index(element, -1)
 end
 
 return BarracksScreenController

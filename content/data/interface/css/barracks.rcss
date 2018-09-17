@@ -463,37 +463,37 @@ div#lr_arrows_cont
 
 }
 
-#arrow_left_img
+.arrow_left_img
 {
 	background-decorator: image;
 	background-image: arrow-left.png;
 }
 
-#arrow_right_img
+.arrow_right_img
 {
 	background-decorator: image;
 	background-image: arrow-right.png;
 }
 
-button#arrow_left_btn:hover #arrow_left_img
+button.arrow_left_btn:hover .arrow_left_img
 {
 	background-decorator: image;
 	background-image: arrow-left-h.png;
 }
 
-button#arrow_right_btn:hover #arrow_right_img
+button.arrow_right_btn:hover .arrow_right_img
 {
 	background-decorator: image;
 	background-image: arrow-right-h.png;
 }
 
-button#arrow_left_btn:active #arrow_left_img
+button.arrow_left_btn:active .arrow_left_img
 {
 	background-decorator: image;
 	background-image: arrow-left-o.png;
 }
 
-button#arrow_right_btn:active #arrow_right_img
+button.arrow_right_btn:active .arrow_right_img
 {
 	background-decorator: image;
 	background-image: arrow-right-o.png;
@@ -525,6 +525,13 @@ div#pilot_squad_images
 	top: 15%;
 	margin-left: 15%;
 	width: 60%;
+}
+
+div#pilot_squad_counter
+{
+	position: absolute;
+	bottom: 10%;
+	left: 10%;
 }
 
 /*LR Arrow Buttons*/

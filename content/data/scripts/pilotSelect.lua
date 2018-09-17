@@ -34,23 +34,6 @@ function PilotSelectController:initialize(document)
             table.remove(pilots, index)
             table.insert(pilots, 1, current)
         end
-
-        local pilot = ba.loadPlayer(current)
-        if not pilot:isValid() then
-            self:set_player_mode(nil, "single")
-        else
-            local is_multi
-            if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
-                is_multi = pilot.WasMultiplayer
-            else
-                is_multi = pilot.IsMultiplayer
-            end
-            if is_multi then
-                self:set_player_mode(nil, "multi")
-            else
-                self:set_player_mode(nil, "single")
-            end
-        end
     else
         self:set_player_mode(nil, "single")
     end
@@ -68,6 +51,23 @@ function PilotSelectController:initialize(document)
 
     if current ~= nil then
         self:selectPilot(current)
+
+        local pilot = ba.loadPlayer(current)
+        if not pilot:isValid() then
+            self:set_player_mode(nil, "single")
+        else
+            local is_multi
+            if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
+                is_multi = pilot.WasMultiplayer
+            else
+                is_multi = pilot.IsMultiplayer
+            end
+            if is_multi then
+                self:set_player_mode(nil, "multi")
+            else
+                self:set_player_mode(nil, "single")
+            end
+        end
     end
 
     ui.MainHall.startAmbientSound()
@@ -132,11 +132,6 @@ function PilotSelectController:selectPilot(pilot)
         self.elements[pilot]:SetPseudoClass("checked", true)
         self.elements[pilot]:ScrollIntoView()
     end
-
-    self:pilotSelected(self.selection)
-end
-
-function PilotSelectController:pilotSelected(pilot)
 end
 
 function PilotSelectController:commit_pressed()
@@ -178,7 +173,7 @@ function PilotSelectController:set_player_mode(element, mode)
         if element ~= nil then
             ui.playElementSound(element, "click", "error")
         end
-        return
+        return false
     end
 
     local elements
@@ -217,6 +212,8 @@ function PilotSelectController:set_player_mode(element, mode)
     if element ~= nil then
         ui.playElementSound(element, "click", "success")
     end
+
+    return true
 end
 
 function PilotSelectController:global_keydown(element, event)

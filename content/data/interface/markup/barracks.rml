@@ -124,15 +124,17 @@
 				</div>
 				<div id=lr_arrows_wrapper>
 					<div id=lr_arrows_cont>
-						<button id="arrow_right_btn" class="lr_arrows button_1" onclick="controller:next_image_pressed(element)">
-							<span id="arrow_right_img" class="lr_arrows">
+						<button class="arrow_right_btn lr_arrows button_1"
+								onclick="controller:next_image_pressed(element)">
+							<span class="arrow_right_img lr_arrows">
 								<img src="arrow-right.png" class="psuedo_img"></img>
 							</span>
 						</button>
 					</div>
 					<div id=lr_arrows_cont>
-						<button id="arrow_left_btn" class="lr_arrows button_1" onclick="controller:prev_image_pressed(element)">
-							<span id="arrow_left_img" class="lr_arrows">
+						<button class="arrow_left_btn lr_arrows button_1"
+								onclick="controller:prev_image_pressed(element)">
+							<span class="arrow_left_img lr_arrows">
 								<img src="arrow-left.png" class="psuedo_img"></img>
 							</span>
 						</button>
@@ -172,7 +174,7 @@
 				</div>
 				<div id=medals_btn_wrapper>
 					<div id=medals_btn_cont>
-						<button id="medals_btn" class="medals button_1" onclick="controller:medals_button_clicked(element)">
+						<button id="medals_btn" class="medals button_1" onclick="controller:medals_button_clicked()">
 							<span id="medals_img" class="medals">
 								<img src="medals.png" class="psuedo_img"></img>
 							</span>
@@ -186,19 +188,24 @@
 			</div>
 			<div id=pilot_squad_select>
 				<div id=pilot_squad_images>
-					<img src="lion1.pcx"></img>
+					<img id="pilot_squad_img_el" src="lion1.pcx"></img>
+				</div>
+				<div id=pilot_squad_counter>
+					<p id="pilot_squad_text_el">1 of N</p>
 				</div>
 				<div id=lr_arrows_wrapper_2>
 					<div id=lr_arrows_cont_2>
-						<button id="arrow_right_btn" class="lr_arrows button_1">
-							<span id="arrow_right_img" class="lr_arrows">
+						<button id="squad_select_right_btn" class="arrow_right_btn lr_arrows button_1"
+								onclick="controller:next_squad_pressed(element)">
+							<span class="arrow_right_img lr_arrows">
 								<img src="arrow-right.png" class="psuedo_img"></img>
 							</span>
 						</button>
 					</div>
 					<div id=lr_arrows_cont_2>
-						<button id="arrow_left_btn" class="lr_arrows button_1">
-							<span id="arrow_left_img" class="lr_arrows">
+						<button id="squad_select_left_btn" class="arrow_left_btn lr_arrows button_1"
+								onclick="controller:prev_squad_pressed(element)">
+							<span class="arrow_left_img lr_arrows">
 								<img src="arrow-left.png" class="psuedo_img"></img>
 							</span>
 						</button>
@@ -242,7 +249,7 @@
 						</button>
 					</div>
 					<div id=options_cont>
-						<button id="options_btn" class="options button_1">
+						<button id="options_btn" class="options button_1" onclick="controller:options_button_clicked()">
 							<span id="options_img" class="options">
 								<img src="options.png" class="psuedo_img"></img>
 							</span>
