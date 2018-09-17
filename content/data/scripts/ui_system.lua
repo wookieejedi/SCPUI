@@ -54,6 +54,7 @@ function RocketUiSystem:stateFrame()
 end
 
 function RocketUiSystem:stateEnd()
+    ba.print("End state: " .. ba.getCurrentGameState().Name .. "\n")
     if not self:hasOverrideForCurrentState() then
         return
     end

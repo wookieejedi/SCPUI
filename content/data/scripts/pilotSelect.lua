@@ -116,7 +116,6 @@ function PilotSelectController:selectPilot(pilot)
     end
 
     if self.selectedPilot ~= nil then
-        ba.print(pilot .. "\n")
         ba.savePlayer(self.selectedPilot) -- Save the player in case there were changes
         self.selectedPilot = nil
     end

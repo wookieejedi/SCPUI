@@ -187,5 +187,11 @@ function BarracksScreenController:commit_pressed(element)
     ui.Barracks.acceptPilot(self.selectedPilot)
 end
 
+function BarracksScreenController:medals_button_clicked(element)
+    if self.selectedPilot ~= nil then
+        ba.savePlayer(self.selectedPilot) -- Save the player in case there were changes
+    end
+    ba.postGameEvent(ba.GameEvents['GS_EVENT_VIEW_MEDALS'])
+end
 
 return BarracksScreenController

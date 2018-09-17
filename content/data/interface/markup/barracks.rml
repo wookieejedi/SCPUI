@@ -172,7 +172,7 @@
 				</div>
 				<div id=medals_btn_wrapper>
 					<div id=medals_btn_cont>
-						<button id="medals_btn" class="medals button_1" onclick="ba.postGameEvent(ba.GameEvents['GS_STATE_VIEW_MEDALS'])">
+						<button id="medals_btn" class="medals button_1" onclick="controller:medals_button_clicked(element)">
 							<span id="medals_img" class="medals">
 								<img src="medals.png" class="psuedo_img"></img>
 							</span>
