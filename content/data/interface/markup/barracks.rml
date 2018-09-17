@@ -88,7 +88,7 @@
 				<div id=player_select>
 					<div id=button_wrapper>
 						<div id=player_commit_cont>
-							<button id="playercommit_btn" class="playercommit button_2" onclick="controller:commit_pressed()">
+							<button id="playercommit_btn" class="playercommit button_2">
 								<span id="playercommit_img" class="playercommit">
 									<img src="select.png" class="psuedo_img"></img>
 								</span>
@@ -117,21 +117,21 @@
 			</div>
 			<div id=pilot_head_select>
 				<div id=pilot_head_images>
-					<img src="vas0001.pcx"></img>
+					<img id="pilot_head_img_el"></img>
 				</div>
 				<div id=pilot_head_counter>
-					<p>1 of N</p>
+					<p id="pilot_head_text_el">1 of N</p>
 				</div>
 				<div id=lr_arrows_wrapper>
 					<div id=lr_arrows_cont>
-						<button id="arrow_right_btn" class="lr_arrows button_1">
+						<button id="arrow_right_btn" class="lr_arrows button_1" onclick="controller:next_image_pressed(element)">
 							<span id="arrow_right_img" class="lr_arrows">
 								<img src="arrow-right.png" class="psuedo_img"></img>
 							</span>
 						</button>
 					</div>
 					<div id=lr_arrows_cont>
-						<button id="arrow_left_btn" class="lr_arrows button_1">
+						<button id="arrow_left_btn" class="lr_arrows button_1" onclick="controller:prev_image_pressed(element)">
 							<span id="arrow_left_img" class="lr_arrows">
 								<img src="arrow-left.png" class="psuedo_img"></img>
 							</span>
@@ -150,7 +150,6 @@
 					<p>Pilot Stats</p>
 				</div>
 				<div id=pilot_stats_text>
-					<p>Text Goes Here</p>
 				</div>
 				<div id=stats_scroll_wrapper>
 					<div id=stats_scroll_cont>
@@ -218,7 +217,7 @@
 			<div id=bottom_panel_a>
 				<div id=a_panel_wrapper>
 					<div id=accept_cont>
-						<button id="accept_btn" class="accept button_1">
+						<button id="accept_btn" class="accept button_1" onclick="controller:commit_pressed(element)">
 							<span id="accept_img" class="accept">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>

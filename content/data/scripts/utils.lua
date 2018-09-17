@@ -3,6 +3,10 @@ local utils = {
 	table = {}
 }
 
+function utils.strip_extension(name)
+	return string.gsub(name, "%..+$", "")
+end
+
 function utils.table.ifind(tbl, val, compare)
 	for i, v in ipairs(tbl) do
 		if compare ~= nil then

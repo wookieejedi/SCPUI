@@ -26,19 +26,30 @@ function PilotSelectController:initialize(document)
     local pilot_ul = document:GetElementById("pilotlist_ul")
     local pilots = ui.PilotSelect.enumeratePilots()
 
-    local last = ui.PilotSelect.getLastPilot()
-    if last ~= nil then
+    local current = self:getInitialCallsign()
+    if current ~= nil then
         -- Make sure that the last pilot appears at the top of the list
-        local index = tblUtil.ifind(pilots, last.callsign)
+        local index = tblUtil.ifind(pilots, current)
         if index >= 0 then
             table.remove(pilots, index)
-            table.insert(pilots, 1, last.callsign)
+            table.insert(pilots, 1, current)
         end
 
-        if last.is_multi then
-            self:set_player_mode(nil, "multi")
-        else
+        local pilot = ba.loadPlayer(current)
+        if not pilot:isValid() then
             self:set_player_mode(nil, "single")
+        else
+            local is_multi
+            if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
+                is_multi = pilot.WasMultiplayer
+            else
+                is_multi = pilot.IsMultiplayer
+            end
+            if is_multi then
+                self:set_player_mode(nil, "multi")
+            else
+                self:set_player_mode(nil, "single")
+            end
         end
     else
         self:set_player_mode(nil, "single")
@@ -53,9 +64,10 @@ function PilotSelectController:initialize(document)
 
     if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
         document:GetElementById("fso_version_info").inner_rml = ba.getVersionString()
-        if last ~= nil then
-            self:selectPilot(last.callsign)
-        end
+    end
+
+    if current ~= nil then
+        self:selectPilot(current)
     end
 
     ui.MainHall.startAmbientSound()
@@ -81,6 +93,10 @@ function PilotSelectController:initialize(document)
     end
 end
 
+function PilotSelectController:getInitialCallsign()
+    return ui.PilotSelect.getLastPilot()
+end
+
 function PilotSelectController:create_pilot_li(pilot_name)
     local li_el = self.document:CreateElement("li")
 
@@ -94,16 +110,34 @@ function PilotSelectController:create_pilot_li(pilot_name)
 end
 
 function PilotSelectController:selectPilot(pilot)
+    if self.selection == pilot then
+        -- Not changes
+        return
+    end
+
+    if self.selectedPilot ~= nil then
+        ba.print(pilot .. "\n")
+        ba.savePlayer(self.selectedPilot) -- Save the player in case there were changes
+        self.selectedPilot = nil
+    end
     if self.selection ~= nil and self.elements[self.selection] ~= nil then
         self.elements[self.selection]:SetPseudoClass("checked", false)
     end
 
     self.selection = pilot
+    if self.selection ~= nil and self.mode == PilotSelectController.MODE_BARRACKS then
+        self.selectedPilot = ba.loadPlayer(self.selection)
+    end
 
     if self.selection ~= nil and self.elements[self.selection] ~= nil then
         self.elements[pilot]:SetPseudoClass("checked", true)
         self.elements[pilot]:ScrollIntoView()
     end
+
+    self:pilotSelected(self.selection)
+end
+
+function PilotSelectController:pilotSelected(pilot)
 end
 
 function PilotSelectController:commit_pressed()
@@ -122,16 +156,20 @@ function PilotSelectController:commit_pressed()
     if not ui.PilotSelect.checkPilotLanguage(self.selection) then
         ui.playElementSound(button, "click", "error")
 
-        local builder = dialogs.new()
-        builder:text(ba.XSTR("Selected pilot was created with a different language to the currently active language." ..
-                "\n\nPlease select a different pilot or change the language", -1))
-        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1))
-        builder:show(self.document.context)
+        self:showWrongPilotLanguageDialog()
         return
     end
 
     ui.PilotSelect.selectPilot(self.selection, self.current_mode == "multi")
     ui.playElementSound(button, "click", "commit")
+end
+
+function PilotSelectController:showWrongPilotLanguageDialog()
+    local builder = dialogs.new()
+    builder:text(ba.XSTR("Selected pilot was created with a different language to the currently active language." ..
+            "\n\nPlease select a different pilot or change the language", -1))
+    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1))
+    builder:show(self.document.context)
 end
 
 function PilotSelectController:set_player_mode(element, mode)
