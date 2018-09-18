@@ -74,6 +74,11 @@ body
 	visibility: hidden;
 }
 
+.shown
+{
+	visibility: visible;
+}
+
 /*Button Highlight Colors*/
 
 button:hover .neg
@@ -127,11 +132,11 @@ button:checked .pos
 {
 	position: relative;
 	display: inline-block;
+	visibility: hidden;
 }
 
 .tooltip .tooltiptext
 {
-	visibility: hidden;
 	background-color: black;
 	color: white;
 	text-align: center;
@@ -143,7 +148,7 @@ button:checked .pos
 	z-index: 5;
 }
 
-/*div:hover .tooltiptext
+.tooltip:shown
 {
 	visibility: visible;
-}*/
+}

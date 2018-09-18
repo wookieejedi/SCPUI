@@ -11,6 +11,7 @@ local BarracksScreenController = class(PilotSelectController)
 
 function BarracksScreenController:init()
     self.mode = PilotSelectController.MODE_BARRACKS
+    self.help_shown = false
 end
 
 function BarracksScreenController:initialize(document)
@@ -104,7 +105,7 @@ local function compute_percentage(fract, total)
         return "0%"
     end
 
-    return tostring((fract / total) * 100) .. "%"
+    return string.format("%.2f%%", (fract / total) * 100)
 end
 
 function BarracksScreenController:initialize_stats_text()
@@ -292,6 +293,16 @@ end
 
 function BarracksScreenController:prev_squad_pressed(element)
     self:change_squad_index(element, -1)
+end
+
+function BarracksScreenController:help_clicked()
+    self.help_shown = not self.help_shown
+
+    local help_texts = self.document:GetElementsByClassName("tooltip")
+    for _, v in ipairs(help_texts) do
+        v:SetPseudoClass("shown", self.help_shown)
+        ba.print(v.inner_rml .. "\n")
+    end
 end
 
 return BarracksScreenController
