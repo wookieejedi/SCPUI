@@ -110,8 +110,9 @@ end
 function BarracksScreenController:initialize_stats_text()
     local text_container = self.document:GetElementById("pilot_stats_text")
 
+    -- Always clear the container to remove old elements
+    text_container.inner_rml = ""
     if self.selectedPilot == nil then
-        text_container.inner_rml = ""
         return
     end
 
