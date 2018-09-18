@@ -8,14 +8,8 @@ module.BUTTON_TYPE_POSITIVE = 1
 module.BUTTON_TYPE_NEGATIVE = 2
 
 module.BUTTON_MAPPING = {
-    [module.BUTTON_TYPE_POSITIVE] = {
-        class = "button_positive",
-        image = "select.png",
-    },
-    [module.BUTTON_TYPE_NEGATIVE] = {
-        class = "button_negative",
-        image = "decline.png",
-    }
+    [module.BUTTON_TYPE_POSITIVE] = "button_positive",
+    [module.BUTTON_TYPE_NEGATIVE] = "button_negative"
 }
 
 local function initialize_buttons(document, properties, finish_func)
@@ -23,7 +17,7 @@ local function initialize_buttons(document, properties, finish_func)
     local button_container = document:GetElementById("button_container")
 
     for _, v in ipairs(properties.buttons) do
-        local image_vals = module.BUTTON_MAPPING[v.type]
+        local btn_class = module.BUTTON_MAPPING[v.type]
 
         local actual_el = button_template:Clone()
         actual_el.id = "" -- Reset the ID so that there are no duplicate IDs
@@ -32,11 +26,17 @@ local function initialize_buttons(document, properties, finish_func)
         local text_el = actual_el:GetElementsByClassName("button_text_id")[1]
         text_el.inner_rml = v.text
 
-        actual_el:SetClass(image_vals.class, true)
+        actual_el:SetClass(btn_class, true)
 
-        if image_vals ~= nil then
-            local image_el = actual_el:GetElementsByClassName("button_image_id")[1]
-            image_el:SetAttribute("src", image_vals.image)
+        local style = actual_el:GetElementsByClassName("button_image_container")[1].style
+        for i, v in pairs(style) do
+            ba.print(string.format("%q: %q\n", i, v))
+            -- This is pretty ugly but somehow the __index function is broken
+            if i == "background-image" then
+                local image_el = actual_el:GetElementsByClassName("button_image_id")[1]
+                image_el:SetAttribute("src", v)
+                break
+            end
         end
 
         actual_el:AddEventListener("click", function(_, _, _)
