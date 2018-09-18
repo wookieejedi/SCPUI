@@ -117,41 +117,42 @@ scrollbarvertical sliderarrowinc:active
 #pilotlist scrollbarvertical sliderarrowdec
 {
 	width: 100%;
-	height: 25%;
+	height: 27%;
+	padding-bottom: 10%;
 	mouseover-sound: 17;
 	click-sound: 0;
 	icon-decorator: image;
-	icon-image: scroll-asc-right.png;
+	icon-image: arrow-dbl-up.png;
 }
 
 #pilotlist scrollbarvertical sliderarrowinc
 {
 	width: 100%;
-	height: 25%;
+	height: 27%;
 	mouseover-sound: 17;
 	click-sound: 0;
 	icon-decorator: image;
-	icon-image: scroll-desc-right.png;
+	icon-image: arrow-dbl-down.png;
 }
 
 #pilotlist scrollbarvertical sliderarrowdec:hover
 {
-	icon-image: scroll-asc-right-h.png;
+	icon-image: arrow-dbl-up-h.png;
 }
 
 #pilotlist scrollbarvertical sliderarrowinc:hover
 {
-	icon-image: scroll-desc-right-h.png;
+	icon-image: arrow-dbl-down-h.png;
 }
 
 #pilotlist scrollbarvertical sliderarrowdec:active
 {
-	icon-image: scroll-asc-right-o.png;
+	icon-image: arrow-dbl-up-o.png;
 }
 
 #pilotlist scrollbarvertical sliderarrowinc:active
 {
-	icon-image: scroll-desc-right-o.png;
+	icon-image: arrow-dbl-down-o.png;
 }
 
 /*Pilot Stats Scrollbar*/
