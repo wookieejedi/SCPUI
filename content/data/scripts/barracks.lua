@@ -72,6 +72,7 @@ function BarracksScreenController:add_heading_element(parent, text)
 
     container:AppendChild(text_el)
     container:SetClass("stats_heading", true)
+    container:SetClass("header_text", true)
 
     parent:AppendChild(container)
 end
