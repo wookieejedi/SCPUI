@@ -248,10 +248,18 @@ function BarracksScreenController:changeSquad(new_img)
     new_img = utils.strip_extension(new_img) -- The image may have an extension
     local index = tblUtil.ifind(self.squadImages, new_img)
 
-    local text_el = self.document:GetElementById("pilot_squad_text_el")
-    text_el.inner_rml = string.format("%d of %d", index, #self.squadImages)
+    if index <= 0 then
+        -- Invalid image found. Let's try to avoid displaying a warning here
+        local text_el = self.document:GetElementById("pilot_squad_text_el")
+        text_el.inner_rml = ""
 
-    self.document:GetElementById("pilot_squad_img_el"):SetAttribute("src", new_img)
+        self.document:GetElementById("pilot_squad_img_el"):SetAttribute("src", "")
+    else
+        local text_el = self.document:GetElementById("pilot_squad_text_el")
+        text_el.inner_rml = string.format("%d of %d", index, #self.squadImages)
+
+        self.document:GetElementById("pilot_squad_img_el"):SetAttribute("src", new_img)
+    end
 end
 
 function BarracksScreenController:change_squad_index(element, diff)
