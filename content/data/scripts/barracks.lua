@@ -228,9 +228,6 @@ function BarracksScreenController:set_player_mode(element, mode)
     self.document:GetElementById("squad_select_left_btn"):SetClass("hidden", not is_multi)
     self.document:GetElementById("pilot_squad_counter"):SetClass("hidden", not is_multi)
 
-    ba.print(self.selectedPilot.MultiSquadFilename .. "\n")
-    ba.print(self.selectedPilot.SingleSquadFilename .. "\n")
-    ba.print(self.current_mode .. "\n")
     if self.current_mode == "multi" then
         self:changeSquad(self.selectedPilot.MultiSquadFilename)
     else
