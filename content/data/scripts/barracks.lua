@@ -301,7 +301,6 @@ function BarracksScreenController:help_clicked()
     local help_texts = self.document:GetElementsByClassName("tooltip")
     for _, v in ipairs(help_texts) do
         v:SetPseudoClass("shown", self.help_shown)
-        ba.print(v.inner_rml .. "\n")
     end
 end
 
