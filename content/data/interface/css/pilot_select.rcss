@@ -67,7 +67,7 @@ div#pilotlist
 }
 .pilotlist_element:checked
 {
-	color: #c9e4c9;
+	color: #6f92f5;
 }
 
 .player_type_text

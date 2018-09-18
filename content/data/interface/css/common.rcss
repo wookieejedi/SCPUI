@@ -141,7 +141,7 @@ button:checked .pos
 	color: white;
 	text-align: center;
 	padding: 5px 0;
-	border-color: white;
+	border-color: yellow;
 	border-width: 1px;
 	position: absolute;
 	width: 100%;

@@ -91,7 +91,7 @@ div#pilotlist
 }
 .pilotlist_element:checked
 {
-	color: #c9e4c9;
+	color: #6f92f5;
 }
 
 div#player_select
@@ -186,6 +186,7 @@ div#player_commit_cont
 	margin-right: 1%;
 	top: 0;
 	margin-bottom: -8%;
+	visibility: hidden;
 }
 
 .playercommit
