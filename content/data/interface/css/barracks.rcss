@@ -42,6 +42,54 @@ div#logo img
 	bottom: 0;
 }
 
+/*Bottom Panel Elements*/
+
+div#bottom_panel_wrapper
+{
+	width: 15%;
+	height: auto;
+	overflow: hidden;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+div#bottom_panel_a
+{
+	width: 66%;
+	height: auto;
+	position: relative;
+	float: right;
+}
+
+div#bottom_panel_a img
+{
+	display: block;
+	max-width: 304px;
+	max-height: 261px;
+	width: 100%;
+	height: auto;
+}
+
+div#bottom_panel_b
+{
+	width: 34%;
+	height: auto;
+	margin-top: 1.1%;
+	position: relative;
+	float: left;
+}
+
+div#bottom_panel_b img
+{
+	display: block;
+	max-width: 153px;
+	max-height: 236px;
+	width: 100%;
+	height: auto;
+
+}
+
 /*Pilot Select Window Elements*/
 
 div#pilot_select
@@ -208,13 +256,13 @@ div#player_commit_cont
 button#playercommit_btn:hover #playercommit_img
 {
 	background-decorator: image;
-	background-image: select-red-h.png;
+	background-image: select-neg-h.png;
 }
 
 button#playercommit_btn:active #playercommit_img
 {
 	background-decorator: image;
-	background-image: select-red-o.png;
+	background-image: select-neg-o.png;
 }
 
 /*Singleplayer Selection Button*/
@@ -714,54 +762,6 @@ button#medals_btn:active #medals_img
 	background-image: medals-o.png;
 }
 
-/*Bottom Panel Elements*/
-
-div#bottom_panel_wrapper
-{
-	width: 15%;
-	height: auto;
-	overflow: hidden;
-	position: absolute;
-	bottom: 0;
-	right: 0;
-}
-
-div#bottom_panel_a
-{
-	width: 66%;
-	height: auto;
-	position: relative;
-	float: right;
-}
-
-div#bottom_panel_a img
-{
-	display: block;
-	max-width: 304px;
-	max-height: 261px;
-	width: 100%;
-	height: auto;
-}
-
-div#bottom_panel_b
-{
-	width: 34%;
-	height: auto;
-	margin-top: 1.1%;
-	position: relative;
-	float: left;
-}
-
-div#bottom_panel_b img
-{
-	display: block;
-	max-width: 153px;
-	max-height: 236px;
-	width: 100%;
-	height: auto;
-
-}
-
 /*Accept Button*/
 
 div#a_panel_wrapper
@@ -795,13 +795,13 @@ div#accept_cont
 button#accept_btn:hover #accept_img
 {
 	background-decorator: image;
-	background-image: select-red-h.png;
+	background-image: select-neg-h.png;
 }
 
 button#accept_btn:active #accept_img
 {
 	background-decorator: image;
-	background-image: select-red-o.png;
+	background-image: select-neg-o.png;
 }
 
 /*B Panel Buttons*/
@@ -844,6 +844,7 @@ div#help_cont
 	background-decorator: image;
 	background-image: help.png;
 }
+
 button#help_btn:hover #help_img
 {
 	background-decorator: image;

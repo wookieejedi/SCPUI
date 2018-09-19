@@ -226,13 +226,13 @@ div#player_commit_cont
 button#playercommit_btn:hover #playercommit_img
 {
 	background-decorator: image;
-	background-image: select-red-h.png;
+	background-image: select-neg-h.png;
 }
 
 button#playercommit_btn:active #playercommit_img
 {
 	background-decorator: image;
-	background-image: select-red-o.png;
+	background-image: select-neg-o.png;
 }
 
 /*Singleplayer Selection Button*/

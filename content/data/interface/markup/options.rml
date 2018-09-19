@@ -10,16 +10,54 @@
 		</script>
 	</head>
 	<body onload="controller:initialize(document)" onkeyup="controller:global_keydown(element, event)">
-		<div id=pilot_select>
-			<div class=window_title>
-				<p>XSTR("Choose Pilot", -1)</p>
-			</div>
-			<div id=pilotlist>
-				<input id=pilot_name_input class="hidden" type="text"></input>
-				<ul id=pilotlist_ul>
-				</ul>
-			</div>
-			<div id=player_type_select>
+		<div id=options_window>
+			<tabset id="ops_tabs_cont">
+				<tab id="options_btn" class="button_1 tab">
+					<span id="options_img" class="options">
+						<img src="options.png" class="psuedo_img"></img>
+					</span>
+					<span class="pos button_text">
+						<p>Options</p>
+					</span>
+				</tab>
+					<panel class="options_panel">
+						Tab 1
+					</panel>
+				<tab id="detail_btn" class="button_1 tab">
+					<span id="detail_img" class="detail">
+						<img src="detail.png" class="psuedo_img"></img>
+					</span>
+					<span class="pos button_text">
+						<p>Detail</p>
+					</span>
+				</tab>
+					<panel class="options_panel">
+						Tab 2
+					</panel>
+				<tab id="prefs_btn" class="button_1 tab">
+					<span id="prefs_img" class="prefs">
+						<img src="prefs.png" class="psuedo_img"></img>
+					</span>
+					<span class="pos button_text">
+						<p>Preferences</p>
+					</span>
+				</tab>
+					<panel class="options_panel">
+						Tab 3
+					</panel>
+				<tab id="multi_btn" class="button_1 tab">
+					<span id="multi_img" class="multi">
+						<img src="multiplayer.png" class="psuedo_img"></img>
+					</span>
+					<span class="pos button_text">
+						<p>Multi</p>
+					</span>
+				</tab>
+					<panel class="options_panel">
+						Tab 4
+					</panel>
+			</tabset>
+<!--			<div id=player_type_select>
 				<div id=button_wrapper>
 					<div id=single_multi_cont>
 						<button id="multiplayer_btn" class="multiplayer button_1">
@@ -43,82 +81,69 @@
 					</div>
 				</div>
 			</div>
-			<div id=player_control>
-				<div id="player_control_wrapper">
-					<div id=player_control_cont>
-						<button id="createplayer_btn" class="createplayer button_1">
-							<span id="createplayer_img" class="createplayer">
-								<img src="create-pilot.png" class="psuedo_img"></img>
-							</span>
-							<span class="pos button_text below">
-								<p>XSTR("Create", -1)</p>
-							</span>
-						</button>
-					</div>
-					<div id=player_control_cont>
-						<button id="cloneplayer_btn" class="cloneplayer button_1">
-							<span id="cloneplayer_img" class="cloneplayer">
-								<img src="clone-pilot.png" class="psuedo_img"></img>
-							</span>
-							<span class="pos button_text below">
-								<p>XSTR("Clone", -1)</p>
-							</span>
-						</button>
-					</div>
-					<div id=player_control_cont>
-						<button id="deleteplayer_btn" class="deleteplayer button_1">
-							<span id="deleteplayer_img" class="deleteplayer">
-								<img src="delete-pilot.png" class="psuedo_img"></img>
-							</span>
-							<span class="pos button_text below">
-								<p>XSTR("Delete", -1)</p>
-							</span>
-						</button>
-					</div>
-				</div>
-			</div>
-			<div id=player_select>
-				<div id=button_wrapper>
-					<div id=player_commit_cont>
-						<button id="playercommit_btn" class="playercommit button_2">
-							<span id="playercommit_img" class="playercommit">
-								<img src="select.png" class="psuedo_img"></img>
-							</span>
-							<span class="neg button_text below">
-								<p>XSTR("Select", -1)</p>
-							</span>
-						</button>
-					</div>
-					<div id=arrow_cont>
-						<button id="playernext_btn" class="arrowbuttons button_1">
-							<span id="playernext_img" class="arrowbuttons">
-								<img src="arrow-down.png" class="psuedo_img"></img>
-							</span>
-						</button>
-					</div>
-					<div id=arrow_cont>
-						<button id="playerprev_btn" class="arrowbuttons button_1">
-							<span id="playerprev_img" class="arrowbuttons">
-								<img src="arrow-up.png" class="psuedo_img"></img>
-							</span>
-						</button>
-					</div>
-				</div>
-			</div>
-			<img src="pilot-select-window.png"></img>
-		</div>
-		<div id="singleplayer_text" class="player_type_text">
-			<p>XSTR("Single Player Mode", -1)</p>
-		</div>
-		<div id="multiplayer_text" class="player_type_text">
-			<p>XSTR("Multi Player Mode", -1)</p>
+-->			<img src="options-window.png"></img>
 		</div>
 		<div id=logo_wide>
 			<img src="logo-wide.png"></img>
 		</div>
-		<div id=copyright_info>
-			<p id=fso_version_info></p>
-			<p>XSTR("Copyright © 1999, Volition, Inc.  All rights reserved.", -1)</p>
+		<div id=bottom_panel_wrapper>
+			<div id=bottom_panel_a>
+				<div id=a_panel_wrapper>
+					<div id=accept_cont>
+						<button id="accept_btn" class="accept button_1">
+							<span id="accept_img" class="accept">
+								<img src="select.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>Accept</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-a.png"></img>
+			</div>
+			<div id=bottom_panel_c>
+				<div id=b_panel_wrapper>
+					<div id=control_cont>
+						<button id="control_btn" class="control button_1">
+							<span id="control_img" class="control">
+								<img src="ship.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_top">
+								<p>Control Config</p>
+							</span>
+						</button>
+					</div>
+					<div id=hud_cont>
+						<button id="hud_btn" class="hud button_1">
+							<span id="hud_img" class="hud">
+								<img src="hud.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_top">
+								<p>HUD Config</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-c.png"></img>
+			</div>
+		</div>
+		<div id=left_panel_wrapper>
+			<div id=bottom_panel_exit>
+				<div id=exit_panel_wrapper>
+					<div id=exit_cont>
+						<button id="exit_btn" class="exit button_1">
+							<span id="exit_img" class="exit">
+								<img src="exit.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>Exit Game</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="exit-panel.png"></img>
+			</div>
 		</div>
 	</body>
 
