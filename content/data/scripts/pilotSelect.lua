@@ -370,11 +370,16 @@ function PilotSelectController:delete_player(element)
     builder:button(dialogs.BUTTON_TYPE_NEGATIVE, "No", false)
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Yes", true)
     builder:show(self.document.context, function(result)
+        ba.print(tostring(result) .. "\n")
         if not result then
             return
         end
 
-        if not ui.PilotSelect.deletePilot(self.selection) then
+        -- Deselect the pilot first to avoid restoring it later
+        local pilot = self.selection
+        self:selectPilot(nil)
+
+        if not ui.PilotSelect.deletePilot(pilot) then
             local builder = dialogs.new()
             builder:title(ba.XSTR("Error", -1))
             builder:text(ba.XSTR("Failed to delete pilot file. File may be read-only.", -1))
@@ -384,13 +389,11 @@ function PilotSelectController:delete_player(element)
         end
 
         -- Remove the element from the list
-        local removed_el = self.elements[self.selection]
+        local removed_el = self.elements[pilot]
         removed_el.parent_node:RemoveChild(removed_el)
-        self.elements[self.selection] = nil
+        self.elements[pilot] = nil
 
-        tblUtil.iremove_el(self.pilots, self.selection)
-
-        self:selectPilot(nil)
+        tblUtil.iremove_el(self.pilots, pilot)
     end)
 end
 
