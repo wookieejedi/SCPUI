@@ -370,7 +370,6 @@ function PilotSelectController:delete_player(element)
     builder:button(dialogs.BUTTON_TYPE_NEGATIVE, "No", false)
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Yes", true)
     builder:show(self.document.context, function(result)
-        ba.print(tostring(result) .. "\n")
         if not result then
             return
         end
