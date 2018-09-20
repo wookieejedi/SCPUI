@@ -21,7 +21,102 @@
 					</span>
 				</tab>
 					<panel class="options_panel">
-						Tab 1
+						<div class="options_column">
+							<div class="btn_panel_horz">
+								<div id="horz_panel_text" class="ops_left_header">
+									<p>Briefing Voice</p>
+								</div>
+								<div id=horz_panel_wrapper>
+									<div id=round_option_cont>
+										<button id="round_btn" class="round button_1">
+											<div id="round_img" class="round">
+												<img src="round.png" class="psuedo_img"></img>
+											</div>
+											<div class="pos button_text_left">
+												<p>On</p>
+											</div>
+										</button>
+									</div>
+									<div id=round_option_cont>
+										<button id="round_btn" class="round button_1">
+											<div id="round_img" class="round">
+												<img src="round.png" class="psuedo_img"></img>
+											</div>
+											<div class="pos button_text_left">
+												<p>Off</p>
+											</div>
+										</button>
+									</div>
+								</div>
+								<img src="ops-panel-horz.png"></img>
+							</div>
+							<div class="btn_panel_horz">
+								<div id="horz_panel_text" class="ops_left_header">
+									<span id="slider_title">Slider Title</span>: <span id="slider_value" class="header_text">1.0</span>
+								</div>
+								<div id=horz_panel_wrapper>
+									<div id=range_cont>
+										<input type="range" min=0 max=100 step=1></input>
+										<img src="ops-panel-horz.png" class="psuedo_img"></img>
+									</div>
+								</div>
+								<img src="ops-panel-horz.png"></img>
+							</div>
+						</div>
+						<div class="options_column">
+							<div class="btn_panel_horz horz_middle">
+								<div id="horz_panel_text" class="ops_left_header">
+									<span id="slider_title">Slider Title</span>: <span id="slider_value" class="header_text">1.0</span>
+								</div>
+								<div id=horz_panel_wrapper>
+									<div id=range_cont>
+										<input type="range" min=0 max=100 step=1></input>
+										<img src="ops-panel-horz.png" class="psuedo_img"></img>
+									</div>
+								</div>
+								<img src="ops-panel-horz.png"></img>
+							</div>
+						</div>
+						<div class="options_column">
+							<div class="btn_panel_horz horz_middle">
+								<div id="horz_panel_text" class="ops_left_header">
+									<span id="slider_title">Slider Title</span>: <span id="slider_value" class="header_text">1.0</span>
+								</div>
+								<div id=horz_panel_wrapper>
+									<div id=range_cont>
+										<input type="range" min=0 max=100 step=1></input>
+										<img src="ops-panel-horz.png" class="psuedo_img"></img>
+									</div>
+								</div>
+								<img src="ops-panel-horz.png"></img>
+							</div>
+						</div>
+						<div class="options_column">
+							<div class="btn_panel_horz horz_right">
+								<div id="horz_panel_text" class="ops_left_header">
+									<span id="slider_title">Slider Title</span>: <span id="slider_value" class="header_text">1.0</span>
+								</div>
+								<div id=horz_panel_wrapper>
+									<div id=range_cont>
+										<input type="range" min=0 max=100 step=1></input>
+										<img src="ops-panel-horz.png" class="psuedo_img"></img>
+									</div>
+								</div>
+								<img src="ops-panel-horz.png"></img>
+							</div>
+							<div class="btn_panel_horz horz_right">
+								<div id="horz_panel_text" class="ops_left_header">
+									<span id="slider_title">Slider Title</span>: <span id="slider_value" class="header_text">1.0</span>
+								</div>
+								<div id=horz_panel_wrapper>
+									<div id=range_cont>
+										<input type="range" min=0 max=100 step=1></input>
+										<img src="ops-panel-horz.png" class="psuedo_img"></img>
+									</div>
+								</div>
+								<img src="ops-panel-horz.png"></img>
+							</div>
+						</div>
 					</panel>
 				<tab id="detail_btn" class="button_1 tab">
 					<span id="detail_img" class="detail">
@@ -32,7 +127,113 @@
 					</span>
 				</tab>
 					<panel class="options_panel">
-						Tab 2
+						<div class="options_column"> <!--left column button panels-->
+							<div class="btn_panel_horz"> <!--This begins all the rml for a five point range selector-->
+								<div id="horz_panel_text" class="ops_left_header">
+									<p id="five_range_title">Five Point Range Selector</p>
+								</div>
+								<div id=horz_panel_wrapper>
+									<div id=round_choice_cont>
+										<button id="round_btn" class="round button_1">
+											<div id="round_img" class="round">
+												<img src="round.png" class="psuedo_img"></img>
+											</div>
+										</button>
+									</div>
+									<div id=round_choice_cont>
+										<button id="round_btn" class="round button_1">
+											<div id="round_img" class="round">
+												<img src="round.png" class="psuedo_img"></img>
+											</div>
+										</button>
+									</div>
+									<div id=round_choice_cont>
+										<button id="round_btn" class="round button_1">
+											<div id="round_img" class="round">
+												<img src="round.png" class="psuedo_img"></img>
+											</div>
+										</button>
+									</div>
+									<div id=round_choice_cont>
+										<button id="round_btn" class="round button_1">
+											<div id="round_img" class="round">
+												<img src="round.png" class="psuedo_img"></img>
+											</div>
+										</button>
+									</div>
+									<div id=round_choice_cont>
+										<button id="round_btn" class="round button_1">
+											<div id="round_img" class="round">
+												<img src="round.png" class="psuedo_img"></img>
+											</div>
+										</button>
+									</div>
+								</div>
+								<img src="ops-panel-horz.png"></img>
+							</div>
+							<div class="btn_panel_horz"> <!--This begins all the rml for a binary option-->
+								<div id="horz_panel_text" class="ops_left_header">
+									<p id="binary_title">Binary Option</p>
+								</div>
+								<div id=horz_panel_wrapper>
+									<div id=round_option_cont>
+										<button id="round_btn" class="round button_1">
+											<div id="round_img" class="round">
+												<img src="round.png" class="psuedo_img"></img>
+											</div>
+											<div class="pos button_text_left">
+												<p>Two</p>
+											</div>
+										</button>
+									</div>
+									<div id=round_option_cont>
+										<button id="round_btn" class="round button_1">
+											<div id="round_img" class="round">
+												<img src="round.png" class="psuedo_img"></img>
+											</div>
+											<div class="pos button_text_left">
+												<p>One</p>
+											</div>
+										</button>
+									</div>
+								</div>
+								<img src="ops-panel-horz.png"></img>
+							</div>
+							<div class="btn_panel_horz"> <!--This begins all the rml for a range slider-->
+								<div id="horz_panel_text" class="ops_left_header">
+									<span id="slider_title">Slider Title</span>: <span id="slider_value" class="header_text">1.0</span>
+								</div>
+								<div id=horz_panel_wrapper>
+									<div id=range_cont>
+										<input type="range" min=0 max=100 step=1></input>
+										<img src="ops-panel-horz.png" class="psuedo_img"></img>
+									</div>
+								</div>
+								<img src="ops-panel-horz.png"></img>
+							</div>
+							<div class="btn_panel_horz"> <!--This begins all the rml for a dropdown selector. Note, you'll need to change <select> to <dataselect> and remove the <option> lines-->
+								<div id="horz_panel_text" class="ops_left_header">
+									<span id="dropdown_title">Dropdown Selector</span>
+								</div>
+								<div id=horz_panel_wrapper>
+									<div id=dropdown_cont>
+										<select>
+											<option>Option 1</option>
+											<option>Option 2</option>
+											<option>Option 3</option>
+											<option>Option 4</option>
+										</select>
+									</div>
+								</div>
+								<img src="ops-panel-horz.png"></img>
+							</div>
+						</div>
+						<div class="options_column">
+						</div> <!--middle column. Any buttons here need "horz_middle" added to their class-->
+						<div class="options_column">
+						</div> <!--middle column. Any buttons here need "horz_middle" added to their class-->
+						<div class="options_column">
+						</div> <!--middle column. Any buttons here need "horz_right" added to their class-->
 					</panel>
 				<tab id="prefs_btn" class="button_1 tab">
 					<span id="prefs_img" class="prefs">
@@ -103,7 +304,7 @@
 				<img src="bottom-panel-a.png"></img>
 			</div>
 			<div id=bottom_panel_c>
-				<div id=b_panel_wrapper>
+				<div id=c_panel_wrapper>
 					<div id=control_cont>
 						<button id="control_btn" class="control button_1">
 							<span id="control_img" class="control">

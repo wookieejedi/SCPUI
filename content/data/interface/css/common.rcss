@@ -15,6 +15,19 @@ body
 	color: #6f92f5;
 }
 
+select option:hover
+{
+	color: #abbbab;
+}
+
+select option:active,
+select option:checked,
+selectvalue
+{
+	color: #6f92f5;
+}
+
+
 .window_title
 {
 	position: absolute;
@@ -86,11 +99,7 @@ button:hover .neg
 	color: #946565;
 }
 
-button:active .neg
-{
-	color: #dd9393;
-}
-
+button:active .neg,
 button:checked .neg
 {
 	color: #dd9393;
@@ -101,16 +110,11 @@ button:hover .pos
 	color: #abbbab;
 }
 
-button:active .pos
-{
-	color: #c9e4c9;
-}
-
+button:active .pos,
 button:checked .pos
 {
 	color: #c9e4c9;
 }
-
 /*Button Sounds*/
 
 .button_1 /*General Select*/
