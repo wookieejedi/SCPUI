@@ -502,7 +502,7 @@ div#horz_panel_wrapper
 
 .btn_panel_horz /*For controls in all colums*/
 {
-	width: 55%;
+	width: 60%;
 	height: auto;
 	position: relative;
 	margin-top: 1%;
