@@ -105,6 +105,24 @@ div#bottom_panel_c img
 	padding-top: 5%;
 }
 
+.options_column_20
+{
+	width: 20%;
+	float: left;
+}
+
+.options_column_25
+{
+	width: 25%;
+	float: left;
+}
+
+.options_column_40
+{
+	width: 40%;
+	float: left;
+}
+
 /*Options Selection Buttons*/
 
 #ops_tabs_cont
@@ -326,7 +344,7 @@ div#c_panel_wrapper
 	margin-top: -170%;
 }
 
-/*Round Button Option*/
+/*HUD Button Option*/
 
 div#hud_cont
 {
@@ -478,13 +496,24 @@ button#exit_btn:active #exit_img
 	margin-left: 12%;
 }
 
-.options_column
+.ops_right_header
 {
-	width: 25%;
-	float: left;
+	margin-right: 12%;
+	text-align: right;
 }
 
-/*Horizontal Panel with two choices*/
+.btn_panel_large .ops_right_header
+{
+	margin-right: 7%;
+	text-align: right;
+}
+
+.btn_panel_large .ops_left_header
+{
+	margin-left: 7%;
+}
+
+/*Horizontal Panel*/
 
 div#horz_panel_wrapper
 {
@@ -518,12 +547,106 @@ div#horz_panel_wrapper
 
 }
 
+/*Large Multi-Slider Panel*/
+
+div#large_panel_wrapper
+{
+	position: absolute;
+	bottom: 5%;
+	padding-left: 1%;
+}
+
+#large_panel_wrapper .button_text_top p
+{
+	width: 100%;
+	margin-left: 50%;
+	margin-top: -135%;
+}
+
+.panel_right #large_panel_wrapper .button_text_top p
+{
+	width: 100%;
+	margin-left: -200%;
+	margin-top: -135%;
+}
+
+/*Horizontal Wide Panel*/
+
+div#horz_wide_panel_wrapper
+{
+	position: absolute;
+	bottom: 0;
+	padding-left: 1%;
+}
+
+/*Gamma Panel*/
+
+div#gamma_panel_wrapper
+{
+	position: absolute;
+	top: 1em;
+	padding-left: 1%;
+}
+
+#gamma_value
+{
+	float: left;
+	width: 70%;
+	margin-top: 10%;
+}
+
+#gamma_value p
+{
+	text-align: center;
+}
+
+#gamma_graphic_wrapper
+{
+	position: absolute;
+	top: 52%;
+	width: 89%;
+	height: 42%;
+	margin-left: 3%;
+	margin-bottom: 4%;
+	margin-right: 10%;
+}
+
+/*Misc Panel Positioning*/
+
+.btn_panel_large
+{
+	width: 100%;
+	height: auto;
+	position: relative;
+	margin-top: 1%;
+}
+
+.btn_panel_large img
+{
+	display: block;
+	max-width: 1166px;
+	max-height: 460px;
+	width: 100%;
+	height: auto;
+
+}
+
 .horz_middle /*For controls in the middle columns*/
 {
 	margin: auto;
 }
 
 .horz_right /*For controls in the right hand column*/
+{
+	float: right;
+}
+
+.panel_middle /*For controls in the middle columns*/
+{
+	margin: auto;
+}
+
+.panel_right /*For controls in the right hand column*/
 {
 	float: right;
 }
@@ -543,6 +666,24 @@ div#round_choice_cont
 	width: 18%;
 	height: auto;
 	float: right;
+}
+
+div#round_ten_cont
+{
+	width: 8.3%;
+	height: auto;
+	float: right;
+	margin-right: 0%;
+}
+
+.ten_dot_slider
+{
+	margin-bottom: 2.5%;
+}
+
+.joystick_settings .ten_dot_slider
+{
+	margin-bottom: 10%;
 }
 
 .round
@@ -571,6 +712,116 @@ button#round_btn:active #round_img
 {
 	background-decorator: image;
 	background-image: round-o.png;
+}
+
+/*Oval Button*/
+
+div#oval_cont
+{
+	width: 16%;
+	height: auto;
+	float: right;
+	margin-right: 0%;
+}
+
+.difficulty_slider
+{
+	margin-bottom: 2.5%;
+}
+
+.oval
+{
+	display: block;
+	max-width: 102px;
+	max-height: 103px;
+	width: 100%;
+	height: auto;
+
+}
+
+#oval_img
+{
+	background-decorator: image;
+	background-image: oval.png;
+}
+
+button#oval_btn:hover #oval_img
+{
+	background-decorator: image;
+	background-image: oval-h.png;
+}
+
+button#oval_btn:active #oval_img
+{
+	background-decorator: image;
+	background-image: oval-o.png;
+}
+
+/*Arrow Buttons*/
+
+div#arrow_cont
+{
+	width: 8.3%;
+	height: auto;
+	float: right;
+	margin-right: 0%;
+}
+
+.difficulty_slider #arrow_cont
+{
+	margin-right: 1%;
+}
+
+.gamma_setting #arrow_cont
+{
+	margin-right: 4%;
+	margin-top: 5%;
+}
+
+.arrow
+{
+	display: block;
+	max-width: 108px;
+	max-height: 119px;
+	width: 100%;
+	height: auto;
+
+}
+
+#left_arrow_img
+{
+	background-decorator: image;
+	background-image: arrow-left.png;
+}
+
+button#left_arrow_btn:hover #left_arrow_img
+{
+	background-decorator: image;
+	background-image: arrow-left-h.png;
+}
+
+button#left_arrow_btn:active #left_arrow_img
+{
+	background-decorator: image;
+	background-image: arrow-left-o.png;
+}
+
+#right_arrow_img
+{
+	background-decorator: image;
+	background-image: arrow-right.png;
+}
+
+button#right_arrow_btn:hover #right_arrow_img
+{
+	background-decorator: image;
+	background-image: arrow-right-h.png;
+}
+
+button#right_arrow_btn:active #right_arrow_img
+{
+	background-decorator: image;
+	background-image: arrow-right-o.png;
 }
 
 /*Range Slider*/
