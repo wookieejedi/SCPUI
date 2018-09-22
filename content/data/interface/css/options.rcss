@@ -161,7 +161,7 @@ div#bottom_panel_c img
 	background-image: options-o.png;
 }
 
-#options_btn:checked #options_img
+#options_btn:selected #options_img
 {
 	background-decorator: image;
 	background-image: options-o.png;
@@ -196,7 +196,7 @@ div#bottom_panel_c img
 	background-image: detail-o.png;
 }
 
-#detail_btn:checked #detail_img
+#detail_btn:selected #detail_img
 {
 	background-decorator: image;
 	background-image: detail-o.png;
@@ -231,7 +231,7 @@ div#bottom_panel_c img
 	background-image: prefs-o.png;
 }
 
-#prefs_btn:checked #prefs_img
+#prefs_btn:selected #prefs_img
 {
 	background-decorator: image;
 	background-image: prefs-o.png;
@@ -266,7 +266,7 @@ div#bottom_panel_c img
 	background-image: multiplayer-o.png;
 }
 
-#multi_btn:checked #multi_img
+#multi_btn:selected #multi_img
 {
 	background-decorator: image;
 	background-image: multiplayer-o.png;
