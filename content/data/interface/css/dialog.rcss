@@ -25,13 +25,13 @@
 .button_positive:hover div
 {
 	background-decorator: image;
-	background-image: select-green-h.png;
+	background-image: select-pos-h.png;
 }
 
 .button_positive:active div
 {
 	background-decorator: image;
-	background-image: select-green-o.png;
+	background-image: select-pos-o.png;
 }
 
 .button_negative div
