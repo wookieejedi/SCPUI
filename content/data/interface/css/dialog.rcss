@@ -85,8 +85,6 @@ div#content
 div#content img
 {
 	display: block;
-	max-width: 1914px;
-	max-height: 910px;
 	width: 100%;
 	height: auto;
 }

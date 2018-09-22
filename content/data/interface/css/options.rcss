@@ -25,8 +25,6 @@ div#logo_wide
 div#logo_wide img
 {
 	display: block;
-	max-width: 2819px;
-	max-height: 626px;
 	width: 100%;
 	height: auto;
 }
@@ -44,8 +42,6 @@ div#options_window
 div#options_window img
 {
 	display: block;
-	max-width: 3425px;
-	max-height: 1842px;
 	width: 100%;
 	height: auto;
 }
@@ -73,8 +69,6 @@ div#bottom_panel_a
 div#bottom_panel_a img
 {
 	display: block;
-	max-width: 304px;
-	max-height: 261px;
 	width: 100%;
 	height: auto;
 }
@@ -91,8 +85,6 @@ div#bottom_panel_c
 div#bottom_panel_c img
 {
 	display: block;
-	max-width: 674px;
-	max-height: 156px;
 	width: 100%;
 	height: auto;
 
@@ -145,8 +137,6 @@ div#bottom_panel_c img
 .options
 {
 	display: block;
-	max-width: 132px;
-	max-height: 120px;
 	width: 68%;
 	height: auto;
 	margin: auto;
@@ -182,8 +172,6 @@ div#bottom_panel_c img
 .detail
 {
 	display: block;
-	max-width: 152px;
-	max-height: 116px;
 	width: 75%;
 	height: auto;
 	margin: auto;
@@ -219,8 +207,6 @@ div#bottom_panel_c img
 .prefs
 {
 	display: block;
-	max-width: 110px;
-	max-height: 132px;
 	width: 50%;
 	height: auto;
 	margin: auto;
@@ -256,8 +242,6 @@ div#bottom_panel_c img
 .multi
 {
 	display: block;
-	max-width: 93px;
-	max-height: 83px;
 	width: 70%;
 	height: auto;
 	margin: auto;
@@ -306,8 +290,6 @@ div#accept_cont
 .accept
 {
 	display: block;
-	max-width: 298px;
-	max-height: 212px;
 	width: 100%;
 	height: auto;
 
@@ -357,8 +339,6 @@ div#hud_cont
 .hud
 {
 	display: block;
-	max-width: 188px;
-	max-height: 157px;
 	width: 100%;
 	height: auto;
 
@@ -395,8 +375,6 @@ div#control_cont
 .control
 {
 	display: block;
-	max-width: 151px;
-	max-height: 154px;
 	width: 100%;
 	height: auto;
 
@@ -442,8 +420,6 @@ div#bottom_panel_exit
 div#bottom_panel_exit img
 {
 	display: block;
-	max-width: 304px;
-	max-height: 261px;
 	width: 100%;
 	height: auto;
 }
@@ -465,8 +441,6 @@ div#exit_cont
 .exit
 {
 	display: block;
-	max-width: 298px;
-	max-height: 212px;
 	width: 100%;
 	height: auto;
 
@@ -540,8 +514,6 @@ div#horz_panel_wrapper
 .btn_panel_horz img
 {
 	display: block;
-	max-width: 583px;
-	max-height: 115px;
 	width: 100%;
 	height: auto;
 
@@ -624,8 +596,6 @@ div#gamma_panel_wrapper
 .btn_panel_large img
 {
 	display: block;
-	max-width: 1166px;
-	max-height: 460px;
 	width: 100%;
 	height: auto;
 
@@ -689,8 +659,6 @@ div#round_ten_cont
 .round
 {
 	display: block;
-	max-width: 102px;
-	max-height: 103px;
 	width: 100%;
 	height: auto;
 
@@ -732,8 +700,6 @@ div#oval_cont
 .oval
 {
 	display: block;
-	max-width: 102px;
-	max-height: 103px;
 	width: 100%;
 	height: auto;
 
@@ -781,8 +747,6 @@ div#arrow_cont
 .arrow
 {
 	display: block;
-	max-width: 108px;
-	max-height: 119px;
 	width: 100%;
 	height: auto;
 

@@ -25,8 +25,6 @@ div#logo
 div#logo img
 {
 	display: block;
-	max-width: 1200px;
-	max-height: 702px;
 	width: 100%;
 	height: auto;
 }
@@ -65,8 +63,6 @@ div#bottom_panel_a
 div#bottom_panel_a img
 {
 	display: block;
-	max-width: 304px;
-	max-height: 261px;
 	width: 100%;
 	height: auto;
 }
@@ -83,8 +79,6 @@ div#bottom_panel_b
 div#bottom_panel_b img
 {
 	display: block;
-	max-width: 153px;
-	max-height: 236px;
 	width: 100%;
 	height: auto;
 
@@ -104,8 +98,6 @@ div#pilot_select
 div#pilot_select img
 {
 	display: block;
-	max-width: 1911px;
-	max-height: 737px;
 	width: 100%;
 	height: auto;
 }
@@ -181,8 +173,6 @@ div#arrow_cont
 .arrowbuttons
 {
 	display: block;
-	max-width: 99px;
-	max-height: 88px;
 	width: 100%;
 	height: auto;
 
@@ -240,8 +230,6 @@ div#player_commit_cont
 .playercommit
 {
 	display: block;
-	max-width: 176px;
-	max-height: 141px;
 	width: 100%;
 	height: auto;
 
@@ -280,8 +268,6 @@ div#single_multi_cont
 .singleplayer
 {
 	display: block;
-	max-width: 93px;
-	max-height: 83px;
 	width: 100%;
 	height: auto;
 
@@ -316,8 +302,6 @@ div#single_multi_cont
 .multiplayer
 {
 	display: block;
-	max-width: 93px;
-	max-height: 83px;
 	width: 100%;
 	height: auto;
 
@@ -364,8 +348,6 @@ div#player_control_cont
 .createplayer
 {
 	display: block;
-	max-width: 125px;
-	max-height: 136px;
 	width: 100%;
 	height: auto;
 
@@ -394,8 +376,6 @@ button#createplayer_btn:active #createplayer_img
 .cloneplayer
 {
 	display: block;
-	max-width: 125px;
-	max-height: 136px;
 	width: 100%;
 	height: auto;
 
@@ -424,8 +404,6 @@ button#cloneplayer_btn:active #cloneplayer_img
 .deleteplayer
 {
 	display: block;
-	max-width: 125px;
-	max-height: 136px;
 	width: 100%;
 	height: auto;
 
@@ -463,8 +441,6 @@ div#pilot_head_select
 div#pilot_head_select img
 {
 	display: block;
-	max-width: 923px;
-	max-height: 768px;
 	width: 100%;
 	height: auto;
 }
@@ -505,8 +481,6 @@ div#lr_arrows_cont
 .lr_arrows
 {
 	display: block;
-	max-width: 108px;
-	max-height: 119px;
 	width: 100%;
 	height: auto;
 
@@ -562,8 +536,6 @@ div#pilot_squad_select
 div#pilot_squad_select img
 {
 	display: block;
-	max-width: 710px;
-	max-height: 689px;
 	width: 100%;
 	height: auto;
 }
@@ -615,8 +587,6 @@ div#pilot_info
 div#pilot_info img
 {
 	display: block;
-	max-width: 1771px;
-	max-height: 1356px;
 	width: 100%;
 	height: auto;
 }
@@ -675,8 +645,6 @@ div#stats_scroll_cont
 .stats_scroll_btns
 {
 	display: block;
-	max-width: 107px;
-	max-height: 121px;
 	width: 100%;
 	height: auto;
 	visibility: hidden;
@@ -738,8 +706,6 @@ div#medals_btn_cont
 .medals
 {
 	display: block;
-	max-width: 142px;
-	max-height: 179px;
 	width: 100%;
 	height: auto;
 
@@ -780,8 +746,6 @@ div#accept_cont
 .accept
 {
 	display: block;
-	max-width: 298px;
-	max-height: 212px;
 	width: 100%;
 	height: auto;
 
@@ -832,8 +796,6 @@ div#help_cont
 .help
 {
 	display: block;
-	max-width: 104px;
-	max-height: 114px;
 	width: 100%;
 	height: auto;
 
@@ -869,8 +831,6 @@ div#options_cont
 .options
 {
 	display: block;
-	max-width: 132px;
-	max-height: 120px;
 	width: 100%;
 	height: auto;
 
