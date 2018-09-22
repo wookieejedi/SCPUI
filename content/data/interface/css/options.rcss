@@ -487,6 +487,18 @@ button#exit_btn:active #exit_img
 	margin-left: 7%;
 }
 
+.btn_panel_general .ops_right_header
+{
+	margin-right: 7%;
+	text-align: right;
+}
+
+.btn_panel_general .ops_left_header
+{
+	margin-left: 16%;
+	position: absolute;
+}
+
 /*Horizontal Panel*/
 
 div#horz_panel_wrapper
@@ -503,7 +515,7 @@ div#horz_panel_wrapper
 	margin-top: -85%;
 }
 
-.btn_panel_horz /*For controls in all colums*/
+.btn_panel_horz
 {
 	width: 60%;
 	height: auto;
@@ -517,6 +529,90 @@ div#horz_panel_wrapper
 	width: 100%;
 	height: auto;
 
+}
+
+/*Vertical Panel*/
+
+.btn_panel_vert
+{
+	width: 20%;
+	height: auto;
+	position: relative;
+	margin-top: 1%;
+}
+
+.btn_panel_vert img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+.btn_panel_vert #bullet_choice_cont
+{
+	width: 60%;
+}
+
+div#vert_panel_wrapper
+{
+	position: absolute;
+	bottom: 10%;
+}
+
+#vert_panel_wrapper .button_text_right p
+{
+	width: 200%;
+	margin-left: 80%;
+	margin-top: -40%;
+}
+
+#vert_panel_text
+{
+	width: 400%;
+	margin-left: 40%;
+}
+
+/*Vertical Tall Panel*/
+
+.btn_panel_vert_tall
+{
+	width: 25%;
+	height: auto;
+	position: relative;
+	margin-top: 1%;
+}
+
+.btn_panel_vert_tall img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+div#vert_tall_panel_wrapper
+{
+	position: absolute;
+	bottom: 4%;
+}
+
+.object_update #vert_tall_panel_wrapper
+{
+	bottom: 18%;
+}
+
+#vert_tall_panel_wrapper .button_text_right p
+{
+	width: 200%;
+	margin-left: 80%;
+	margin-top: -17%;
+}
+
+#vert_tall_panel_text
+{
+	width: 400%;
+	margin-left: 30%;
 }
 
 /*Large Multi-Slider Panel*/
@@ -583,6 +679,143 @@ div#gamma_panel_wrapper
 	margin-right: 10%;
 }
 
+/*Generic Multi Window Panel*/
+.btn_panel_general
+{
+	width: 70%;
+	height: auto;
+	position: relative;
+	margin-top: 2%;
+}
+
+.btn_panel_general img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+/*Mic Test*/
+.mic_test
+{
+	
+}
+
+.mic_test #oval_cont
+{
+	width: 40%;
+	float: left;
+	margin-left: 10%;
+}
+
+.mic_test #horz_panel_wrapper
+{
+	bottom: 0%;
+}
+
+/*Mute Players Panel*/
+
+div#muteplayers_arrows_wrapper
+{
+	position: absolute;
+	top: 5%;
+	float: right;
+	padding-left: 1%;
+}
+
+#muteplayers_arrows_wrapper #arrow_cont
+{
+	float: none;
+	margin-left: 6%;
+	margin-top: 0%;
+	width: 80%;
+}
+
+div#muteplayers_controls_wrapper
+{
+	position: absolute;
+	bottom: -1em;
+	padding-left: 1%;
+}
+
+#muteplayers_arrows
+{
+	float: right;
+	width: 13%;
+}
+
+/*IP Address Panel*/
+
+div#ipaddress_arrows_wrapper
+{
+	position: absolute;
+	top: 5%;
+	padding-left: 1%;
+}
+
+#ipaddress_arrows_wrapper #arrow_cont
+{
+	float: none;
+	margin-left: 2%;
+	margin-top: 2%;
+}
+
+div#ipaddress_controls_wrapper
+{
+	position: absolute;
+	bottom: -1em;
+	padding-left: 1%;
+}
+
+/*FS2NetD Panel*/
+
+div#network_select_wrapper
+{
+	position: absolute;
+	top: 11%;
+	padding-left: 5%;
+}
+
+#network_select_wrapper #round_cont
+{
+	float: none;
+	margin-left: 2%;
+	margin-top: 4%;
+}
+
+#network_select_wrapper .button_text_right p
+{
+	margin-left: 10%;
+}
+
+#login_creds_wrapper
+{
+	position: absolute;
+	top: 42%;
+	width: 80%;
+	height: 39%;
+	margin-left: 16%;
+	margin-bottom: 4%;
+	margin-right: 10%;
+}
+
+input.text,
+input.password,
+{
+	border-color: rgba(127,127,127,125);
+	border-width: 1px;
+	background-color: rgba(0,0,0,100);
+	margin-left: 2%;
+	float: right;
+}
+
+#login_creds_wrapper span
+{
+	float: left;
+	width: 10%;
+}
+
 /*Misc Panel Positioning*/
 
 .btn_panel_large
@@ -646,6 +879,23 @@ div#round_ten_cont
 	margin-right: 0%;
 }
 
+div#round_server_cont
+{
+	width: 8.3%;
+	height: auto;
+	float: none;
+	margin-right: 0%;
+}
+
+div#round_mute_cont
+{
+	width: 8.3%;
+	height: auto;
+	float: right;
+	margin-right: 30%;
+}
+
+
 .ten_dot_slider
 {
 	margin-bottom: 2.5%;
@@ -680,6 +930,59 @@ button#round_btn:active #round_img
 {
 	background-decorator: image;
 	background-image: round-o.png;
+}
+
+/*Bullet Button*/
+
+div#bullet_choice_cont
+{
+	width: 45%;
+	height: auto;
+	margin-left: 30%;
+}
+
+.bullet
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+}
+
+button#bullet_r_btn:hover #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#bullet_r_btn:active #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+#bullet_l_img
+{
+	background-decorator: image;
+	background-image: bullet-l.png;
+}
+
+button#bullet_l_btn:hover #bullet_l_img
+{
+	background-decorator: image;
+	background-image: bullet-l-h.png;
+}
+
+button#bullet_l_btn:active #bullet_l_img
+{
+	background-decorator: image;
+	background-image: bullet-l-o.png;
 }
 
 /*Oval Button*/
@@ -721,6 +1024,60 @@ button#oval_btn:active #oval_img
 {
 	background-decorator: image;
 	background-image: oval-o.png;
+}
+
+/*Add Remove Buttons*/
+
+div#add_remove_cont
+{
+	width: 10%;
+	height: auto;
+	float: left;
+	margin-left: 7%;
+}
+
+.controls
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#add_img
+{
+	background-decorator: image;
+	background-image: star.png;
+}
+
+button#add_btn:hover #add_img
+{
+	background-decorator: image;
+	background-image: star-h.png;
+}
+
+button#add_btn:active #add_img
+{
+	background-decorator: image;
+	background-image: star-o.png;
+}
+
+#remove_img
+{
+	background-decorator: image;
+	background-image: exit.png;
+}
+
+button#remove_btn:hover #remove_img
+{
+	background-decorator: image;
+	background-image: exit-neg-h.png;
+}
+
+button#remove_btn:active #remove_img
+{
+	background-decorator: image;
+	background-image: exit-neg-o.png;
 }
 
 /*Arrow Buttons*/
@@ -786,6 +1143,42 @@ button#right_arrow_btn:active #right_arrow_img
 {
 	background-decorator: image;
 	background-image: arrow-right-o.png;
+}
+
+#up_arrow_img
+{
+	background-decorator: image;
+	background-image: arrow-up.png;
+}
+
+button#up_arrow_btn:hover #up_arrow_img
+{
+	background-decorator: image;
+	background-image: arrow-up-h.png;
+}
+
+button#up_arrow_btn:active #up_arrow_img
+{
+	background-decorator: image;
+	background-image: arrow-up-o.png;
+}
+
+#down_arrow_img
+{
+	background-decorator: image;
+	background-image: arrow-down.png;
+}
+
+button#down_arrow_btn:hover #down_arrow_img
+{
+	background-decorator: image;
+	background-image: arrow-down-h.png;
+}
+
+button#down_arrow_btn:active #down_arrow_img
+{
+	background-decorator: image;
+	background-image: arrow-down-o.png;
 }
 
 /*Range Slider*/
