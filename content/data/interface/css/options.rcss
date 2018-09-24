@@ -1273,7 +1273,8 @@ input.range sliderarrowinc:active
 	width: 100%;
 }
 
-select
+select,
+dataselect
 {
 	width: 98%;
 	margin-left: 10%;
