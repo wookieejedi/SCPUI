@@ -9,7 +9,7 @@
 			controller = require("options")()
 		</script>
 	</head>
-	<body onload="controller:initialize(document)" onkeyup="controller:global_keydown(element, event)">
+	<body onload="controller:initialize(document)" onkeyup="controller:global_keydown(element, event)" onunload="controller = nil">
 		<div id=options_window>
 			<tabset id="ops_tabs_cont">
 				<tab id="options_btn" class="button_1 tab">
@@ -806,6 +806,33 @@
 								</div>
 								<img src="ops-panel-vert-tall-l.png"></img>
 							</div>
+							<div class="btn_panel_horz"> <!--This begins all the rml for a dropdown selector. Note, you'll need to change <select> to <dataselect> and remove the <option> lines-->
+								<div id="horz_panel_text" class="ops_left_header">
+									<span id="dropdown_title">Resolution</span>
+								</div>
+								<div id=horz_panel_wrapper>
+									<div id=dropdown_cont>
+										<dataselect id="resolution_data_select" fields="display" valuefield="serialized">
+										</dataselect>
+									</div>
+								</div>
+								<img src="ops-panel-horz.png"></img>
+							</div>
+							<div class="btn_panel_horz"> <!--This begins all the rml for a dropdown selector. Note, you'll need to change <select> to <dataselect> and remove the <option> lines-->
+								<div id="horz_panel_text" class="ops_left_header">
+									<span id="dropdown_title">Display</span>
+								</div>
+								<div id=horz_panel_wrapper>
+									<div id=dropdown_cont>
+										<dataselect id="display_data_select" fields="display" valuefield="serialized">
+										</dataselect>
+									</div>
+								</div>
+								<img src="ops-panel-horz.png"></img>
+							</div>
+						</div>
+						<div class="options_column_25">
+
 							<div class="btn_panel_horz"> <!--This begins all the rml for a five point range selector-->
 								<div id="horz_panel_text" class="ops_left_header">
 									<p id="five_range_title">Five Point Range Selector</p>
@@ -889,24 +916,6 @@
 								</div>
 								<img src="ops-panel-horz.png"></img>
 							</div>
-							<div class="btn_panel_horz"> <!--This begins all the rml for a dropdown selector. Note, you'll need to change <select> to <dataselect> and remove the <option> lines-->
-								<div id="horz_panel_text" class="ops_left_header">
-									<span id="dropdown_title">Dropdown Selector</span>
-								</div>
-								<div id=horz_panel_wrapper>
-									<div id=dropdown_cont>
-										<select>
-											<option>Option 1</option>
-											<option>Option 2</option>
-											<option>Option 3</option>
-											<option>Option 4</option>
-										</select>
-									</div>
-								</div>
-								<img src="ops-panel-horz.png"></img>
-							</div>
-						</div>
-						<div class="options_column_25">
 						</div> <!--middle column. Any buttons here need "horz_middle" added to their class-->
 						<div class="options_column_25">
 						</div> <!--middle column. Any buttons here need "horz_middle" added to their class-->
@@ -1353,7 +1362,7 @@
 			<div id=bottom_panel_a>
 				<div id=a_panel_wrapper>
 					<div id=accept_cont>
-						<button id="accept_btn" class="accept button_1">
+						<button id="accept_btn" class="accept button_1" onclick="controller:accept_clicked(element)">
 							<span id="accept_img" class="accept">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
