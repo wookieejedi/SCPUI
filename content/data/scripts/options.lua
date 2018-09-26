@@ -184,14 +184,17 @@ function OptionsController:accept_clicked(element)
 
     local changed_text = table.concat(titles, "\n")
 
-    local dialog_text = string.format(ba.XSTR("The following changes require a restart to apply their changes:<ul>%s</ul>", -1), changed_text)
+    local dialog_text = string.format(ba.XSTR("<p>The following changes require a restart to apply their changes:</p><p>%s</p>", -1), changed_text)
 
     local builder = dialogs.new()
     builder:title(ba.XSTR("Restart required", -1))
     builder:text(dialog_text)
-    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1))
-    builder:show(self.document.context, function(_)
-        ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
+    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", -1), false)
+    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), true)
+    builder:show(self.document.context, function(val)
+        if val then
+            ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
+        end
     end)
 end
 
