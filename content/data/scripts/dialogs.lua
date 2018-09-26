@@ -1,3 +1,5 @@
+local rkt_util = require("rocket_util")
+
 local module = {}
 
 -- The type of a dialog
@@ -13,27 +15,25 @@ module.BUTTON_MAPPING = {
 }
 
 local function initialize_buttons(document, properties, finish_func)
-    local button_template = document:GetElementById("button_template")
     local button_container = document:GetElementById("button_container")
 
     for _, v in ipairs(properties.buttons) do
-        local btn_class = module.BUTTON_MAPPING[v.type]
-
-        local actual_el = button_template:Clone()
-        actual_el.id = "" -- Reset the ID so that there are no duplicate IDs
+        local actual_el, text_el, image_container, image_el = rkt_util.instantiate_template(document, "button_template", {
+            "button_text_id",
+            "button_image_container",
+            "button_image_id"
+        })
         button_container:AppendChild(actual_el)
 
-        local text_el = actual_el:GetElementsByClassName("button_text_id")[1]
+        actual_el.id = "" -- Reset the ID so that there are no duplicate IDs
+        actual_el:SetClass(module.BUTTON_MAPPING[v.type], true)
+
         text_el.inner_rml = v.text
 
-        actual_el:SetClass(btn_class, true)
-
-        local style = actual_el:GetElementsByClassName("button_image_container")[1].style
+        local style = image_container.style
         for i, v in pairs(style) do
-            ba.print(string.format("%q: %q\n", i, v))
             -- This is pretty ugly but somehow the __index function is broken
             if i == "background-image" then
-                local image_el = actual_el:GetElementsByClassName("button_image_id")[1]
                 image_el:SetAttribute("src", v)
                 break
             end

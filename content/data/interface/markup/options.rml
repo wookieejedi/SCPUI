@@ -10,6 +10,108 @@
 		</script>
 	</head>
 	<body onload="controller:initialize(document)" onkeyup="controller:global_keydown(element, event)" onunload="controller = nil">
+	<div class="hidden">
+		<!--This begins all the rml for a dropdown selector. Note, you'll need to change <select> to <dataselect> and remove the <option> lines-->
+		<div id="dropdown_template" class="btn_panel_horz">
+			<div id="horz_panel_text" class="ops_left_header">
+				<span id="dropdown_title" class="dropdown_text_el"></span>
+			</div>
+			<div id=horz_panel_wrapper>
+				<div id=dropdown_cont>
+					<dataselect class="dropdown_dataselect_el" fields="display" valuefield="serialized">
+					</dataselect>
+				</div>
+			</div>
+			<img src="ops-panel-horz.png"></img>
+		</div>
+
+		<!--This begins all the rml for a five point range selector-->
+		<div id="fivepoint_selector_template" class="btn_panel_horz">
+			<div id="horz_panel_text" class="ops_left_header">
+				<p class="fivepoint_text_el">Five Point Range Selector</p>
+			</div>
+			<div id=horz_panel_wrapper>
+				<div id=round_choice_cont>
+					<button id="round_btn" class="fivepoint_btn1 round button_1">
+						<div id="round_img" class="round">
+							<img src="round.png" class="psuedo_img"></img>
+						</div>
+					</button>
+				</div>
+				<div id=round_choice_cont>
+					<button id="round_btn" class="fivepoint_btn2 round button_1">
+						<div id="round_img" class="round">
+							<img src="round.png" class="psuedo_img"></img>
+						</div>
+					</button>
+				</div>
+				<div id=round_choice_cont>
+					<button id="round_btn" class="fivepoint_btn3 round button_1">
+						<div id="round_img" class="round">
+							<img src="round.png" class="psuedo_img"></img>
+						</div>
+					</button>
+				</div>
+				<div id=round_choice_cont>
+					<button id="round_btn" class="fivepoint_btn4 round button_1">
+						<div id="round_img" class="round">
+							<img src="round.png" class="psuedo_img"></img>
+						</div>
+					</button>
+				</div>
+				<div id=round_choice_cont>
+					<button id="round_btn" class="fivepoint_btn5 round button_1">
+						<div id="round_img" class="round">
+							<img src="round.png" class="psuedo_img"></img>
+						</div>
+					</button>
+				</div>
+			</div>
+			<img src="ops-panel-horz.png"></img>
+		</div>
+		<!--This begins all the rml for a binary option-->
+		<div id="binary_selector_template" class="btn_panel_horz">
+			<div id="horz_panel_text" class="ops_left_header">
+				<p class="binary_text_el">Binary Option</p>
+			</div>
+			<div id=horz_panel_wrapper>
+				<div id=round_option_cont>
+					<button id="round_btn" class="binary_left_btn_el round button_1">
+						<div id="round_img" class="round">
+							<img src="round.png" class="psuedo_img"></img>
+						</div>
+						<div class="pos button_text_left">
+							<p class="binary_left_text_el">Two</p>
+						</div>
+					</button>
+				</div>
+				<div id=round_option_cont>
+					<button id="round_btn" class="binary_right_btn_el round button_1">
+						<div id="round_img" class="round">
+							<img src="round.png" class="psuedo_img"></img>
+						</div>
+						<div class="pos button_text_left">
+							<p class="binary_right_text_el">One</p>
+						</div>
+					</button>
+				</div>
+			</div>
+			<img src="ops-panel-horz.png"></img>
+		</div>
+		<!--This begins all the rml for a range slider-->
+		<div id="slider_template" class="btn_panel_horz">
+			<div id="horz_panel_text" class="ops_left_header">
+				<span class="slider_title_el">Slider Title</span>: <span class="slider_value_el header_text">1.0</span>
+			</div>
+			<div id=horz_panel_wrapper>
+				<div id=range_cont>
+					<input class="slider_range_el" type="range" min="0" max="1" step="0.01"></input>
+					<img src="ops-panel-horz.png" class="psuedo_img"></img>
+				</div>
+			</div>
+			<img src="ops-panel-horz.png"></img>
+		</div>
+	</div>
 		<div id=options_window>
 			<tabset id="ops_tabs_cont">
 				<tab id="options_btn" class="button_1 tab">
@@ -737,7 +839,7 @@
 					</span>
 				</tab>
 					<panel class="options_panel">
-						<div class="options_column_25"> <!--left column button panels-->
+						<div id="detail_column_1" class="options_column_25"> <!--left column button panels-->
 							<div class="btn_panel_vert_tall"> <!--This begins all the rml for the preset selector-->
 								<div id="vert_tall_panel_text">
 									<p id="preset_title">Preset Detail Level</p>
@@ -806,120 +908,12 @@
 								</div>
 								<img src="ops-panel-vert-tall-l.png"></img>
 							</div>
-							<div class="btn_panel_horz"> <!--This begins all the rml for a dropdown selector. Note, you'll need to change <select> to <dataselect> and remove the <option> lines-->
-								<div id="horz_panel_text" class="ops_left_header">
-									<span id="dropdown_title">Resolution</span>
-								</div>
-								<div id=horz_panel_wrapper>
-									<div id=dropdown_cont>
-										<dataselect id="resolution_data_select" fields="display" valuefield="serialized">
-										</dataselect>
-									</div>
-								</div>
-								<img src="ops-panel-horz.png"></img>
-							</div>
-							<div class="btn_panel_horz"> <!--This begins all the rml for a dropdown selector. Note, you'll need to change <select> to <dataselect> and remove the <option> lines-->
-								<div id="horz_panel_text" class="ops_left_header">
-									<span id="dropdown_title">Display</span>
-								</div>
-								<div id=horz_panel_wrapper>
-									<div id=dropdown_cont>
-										<dataselect id="display_data_select" fields="display" valuefield="serialized">
-										</dataselect>
-									</div>
-								</div>
-								<img src="ops-panel-horz.png"></img>
-							</div>
 						</div>
-						<div class="options_column_25">
-
-							<div class="btn_panel_horz"> <!--This begins all the rml for a five point range selector-->
-								<div id="horz_panel_text" class="ops_left_header">
-									<p id="five_range_title">Five Point Range Selector</p>
-								</div>
-								<div id=horz_panel_wrapper>
-									<div id=round_choice_cont>
-										<button id="round_btn" class="round button_1">
-											<div id="round_img" class="round">
-												<img src="round.png" class="psuedo_img"></img>
-											</div>
-										</button>
-									</div>
-									<div id=round_choice_cont>
-										<button id="round_btn" class="round button_1">
-											<div id="round_img" class="round">
-												<img src="round.png" class="psuedo_img"></img>
-											</div>
-										</button>
-									</div>
-									<div id=round_choice_cont>
-										<button id="round_btn" class="round button_1">
-											<div id="round_img" class="round">
-												<img src="round.png" class="psuedo_img"></img>
-											</div>
-										</button>
-									</div>
-									<div id=round_choice_cont>
-										<button id="round_btn" class="round button_1">
-											<div id="round_img" class="round">
-												<img src="round.png" class="psuedo_img"></img>
-											</div>
-										</button>
-									</div>
-									<div id=round_choice_cont>
-										<button id="round_btn" class="round button_1">
-											<div id="round_img" class="round">
-												<img src="round.png" class="psuedo_img"></img>
-											</div>
-										</button>
-									</div>
-								</div>
-								<img src="ops-panel-horz.png"></img>
-							</div>
-							<div class="btn_panel_horz"> <!--This begins all the rml for a binary option-->
-								<div id="horz_panel_text" class="ops_left_header">
-									<p id="binary_title">Binary Option</p>
-								</div>
-								<div id=horz_panel_wrapper>
-									<div id=round_option_cont>
-										<button id="round_btn" class="round button_1">
-											<div id="round_img" class="round">
-												<img src="round.png" class="psuedo_img"></img>
-											</div>
-											<div class="pos button_text_left">
-												<p>Two</p>
-											</div>
-										</button>
-									</div>
-									<div id=round_option_cont>
-										<button id="round_btn" class="round button_1">
-											<div id="round_img" class="round">
-												<img src="round.png" class="psuedo_img"></img>
-											</div>
-											<div class="pos button_text_left">
-												<p>One</p>
-											</div>
-										</button>
-									</div>
-								</div>
-								<img src="ops-panel-horz.png"></img>
-							</div>
-							<div class="btn_panel_horz"> <!--This begins all the rml for a range slider-->
-								<div id="horz_panel_text" class="ops_left_header">
-									<span id="slider_title">Slider Title</span>: <span id="slider_value" class="header_text">1.0</span>
-								</div>
-								<div id=horz_panel_wrapper>
-									<div id=range_cont>
-										<input type="range" min=0 max=100 step=1></input>
-										<img src="ops-panel-horz.png" class="psuedo_img"></img>
-									</div>
-								</div>
-								<img src="ops-panel-horz.png"></img>
-							</div>
+						<div id="detail_column_2" class="options_column_25">
 						</div> <!--middle column. Any buttons here need "horz_middle" added to their class-->
-						<div class="options_column_25">
+						<div id="detail_column_3" class="options_column_25">
 						</div> <!--middle column. Any buttons here need "horz_middle" added to their class-->
-						<div class="options_column_25">
+						<div id="detail_column_4" class="options_column_25">
 						</div> <!--middle column. Any buttons here need "horz_right" added to their class-->
 					</panel>
 				<tab id="prefs_btn" class="button_1 tab">

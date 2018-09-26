@@ -85,6 +85,7 @@ selectvalue
 .hidden
 {
 	visibility: hidden;
+	display: none;
 }
 
 .shown
