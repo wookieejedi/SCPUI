@@ -9,7 +9,7 @@
 			controller = require("barracks")()
 		</script>
 	</head>
-	<body onload="controller:initialize(document)" onkeyup="controller:global_keydown(element, event)" onunload="controller = nil">
+	<body onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
 		<div id="upper_windows" class="window_container">
 			<div id=pilot_select>
 				<div id="pilot_select_title" class="window_title">

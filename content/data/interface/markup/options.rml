@@ -9,7 +9,7 @@
 			controller = require("options")()
 		</script>
 	</head>
-	<body onload="controller:initialize(document)" onkeyup="controller:global_keydown(element, event)" onunload="controller = nil">
+	<body onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
 	<div class="hidden">
 		<!--This begins all the rml for a dropdown selector. Note, you'll need to change <select> to <dataselect> and remove the <option> lines-->
 		<div id="dropdown_template" class="btn_panel_horz">
