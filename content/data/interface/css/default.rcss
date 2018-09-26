@@ -41,3 +41,8 @@ tabset tabs
 {
 	display: block;
 }
+
+li
+{
+	display: block;
+}
