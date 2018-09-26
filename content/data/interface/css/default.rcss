@@ -45,4 +45,5 @@ tabset tabs
 li
 {
 	display: block;
+	margin-left: 1em;
 }

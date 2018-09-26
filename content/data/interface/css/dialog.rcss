@@ -95,7 +95,7 @@ div#title_wrapper
 	top: 0;
 	margin-top: 2%;
 	margin-left: 4%;
-	width: 40%;
+	width: 89%;
 	z-index: 4;
 }
 

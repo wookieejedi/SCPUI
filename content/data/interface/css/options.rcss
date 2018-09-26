@@ -1322,7 +1322,12 @@ selectbox
 {
 	width: 75%;
 	text-align: center;
-	background-color: rgba(0,0,0,150);
+	background-color: rgba(0,0,0,220);
 	border-color: rgba(127,127,127,255);
 	border-width: 1px;
+}
+
+selectbox option:hover
+{
+	color: white;
 }

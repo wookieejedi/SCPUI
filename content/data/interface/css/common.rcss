@@ -10,6 +10,11 @@ body
 	color: #7b7b7b;
 }
 
+li
+{
+	color: #7b7b7b;
+}
+
 .header_text
 {
 	color: #6f92f5;
