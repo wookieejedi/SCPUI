@@ -63,11 +63,10 @@ function OptionsController:init()
     }
 end
 
-function OptionsController:init_selection_element(element, option, change_func)
+function OptionsController:init_selection_element(element, option, vals, change_func)
     local select_el = Element.As.ElementFormControlDataSelect(element)
     select_el:SetDataSource(getFormatterName(option.Key) .. ".Default")
 
-    local vals = option:getValidValues()
     local value = option.Value
 
     element:AddEventListener("change", function(event, _, _)
@@ -82,6 +81,34 @@ function OptionsController:init_selection_element(element, option, change_func)
     end)
 
     select_el.selection = tblUtil.ifind(vals, value)
+end
+
+function OptionsController:init_binary_element(left_btn, right_btn, option, vals, change_func)
+    left_btn:AddEventListener("click", function()
+        if vals[1] ~= option.Value then
+            option.Value = vals[1]
+            left_btn:SetPseudoClass("checked", true)
+            right_btn:SetPseudoClass("checked", false)
+            if change_func then
+                change_func(vals[1])
+            end
+        end
+    end)
+    right_btn:AddEventListener("click", function()
+        if vals[2] ~= option.Value then
+            option.Value = vals[2]
+            left_btn:SetPseudoClass("checked", false)
+            right_btn:SetPseudoClass("checked", true)
+            if change_func then
+                change_func(vals[2])
+            end
+        end
+    end)
+
+    local value = option.Value
+    local right_selected = value == vals[2]
+    left_btn:SetPseudoClass("checked", not right_selected)
+    right_btn:SetPseudoClass("checked", right_selected)
 end
 
 function OptionsController:init_range_element(element, value_el, option, change_func)
@@ -105,15 +132,36 @@ end
 function OptionsController:createOptionElement(option, parent_id, onchange_func)
     local parent_el = self.document:GetElementById(parent_id)
     if option.Type == OPTION_TYPE_SELECTION then
-        local actual_el, text_el, dataselect_el = rkt_util.instantiate_template(self.document, "dropdown_template", {
-            "dropdown_text_el",
-            "dropdown_dataselect_el"
-        })
-        parent_el:AppendChild(actual_el)
+        local vals = option:getValidValues()
 
-        text_el.inner_rml = option.Title
+        if #vals == 2 then
+            -- Special case for binary options
+            local actual_el, title_el, btn_left, text_left, btn_right, text_right = rkt_util.instantiate_template(self.document, "binary_selector_template", {
+                "binary_text_el",
+                "binary_left_btn_el",
+                "binary_left_text_el",
+                "binary_right_btn_el",
+                "binary_right_text_el",
+            })
+            parent_el:AppendChild(actual_el)
 
-        self:init_selection_element(dataselect_el, option, onchange_func)
+            title_el.inner_rml = option.Title
+
+            text_left.inner_rml = vals[1].Display
+            text_right.inner_rml = vals[2].Display
+
+            self:init_binary_element(btn_left, btn_right, option, vals, onchange_func)
+        else
+            local actual_el, text_el, dataselect_el = rkt_util.instantiate_template(self.document, "dropdown_template", {
+                "dropdown_text_el",
+                "dropdown_dataselect_el"
+            })
+            parent_el:AppendChild(actual_el)
+
+            text_el.inner_rml = option.Title
+
+            self:init_selection_element(dataselect_el, option, vals, onchange_func)
+        end
     elseif option.Type == OPTION_TYPE_RANGE then
         local actual_el, title_el, value_el, range_el = rkt_util.instantiate_template(self.document, "slider_template", {
             "slider_title_el",
