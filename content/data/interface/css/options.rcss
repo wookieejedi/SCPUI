@@ -926,7 +926,8 @@ button#round_btn:hover #round_img
 	background-image: round-h.png;
 }
 
-button#round_btn:active #round_img
+button#round_btn:active #round_img,
+button#round_btn:checked #round_img
 {
 	background-decorator: image;
 	background-image: round-o.png;
