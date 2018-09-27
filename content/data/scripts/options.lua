@@ -181,6 +181,8 @@ function OptionsController:initialize_detail_options()
     for _, v in ipairs(self.category_options.detail) do
         if v.Key == "Graphics.Resolution" then
             self:createOptionElement(v, "detail_column_1")
+        elseif v.Key == "Graphics.WindowMode" then
+            self:createOptionElement(v, "detail_column_1")
         elseif v.Key == "Graphics.Display" then
             self:createOptionElement(v, "detail_column_1", function(_)
                 self.sources["Graphics.Resolution"]:updateValues()
