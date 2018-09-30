@@ -962,7 +962,8 @@ button#bullet_r_btn:hover #bullet_r_img
 	background-image: bullet-r-h.png;
 }
 
-button#bullet_r_btn:active #bullet_r_img
+button#bullet_r_btn:active #bullet_r_img,
+button#bullet_r_btn:checked #bullet_r_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
@@ -1021,7 +1022,8 @@ button#oval_btn:hover #oval_img
 	background-image: oval-h.png;
 }
 
-button#oval_btn:active #oval_img
+button#oval_btn:active #oval_img,
+button#oval_btn:checked #oval_img
 {
 	background-decorator: image;
 	background-image: oval-o.png;
