@@ -151,6 +151,8 @@ function OptionsController:createOptionElement(option, parent_id, onchange_func)
             text_right.inner_rml = vals[2].Display
 
             self:init_binary_element(btn_left, btn_right, option, vals, onchange_func)
+
+            return actual_el
         else
             local actual_el, text_el, dataselect_el = rkt_util.instantiate_template(self.document, "dropdown_template", {
                 "dropdown_text_el",
@@ -161,6 +163,8 @@ function OptionsController:createOptionElement(option, parent_id, onchange_func)
             text_el.inner_rml = option.Title
 
             self:init_selection_element(dataselect_el, option, vals, onchange_func)
+
+            return actual_el
         end
     elseif option.Type == OPTION_TYPE_RANGE then
         local actual_el, title_el, value_el, range_el = rkt_util.instantiate_template(self.document, "slider_template", {
@@ -173,6 +177,8 @@ function OptionsController:createOptionElement(option, parent_id, onchange_func)
         title_el.inner_rml = option.Title
 
         self:init_range_element(range_el, value_el, option, onchange_func)
+
+        return actual_el
     end
 end
 
@@ -188,7 +194,14 @@ function OptionsController:initialize_detail_options()
                 self.sources["Graphics.Resolution"]:updateValues()
             end)
         else
-            self:createOptionElement(v, string.format("detail_column_%d", current_column))
+            local el = self:createOptionElement(v, string.format("detail_column_%d", current_column))
+
+            if current_column == 2 or current_column == 3 then
+                el:SetClass("horz_middle", true)
+            elseif current_column == 4 then
+                el:SetClass("horz_right", true)
+            end
+
             current_column = current_column + 1
             if current_column > 4 then
                 current_column = 2
