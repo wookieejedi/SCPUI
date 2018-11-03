@@ -262,6 +262,32 @@ function OptionsController:accept_clicked(element)
 end
 
 function OptionsController:global_keydown(element, event)
+    if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+        event:StopPropagation()
+
+        ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
+    end
+end
+
+function OptionsController:control_config_clicked()
+    ba.postGameEvent(ba.GameEvents["GS_EVENT_CONTROL_CONFIG"])
+end
+
+function OptionsController:hud_config_clicked()
+    ba.postGameEvent(ba.GameEvents["GS_EVENT_HUD_CONFIG"])
+end
+
+function OptionsController:exit_game_clicked()
+    local builder = dialogs.new()
+    builder:text(ba.XSTR("Exit Game?", -1))
+    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", -1), false)
+    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Yes", -1), true)
+    builder:show(self.document.context, function(result)
+        if not result then
+            return
+        end
+        ba.postGameEvent(ba.GameEvents["GS_EVENT_QUIT_GAME"])
+    end)
 end
 
 return OptionsController
