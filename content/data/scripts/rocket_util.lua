@@ -1,10 +1,10 @@
 local module = {}
 
-function module.instantiate_template(document, template_id, template_classes)
+function module.instantiate_template(document, template_id, element_id, template_classes)
     local template = document:GetElementById(template_id)
 
     local actual_el = template:Clone()
-    actual_el.id = "" -- Reset the ID so that there are no duplicate IDs
+    actual_el.id = element_id or "" -- Reset the ID so that there are no duplicate IDs
 
     local template_els = {}
     for _, v in ipairs(template_classes) do

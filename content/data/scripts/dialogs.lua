@@ -18,7 +18,7 @@ local function initialize_buttons(document, properties, finish_func)
     local button_container = document:GetElementById("button_container")
 
     for _, v in ipairs(properties.buttons) do
-        local actual_el, text_el, image_container, image_el = rkt_util.instantiate_template(document, "button_template", {
+        local actual_el, text_el, image_container, image_el = rkt_util.instantiate_template(document, "button_template", nil, {
             "button_text_id",
             "button_image_container",
             "button_image_id"
