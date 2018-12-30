@@ -41,7 +41,6 @@ function DataSourceWrapper:init(option)
 end
 
 function DataSourceWrapper:updateValues()
-    ba.print("Updating values...")
     self.values = self.option:getValidValues()
     self.source:NotifyRowChange("Default")
 end
@@ -63,24 +62,108 @@ function OptionsController:init()
     }
 end
 
-function OptionsController:init_selection_element(element, option, vals, change_func)
-    local select_el = Element.As.ElementFormControlDataSelect(element)
-    select_el:SetDataSource(getFormatterName(option.Key) .. ".Default")
-
+function OptionsController:init_tps_element(btn_left, btn_right, point_buttons, option, onchange_func)
     local value = option.Value
+    local range_val = option:getInterpolantFromValue(value)
 
-    element:AddEventListener("change", function(event, _, _)
-        for _, v in ipairs(vals) do
-            if v.Serialized == event.parameters.value and option.Value ~= v then
-                option.Value = v
+    local function updateRangeValue(val)
+        -- This gives us the index of the last button that should be shown as active. The value is in the range between
+        -- 0 and 1 so multiplying that with 9 maps that to our buttons since the first button has the value 0. We floor
+        -- the value to get a definite index into our array
+        -- + 1 is needed since Lua has 1-based arrays
+        local last_active = math.floor(val * 9) + 1
+
+        for i, button in ipairs(point_buttons) do
+            button:SetPseudoClass("checked", i <= last_active)
+        end
+    end
+
+    updateRangeValue(range_val)
+
+    for i, v in ipairs(point_buttons) do
+        -- Basically the reverse from above, get the range value that corresponds to this button
+        local btn_range_value = (i - 1) / 9;
+
+        v:AddEventListener("click", function()
+            local option_val = option:getValueFromRange(btn_range_value)
+
+            if option_val ~= option.Value then
+                option.Value = option_val
+                updateRangeValue(btn_range_value)
+
                 if change_func then
-                    change_func(v)
+                    change_func(option_val)
                 end
+            end
+        end)
+    end
+
+    btn_left:AddEventListener("click", function()
+        local current_range_val = option:getInterpolantFromValue(option.Value)
+
+        -- Every point more represents one 9th of the range
+        current_range_val = current_range_val - (1.0 / 9.0)
+        if current_range_val <= 0 then
+            current_range_val = 0
+        end
+
+        local new_val = option:getValueFromRange(current_range_val)
+
+        if new_val ~= option.Value then
+            option.Value = new_val
+            updateRangeValue(current_range_val)
+
+            if change_func then
+                change_func(new_val)
             end
         end
     end)
+    btn_right:AddEventListener("click", function()
+        local current_range_val = option:getInterpolantFromValue(option.Value)
 
-    select_el.selection = tblUtil.ifind(vals, value)
+        -- Every point more represents one 9th of the range
+        current_range_val = current_range_val + (1.0 / 9.0)
+        if current_range_val > 1 then
+            current_range_val = 1
+        end
+
+        local new_val = option:getValueFromRange(current_range_val)
+
+        if new_val ~= option.Value then
+            option.Value = new_val
+            updateRangeValue(current_range_val)
+
+            if change_func then
+                change_func(new_val)
+            end
+        end
+    end)
+end
+
+function OptionsController:createTenPointRangeElement(option, parent_id, onchange_func)
+    local parent_el = self.document:GetElementById(parent_id)
+    local actual_el, title_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 = rkt_util.instantiate_template(self.document, "tenpoint_selector_template", {
+        "tps_title_el",
+        "tps_left_arrow",
+        "tps_right_arrow",
+        "tps_button_0",
+        "tps_button_1",
+        "tps_button_2",
+        "tps_button_3",
+        "tps_button_4",
+        "tps_button_5",
+        "tps_button_6",
+        "tps_button_7",
+        "tps_button_8",
+        "tps_button_9",
+    })
+    parent_el:AppendChild(actual_el)
+
+    title_el.inner_rml = option.Title
+
+    self:init_tps_element(btn_left, btn_right, { btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 }, option, onchange_func)
+
+    return actual_el
 end
 
 function OptionsController:init_binary_element(left_btn, right_btn, option, vals, change_func)
@@ -111,6 +194,62 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
     right_btn:SetPseudoClass("checked", right_selected)
 end
 
+function OptionsController:createBinaryOptionElement(option, vals, parent_id, onchange_func)
+    local parent_el = self.document:GetElementById(parent_id)
+    local actual_el, title_el, btn_left, text_left, btn_right, text_right = rkt_util.instantiate_template(self.document, "binary_selector_template", {
+        "binary_text_el",
+        "binary_left_btn_el",
+        "binary_left_text_el",
+        "binary_right_btn_el",
+        "binary_right_text_el",
+    })
+    parent_el:AppendChild(actual_el)
+
+    title_el.inner_rml = option.Title
+
+    text_left.inner_rml = vals[1].Display
+    text_right.inner_rml = vals[2].Display
+
+    self:init_binary_element(btn_left, btn_right, option, vals, onchange_func)
+
+    return actual_el
+end
+
+function OptionsController:init_selection_element(element, option, vals, change_func)
+    local select_el = Element.As.ElementFormControlDataSelect(element)
+    select_el:SetDataSource(getFormatterName(option.Key) .. ".Default")
+
+    local value = option.Value
+
+    element:AddEventListener("change", function(event, _, _)
+        for _, v in ipairs(vals) do
+            if v.Serialized == event.parameters.value and option.Value ~= v then
+                option.Value = v
+                if change_func then
+                    change_func(v)
+                end
+            end
+        end
+    end)
+
+    select_el.selection = tblUtil.ifind(vals, value)
+end
+
+function OptionsController:createSelectionOptionElement(option, vals, parent_id, onchange_func)
+    local parent_el = self.document:GetElementById(parent_id)
+    local actual_el, text_el, dataselect_el = rkt_util.instantiate_template(self.document, "dropdown_template", {
+        "dropdown_text_el",
+        "dropdown_dataselect_el"
+    })
+    parent_el:AppendChild(actual_el)
+
+    text_el.inner_rml = option.Title
+
+    self:init_selection_element(dataselect_el, option, vals, onchange_func)
+
+    return actual_el
+end
+
 function OptionsController:init_range_element(element, value_el, option, change_func)
     local range_el = Element.As.ElementFormControlInput(element)
 
@@ -129,56 +268,62 @@ function OptionsController:init_range_element(element, value_el, option, change_
     range_el.value = option:getInterpolantFromValue(option.Value)
 end
 
-function OptionsController:createOptionElement(option, parent_id, onchange_func)
+function OptionsController:createRangeOptionElement(option, parent_id, onchange_func)
     local parent_el = self.document:GetElementById(parent_id)
+    local actual_el, title_el, value_el, range_el = rkt_util.instantiate_template(self.document, "slider_template", {
+        "slider_title_el",
+        "slider_value_el",
+        "slider_range_el"
+    })
+    parent_el:AppendChild(actual_el)
+
+    title_el.inner_rml = option.Title
+
+    self:init_range_element(range_el, value_el, option, onchange_func)
+
+    return actual_el
+end
+
+function OptionsController:create(option, parent_id, onchange_func)
+    local parent_el = self.document:GetElementById(parent_id)
+    local actual_el, title_el, value_el, range_el = rkt_util.instantiate_template(self.document, "slider_template", {
+        "slider_title_el",
+        "slider_value_el",
+        "slider_range_el"
+    })
+    parent_el:AppendChild(actual_el)
+
+    title_el.inner_rml = option.Title
+
+    self:init_range_element(range_el, value_el, option, onchange_func)
+
+    return actual_el
+end
+
+function OptionsController:createOptionElement(option, parent_id, onchange_func)
     if option.Type == OPTION_TYPE_SELECTION then
         local vals = option:getValidValues()
 
-        if #vals == 2 then
+        if #vals == 2 and not option.Flags.ForceMultiValueSelection then
             -- Special case for binary options
-            local actual_el, title_el, btn_left, text_left, btn_right, text_right = rkt_util.instantiate_template(self.document, "binary_selector_template", {
-                "binary_text_el",
-                "binary_left_btn_el",
-                "binary_left_text_el",
-                "binary_right_btn_el",
-                "binary_right_text_el",
-            })
-            parent_el:AppendChild(actual_el)
-
-            title_el.inner_rml = option.Title
-
-            text_left.inner_rml = vals[1].Display
-            text_right.inner_rml = vals[2].Display
-
-            self:init_binary_element(btn_left, btn_right, option, vals, onchange_func)
-
-            return actual_el
+            return self:createBinaryOptionElement(option, vals, parent_id, onchange_func)
         else
-            local actual_el, text_el, dataselect_el = rkt_util.instantiate_template(self.document, "dropdown_template", {
-                "dropdown_text_el",
-                "dropdown_dataselect_el"
-            })
-            parent_el:AppendChild(actual_el)
-
-            text_el.inner_rml = option.Title
-
-            self:init_selection_element(dataselect_el, option, vals, onchange_func)
-
-            return actual_el
+            return self:createSelectionOptionElement(option, vals, parent_id, onchange_func)
         end
     elseif option.Type == OPTION_TYPE_RANGE then
-        local actual_el, title_el, value_el, range_el = rkt_util.instantiate_template(self.document, "slider_template", {
-            "slider_title_el",
-            "slider_value_el",
-            "slider_range_el"
-        })
-        parent_el:AppendChild(actual_el)
+        return self:createRangeOptionElement(option, parent_id, onchange_func)
+    end
+end
 
-        title_el.inner_rml = option.Title
-
-        self:init_range_element(range_el, value_el, option, onchange_func)
-
-        return actual_el
+function OptionsController:initialize_basic_options()
+    for _, v in ipairs(self.category_options.basic) do
+        if v.Key == "Input.Joystick" then
+            self:createOptionElement(v, "joystick_values_wrapper")
+        elseif v.Key == "Input.JoystickDeadZone" then
+            self:createTenPointRangeElement(v, "joystick_values_wrapper")
+        elseif v.Key == "Input.JoystickSensitivity" then
+            self:createTenPointRangeElement(v, "joystick_values_wrapper")
+        end
     end
 end
 
@@ -222,11 +367,15 @@ function OptionsController:initialize(document)
             self.sources[v.Key] = createOptionSource(v)
         end
 
-        if v.Category == "Graphics" then
-            -- TODO: The category might be a translated string at some point so this needs to be fixed then
+        -- TODO: The category might be a translated string at some point so this needs to be fixed then
+        if v.Category == "Input" then
+            table.insert(self.category_options.basic, v)
+        elseif v.Category == "Graphics" then
             table.insert(self.category_options.detail, v)
         end
     end
+
+    self:initialize_basic_options()
 
     self:initialize_detail_options()
 end

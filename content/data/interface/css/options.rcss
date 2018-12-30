@@ -617,21 +617,21 @@ div#vert_tall_panel_wrapper
 
 /*Large Multi-Slider Panel*/
 
-div#large_panel_wrapper
+div.large_panel_wrapper
 {
 	position: absolute;
 	bottom: 5%;
 	padding-left: 1%;
 }
 
-#large_panel_wrapper .button_text_top p
+.large_panel_wrapper .button_text_top p
 {
 	width: 100%;
 	margin-left: 50%;
 	margin-top: -135%;
 }
 
-.panel_right #large_panel_wrapper .button_text_top p
+.panel_right .large_panel_wrapper .button_text_top p
 {
 	width: 100%;
 	margin-left: -200%;

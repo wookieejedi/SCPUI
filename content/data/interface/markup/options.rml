@@ -69,6 +69,95 @@
 			</div>
 			<img src="ops-panel-horz.png"></img>
 		</div>
+		<div id="tenpoint_selector_template" class="ten_dot_slider">
+			<div id=arrow_cont>
+				<button id="right_arrow_btn" class="arrow button_1">
+					<div id="right_arrow_img" class="tps_right_arrow arrow">
+						<img src="arrow-right.png" class="psuedo_img"></img>
+					</div>
+					<div class="button_text_top">
+						<p class="tps_title_el">Ten point range selector</p>
+					</div>
+				</button>
+			</div>
+			<div id=round_ten_cont>
+				<button id="round_btn" class="round button_1 tps_button_9">
+					<div id="round_img" class="round">
+						<img src="round.png" class="psuedo_img"></img>
+					</div>
+				</button>
+			</div>
+			<div id=round_ten_cont>
+				<button id="round_btn" class="round button_1 tps_button_8">
+					<div id="round_img" class="round">
+						<img src="round.png" class="psuedo_img"></img>
+					</div>
+				</button>
+			</div>
+			<div id=round_ten_cont>
+				<button id="round_btn" class="round button_1 tps_button_7">
+					<div id="round_img" class="round">
+						<img src="round.png" class="psuedo_img"></img>
+					</div>
+				</button>
+			</div>
+			<div id=round_ten_cont>
+				<button id="round_btn" class="round button_1 tps_button_6">
+					<div id="round_img" class="round">
+						<img src="round.png" class="psuedo_img"></img>
+					</div>
+				</button>
+			</div>
+			<div id=round_ten_cont>
+				<button id="round_btn" class="round button_1 tps_button_5">
+					<div id="round_img" class="round">
+						<img src="round.png" class="psuedo_img"></img>
+					</div>
+				</button>
+			</div>
+			<div id=round_ten_cont>
+				<button id="round_btn" class="round button_1 tps_button_4">
+					<div id="round_img" class="round">
+						<img src="round.png" class="psuedo_img"></img>
+					</div>
+				</button>
+			</div>
+			<div id=round_ten_cont>
+				<button id="round_btn" class="round button_1 tps_button_3">
+					<div id="round_img" class="round">
+						<img src="round.png" class="psuedo_img"></img>
+					</div>
+				</button>
+			</div>
+			<div id=round_ten_cont>
+				<button id="round_btn" class="round button_1 tps_button_2">
+					<div id="round_img" class="round">
+						<img src="round.png" class="psuedo_img"></img>
+					</div>
+				</button>
+			</div>
+			<div id=round_ten_cont>
+				<button id="round_btn" class="round button_1 tps_button_1">
+					<div id="round_img" class="round">
+						<img src="round.png" class="psuedo_img"></img>
+					</div>
+				</button>
+			</div>
+			<div id=round_ten_cont>
+				<button id="round_btn" class="round button_1 tps_button_0">
+					<div id="round_img" class="round">
+						<img src="round.png" class="psuedo_img"></img>
+					</div>
+				</button>
+			</div>
+			<div id=arrow_cont>
+				<button id="left_arrow_btn" class="tps_left_arrow arrow button_1">
+					<div id="left_arrow_img" class="arrow">
+						<img src="arrow-left.png" class="psuedo_img"></img>
+					</div>
+				</button>
+			</div>
+		</div>
 		<!--This begins all the rml for a binary option-->
 		<div id="binary_selector_template" class="btn_panel_horz">
 			<div id="horz_panel_text" class="ops_left_header">
@@ -156,7 +245,7 @@
 								<div id="large_panel_text" class="ops_left_header">
 									<p>Volume</p>
 								</div>
-								<div id=large_panel_wrapper>
+								<div class=large_panel_wrapper>
 									<div id="effects_volume" class="ten_dot_slider">
 										<div id=arrow_cont>
 											<button id="right_arrow_btn" class="arrow button_1">
@@ -455,100 +544,6 @@
 								</div>
 								<img src="ops-panel-horz.png"></img>
 							</div>
-							<div class="btn_panel_large">
-								<div id="large_panel_text" class="ops_left_header">
-									<p>Sensitivity</p>
-								</div>
-								<div id=horz_wide_panel_wrapper>
-									<div id="mouse_sensitivity" class="ten_dot_slider">
-										<div id=arrow_cont>
-											<button id="right_arrow_btn" class="arrow button_1">
-												<div id="right_arrow_img" class="arrow">
-													<img src="arrow-right.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=arrow_cont>
-											<button id="left_arrow_btn" class="arrow button_1">
-												<div id="left_arrow_img" class="arrow">
-													<img src="arrow-left.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-									</div>
-								</div>
-								<img src="ops-panel-horz-wide.png"></img>
-							</div>
 						</div>
 						<div class="options_column_20">
 						</div>
@@ -646,185 +641,8 @@
 								<div id="large_panel_text" class="ops_right_header">
 									<p>Joystick</p>
 								</div>
-								<div id=large_panel_wrapper>
-									<div id="joystick_sensitivity" class="ten_dot_slider">
-										<div id=arrow_cont>
-											<button id="right_arrow_btn" class="arrow button_1">
-												<div id="right_arrow_img" class="arrow">
-													<img src="arrow-right.png" class="psuedo_img"></img>
-												</div>
-												<div class="button_text_top">
-													<p>Sensitivity</p>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=arrow_cont>
-											<button id="left_arrow_btn" class="arrow button_1">
-												<div id="left_arrow_img" class="arrow">
-													<img src="arrow-left.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-									</div>
-									<div id="joystick_deadzone" class="ten_dot_slider">
-										<div id=arrow_cont>
-											<button id="right_arrow_btn" class="arrow button_1">
-												<div id="right_arrow_img" class="arrow">
-													<img src="arrow-right.png" class="psuedo_img"></img>
-												</div>
-												<div class="button_text_top">
-													<p>Deadzone</p>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=round_ten_cont>
-											<button id="round_btn" class="round button_1">
-												<div id="round_img" class="round">
-													<img src="round.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=arrow_cont>
-											<button id="left_arrow_btn" class="arrow button_1">
-												<div id="left_arrow_img" class="arrow">
-													<img src="arrow-left.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-									</div>
+								<div id="joystick_values_wrapper" class=large_panel_wrapper>
+									<!-- Lua will fill in the options UI elements here -->
 								</div>
 								<img src="ops-panel-large-r.png"></img>
 							</div>
