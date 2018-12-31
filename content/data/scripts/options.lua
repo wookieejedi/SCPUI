@@ -342,6 +342,10 @@ function OptionsController:initialize_basic_options()
             self:createTenPointRangeElement(v, "joystick_values_wrapper")
         elseif v.Key == "Input.JoystickSensitivity" then
             self:createTenPointRangeElement(v, "joystick_values_wrapper")
+        elseif v.Key == "Input.UseMouse" then
+            self:createOptionElement(v, "mouse_options_container")
+        elseif v.Key == "Input.MouseSensitivity" then
+            self:createTenPointRangeElement(v, "mouse_options_container")
         elseif v.Key == "Audio.BriefingVoice" then
             self:createOptionElement(v, "briefing_voice_container")
         elseif v.Key == "Audio.Effects" then

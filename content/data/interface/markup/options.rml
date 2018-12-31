@@ -225,33 +225,10 @@
 								</div>
 								<img src="ops-panel-large-l.png"></img>
 							</div>
-							<div class="btn_panel_horz">
-								<div id="horz_panel_text" class="ops_left_header">
-									<p>Mouse</p>
+							<div class="btn_panel_large">
+								<div id="mouse_options_container" class="large_panel_wrapper">
+									<!-- Filled in by Lua -->
 								</div>
-								<div id=horz_panel_wrapper>
-									<div id=round_option_cont>
-										<button id="round_btn" class="round button_1">
-											<div id="round_img" class="round">
-												<img src="round.png" class="psuedo_img"></img>
-											</div>
-											<div class="pos button_text_left">
-												<p>On</p>
-											</div>
-										</button>
-									</div>
-									<div id=round_option_cont>
-										<button id="round_btn" class="round button_1">
-											<div id="round_img" class="round">
-												<img src="round.png" class="psuedo_img"></img>
-											</div>
-											<div class="pos button_text_left">
-												<p>Off</p>
-											</div>
-										</button>
-									</div>
-								</div>
-								<img src="ops-panel-horz.png"></img>
 							</div>
 						</div>
 						<div class="options_column_20">
