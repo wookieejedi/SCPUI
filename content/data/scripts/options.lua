@@ -407,7 +407,10 @@ function OptionsController:initialize(document)
     opt.persistChanges()
 
     self.options = opt.Options
+    ba.print("Printing option ID mapping:\n")
     for _, v in ipairs(self.options) do
+        ba.print(v.Title .. ": " .. getOptionElementId(v) .. "\n")
+
         if v.Type == OPTION_TYPE_SELECTION then
             self.sources[v.Key] = createOptionSource(v)
         end
@@ -421,6 +424,7 @@ function OptionsController:initialize(document)
             table.insert(self.category_options.detail, v)
         end
     end
+    ba.print("Done.\n")
 
     self:initialize_basic_options()
 
