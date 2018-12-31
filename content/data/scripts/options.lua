@@ -99,8 +99,8 @@ function OptionsController:init_tps_element(btn_left, btn_right, point_buttons, 
                 option.Value = option_val
                 updateRangeValue(btn_range_value)
 
-                if change_func then
-                    change_func(option_val)
+                if onchange_func then
+                    onchange_func(option_val)
                 end
             end
         end)
@@ -121,8 +121,8 @@ function OptionsController:init_tps_element(btn_left, btn_right, point_buttons, 
             option.Value = new_val
             updateRangeValue(current_range_val)
 
-            if change_func then
-                change_func(new_val)
+            if onchange_func then
+                onchange_func(new_val)
             end
         end
     end)
@@ -141,8 +141,8 @@ function OptionsController:init_tps_element(btn_left, btn_right, point_buttons, 
             option.Value = new_val
             updateRangeValue(current_range_val)
 
-            if change_func then
-                change_func(new_val)
+            if onchange_func then
+                onchange_func(new_val)
             end
         end
     end)
