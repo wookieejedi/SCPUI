@@ -1110,6 +1110,8 @@ div#arrow_cont
 	width: 100%;
 	height: auto;
 
+	mouseover-sound: 17;
+	click-sound: (error)15,(success)0;
 }
 
 #left_arrow_img

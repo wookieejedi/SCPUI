@@ -121,9 +121,13 @@ function OptionsController:init_tps_element(btn_left, btn_right, point_buttons, 
             option.Value = new_val
             updateRangeValue(current_range_val)
 
+            ui.playElementSound(btn_left, "click", "success")
+
             if onchange_func then
                 onchange_func(new_val)
             end
+        else
+            ui.playElementSound(btn_left, "click", "error")
         end
     end)
     btn_right:AddEventListener("click", function()
@@ -141,9 +145,13 @@ function OptionsController:init_tps_element(btn_left, btn_right, point_buttons, 
             option.Value = new_val
             updateRangeValue(current_range_val)
 
+            ui.playElementSound(btn_right, "click", "success")
+
             if onchange_func then
                 onchange_func(new_val)
             end
+        else
+            ui.playElementSound(btn_right, "click", "error")
         end
     end)
 end

@@ -71,7 +71,7 @@
 		</div>
 		<div id="tenpoint_selector_template" class="ten_dot_slider">
 			<div id=arrow_cont>
-				<button id="right_arrow_btn" class="arrow button_1">
+				<button id="right_arrow_btn" class="arrow">
 					<div id="right_arrow_img" class="tps_right_arrow arrow">
 						<img src="arrow-right.png" class="psuedo_img"></img>
 					</div>
@@ -151,7 +151,7 @@
 				</button>
 			</div>
 			<div id=arrow_cont>
-				<button id="left_arrow_btn" class="tps_left_arrow arrow button_1">
+				<button id="left_arrow_btn" class="tps_left_arrow arrow">
 					<div id="left_arrow_img" class="arrow">
 						<img src="arrow-left.png" class="psuedo_img"></img>
 					</div>
