@@ -213,33 +213,8 @@
 				</tab>
 					<panel class="options_panel">
 						<div class="options_column_40">
-							<div class="btn_panel_horz">
-								<div id="horz_panel_text" class="ops_left_header">
-									<p>Briefing Voice</p>
-								</div>
-								<div id=horz_panel_wrapper>
-									<div id=round_option_cont>
-										<button id="round_btn" class="round button_1">
-											<div id="round_img" class="round">
-												<img src="round.png" class="psuedo_img"></img>
-											</div>
-											<div class="pos button_text_left">
-												<p>On</p>
-											</div>
-										</button>
-									</div>
-									<div id=round_option_cont>
-										<button id="round_btn" class="round button_1">
-											<div id="round_img" class="round">
-												<img src="round.png" class="psuedo_img"></img>
-											</div>
-											<div class="pos button_text_left">
-												<p>Off</p>
-											</div>
-										</button>
-									</div>
-								</div>
-								<img src="ops-panel-horz.png"></img>
+							<div id="briefing_voice_container">
+								<!-- Filled in by Lua -->
 							</div>
 							<div class="btn_panel_large">
 								<div id="large_panel_text" class="ops_left_header">

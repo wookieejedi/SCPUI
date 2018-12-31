@@ -339,6 +339,8 @@ function OptionsController:initialize_basic_options()
             self:createTenPointRangeElement(v, "joystick_values_wrapper")
         elseif v.Key == "Input.JoystickSensitivity" then
             self:createTenPointRangeElement(v, "joystick_values_wrapper")
+        elseif v.Key == "Audio.BriefingVoice" then
+            self:createOptionElement(v, "briefing_voice_container")
         end
     end
 end
@@ -384,9 +386,11 @@ function OptionsController:initialize(document)
         end
 
         -- TODO: The category might be a translated string at some point so this needs to be fixed then
-        if v.Category == "Input" then
+        local category = v.Category
+
+        if category == "Input" or category == "Audio" then
             table.insert(self.category_options.basic, v)
-        elseif v.Category == "Graphics" then
+        elseif category == "Graphics" then
             table.insert(self.category_options.detail, v)
         end
     end
