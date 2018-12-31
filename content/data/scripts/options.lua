@@ -68,6 +68,9 @@ function OptionsController:init()
         other = {},
         multi = {}
     }
+    -- A list of mappings option->ValueDescription which contains backups of the original values for special options
+    -- that apply their changes immediately
+    self.option_backup = {}
 end
 
 function OptionsController:init_tps_element(btn_left, btn_right, point_buttons, option, onchange_func)
@@ -341,6 +344,26 @@ function OptionsController:initialize_basic_options()
             self:createTenPointRangeElement(v, "joystick_values_wrapper")
         elseif v.Key == "Audio.BriefingVoice" then
             self:createOptionElement(v, "briefing_voice_container")
+        elseif v.Key == "Audio.Effects" then
+            -- The audio options are applied immediately so the user hears the effects
+            self.option_backup[v] = v.Value
+
+            self:createTenPointRangeElement(v, "volume_sliders_container", function(_)
+                v:persistChanges()
+            end)
+        elseif v.Key == "Audio.Music" then
+            self.option_backup[v] = v.Value
+
+            self:createTenPointRangeElement(v, "volume_sliders_container", function(_)
+                v:persistChanges()
+            end)
+        elseif v.Key == "Audio.Voice" then
+            self.option_backup[v] = v.Value
+
+            self:createTenPointRangeElement(v, "volume_sliders_container", function(_)
+                v:persistChanges()
+                ui.OptionsMenu.playVoiceClip()
+            end)
         end
     end
 end
@@ -430,9 +453,20 @@ function OptionsController:accept_clicked(element)
     end)
 end
 
+function OptionsController:discardChanges()
+    opt.discardChanges()
+
+    for opt, value in pairs(self.option_backup) do
+        opt.Value = value
+        opt:persistChanges()
+    end
+end
+
 function OptionsController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
+
+        self:discardChanges()
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
     end
