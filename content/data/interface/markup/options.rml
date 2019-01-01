@@ -26,48 +26,64 @@
 		</div>
 
 		<!--This begins all the rml for a five point range selector-->
-		<div id="fivepoint_selector_template" class="btn_panel_horz">
-			<div id="horz_panel_text" class="ops_left_header">
-				<p class="fivepoint_text_el">Five Point Range Selector</p>
+		<div id="fivepoint_selector_template" class="btn_panel_large panel_right">
+			<div id="large_panel_text" class="ops_right_header">
+				<span class="fps_title_text">Fivepoint selector</span>: <span class="fps_value_text header_text">Value</span>
 			</div>
-			<div id=horz_panel_wrapper>
-				<div id=round_choice_cont>
-					<button id="round_btn" class="fivepoint_btn1 round button_1">
-						<div id="round_img" class="round">
-							<img src="round.png" class="psuedo_img"></img>
-						</div>
-					</button>
-				</div>
-				<div id=round_choice_cont>
-					<button id="round_btn" class="fivepoint_btn2 round button_1">
-						<div id="round_img" class="round">
-							<img src="round.png" class="psuedo_img"></img>
-						</div>
-					</button>
-				</div>
-				<div id=round_choice_cont>
-					<button id="round_btn" class="fivepoint_btn3 round button_1">
-						<div id="round_img" class="round">
-							<img src="round.png" class="psuedo_img"></img>
-						</div>
-					</button>
-				</div>
-				<div id=round_choice_cont>
-					<button id="round_btn" class="fivepoint_btn4 round button_1">
-						<div id="round_img" class="round">
-							<img src="round.png" class="psuedo_img"></img>
-						</div>
-					</button>
-				</div>
-				<div id=round_choice_cont>
-					<button id="round_btn" class="fivepoint_btn5 round button_1">
-						<div id="round_img" class="round">
-							<img src="round.png" class="psuedo_img"></img>
-						</div>
-					</button>
+			<div id=horz_wide_panel_wrapper>
+				<div class="fps_slider">
+					<div id=arrow_cont>
+						<button id="right_arrow_btn" class="fps_right_btn arrow button_1">
+							<div id="right_arrow_img" class="arrow">
+								<img src="arrow-right.png" class="psuedo_img"></img>
+							</div>
+						</button>
+					</div>
+					<div id=oval_cont>
+						<button id="oval_btn" class="fps_button_4 oval button_1">
+							<div id="oval_img" class="oval">
+								<img src="oval.png" class="psuedo_img"></img>
+							</div>
+						</button>
+					</div>
+					<div id=oval_cont>
+						<button id="oval_btn" class="fps_button_3 oval button_1">
+							<div id="oval_img" class="oval">
+								<img src="oval.png" class="psuedo_img"></img>
+							</div>
+						</button>
+					</div>
+					<div id=oval_cont>
+						<button id="oval_btn" class="fps_button_2 oval button_1">
+							<div id="oval_img" class="oval">
+								<img src="oval.png" class="psuedo_img"></img>
+							</div>
+						</button>
+					</div>
+					<div id=oval_cont>
+						<button id="oval_btn" class="fps_button_1 oval button_1">
+							<div id="oval_img" class="oval">
+								<img src="oval.png" class="psuedo_img"></img>
+							</div>
+						</button>
+					</div>
+					<div id=oval_cont>
+						<button id="oval_btn" class="fps_button_0 oval button_1">
+							<div id="oval_img" class="oval">
+								<img src="oval.png" class="psuedo_img"></img>
+							</div>
+						</button>
+					</div>
+					<div id=arrow_cont>
+						<button id="left_arrow_btn" class="fps_left_btn arrow button_1">
+							<div id="left_arrow_img" class="arrow">
+								<img src="arrow-left.png" class="psuedo_img"></img>
+							</div>
+						</button>
+					</div>
 				</div>
 			</div>
-			<img src="ops-panel-horz.png"></img>
+			<img src="ops-panel-horz-wide.png"></img>
 		</div>
 
 		<!--This begins all the rml for a ten point range selector
@@ -246,64 +262,8 @@
 						<div class="options_column_20">
 						</div>
 						<div class="options_column_40 panel_right">
-							<div class="btn_panel_large panel_right">
-								<div id="large_panel_text" class="ops_right_header">
-									<span>Skill Level</span>: <span id="skill_level_text" class="header_text">Easy</span>
-								</div>
-								<div id=horz_wide_panel_wrapper>
-									<div id="difficulty" class="difficulty_slider">
-										<div id=arrow_cont>
-											<button id="right_arrow_btn" class="arrow button_1">
-												<div id="right_arrow_img" class="arrow">
-													<img src="arrow-right.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=oval_cont>
-											<button id="oval_btn" class="oval button_1">
-												<div id="oval_img" class="oval">
-													<img src="oval.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=oval_cont>
-											<button id="oval_btn" class="oval button_1">
-												<div id="oval_img" class="oval">
-													<img src="oval.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=oval_cont>
-											<button id="oval_btn" class="oval button_1">
-												<div id="oval_img" class="oval">
-													<img src="oval.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=oval_cont>
-											<button id="oval_btn" class="oval button_1">
-												<div id="oval_img" class="oval">
-													<img src="oval.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=oval_cont>
-											<button id="oval_btn" class="oval button_1">
-												<div id="oval_img" class="oval">
-													<img src="oval.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-										<div id=arrow_cont>
-											<button id="left_arrow_btn" class="arrow button_1">
-												<div id="left_arrow_img" class="arrow">
-													<img src="arrow-left.png" class="psuedo_img"></img>
-												</div>
-											</button>
-										</div>
-									</div>
-								</div>
-								<img src="ops-panel-horz-wide.png"></img>
+							<div id="skill_level_container">
+								<!-- Filled in by Lua -->
 							</div>
 							<div class="btn_panel_large panel_right">
 								<div id="large_panel_text" class="ops_right_header">

@@ -185,6 +185,118 @@ function OptionsController:createTenPointRangeElement(option, parent_id, paramet
     return actual_el
 end
 
+function OptionsController:init_fps_element(value_el, btn_left, btn_right, point_buttons, option, onchange_func)
+    local value = option.Value
+    local range_val = option:getInterpolantFromValue(value)
+
+    local function updateRangeValue(val)
+        -- This gives us the index of the last button that should be shown as active. The value is in the range between
+        -- 0 and 1 so multiplying that with 4 maps that to our buttons since the first button has the value 0. We floor
+        -- the value to get a definite index into our array
+        -- + 1 is needed since Lua has 1-based arrays
+        local last_active = math.floor(val * 4) + 1
+
+        for i, button in ipairs(point_buttons) do
+            button:SetPseudoClass("checked", i <= last_active)
+        end
+    end
+
+    value_el.inner_rml = value.Display
+    updateRangeValue(range_val)
+
+    for i, v in ipairs(point_buttons) do
+        -- Basically the reverse from above, get the range value that corresponds to this button
+        local btn_range_value = (i - 1) / 4;
+
+        v:AddEventListener("click", function()
+            local option_val = option:getValueFromRange(btn_range_value)
+
+            if option_val ~= option.Value then
+                option.Value = option_val
+                value_el.inner_rml = option_val.Display
+                updateRangeValue(btn_range_value)
+
+                if onchange_func then
+                    onchange_func(option_val)
+                end
+            end
+        end)
+    end
+
+    btn_left:AddEventListener("click", function()
+        local current_range_val = option:getInterpolantFromValue(option.Value)
+
+        -- Every point more represents one 9th of the range
+        current_range_val = current_range_val - (1.0 / 4.0)
+        if current_range_val <= 0 then
+            current_range_val = 0
+        end
+
+        local new_val = option:getValueFromRange(current_range_val)
+
+        if new_val ~= option.Value then
+            option.Value = new_val
+            value_el.inner_rml = new_val.Display
+            updateRangeValue(current_range_val)
+
+            ui.playElementSound(btn_left, "click", "success")
+
+            if onchange_func then
+                onchange_func(new_val)
+            end
+        else
+            ui.playElementSound(btn_left, "click", "error")
+        end
+    end)
+    btn_right:AddEventListener("click", function()
+        local current_range_val = option:getInterpolantFromValue(option.Value)
+
+        -- Every point more represents one 9th of the range
+        current_range_val = current_range_val + (1.0 / 4.0)
+        if current_range_val > 1 then
+            current_range_val = 1
+        end
+
+        local new_val = option:getValueFromRange(current_range_val)
+
+        if new_val ~= option.Value then
+            option.Value = new_val
+            value_el.inner_rml = new_val.Display
+            updateRangeValue(current_range_val)
+
+            ui.playElementSound(btn_right, "click", "success")
+
+            if onchange_func then
+                onchange_func(new_val)
+            end
+        else
+            ui.playElementSound(btn_right, "click", "error")
+        end
+    end)
+end
+
+function OptionsController:createFivePointRangeElement(option, parent_id, onchange_func)
+    local parent_el = self.document:GetElementById(parent_id)
+    local actual_el, title_el, value_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4 = rkt_util.instantiate_template(self.document, "fivepoint_selector_template", getOptionElementId(option), {
+        "fps_title_text",
+        "fps_value_text",
+        "fps_left_btn",
+        "fps_right_btn",
+        "fps_button_0",
+        "fps_button_1",
+        "fps_button_2",
+        "fps_button_3",
+        "fps_button_4",
+    })
+    parent_el:AppendChild(actual_el)
+
+    title_el.inner_rml = option.Title
+
+    self:init_fps_element(value_el, btn_left, btn_right, { btn_0, btn_1, btn_2, btn_3, btn_4 }, option, onchange_func)
+
+    return actual_el
+end
+
 function OptionsController:init_binary_element(left_btn, right_btn, option, vals, change_func)
     left_btn:AddEventListener("click", function()
         if vals[1] ~= option.Value then
@@ -380,6 +492,8 @@ function OptionsController:initialize_basic_options()
                 v:persistChanges()
                 ui.OptionsMenu.playVoiceClip()
             end)
+        elseif v.Key == "Game.SkillLevel" then
+            self:createFivePointRangeElement(v, "skill_level_container")
         end
     end
 end
@@ -430,7 +544,7 @@ function OptionsController:initialize(document)
         -- TODO: The category might be a translated string at some point so this needs to be fixed then
         local category = v.Category
 
-        if category == "Input" or category == "Audio" then
+        if category == "Input" or category == "Audio" or category == "Game" then
             table.insert(self.category_options.basic, v)
         elseif category == "Graphics" then
             table.insert(self.category_options.detail, v)

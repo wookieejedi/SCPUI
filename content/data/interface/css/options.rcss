@@ -997,7 +997,7 @@ div#oval_cont
 	margin-right: 0%;
 }
 
-.difficulty_slider
+.fps_slider
 {
 	margin-bottom: 2.5%;
 }
@@ -1093,7 +1093,7 @@ div#arrow_cont
 	margin-right: 0%;
 }
 
-.difficulty_slider #arrow_cont
+.fps_slider #arrow_cont
 {
 	margin-right: 1%;
 }
