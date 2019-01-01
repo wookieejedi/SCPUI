@@ -69,15 +69,22 @@
 			</div>
 			<img src="ops-panel-horz.png"></img>
 		</div>
+
+		<!--This begins all the rml for a ten point range selector
+		Parameters:
+			- text_alignment: 'left' or 'right'
+		-->
 		<div id="tenpoint_selector_template" class="ten_dot_slider">
 			<div id=arrow_cont>
 				<button id="right_arrow_btn" class="arrow">
 					<div id="right_arrow_img" class="tps_right_arrow arrow">
 						<img src="arrow-right.png" class="psuedo_img"></img>
 					</div>
-					<div class="button_text_top">
-						<p class="tps_title_el">Ten point range selector</p>
-					</div>
+					<if condition="text_alignment == 'right'">
+						<div class="button_text_top">
+							<p class="tps_title_el">Ten point range selector</p>
+						</div>
+					</if>
 				</button>
 			</div>
 			<div id=round_ten_cont>
@@ -155,6 +162,11 @@
 					<div id="left_arrow_img" class="arrow">
 						<img src="arrow-left.png" class="psuedo_img"></img>
 					</div>
+					<if condition="text_alignment == 'left'">
+						<div class="button_text_top">
+							<p class="tps_title_el">Ten point range selector</p>
+						</div>
+					</if>
 				</button>
 			</div>
 		</div>

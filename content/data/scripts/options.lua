@@ -159,7 +159,7 @@ function OptionsController:init_tps_element(btn_left, btn_right, point_buttons, 
     end)
 end
 
-function OptionsController:createTenPointRangeElement(option, parent_id, onchange_func)
+function OptionsController:createTenPointRangeElement(option, parent_id, parameters, onchange_func)
     local parent_el = self.document:GetElementById(parent_id)
     local actual_el, title_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 = rkt_util.instantiate_template(self.document, "tenpoint_selector_template", getOptionElementId(option), {
         "tps_title_el",
@@ -175,7 +175,7 @@ function OptionsController:createTenPointRangeElement(option, parent_id, onchang
         "tps_button_7",
         "tps_button_8",
         "tps_button_9",
-    })
+    }, parameters)
     parent_el:AppendChild(actual_el)
 
     title_el.inner_rml = option.Title
@@ -339,32 +339,44 @@ function OptionsController:initialize_basic_options()
         if v.Key == "Input.Joystick" then
             self:createOptionElement(v, "joystick_values_wrapper")
         elseif v.Key == "Input.JoystickDeadZone" then
-            self:createTenPointRangeElement(v, "joystick_values_wrapper")
+            self:createTenPointRangeElement(v, "joystick_values_wrapper", {
+                text_alignment = "right"
+            })
         elseif v.Key == "Input.JoystickSensitivity" then
-            self:createTenPointRangeElement(v, "joystick_values_wrapper")
+            self:createTenPointRangeElement(v, "joystick_values_wrapper", {
+                text_alignment = "right"
+            })
         elseif v.Key == "Input.UseMouse" then
             self:createOptionElement(v, "mouse_options_container")
         elseif v.Key == "Input.MouseSensitivity" then
-            self:createTenPointRangeElement(v, "mouse_options_container")
+            self:createTenPointRangeElement(v, "mouse_options_container", {
+                text_alignment = "left"
+            })
         elseif v.Key == "Audio.BriefingVoice" then
             self:createOptionElement(v, "briefing_voice_container")
         elseif v.Key == "Audio.Effects" then
             -- The audio options are applied immediately so the user hears the effects
             self.option_backup[v] = v.Value
 
-            self:createTenPointRangeElement(v, "volume_sliders_container", function(_)
+            self:createTenPointRangeElement(v, "volume_sliders_container", {
+                text_alignment = "left"
+            }, function(_)
                 v:persistChanges()
             end)
         elseif v.Key == "Audio.Music" then
             self.option_backup[v] = v.Value
 
-            self:createTenPointRangeElement(v, "volume_sliders_container", function(_)
+            self:createTenPointRangeElement(v, "volume_sliders_container", {
+                text_alignment = "left"
+            }, function(_)
                 v:persistChanges()
             end)
         elseif v.Key == "Audio.Voice" then
             self.option_backup[v] = v.Value
 
-            self:createTenPointRangeElement(v, "volume_sliders_container", function(_)
+            self:createTenPointRangeElement(v, "volume_sliders_container", {
+                text_alignment = "left"
+            }, function(_)
                 v:persistChanges()
                 ui.OptionsMenu.playVoiceClip()
             end)
