@@ -452,17 +452,20 @@ function OptionsController:initialize_basic_options()
             self:createOptionElement(v, "joystick_values_wrapper")
         elseif v.Key == "Input.JoystickDeadZone" then
             self:createTenPointRangeElement(v, "joystick_values_wrapper", {
-                text_alignment = "right"
+                text_alignment = "right",
+                no_background = true
             })
         elseif v.Key == "Input.JoystickSensitivity" then
             self:createTenPointRangeElement(v, "joystick_values_wrapper", {
-                text_alignment = "right"
+                text_alignment = "right",
+                no_background = true
             })
         elseif v.Key == "Input.UseMouse" then
             self:createOptionElement(v, "mouse_options_container")
         elseif v.Key == "Input.MouseSensitivity" then
             self:createTenPointRangeElement(v, "mouse_options_container", {
-                text_alignment = "left"
+                text_alignment = "left",
+                no_background = false
             })
         elseif v.Key == "Audio.BriefingVoice" then
             self:createOptionElement(v, "briefing_voice_container")
@@ -471,7 +474,8 @@ function OptionsController:initialize_basic_options()
             self.option_backup[v] = v.Value
 
             self:createTenPointRangeElement(v, "volume_sliders_container", {
-                text_alignment = "left"
+                text_alignment = "left",
+                no_background = true
             }, function(_)
                 v:persistChanges()
             end)
@@ -479,7 +483,8 @@ function OptionsController:initialize_basic_options()
             self.option_backup[v] = v.Value
 
             self:createTenPointRangeElement(v, "volume_sliders_container", {
-                text_alignment = "left"
+                text_alignment = "left",
+                no_background = true
             }, function(_)
                 v:persistChanges()
             end)
@@ -487,7 +492,8 @@ function OptionsController:initialize_basic_options()
             self.option_backup[v] = v.Value
 
             self:createTenPointRangeElement(v, "volume_sliders_container", {
-                text_alignment = "left"
+                text_alignment = "left",
+                no_background = true
             }, function(_)
                 v:persistChanges()
                 ui.OptionsMenu.playVoiceClip()

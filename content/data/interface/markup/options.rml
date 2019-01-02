@@ -89,6 +89,7 @@
 		<!--This begins all the rml for a ten point range selector
 		Parameters:
 			- text_alignment: 'left' or 'right'
+			- no_background: true if there should be no background image, false otherwise
 		-->
 		<div id="tenpoint_selector_template" class="ten_dot_slider">
 			<div id=arrow_cont>
@@ -185,6 +186,9 @@
 					</if>
 				</button>
 			</div>
+			<if condition="not no_background">
+				<img src="ops-panel-horz-wide.png"></img>
+			</if>
 		</div>
 		<!--This begins all the rml for a binary option-->
 		<div id="binary_selector_template" class="btn_panel_horz">
@@ -253,8 +257,8 @@
 								</div>
 								<img src="ops-panel-large-l.png"></img>
 							</div>
-							<div class="btn_panel_large">
-								<div id="mouse_options_container" class="large_panel_wrapper">
+							<div class="btn_panel_large mouse_settings">
+								<div id="mouse_options_container" class=large_panel_wrapper>
 									<!-- Filled in by Lua -->
 								</div>
 							</div>

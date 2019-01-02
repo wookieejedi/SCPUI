@@ -1336,3 +1336,8 @@ selectbox option:hover
 {
 	color: white;
 }
+
+.mouse_settings
+{
+	margin-top: 150px;
+}
