@@ -73,34 +73,39 @@ function OptionsController:init()
     self.option_backup = {}
 end
 
-function OptionsController:init_tps_element(btn_left, btn_right, point_buttons, option, onchange_func)
+function OptionsController:init_point_slider_element(value_el, btn_left, btn_right, point_buttons, option, onchange_func)
     local value = option.Value
     local range_val = option:getInterpolantFromValue(value)
+    local num_value_points = #point_buttons - 1
 
-    local function updateRangeValue(val)
+    local function updateRangeValue(value, range_val)
+        option.Value = value
+        if value_el then
+            value_el.inner_rml = value.Display
+        end
+
         -- This gives us the index of the last button that should be shown as active. The value is in the range between
         -- 0 and 1 so multiplying that with 9 maps that to our buttons since the first button has the value 0. We floor
         -- the value to get a definite index into our array
         -- + 1 is needed since Lua has 1-based arrays
-        local last_active = math.floor(val * 9) + 1
+        local last_active = math.floor(range_val * num_value_points) + 1
 
         for i, button in ipairs(point_buttons) do
             button:SetPseudoClass("checked", i <= last_active)
         end
     end
 
-    updateRangeValue(range_val)
+    updateRangeValue(value, range_val)
 
     for i, v in ipairs(point_buttons) do
         -- Basically the reverse from above, get the range value that corresponds to this button
-        local btn_range_value = (i - 1) / 9;
+        local btn_range_value = (i - 1) / num_value_points;
 
         v:AddEventListener("click", function()
             local option_val = option:getValueFromRange(btn_range_value)
 
             if option_val ~= option.Value then
-                option.Value = option_val
-                updateRangeValue(btn_range_value)
+                updateRangeValue(option_val, btn_range_value)
 
                 if onchange_func then
                     onchange_func(option_val)
@@ -109,54 +114,37 @@ function OptionsController:init_tps_element(btn_left, btn_right, point_buttons, 
         end)
     end
 
-    btn_left:AddEventListener("click", function()
-        local current_range_val = option:getInterpolantFromValue(option.Value)
+    local function make_click_listener(value_increment)
+        return function()
+            local current_range_val = option:getInterpolantFromValue(option.Value)
 
-        -- Every point more represents one 9th of the range
-        current_range_val = current_range_val - (1.0 / 9.0)
-        if current_range_val <= 0 then
-            current_range_val = 0
-        end
-
-        local new_val = option:getValueFromRange(current_range_val)
-
-        if new_val ~= option.Value then
-            option.Value = new_val
-            updateRangeValue(current_range_val)
-
-            ui.playElementSound(btn_left, "click", "success")
-
-            if onchange_func then
-                onchange_func(new_val)
+            -- Every point more represents one num_value_points th of the range
+            current_range_val = current_range_val + value_increment
+            if current_range_val < 0 then
+                current_range_val = 0
             end
-        else
-            ui.playElementSound(btn_left, "click", "error")
-        end
-    end)
-    btn_right:AddEventListener("click", function()
-        local current_range_val = option:getInterpolantFromValue(option.Value)
-
-        -- Every point more represents one 9th of the range
-        current_range_val = current_range_val + (1.0 / 9.0)
-        if current_range_val > 1 then
-            current_range_val = 1
-        end
-
-        local new_val = option:getValueFromRange(current_range_val)
-
-        if new_val ~= option.Value then
-            option.Value = new_val
-            updateRangeValue(current_range_val)
-
-            ui.playElementSound(btn_right, "click", "success")
-
-            if onchange_func then
-                onchange_func(new_val)
+            if current_range_val > 1 then
+                current_range_val = 1
             end
-        else
-            ui.playElementSound(btn_right, "click", "error")
+
+            local new_val = option:getValueFromRange(current_range_val)
+
+            if new_val ~= option.Value then
+                updateRangeValue(new_val, current_range_val)
+
+                ui.playElementSound(btn_left, "click", "success")
+
+                if onchange_func then
+                    onchange_func(new_val)
+                end
+            else
+                ui.playElementSound(btn_left, "click", "error")
+            end
         end
-    end)
+    end
+
+    btn_left:AddEventListener("click", make_click_listener(-(1.0 / num_value_points)))
+    btn_right:AddEventListener("click", make_click_listener(1.0 / num_value_points))
 end
 
 function OptionsController:createTenPointRangeElement(option, parent_id, parameters, onchange_func)
@@ -180,99 +168,9 @@ function OptionsController:createTenPointRangeElement(option, parent_id, paramet
 
     title_el.inner_rml = option.Title
 
-    self:init_tps_element(btn_left, btn_right, { btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 }, option, onchange_func)
+    self:init_point_slider_element(nil, btn_left, btn_right, { btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 }, option, onchange_func)
 
     return actual_el
-end
-
-function OptionsController:init_fps_element(value_el, btn_left, btn_right, point_buttons, option, onchange_func)
-    local value = option.Value
-    local range_val = option:getInterpolantFromValue(value)
-
-    local function updateRangeValue(val)
-        -- This gives us the index of the last button that should be shown as active. The value is in the range between
-        -- 0 and 1 so multiplying that with 4 maps that to our buttons since the first button has the value 0. We floor
-        -- the value to get a definite index into our array
-        -- + 1 is needed since Lua has 1-based arrays
-        local last_active = math.floor(val * 4) + 1
-
-        for i, button in ipairs(point_buttons) do
-            button:SetPseudoClass("checked", i <= last_active)
-        end
-    end
-
-    value_el.inner_rml = value.Display
-    updateRangeValue(range_val)
-
-    for i, v in ipairs(point_buttons) do
-        -- Basically the reverse from above, get the range value that corresponds to this button
-        local btn_range_value = (i - 1) / 4;
-
-        v:AddEventListener("click", function()
-            local option_val = option:getValueFromRange(btn_range_value)
-
-            if option_val ~= option.Value then
-                option.Value = option_val
-                value_el.inner_rml = option_val.Display
-                updateRangeValue(btn_range_value)
-
-                if onchange_func then
-                    onchange_func(option_val)
-                end
-            end
-        end)
-    end
-
-    btn_left:AddEventListener("click", function()
-        local current_range_val = option:getInterpolantFromValue(option.Value)
-
-        -- Every point more represents one 9th of the range
-        current_range_val = current_range_val - (1.0 / 4.0)
-        if current_range_val <= 0 then
-            current_range_val = 0
-        end
-
-        local new_val = option:getValueFromRange(current_range_val)
-
-        if new_val ~= option.Value then
-            option.Value = new_val
-            value_el.inner_rml = new_val.Display
-            updateRangeValue(current_range_val)
-
-            ui.playElementSound(btn_left, "click", "success")
-
-            if onchange_func then
-                onchange_func(new_val)
-            end
-        else
-            ui.playElementSound(btn_left, "click", "error")
-        end
-    end)
-    btn_right:AddEventListener("click", function()
-        local current_range_val = option:getInterpolantFromValue(option.Value)
-
-        -- Every point more represents one 9th of the range
-        current_range_val = current_range_val + (1.0 / 4.0)
-        if current_range_val > 1 then
-            current_range_val = 1
-        end
-
-        local new_val = option:getValueFromRange(current_range_val)
-
-        if new_val ~= option.Value then
-            option.Value = new_val
-            value_el.inner_rml = new_val.Display
-            updateRangeValue(current_range_val)
-
-            ui.playElementSound(btn_right, "click", "success")
-
-            if onchange_func then
-                onchange_func(new_val)
-            end
-        else
-            ui.playElementSound(btn_right, "click", "error")
-        end
-    end)
 end
 
 function OptionsController:createFivePointRangeElement(option, parent_id, onchange_func)
@@ -292,7 +190,7 @@ function OptionsController:createFivePointRangeElement(option, parent_id, onchan
 
     title_el.inner_rml = option.Title
 
-    self:init_fps_element(value_el, btn_left, btn_right, { btn_0, btn_1, btn_2, btn_3, btn_4 }, option, onchange_func)
+    self:init_point_slider_element(value_el, btn_left, btn_right, { btn_0, btn_1, btn_2, btn_3, btn_4 }, option, onchange_func)
 
     return actual_el
 end
