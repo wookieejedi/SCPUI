@@ -1,0 +1,38 @@
+<body>
+<div class="options_column_25">
+    <div class="btn_panel_vert">
+        <div id="vert_panel_text">
+            <p id="preset_title">Game Options</p>
+        </div>
+        <div id=vert_panel_wrapper>
+            <div id=bullet_choice_cont>
+                <button id="bullet_r_btn" class="bullet button_1">
+                    <div id="bullet_r_img" class="bullet">
+                        <img src="bullet-r.png" class="psuedo_img"></img>
+                    </div>
+                    <div class="pos button_text_right">
+                        <p>Custom</p>
+                    </div>
+                </button>
+            </div>
+            <div id=bullet_choice_cont>
+                <button id="bullet_r_btn" class="bullet button_1">
+                    <div id="bullet_r_img" class="bullet">
+                        <img src="bullet-r.png" class="psuedo_img"></img>
+                    </div>
+                    <div class="pos button_text_right">
+                        <p>Mod Default</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+        <img src="ops-panel-vert-l.png"></img>
+    </div>
+</div>
+<div class="options_column_25">
+</div> <!--middle column. Any buttons here need "horz_middle" added to their class-->
+<div class="options_column_25">
+</div> <!--middle column. Any buttons here need "horz_middle" added to their class-->
+<div class="options_column_25">
+</div> <!--middle column. Any buttons here need "horz_right" added to their class-->
+</body>
