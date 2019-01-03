@@ -1,6 +1,10 @@
 local module = {}
 
 local function process_template_if(if_el, parameters)
+    if parameters == nil or type(parameters) ~= "table" then
+        parameters = {}
+    end
+
     local condition = if_el:GetAttribute("condition")
 
     if condition == nil or type(condition) ~= "string" then
