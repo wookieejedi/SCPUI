@@ -1120,13 +1120,13 @@ div#arrow_cont
 	background-image: arrow-left.png;
 }
 
-button#left_arrow_btn:hover #left_arrow_img
+.left_arrow_btn:hover #left_arrow_img
 {
 	background-decorator: image;
 	background-image: arrow-left-h.png;
 }
 
-button#left_arrow_btn:active #left_arrow_img
+.left_arrow_btn:active #left_arrow_img
 {
 	background-decorator: image;
 	background-image: arrow-left-o.png;
@@ -1138,13 +1138,13 @@ button#left_arrow_btn:active #left_arrow_img
 	background-image: arrow-right.png;
 }
 
-button#right_arrow_btn:hover #right_arrow_img
+.right_arrow_btn:hover #right_arrow_img
 {
 	background-decorator: image;
 	background-image: arrow-right-h.png;
 }
 
-button#right_arrow_btn:active #right_arrow_img
+.right_arrow_btn:active #right_arrow_img
 {
 	background-decorator: image;
 	background-image: arrow-right-o.png;

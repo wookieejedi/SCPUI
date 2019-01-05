@@ -344,30 +344,77 @@ function OptionsController:createOptionElement(option, parent_id, onchange_func)
     end
 end
 
+function OptionsController:handleBrightnessOption(option, onchange_func)
+    local increase_btn = self.document:GetElementById("brightness_increase_btn")
+    local decrease_btn = self.document:GetElementById("brightness_decrease_btn")
+    local value_el = self.document:GetElementById("brightness_value_el")
+
+    local vals = option:getValidValues()
+    local current = option.Value
+
+    value_el.inner_rml = current.Display
+
+    increase_btn:AddEventListener("click", function()
+        local current_index = tblUtil.ifind(vals, option.Value)
+        current_index = current_index + 1
+        if current_index > #vals then
+            current_index = #vals
+        end
+        local new_val = vals[current_index]
+
+        if new_val ~= option.Value then
+            option.Value = new_val
+            value_el.inner_rml = new_val.Display
+
+            if onchange_func then
+                onchange_func(new_val)
+            end
+        end
+    end)
+    decrease_btn:AddEventListener("click", function()
+        local current_index = tblUtil.ifind(vals, option.Value)
+        current_index = current_index - 1
+        if current_index < 1 then
+            current_index = 1
+        end
+        local new_val = vals[current_index]
+
+        if new_val ~= option.Value then
+            option.Value = new_val
+            value_el.inner_rml = new_val.Display
+
+            if onchange_func then
+                onchange_func(new_val)
+            end
+        end
+    end)
+end
+
 function OptionsController:initialize_basic_options()
     for _, v in ipairs(self.category_options.basic) do
-        if v.Key == "Input.Joystick" then
+        local key = v.Key
+        if key == "Input.Joystick" then
             self:createOptionElement(v, "joystick_values_wrapper")
-        elseif v.Key == "Input.JoystickDeadZone" then
+        elseif key == "Input.JoystickDeadZone" then
             self:createTenPointRangeElement(v, "joystick_values_wrapper", {
                 text_alignment = "right",
                 no_background = true
             })
-        elseif v.Key == "Input.JoystickSensitivity" then
+        elseif key == "Input.JoystickSensitivity" then
             self:createTenPointRangeElement(v, "joystick_values_wrapper", {
                 text_alignment = "right",
                 no_background = true
             })
-        elseif v.Key == "Input.UseMouse" then
+        elseif key == "Input.UseMouse" then
             self:createOptionElement(v, "mouse_options_container")
-        elseif v.Key == "Input.MouseSensitivity" then
+        elseif key == "Input.MouseSensitivity" then
             self:createTenPointRangeElement(v, "mouse_options_container", {
                 text_alignment = "left",
                 no_background = false
             })
-        elseif v.Key == "Audio.BriefingVoice" then
+        elseif key == "Audio.BriefingVoice" then
             self:createOptionElement(v, "briefing_voice_container")
-        elseif v.Key == "Audio.Effects" then
+        elseif key == "Audio.Effects" then
             -- The audio options are applied immediately so the user hears the effects
             self.option_backup[v] = v.Value
 
@@ -377,7 +424,7 @@ function OptionsController:initialize_basic_options()
             }, function(_)
                 v:persistChanges()
             end)
-        elseif v.Key == "Audio.Music" then
+        elseif key == "Audio.Music" then
             self.option_backup[v] = v.Value
 
             self:createTenPointRangeElement(v, "volume_sliders_container", {
@@ -386,7 +433,7 @@ function OptionsController:initialize_basic_options()
             }, function(_)
                 v:persistChanges()
             end)
-        elseif v.Key == "Audio.Voice" then
+        elseif key == "Audio.Voice" then
             self.option_backup[v] = v.Value
 
             self:createTenPointRangeElement(v, "volume_sliders_container", {
@@ -396,8 +443,15 @@ function OptionsController:initialize_basic_options()
                 v:persistChanges()
                 ui.OptionsMenu.playVoiceClip()
             end)
-        elseif v.Key == "Game.SkillLevel" then
+        elseif key == "Game.SkillLevel" then
             self:createFivePointRangeElement(v, "skill_level_container")
+        elseif key == "Graphics.Gamma" then
+            self.option_backup[v] = v.Value
+
+            self:handleBrightnessOption(v, function(_)
+                -- Apply changes immediately to make them visible
+                v:persistChanges()
+            end)
         end
     end
 end
@@ -447,8 +501,9 @@ function OptionsController:initialize(document)
 
         -- TODO: The category might be a translated string at some point so this needs to be fixed then
         local category = v.Category
+        local key = v.Key
 
-        if category == "Input" or category == "Audio" or category == "Game" then
+        if category == "Input" or category == "Audio" or category == "Game" or key == "Graphics.Gamma" then
             table.insert(self.category_options.basic, v)
         elseif category == "Graphics" then
             table.insert(self.category_options.detail, v)
