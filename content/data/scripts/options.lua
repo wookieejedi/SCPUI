@@ -369,6 +369,10 @@ function OptionsController:handleBrightnessOption(option, onchange_func)
             if onchange_func then
                 onchange_func(new_val)
             end
+
+            ui.playElementSound(increase_btn, "click", "success")
+        else
+            ui.playElementSound(increase_btn, "click", "error")
         end
     end)
     decrease_btn:AddEventListener("click", function()
@@ -386,6 +390,10 @@ function OptionsController:handleBrightnessOption(option, onchange_func)
             if onchange_func then
                 onchange_func(new_val)
             end
+
+            ui.playElementSound(decrease_btn, "click", "success")
+        else
+            ui.playElementSound(decrease_btn, "click", "error")
         end
     end)
 end
