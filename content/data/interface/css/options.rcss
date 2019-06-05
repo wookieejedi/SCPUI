@@ -1339,5 +1339,5 @@ selectbox option:hover
 
 .mouse_settings
 {
-	margin-top: 150px;
+	margin-top: 160px;
 }
