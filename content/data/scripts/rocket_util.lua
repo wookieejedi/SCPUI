@@ -93,11 +93,17 @@ function module.instantiate_template(document, template_id, element_id, template
     process_template_directives(actual_el, parameters)
 
     local template_els = {}
-    for _, v in ipairs(template_classes) do
-        table.insert(template_els, actual_el:GetElementsByClassName(v)[1])
+    for i, v in ipairs(template_classes) do
+        local templateEls = actual_el:GetElementsByClassName(v)
+
+        if #templateEls > 0 then
+            template_els[i] = templateEls[1]
+        else
+            template_els[i] = nil
+        end
     end
 
-    return actual_el, unpack(template_els)
+    return actual_el, unpack(template_els, 1, #template_classes)
 end
 
 return module

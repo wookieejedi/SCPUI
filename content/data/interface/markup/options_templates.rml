@@ -1,10 +1,15 @@
 <body>
 
-<!--This begins all the rml for a dropdown selector. Note, you'll need to change <select> to <dataselect> and remove the <option> lines-->
+<!--This begins all the rml for a dropdown selector
+Parameters:
+    - no_title: true if there should be no title added
+-->
 <div id="dropdown_template" class="btn_panel_horz">
-    <div id="horz_panel_text" class="ops_left_header">
-        <span id="dropdown_title" class="dropdown_text_el"></span>
-    </div>
+    <if condition="false">
+        <div id="horz_panel_text" class="ops_left_header">
+            <span id="dropdown_title" class="dropdown_text_el"></span>
+        </div>
+    </if>
     <div id=horz_panel_wrapper>
         <div id=dropdown_cont>
             <dataselect class="dropdown_dataselect_el" fields="display" valuefield="serialized">

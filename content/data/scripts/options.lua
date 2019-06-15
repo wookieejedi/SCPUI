@@ -264,15 +264,18 @@ function OptionsController:init_selection_element(element, option, vals, change_
     select_el.selection = tblUtil.ifind(vals, value)
 end
 
-function OptionsController:createSelectionOptionElement(option, vals, parent_id, onchange_func)
+function OptionsController:createSelectionOptionElement(option, vals, parent_id, parameters, onchange_func)
     local parent_el = self.document:GetElementById(parent_id)
     local actual_el, text_el, dataselect_el = rkt_util.instantiate_template(self.document, "dropdown_template", getOptionElementId(option), {
         "dropdown_text_el",
         "dropdown_dataselect_el"
-    })
+    }, parameters)
     parent_el:AppendChild(actual_el)
 
-    text_el.inner_rml = option.Title
+    -- If no_title was specified then this element will be nil
+    if text_el ~= nil then
+        text_el.inner_rml = option.Title
+    end
 
     self:init_selection_element(dataselect_el, option, vals, onchange_func)
 
@@ -337,7 +340,7 @@ function OptionsController:createOptionElement(option, parent_id, onchange_func)
             -- Special case for binary options
             return self:createBinaryOptionElement(option, vals, parent_id, onchange_func)
         else
-            return self:createSelectionOptionElement(option, vals, parent_id, onchange_func)
+            return self:createSelectionOptionElement(option, vals, parent_id, nil, onchange_func)
         end
     elseif option.Type == OPTION_TYPE_RANGE then
         return self:createRangeOptionElement(option, parent_id, onchange_func)
@@ -402,7 +405,9 @@ function OptionsController:initialize_basic_options()
     for _, v in ipairs(self.category_options.basic) do
         local key = v.Key
         if key == "Input.Joystick" then
-            self:createOptionElement(v, "joystick_values_wrapper")
+            self:createSelectionOptionElement(v, v:getValidValues(), "joystick_values_wrapper", nil, {
+                no_title = true
+            })
         elseif key == "Input.JoystickDeadZone" then
             self:createTenPointRangeElement(v, "joystick_values_wrapper", {
                 text_alignment = "right",
@@ -501,7 +506,7 @@ function OptionsController:initialize(document)
     self.options = opt.Options
     ba.print("Printing option ID mapping:\n")
     for _, v in ipairs(self.options) do
-        ba.print(v.Title .. ": " .. getOptionElementId(v) .. "\n")
+        ba.print(string.format("%s (%s): %s\n", v.Title, v.Key, getOptionElementId(v) ))
 
         if v.Type == OPTION_TYPE_SELECTION then
             self.sources[v.Key] = createOptionSource(v)
