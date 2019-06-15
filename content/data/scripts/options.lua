@@ -405,7 +405,7 @@ function OptionsController:initialize_basic_options()
     for _, v in ipairs(self.category_options.basic) do
         local key = v.Key
         if key == "Input.Joystick" then
-            self:createSelectionOptionElement(v, v:getValidValues(), "joystick_values_wrapper", nil, {
+            self:createSelectionOptionElement(v, v:getValidValues(), "joystick_values_wrapper", {
                 no_title = true
             })
         elseif key == "Input.JoystickDeadZone" then

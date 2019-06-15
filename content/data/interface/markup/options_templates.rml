@@ -5,7 +5,7 @@ Parameters:
     - no_title: true if there should be no title added
 -->
 <div id="dropdown_template" class="btn_panel_horz">
-    <if condition="false">
+    <if condition="not no_title">
         <div id="horz_panel_text" class="ops_left_header">
             <span id="dropdown_title" class="dropdown_text_el"></span>
         </div>
