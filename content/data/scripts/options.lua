@@ -1,11 +1,11 @@
-local utils = require("utils")
-local tblUtil = utils.table
+local utils    = require("utils")
+local tblUtil  = utils.table
 
 local rkt_util = require("rocket_util")
 
-local dialogs = require("dialogs")
+local dialogs  = require("dialogs")
 
-local class = require("class")
+local class    = require("class")
 
 local function getFormatterName(key)
     return key:gsub("%.", "_")
@@ -13,8 +13,8 @@ end
 
 local function getOptionElementId(option)
     local key = option.Key
-    key = key:gsub("%.", "_")
-    key = key:lower()
+    key       = key:gsub("%.", "_")
+    key       = key:lower()
 
     return string.format("option_%s_element", key)
 end
@@ -22,15 +22,15 @@ end
 local DataSourceWrapper = class()
 
 function DataSourceWrapper:init(option)
-    self.option = option
+    self.option       = option
 
-    local source = DataSource.new(getFormatterName(option.Key))
+    local source      = DataSource.new(getFormatterName(option.Key))
 
-    self.values = option:getValidValues()
+    self.values       = option:getValidValues()
     source.GetNumRows = function()
         return #self.values
     end
-    source.GetRow = function(_, i, columns)
+    source.GetRow     = function(_, i, columns)
         local val = self.values[i]
         local out = {}
         for _, v in ipairs(columns) do
@@ -45,7 +45,7 @@ function DataSourceWrapper:init(option)
         return out
     end
 
-    self.source = source
+    self.source       = source
 end
 
 function DataSourceWrapper:updateValues()
@@ -60,22 +60,23 @@ end
 local OptionsController = class()
 
 function OptionsController:init()
-    self.sources = {}
-    self.options = {}
+    self.sources          = {}
+    self.options          = {}
     self.category_options = {
-        basic = {},
+        basic  = {},
         detail = {},
-        other = {},
-        multi = {}
+        other  = {},
+        multi  = {}
     }
     -- A list of mappings option->ValueDescription which contains backups of the original values for special options
     -- that apply their changes immediately
-    self.option_backup = {}
+    self.option_backup    = {}
 end
 
-function OptionsController:init_point_slider_element(value_el, btn_left, btn_right, point_buttons, option, onchange_func)
-    local value = option.Value
-    local range_val = option:getInterpolantFromValue(value)
+function OptionsController:init_point_slider_element(value_el, btn_left, btn_right, point_buttons, option,
+                                                     onchange_func)
+    local value            = option.Value
+    local range_val        = option:getInterpolantFromValue(value)
     local num_value_points = #point_buttons - 1
 
     local function updateRangeValue(value, range_val)
@@ -119,7 +120,7 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
             local current_range_val = option:getInterpolantFromValue(option.Value)
 
             -- Every point more represents one num_value_points th of the range
-            current_range_val = current_range_val + value_increment
+            current_range_val       = current_range_val + value_increment
             if current_range_val < 0 then
                 current_range_val = 0
             end
@@ -148,49 +149,59 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 end
 
 function OptionsController:createTenPointRangeElement(option, parent_id, parameters, onchange_func)
-    local parent_el = self.document:GetElementById(parent_id)
-    local actual_el, title_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 = rkt_util.instantiate_template(self.document, "tenpoint_selector_template", getOptionElementId(option), {
-        "tps_title_el",
-        "tps_left_arrow",
-        "tps_right_arrow",
-        "tps_button_0",
-        "tps_button_1",
-        "tps_button_2",
-        "tps_button_3",
-        "tps_button_4",
-        "tps_button_5",
-        "tps_button_6",
-        "tps_button_7",
-        "tps_button_8",
-        "tps_button_9",
-    }, parameters)
+    local parent_el                                                                                                      = self.document:GetElementById(parent_id)
+    local actual_el, title_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 = rkt_util.instantiate_template(self.document,
+                                                                                                                                                         "tenpoint_selector_template",
+                                                                                                                                                         getOptionElementId(option),
+                                                                                                                                                         {
+                                                                                                                                                             "tps_title_el",
+                                                                                                                                                             "tps_left_arrow",
+                                                                                                                                                             "tps_right_arrow",
+                                                                                                                                                             "tps_button_0",
+                                                                                                                                                             "tps_button_1",
+                                                                                                                                                             "tps_button_2",
+                                                                                                                                                             "tps_button_3",
+                                                                                                                                                             "tps_button_4",
+                                                                                                                                                             "tps_button_5",
+                                                                                                                                                             "tps_button_6",
+                                                                                                                                                             "tps_button_7",
+                                                                                                                                                             "tps_button_8",
+                                                                                                                                                             "tps_button_9",
+                                                                                                                                                         },
+                                                                                                                                                         parameters)
     parent_el:AppendChild(actual_el)
 
     title_el.inner_rml = option.Title
 
-    self:init_point_slider_element(nil, btn_left, btn_right, { btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 }, option, onchange_func)
+    self:init_point_slider_element(nil, btn_left, btn_right,
+                                   { btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 }, option,
+                                   onchange_func)
 
     return actual_el
 end
 
 function OptionsController:createFivePointRangeElement(option, parent_id, onchange_func)
-    local parent_el = self.document:GetElementById(parent_id)
-    local actual_el, title_el, value_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4 = rkt_util.instantiate_template(self.document, "fivepoint_selector_template", getOptionElementId(option), {
-        "fps_title_text",
-        "fps_value_text",
-        "fps_left_btn",
-        "fps_right_btn",
-        "fps_button_0",
-        "fps_button_1",
-        "fps_button_2",
-        "fps_button_3",
-        "fps_button_4",
-    })
+    local parent_el                                                                             = self.document:GetElementById(parent_id)
+    local actual_el, title_el, value_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4 = rkt_util.instantiate_template(self.document,
+                                                                                                                                "fivepoint_selector_template",
+                                                                                                                                getOptionElementId(option),
+                                                                                                                                {
+                                                                                                                                    "fps_title_text",
+                                                                                                                                    "fps_value_text",
+                                                                                                                                    "fps_left_btn",
+                                                                                                                                    "fps_right_btn",
+                                                                                                                                    "fps_button_0",
+                                                                                                                                    "fps_button_1",
+                                                                                                                                    "fps_button_2",
+                                                                                                                                    "fps_button_3",
+                                                                                                                                    "fps_button_4",
+                                                                                                                                })
     parent_el:AppendChild(actual_el)
 
     title_el.inner_rml = option.Title
 
-    self:init_point_slider_element(value_el, btn_left, btn_right, { btn_0, btn_1, btn_2, btn_3, btn_4 }, option, onchange_func)
+    self:init_point_slider_element(value_el, btn_left, btn_right, { btn_0, btn_1, btn_2, btn_3, btn_4 }, option,
+                                   onchange_func)
 
     return actual_el
 end
@@ -217,26 +228,29 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
         end
     end)
 
-    local value = option.Value
+    local value          = option.Value
     local right_selected = value == vals[2]
     left_btn:SetPseudoClass("checked", not right_selected)
     right_btn:SetPseudoClass("checked", right_selected)
 end
 
 function OptionsController:createBinaryOptionElement(option, vals, parent_id, onchange_func)
-    local parent_el = self.document:GetElementById(parent_id)
-    local actual_el, title_el, btn_left, text_left, btn_right, text_right = rkt_util.instantiate_template(self.document, "binary_selector_template", getOptionElementId(option), {
-        "binary_text_el",
-        "binary_left_btn_el",
-        "binary_left_text_el",
-        "binary_right_btn_el",
-        "binary_right_text_el",
-    })
+    local parent_el                                                       = self.document:GetElementById(parent_id)
+    local actual_el, title_el, btn_left, text_left, btn_right, text_right = rkt_util.instantiate_template(self.document,
+                                                                                                          "binary_selector_template",
+                                                                                                          getOptionElementId(option),
+                                                                                                          {
+                                                                                                              "binary_text_el",
+                                                                                                              "binary_left_btn_el",
+                                                                                                              "binary_left_text_el",
+                                                                                                              "binary_right_btn_el",
+                                                                                                              "binary_right_text_el",
+                                                                                                          })
     parent_el:AppendChild(actual_el)
 
-    title_el.inner_rml = option.Title
+    title_el.inner_rml   = option.Title
 
-    text_left.inner_rml = vals[1].Display
+    text_left.inner_rml  = vals[1].Display
     text_right.inner_rml = vals[2].Display
 
     self:init_binary_element(btn_left, btn_right, option, vals, onchange_func)
@@ -265,11 +279,12 @@ function OptionsController:init_selection_element(element, option, vals, change_
 end
 
 function OptionsController:createSelectionOptionElement(option, vals, parent_id, parameters, onchange_func)
-    local parent_el = self.document:GetElementById(parent_id)
-    local actual_el, text_el, dataselect_el = rkt_util.instantiate_template(self.document, "dropdown_template", getOptionElementId(option), {
-        "dropdown_text_el",
-        "dropdown_dataselect_el"
-    }, parameters)
+    local parent_el                         = self.document:GetElementById(parent_id)
+    local actual_el, text_el, dataselect_el = rkt_util.instantiate_template(self.document, "dropdown_template",
+                                                                            getOptionElementId(option), {
+                                                                                "dropdown_text_el",
+                                                                                "dropdown_dataselect_el"
+                                                                            }, parameters)
     parent_el:AppendChild(actual_el)
 
     -- If no_title was specified then this element will be nil
@@ -286,7 +301,7 @@ function OptionsController:init_range_element(element, value_el, option, change_
     local range_el = Element.As.ElementFormControlInput(element)
 
     element:AddEventListener("change", function(event, _, _)
-        local value = option:getValueFromRange(event.parameters.value)
+        local value        = option:getValueFromRange(event.parameters.value)
         value_el.inner_rml = value.Display
 
         if option.Value ~= value then
@@ -301,12 +316,13 @@ function OptionsController:init_range_element(element, value_el, option, change_
 end
 
 function OptionsController:createRangeOptionElement(option, parent_id, onchange_func)
-    local parent_el = self.document:GetElementById(parent_id)
-    local actual_el, title_el, value_el, range_el = rkt_util.instantiate_template(self.document, "slider_template", getOptionElementId(option), {
-        "slider_title_el",
-        "slider_value_el",
-        "slider_range_el"
-    })
+    local parent_el                               = self.document:GetElementById(parent_id)
+    local actual_el, title_el, value_el, range_el = rkt_util.instantiate_template(self.document, "slider_template",
+                                                                                  getOptionElementId(option), {
+                                                                                      "slider_title_el",
+                                                                                      "slider_value_el",
+                                                                                      "slider_range_el"
+                                                                                  })
     parent_el:AppendChild(actual_el)
 
     title_el.inner_rml = option.Title
@@ -317,12 +333,13 @@ function OptionsController:createRangeOptionElement(option, parent_id, onchange_
 end
 
 function OptionsController:create(option, parent_id, onchange_func)
-    local parent_el = self.document:GetElementById(parent_id)
-    local actual_el, title_el, value_el, range_el = rkt_util.instantiate_template(self.document, "slider_template", getOptionElementId(option), {
-        "slider_title_el",
-        "slider_value_el",
-        "slider_range_el"
-    })
+    local parent_el                               = self.document:GetElementById(parent_id)
+    local actual_el, title_el, value_el, range_el = rkt_util.instantiate_template(self.document, "slider_template",
+                                                                                  getOptionElementId(option), {
+                                                                                      "slider_title_el",
+                                                                                      "slider_value_el",
+                                                                                      "slider_range_el"
+                                                                                  })
     parent_el:AppendChild(actual_el)
 
     title_el.inner_rml = option.Title
@@ -350,23 +367,23 @@ end
 function OptionsController:handleBrightnessOption(option, onchange_func)
     local increase_btn = self.document:GetElementById("brightness_increase_btn")
     local decrease_btn = self.document:GetElementById("brightness_decrease_btn")
-    local value_el = self.document:GetElementById("brightness_value_el")
+    local value_el     = self.document:GetElementById("brightness_value_el")
 
-    local vals = option:getValidValues()
-    local current = option.Value
+    local vals         = option:getValidValues()
+    local current      = option.Value
 
     value_el.inner_rml = current.Display
 
     increase_btn:AddEventListener("click", function()
         local current_index = tblUtil.ifind(vals, option.Value)
-        current_index = current_index + 1
+        current_index       = current_index + 1
         if current_index > #vals then
             current_index = #vals
         end
         local new_val = vals[current_index]
 
         if new_val ~= option.Value then
-            option.Value = new_val
+            option.Value       = new_val
             value_el.inner_rml = new_val.Display
 
             if onchange_func then
@@ -380,14 +397,14 @@ function OptionsController:handleBrightnessOption(option, onchange_func)
     end)
     decrease_btn:AddEventListener("click", function()
         local current_index = tblUtil.ifind(vals, option.Value)
-        current_index = current_index - 1
+        current_index       = current_index - 1
         if current_index < 1 then
             current_index = 1
         end
         local new_val = vals[current_index]
 
         if new_val ~= option.Value then
-            option.Value = new_val
+            option.Value       = new_val
             value_el.inner_rml = new_val.Display
 
             if onchange_func then
@@ -411,19 +428,19 @@ function OptionsController:initialize_basic_options()
         elseif key == "Input.JoystickDeadZone" then
             self:createTenPointRangeElement(v, "joystick_values_wrapper", {
                 text_alignment = "right",
-                no_background = true
+                no_background  = true
             })
         elseif key == "Input.JoystickSensitivity" then
             self:createTenPointRangeElement(v, "joystick_values_wrapper", {
                 text_alignment = "right",
-                no_background = true
+                no_background  = true
             })
         elseif key == "Input.UseMouse" then
             self:createOptionElement(v, "mouse_options_container")
         elseif key == "Input.MouseSensitivity" then
             self:createTenPointRangeElement(v, "mouse_options_container", {
                 text_alignment = "left",
-                no_background = false
+                no_background  = false
             })
         elseif key == "Audio.BriefingVoice" then
             self:createOptionElement(v, "briefing_voice_container")
@@ -433,7 +450,7 @@ function OptionsController:initialize_basic_options()
 
             self:createTenPointRangeElement(v, "volume_sliders_container", {
                 text_alignment = "left",
-                no_background = true
+                no_background  = true
             }, function(_)
                 v:persistChanges()
             end)
@@ -442,7 +459,7 @@ function OptionsController:initialize_basic_options()
 
             self:createTenPointRangeElement(v, "volume_sliders_container", {
                 text_alignment = "left",
-                no_background = true
+                no_background  = true
             }, function(_)
                 v:persistChanges()
             end)
@@ -451,7 +468,7 @@ function OptionsController:initialize_basic_options()
 
             self:createTenPointRangeElement(v, "volume_sliders_container", {
                 text_alignment = "left",
-                no_background = true
+                no_background  = true
             }, function(_)
                 v:persistChanges()
                 ui.OptionsMenu.playVoiceClip()
@@ -506,7 +523,7 @@ function OptionsController:initialize(document)
     self.options = opt.Options
     ba.print("Printing option ID mapping:\n")
     for _, v in ipairs(self.options) do
-        ba.print(string.format("%s (%s): %s\n", v.Title, v.Key, getOptionElementId(v) ))
+        ba.print(string.format("%s (%s): %s\n", v.Title, v.Key, getOptionElementId(v)))
 
         if v.Type == OPTION_TYPE_SELECTION then
             self.sources[v.Key] = createOptionSource(v)
@@ -514,7 +531,7 @@ function OptionsController:initialize(document)
 
         -- TODO: The category might be a translated string at some point so this needs to be fixed then
         local category = v.Category
-        local key = v.Key
+        local key      = v.Key
 
         if category == "Input" or category == "Audio" or category == "Game" or key == "Graphics.Gamma" then
             table.insert(self.category_options.basic, v)
@@ -545,9 +562,10 @@ function OptionsController:accept_clicked(element)
 
     local changed_text = table.concat(titles, "\n")
 
-    local dialog_text = string.format(ba.XSTR("<p>The following changes require a restart to apply their changes:</p><p>%s</p>", -1), changed_text)
+    local dialog_text  = string.format(ba.XSTR("<p>The following changes require a restart to apply their changes:</p><p>%s</p>",
+                                               -1), changed_text)
 
-    local builder = dialogs.new()
+    local builder      = dialogs.new()
     builder:title(ba.XSTR("Restart required", -1))
     builder:text(dialog_text)
     builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", -1), false)

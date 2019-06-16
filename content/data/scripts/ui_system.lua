@@ -1,4 +1,4 @@
-RocketUiSystem = {
+RocketUiSystem         = {
     replacements = {}
 }
 
@@ -15,7 +15,7 @@ function RocketUiSystem:init()
 
             parse.requiredString("+Markup:")
 
-            local markup = parse.getString()
+            local markup             = parse.getString()
 
             self.replacements[state] = {
                 markup = markup
@@ -37,7 +37,7 @@ function RocketUiSystem:stateStart()
         return
     end
 
-    local def = self:getDef(hv.NewState.Name)
+    local def    = self:getDef(hv.NewState.Name)
     def.document = self.context:LoadDocument(def.markup)
     def.document:Show()
 

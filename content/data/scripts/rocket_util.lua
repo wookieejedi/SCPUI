@@ -52,12 +52,12 @@ local function process_template_directives(element, parameters)
     local begin = 0
     while again do
         local children = element.child_nodes
-        again = false -- reset this so that if no special element is found we stop the iteration
+        again          = false -- reset this so that if no special element is found we stop the iteration
 
         for i, child in ipairs(children) do
             -- Skip elements that have already been processed this should be a bit better for performance...
             if i >= begin then
-                local tag = child.tag_name
+                local tag     = child.tag_name
 
                 local address = child.tag_name
 
@@ -83,11 +83,11 @@ local function process_template_directives(element, parameters)
 end
 
 function module.instantiate_template(document, template_id, element_id, template_classes, parameters)
-    parameters = parameters or {}
-    local template = document:GetElementById(template_id)
+    parameters      = parameters or {}
+    local template  = document:GetElementById(template_id)
 
     local actual_el = template:Clone()
-    actual_el.id = element_id or "" -- Reset the ID so that there are no duplicate IDs
+    actual_el.id    = element_id or "" -- Reset the ID so that there are no duplicate IDs
 
     -- Process special template directives
     process_template_directives(actual_el, parameters)

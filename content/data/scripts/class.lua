@@ -27,8 +27,8 @@ local function class(base, init)
     c.__index = c
 
     -- expose a constructor which can be called by <classname>(<args>)
-    local mt = {}
-    c.init = init
+    local mt  = {}
+    c.init    = init
     mt.__call = function(class_tbl, ...)
         local obj = {}
         setmetatable(obj, class_tbl)
@@ -48,7 +48,7 @@ local function class(base, init)
         return obj
     end
 
-    c.is_a = function(self, klass)
+    c.is_a    = function(self, klass)
         local m = getmetatable(self)
 
         while m do

@@ -1,32 +1,32 @@
-local utils = require("utils")
-local tblUtil = utils.table
+local utils                              = require("utils")
+local tblUtil                            = utils.table
 
-local dialogs = require("dialogs")
+local dialogs                            = require("dialogs")
 
-local class = require("class")
+local class                              = require("class")
 
-local VALID_MODES = { "single", "multi" }
+local VALID_MODES                        = { "single", "multi" }
 
-local PilotSelectController = class()
+local PilotSelectController              = class()
 
 PilotSelectController.MODE_PLAYER_SELECT = 1
-PilotSelectController.MODE_BARRACKS = 2
+PilotSelectController.MODE_BARRACKS      = 2
 
 function PilotSelectController:init()
-    self.selection = nil
-    self.elements = {}
+    self.selection             = nil
+    self.elements              = {}
     self.callsign_input_active = false
 
-    self.mode = PilotSelectController.MODE_PLAYER_SELECT
+    self.mode                  = PilotSelectController.MODE_PLAYER_SELECT
 end
 
 function PilotSelectController:initialize(document)
-    self.document = document
+    self.document  = document
 
     local pilot_ul = document:GetElementById("pilotlist_ul")
-    local pilots = ui.PilotSelect.enumeratePilots()
+    local pilots   = ui.PilotSelect.enumeratePilots()
 
-    local current = self:getInitialCallsign()
+    local current  = self:getInitialCallsign()
     if current ~= nil then
         -- Make sure that the last pilot appears at the top of the list
         local index = tblUtil.ifind(pilots, current)
@@ -73,12 +73,13 @@ function PilotSelectController:initialize(document)
     ui.MainHall.startAmbientSound()
 
     if ui.PilotSelect.WarningCount > 10 or ui.PilotSelect.ErrorCount > 0 then
-        local text = string.format(ba.XSTR("The currently active mod has generated %d warnings and/or errors during"
-                .. "program startup.  These could have been caused by anything from incorrectly formated table files to"
-                .. " corrupt models.  While FreeSpace Open will attempt to compensate for these issues, it cannot"
-                .. " guarantee a trouble-free gameplay experience.  Source Code Project staff cannot provide assistance"
-                .. " or support for these problems, as they are caused by the mod's data files, not FreeSpace Open's"
-                .. " source code.", -1), ui.PilotSelect.WarningCount + ui.PilotSelect.ErrorCount)
+        local text    = string.format(ba.XSTR("The currently active mod has generated %d warnings and/or errors during"
+                                                      .. "program startup.  These could have been caused by anything from incorrectly formated table files to"
+                                                      .. " corrupt models.  While FreeSpace Open will attempt to compensate for these issues, it cannot"
+                                                      .. " guarantee a trouble-free gameplay experience.  Source Code Project staff cannot provide assistance"
+                                                      .. " or support for these problems, as they are caused by the mod's data files, not FreeSpace Open's"
+                                                      .. " source code.", -1),
+                                      ui.PilotSelect.WarningCount + ui.PilotSelect.ErrorCount)
         local builder = dialogs.new()
         builder:title(ba.XSTR("Warning!", -1))
         builder:text(text)
@@ -98,11 +99,13 @@ function PilotSelectController:getInitialCallsign()
 end
 
 function PilotSelectController:create_pilot_li(pilot_name)
-    local li_el = self.document:CreateElement("li")
+    local li_el     = self.document:CreateElement("li")
 
     li_el.inner_rml = pilot_name
     li_el:SetClass("pilotlist_element", true)
-    li_el:AddEventListener("click", function(_, _, _) self:selectPilot(pilot_name) end)
+    li_el:AddEventListener("click", function(_, _, _)
+        self:selectPilot(pilot_name)
+    end)
 
     self.elements[pilot_name] = li_el
 
@@ -161,7 +164,7 @@ end
 function PilotSelectController:showWrongPilotLanguageDialog()
     local builder = dialogs.new()
     builder:text(ba.XSTR("Selected pilot was created with a different language to the currently active language." ..
-            "\n\nPlease select a different pilot or change the language", -1))
+                                 "\n\nPlease select a different pilot or change the language", -1))
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1))
     builder:show(self.document.context)
 end
@@ -181,28 +184,28 @@ function PilotSelectController:set_player_mode(element, mode)
     if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
         elements = {
             {
-                multi = "multiplayer_btn",
+                multi  = "multiplayer_btn",
                 single = "singleplayer_btn"
             },
             {
-                multi = "multiplayer_text",
+                multi  = "multiplayer_text",
                 single = "singleplayer_text"
             },
         }
     else
         elements = {
             {
-                multi = "multiplayer_btn",
+                multi  = "multiplayer_btn",
                 single = "singleplayer_btn"
             },
         }
     end
 
-    local is_single = mode == "single"
+    local is_single   = mode == "single"
     self.current_mode = mode
 
     for _, v in ipairs(elements) do
-        local multi_el = self.document:GetElementById(v.multi)
+        local multi_el  = self.document:GetElementById(v.multi)
         local single_el = self.document:GetElementById(v.single)
 
         multi_el:SetPseudoClass("checked", not is_single)
@@ -234,9 +237,9 @@ end
 function PilotSelectController:callsign_input_cancel()
     local input_el = Element.As.ElementFormControlInput(self.document:GetElementById("pilot_name_input"))
     input_el:SetClass("hidden", true) -- Show the element
-    input_el.value = ""
+    input_el.value              = ""
 
-    self.callsign_input_active = false
+    self.callsign_input_active  = false
     self.callsign_submit_action = nil
 end
 
@@ -274,7 +277,7 @@ function PilotSelectController:begin_callsign_input(end_action)
     input_el:Focus()
     ui.playElementSound(input_el, "click", "success")
 
-    self.callsign_input_active = true
+    self.callsign_input_active  = true
 
     -- This is the function that will be executed when the name has been entered and submitted
     self.callsign_submit_action = end_action
@@ -294,7 +297,7 @@ function PilotSelectController:finish_pilot_create(element, callsign, clone_from
     end
 
     local pilot_ul = self.document:GetElementById("pilotlist_ul")
-    local new_li = self:create_pilot_li(callsign)
+    local new_li   = self:create_pilot_li(callsign)
     -- If first_child is nil then this will add at the end of the list
     pilot_ul:InsertBefore(new_li, pilot_ul.first_child)
 
@@ -302,7 +305,9 @@ function PilotSelectController:finish_pilot_create(element, callsign, clone_from
 end
 
 function PilotSelectController:actual_pilot_create(element, callsign, clone_from)
-    if tblUtil.contains(self.pilots, callsign, function(left, right) return left:lower() == right:lower() end) then
+    if tblUtil.contains(self.pilots, callsign, function(left, right)
+        return left:lower() == right:lower()
+    end) then
         local builder = dialogs.new()
         builder:title(ba.XSTR("Warning", -1))
         builder:text(ba.XSTR("A duplicate pilot exists\nOverwrite?", -1))
@@ -357,8 +362,8 @@ function PilotSelectController:delete_player(element)
         local builder = dialogs.new()
         builder:title(ba.XSTR("Disabled!", -1))
         builder:text(ba.XSTR("Multi and single player pilots are now identical. Deleting a multi-player pilot will also delete" ..
-                " all single-player data for that pilot.\n\nAs a safety precaution, pilots can only be deleted from the" ..
-                " single-player menu.", -1))
+                                     " all single-player data for that pilot.\n\nAs a safety precaution, pilots can only be deleted from the" ..
+                                     " single-player menu.", -1))
         builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1))
         builder:show(self.document.context)
         return
@@ -412,7 +417,7 @@ function PilotSelectController:up_button_pressed()
     end
 
     local idx = tblUtil.ifind(self.pilots, self.selection)
-    idx = idx + 1
+    idx       = idx + 1
     if idx > #self.pilots then
         idx = 1
     end
@@ -427,7 +432,7 @@ function PilotSelectController:down_button_pressed()
     end
 
     local idx = tblUtil.ifind(self.pilots, self.selection)
-    idx = idx - 1
+    idx       = idx - 1
     if idx < 1 then
         idx = #self.pilots
     end

@@ -1,15 +1,15 @@
-local rkt_util = require("rocket_util")
+local rkt_util              = require("rocket_util")
 
-local module = {}
+local module                = {}
 
 -- The type of a dialog
-module.TYPE_SIMPLE = 1
+module.TYPE_SIMPLE          = 1
 
 -- The various button
 module.BUTTON_TYPE_POSITIVE = 1
 module.BUTTON_TYPE_NEGATIVE = 2
 
-module.BUTTON_MAPPING = {
+module.BUTTON_MAPPING       = {
     [module.BUTTON_TYPE_POSITIVE] = "button_positive",
     [module.BUTTON_TYPE_NEGATIVE] = "button_negative"
 }
@@ -18,11 +18,12 @@ local function initialize_buttons(document, properties, finish_func)
     local button_container = document:GetElementById("button_container")
 
     for _, v in ipairs(properties.buttons) do
-        local actual_el, text_el, image_container, image_el = rkt_util.instantiate_template(document, "button_template", nil, {
-            "button_text_id",
-            "button_image_container",
-            "button_image_id"
-        })
+        local actual_el, text_el, image_container, image_el = rkt_util.instantiate_template(document, "button_template",
+                                                                                            nil, {
+                                                                                                "button_text_id",
+                                                                                                "button_image_container",
+                                                                                                "button_image_id"
+                                                                                            })
         button_container:AppendChild(actual_el)
 
         actual_el.id = "" -- Reset the ID so that there are no duplicate IDs
@@ -30,7 +31,7 @@ local function initialize_buttons(document, properties, finish_func)
 
         text_el.inner_rml = v.text
 
-        local style = image_container.style
+        local style       = image_container.style
         for i, v in pairs(style) do
             -- This is pretty ugly but somehow the __index function is broken
             if i == "background-image" then
@@ -49,10 +50,10 @@ local function initialize_buttons(document, properties, finish_func)
 end
 
 local function show_dialog(context, properties, finish_func)
-    local dialog_doc = context:LoadDocument("data/interface/markup/dialog.rml")
+    local dialog_doc                                       = context:LoadDocument("data/interface/markup/dialog.rml")
 
     dialog_doc:GetElementById("title_container").inner_rml = properties.title_string
-    dialog_doc:GetElementById("text_container").inner_rml = properties.text_string
+    dialog_doc:GetElementById("text_container").inner_rml  = properties.text_string
 
     if #properties.buttons > 0 then
         initialize_buttons(dialog_doc, properties, finish_func)
@@ -62,7 +63,7 @@ local function show_dialog(context, properties, finish_func)
 end
 
 -- Metatable for factory instances
-local factory_mt = {}
+local factory_mt   = {}
 
 factory_mt.__index = factory_mt
 
@@ -87,8 +88,8 @@ function factory_mt:button(type, text, value)
     end
 
     table.insert(self.buttons, {
-        type = type,
-        text = text,
+        type  = type,
+        text  = text,
         value = value
     })
     return self
@@ -100,10 +101,10 @@ end
 
 function module.new()
     local factory = {
-        type_val = module.TYPE_SIMPLE,
-        buttons = {},
+        type_val     = module.TYPE_SIMPLE,
+        buttons      = {},
         title_string = "",
-        text_string = ""
+        text_string  = ""
     }
     setmetatable(factory, factory_mt)
     return factory
