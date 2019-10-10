@@ -388,13 +388,13 @@ div#control_cont
 button#control_btn:hover #control_img
 {
 	background-decorator: image;
-	background-image: ship-h.png;
+	background-image: ship-pos-h.png;
 }
 
 button#control_btn:active #control_img
 {
 	background-decorator: image;
-	background-image: ship-o.png;
+	background-image: ship-pos-o.png;
 }
 
 /*Exit Button*/
@@ -1056,13 +1056,13 @@ div#add_remove_cont
 button#add_btn:hover #add_img
 {
 	background-decorator: image;
-	background-image: star-h.png;
+	background-image: star-pos-h.png;
 }
 
 button#add_btn:active #add_img
 {
 	background-decorator: image;
-	background-image: star-o.png;
+	background-image: star-pos-o.png;
 }
 
 #remove_img
