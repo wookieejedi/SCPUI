@@ -419,86 +419,99 @@ function OptionsController:handleBrightnessOption(option, onchange_func)
 end
 
 function OptionsController:initialize_basic_options()
-    for _, v in ipairs(self.category_options.basic) do
-        local key = v.Key
+    for _, option in ipairs(self.category_options.basic) do
+        local key = option.Key
         if key == "Input.Joystick" then
-            self:createSelectionOptionElement(v, v:getValidValues(), "joystick_values_wrapper", {
+            self:createSelectionOptionElement(option, option:getValidValues(), "joystick_values_wrapper", {
                 no_title = true
             })
         elseif key == "Input.JoystickDeadZone" then
-            self:createTenPointRangeElement(v, "joystick_values_wrapper", {
+            self:createTenPointRangeElement(option, "joystick_values_wrapper", {
                 text_alignment = "right",
                 no_background  = true
             })
         elseif key == "Input.JoystickSensitivity" then
-            self:createTenPointRangeElement(v, "joystick_values_wrapper", {
+            self:createTenPointRangeElement(option, "joystick_values_wrapper", {
                 text_alignment = "right",
                 no_background  = true
             })
         elseif key == "Input.UseMouse" then
-            self:createOptionElement(v, "mouse_options_container")
+            self:createOptionElement(option, "mouse_options_container")
         elseif key == "Input.MouseSensitivity" then
-            self:createTenPointRangeElement(v, "mouse_options_container", {
+            self:createTenPointRangeElement(option, "mouse_options_container", {
                 text_alignment = "left",
                 no_background  = false
             })
         elseif key == "Audio.BriefingVoice" then
-            self:createOptionElement(v, "briefing_voice_container")
+            self:createOptionElement(option, "briefing_voice_container")
         elseif key == "Audio.Effects" then
             -- The audio options are applied immediately so the user hears the effects
-            self.option_backup[v] = v.Value
+            self.option_backup[option] = option.Value
 
-            self:createTenPointRangeElement(v, "volume_sliders_container", {
+            self:createTenPointRangeElement(option, "volume_sliders_container", {
                 text_alignment = "left",
                 no_background  = true
             }, function(_)
-                v:persistChanges()
+                option:persistChanges()
             end)
         elseif key == "Audio.Music" then
-            self.option_backup[v] = v.Value
+            self.option_backup[option] = option.Value
 
-            self:createTenPointRangeElement(v, "volume_sliders_container", {
+            self:createTenPointRangeElement(option, "volume_sliders_container", {
                 text_alignment = "left",
                 no_background  = true
             }, function(_)
-                v:persistChanges()
+                option:persistChanges()
             end)
         elseif key == "Audio.Voice" then
-            self.option_backup[v] = v.Value
+            self.option_backup[option] = option.Value
 
-            self:createTenPointRangeElement(v, "volume_sliders_container", {
+            self:createTenPointRangeElement(option, "volume_sliders_container", {
                 text_alignment = "left",
                 no_background  = true
             }, function(_)
-                v:persistChanges()
+                option:persistChanges()
                 ui.OptionsMenu.playVoiceClip()
             end)
         elseif key == "Game.SkillLevel" then
-            self:createFivePointRangeElement(v, "skill_level_container")
+            self:createFivePointRangeElement(option, "skill_level_container")
         elseif key == "Graphics.Gamma" then
-            self.option_backup[v] = v.Value
+            self.option_backup[option] = option.Value
 
-            self:handleBrightnessOption(v, function(_)
+            self:handleBrightnessOption(option, function(_)
                 -- Apply changes immediately to make them visible
-                v:persistChanges()
+                option:persistChanges()
             end)
         end
     end
 end
 
+local built_in_detail_keys = {
+    "Graphics.NebulaDetail",
+    "Graphics.Lighting",
+    "Graphics.Detail",
+    "Graphics.Texture",
+    "Graphics.Particles",
+    "Graphics.SmallDebris",
+    "Graphics.ShieldEffects",
+    "Graphics.Stars",
+};
+
 function OptionsController:initialize_detail_options()
-    local current_column = 2
-    for _, v in ipairs(self.category_options.detail) do
-        if v.Key == "Graphics.Resolution" then
-            self:createOptionElement(v, "detail_column_1")
-        elseif v.Key == "Graphics.WindowMode" then
-            self:createOptionElement(v, "detail_column_1")
-        elseif v.Key == "Graphics.Display" then
-            self:createOptionElement(v, "detail_column_1", function(_)
+    local current_column = 3
+    for _, option in ipairs(self.category_options.detail) do
+        if option.Key == "Graphics.Resolution" then
+            self:createOptionElement(option, "detail_column_1")
+        elseif option.Key == "Graphics.WindowMode" then
+            self:createOptionElement(option, "detail_column_1")
+        elseif option.Key == "Graphics.Display" then
+            self:createOptionElement(option, "detail_column_1", function(_)
                 self.sources["Graphics.Resolution"]:updateValues()
             end)
+        elseif tblUtil.contains(built_in_detail_keys, option.Key) then
+            self:createOptionElement(option, "detail_column_2")
         else
-            local el = self:createOptionElement(v, string.format("detail_column_%d", current_column))
+            local el = self:createOptionElement(option, string.format("detail_column_%d", current_column))
 
             if current_column == 2 or current_column == 3 then
                 el:SetClass("horz_middle", true)
@@ -508,7 +521,7 @@ function OptionsController:initialize_detail_options()
 
             current_column = current_column + 1
             if current_column > 4 then
-                current_column = 2
+                current_column = 3
             end
         end
     end

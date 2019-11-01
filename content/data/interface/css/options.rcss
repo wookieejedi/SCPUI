@@ -99,19 +99,19 @@ div#bottom_panel_c img
 
 .options_column_20
 {
-	width: 20%;
+	width: 19%;
 	float: left;
 }
 
 .options_column_25
 {
-	width: 25%;
+	width: 24%;
 	float: left;
 }
 
 .options_column_40
 {
-	width: 40%;
+	width: 39%;
 	float: left;
 }
 
