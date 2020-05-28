@@ -1,0 +1,101 @@
+<rml>
+	<head>
+		<title>XSTR("Pilot Select", -1)</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="scrollbars.rcss"/>
+		<link type="text/rcss" href="campaign.rcss"/>
+	</head>
+	<body>
+		<div id=campaign_wrapper>
+			<div id=campaign_select>
+				<div id=campaignlist>
+					<ul id=campaignlist_ul>
+						<p>Freespace 2</p>
+					</ul>
+				</div>
+				<div id=list_scroll_wrapper>
+					<div id=list_scroll_cont>
+						<button id="scroll_up_btn" class="list_scroll_btns button_1">
+							<span id="scroll_up_img" class="list_scroll_btns">
+								<img src="arrow-dbl-up.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+					<div id=list_scroll_cont>
+						<button id="scroll_down_btn" class="list_scroll_btns button_1">
+							<span id="scroll_down_img" class="list_scroll_btns">
+								<img src="arrow-dbl-down.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+					<div class="tooltip">
+						<span class="tooltiptext">View pilot stats</span>
+					</div>
+				</div>
+				<img src="campaign-main-window.png"></img>
+			</div>
+			<div id=campaign_desc>
+				<div id=desc_text>
+					<p>The main FreeSpace 2 campaign.</p>
+				</div>
+				<div id=desc_scroll_wrapper>
+					<div id=desc_scroll_cont>
+						<button id="scroll_up_btn" class="desc_scroll_btns button_1">
+							<span id="scroll_up_img" class="desc_scroll_btns">
+								<img src="arrow-dbl-up.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+					<div id=desc_scroll_cont>
+						<button id="scroll_down_btn" class="desc_scroll_btns button_1">
+							<span id="scroll_down_img" class="desc_scroll_btns">
+								<img src="arrow-dbl-down.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+					<div class="tooltip">
+						<span class="tooltiptext">View pilot stats</span>
+					</div>
+				</div>
+				<img src="campaign-text-window.png"></img>
+			</div>
+		</div>
+		<div id=logo_wide>
+			<img src="logo-wide.png"></img>
+		</div>
+		<div id=bottom_panel_wrapper>
+			<div id=bottom_panel_a>
+				<div id=a_panel_wrapper>
+					<div id=restart_cont>
+						<button id="restart_btn" class="restart button_1">
+							<span id="restart_img" class="restart">
+								<img src="star.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_top">
+								<p>Restart Campaign</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-a.png"></img>
+			</div>
+			<div id=bottom_panel_b>
+				<div id=b_panel_wrapper>
+					<div id=accept_cont>
+						<button id="accept_btn" class="accept button_1">
+							<span id="accept_img" class="accept">
+								<img src="select.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>Select</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-a.png"></img>
+			</div>
+		</div>
+	</body>
+
+</rml>
