@@ -22,7 +22,7 @@
 				</div>
 				<div id=stage_select>
 					<div id=button_wrapper>
-					<div id=skip_cont>
+						<div id=skip_cont>
 							<button id="cmdlast_btn" class="arrowbuttons button_1">
 								<span id="cmdlast_img" class="arrowbuttons">
 									<img src="skip-r.png" class="psuedo_img"></img>

@@ -6,145 +6,123 @@ body
 	z-index: -1;
 }
 
-.below p
-{
-	padding-top:8%;
-}
-
-div#logo_wide
-{
-	position: relative;
-	top: 1%;
-	margin: auto;
-	width: 50%;
-	height: auto;
-	overflow: hidden;
-	font-size: 10px;
-}
-
-div#logo_wide img
-{
-	display: block;
-	width: 100%;
-	height: auto;
-}
-
-div#cmd_text
-{
-	position: absolute;
-	top: 0;
-	margin-top: 2%;
-	margin-left: 2%;
-	margin-right: 5%;
-	color: grey;
-	overflow: auto;
-	height: 52%;
-}
-
-div#cmd_wrapper
+div#brief_wrapper
 {
 	margin: auto;
-	width: 80%;
+	width: 70%;
 	height: auto;
 	position: relative;
 }
 
-div#cmd_text_window
+div#brief_grid_window
 {
 	margin-top: 2%;
-	margin-left: 2%;
 	width: 100%;
 	height: auto;
 	overflow: hidden;
 	position: relative;
 }
 
-div#cmd_text_window img
+div#brief_grid_window img
 {
 	display: block;
 	width: 100%;
 	height: auto;
 }
 
-div#cmd_anim_window
+div#brief_text_window
 {
-	width: 60%;
+	width: 90%;
 	height: auto;
 	overflow: hidden;
 	position: relative;
+	margin-top: 2%;
 }
 
-div#cmd_anim_window img
+div#brief_text_window img
 {
 	display: block;
 	width: 100%;
 	height: auto;
 }
 
-div#cmd_anim_wrapper
+div#brief_text_wrapper
 {
 	position: absolute;
 	margin-top: 4%;
-	margin-left: 4%;
+	margin-left: 7%;
+	width: 88%;
 }
 
-span#cmd_anim
+span#brief_text
 {
-	position: relative;
-	margin: auto;
-	display: block;
-	width: 92%;
-	height: auto;
+	
 }
 
-div#anim_cont
+div#briefing_grid
 {
 	width: 100%;
 	height: auto;
 
 }
 
-div#cmd_stage_text
+div#brief_stage_text
+{
+	text-align: left;
+	width: 15%;
+	float: left;
+	margin-left: 40%;
+}
+
+div#mission_title
 {
 	text-align: right;
+	width: 40%;
+	float: right;
+}
+
+div#brief_stage_wrapper
+{
+	position: absolute;
+	top: 4%;
 }
 
 div#stage_select
 {
 	position: absolute;
-	bottom: 0;
+	top: 0;
 }
 
 /*Arrow Buttons*/
 
 div#arrow_cont
 {
-	float: right;
-	width: 5%;
+	float: left;
+	width: 7%;
 	height: auto;
-	margin-right: 2%;
+	margin-left: 2%;
 	margin-bottom: 2%;
-	margin-top: 7%;
+	margin-top: 1%;
 }
 
 div#skip_cont
 {
-	float: right;
-	width: 3%;
+	float: left;
+	width: 4%;
 	height: auto;
-	margin-right: 2%;
+	margin-left: 2%;
 	margin-bottom: 2%;
-	margin-top: 8%;
+	margin-top: 2%;
 }
 
 div#pause_cont
 {
-	float: right;
-	width: 2%;
+	float: left;
+	width: 3%;
 	height: auto;
-	margin-right: 2%;
+	margin-left: 2%;
 	margin-bottom: 2%;
-	margin-top: 9%;
+	margin-top: 2%;
 }
 
 .arrowbuttons
@@ -242,6 +220,175 @@ button#cmdfirst_btn:active #cmdfirst_img
 {
 	background-decorator: image;
 	background-image: skip-l-o.png;
+}
+
+/*Top Panel Elements*/
+
+div#top_panel_wrapper
+{
+	width: 100%;
+	height: auto;
+	overflow: hidden;
+
+}
+
+div#top_panel_a
+{
+	width: 10%;
+	height: auto;
+	position: relative;
+	float: right;
+}
+
+div#top_panel_a img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#top_panel_b
+{
+	width: 4%;
+	height: auto;
+	position: relative;
+	float: left;
+}
+
+div#top_panel_b img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+/*Skip M Button*/
+
+div#top_a_panel_wrapper
+{
+	position: absolute;
+	top: 0;
+}
+
+div#skip_m_cont
+{
+	width: 38%;
+	height: auto;
+	margin: auto;
+
+}
+
+.skip
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#skip_m_text
+{
+	position: absolute;
+	top: 0;
+}
+
+#skip_m_text p
+{
+	padding-top: 15%;
+}
+
+#skip_img
+{
+	background-decorator: image;
+	background-image: skip-r.png;
+}
+
+button#skip_btn:hover #skip_img
+{
+	background-decorator: image;
+	background-image: skip-r-h.png;
+}
+
+button#skip_btn:active #skip_img
+{
+	background-decorator: image;
+	background-image: skip-r-o.png;
+}
+
+/*Top B Panel Buttons*/
+
+div#top_b_panel_wrapper
+{
+	position: absolute;
+	margin-top: 5%;
+}
+
+.button_text_right p
+{
+	padding-top: 50%;
+	width: 400%;
+	margin-left: 100%;
+}
+
+/*Bullet Button*/
+
+div#bullet_cont
+{
+	width: 90%;
+	height: auto;
+	margin: auto;
+
+}
+
+.bullet
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+}
+
+button#brief_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#brief_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#s_select_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#s_select_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#w_select_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#w_select_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
 }
 
 /*Bottom Panel Elements*/
@@ -415,41 +562,19 @@ button#options_btn:active #options_img
 
 /*Scroll Buttons*/
 
-div#list_scroll_wrapper
+div#text_scroll_wrapper
 {
 	position: absolute;
-	top: 10%;
+	top: 18%;
 }
 
-div#list_scroll_cont
+div#text_scroll_cont
 {
-	width: 5%;
+	width: 6%;
 	height: auto;
-	margin-bottom: 8%;
 }
 
-.list_scroll_btns
-{
-	display: block;
-	width: 100%;
-	height: auto;
-
-}
-
-div#desc_scroll_wrapper
-{
-	position: absolute;
-	top: 12%;
-}
-
-div#desc_scroll_cont
-{
-	width: 7%;
-	height: auto;
-	margin-bottom: 10%;
-}
-
-.desc_scroll_btns
+.text_scroll_btns
 {
 	display: block;
 	width: 100%;
