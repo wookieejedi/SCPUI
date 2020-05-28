@@ -1,0 +1,119 @@
+<rml>
+	<head>
+		<title>XSTR("Pilot Select", -1)</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="scrollbars.rcss"/>
+		<link type="text/rcss" href="cmd_brief.rcss"/>
+	</head>
+	<body>
+		<div id=logo_wide>
+			<img src="logo-wide.png"></img>
+		</div>
+		<div id=cmd_wrapper>
+			<div id=cmd_stage_text>
+				<p>Stage 1 of 5</p>
+			</div>
+			<div id=cmd_text_window>
+				<div id=cmd_text>
+					<p>The 53rd Hammerheads</p>
+					<br></br>
+					<p>Welcome to Vega, Ensign. I am Lieutenant Loukakis, squadron leader of the 53rd Hammerheads. You have been assigned to our unit. The Hammerheads are a space superiority squadron. We'll be flying the Myrmidon fighter, developed to replace the old GTF Ulysses. The Myrmidon is a Terran-Vasudan design and a versatile ship with high marks for speed, maneuverability, armor, and loadout.</p>
+				</div>
+				<div id=stage_select>
+					<div id=button_wrapper>
+					<div id=skip_cont>
+							<button id="cmdlast_btn" class="arrowbuttons button_1">
+								<span id="cmdlast_img" class="arrowbuttons">
+									<img src="skip-r.png" class="psuedo_img"></img>
+								</span>
+							</button>
+						</div>
+						<div id=arrow_cont>
+							<button id="cmdnext_btn" class="arrowbuttons button_1">
+								<span id="cmdnext_img" class="arrowbuttons">
+									<img src="arrow-down.png" class="psuedo_img"></img>
+								</span>
+							</button>
+						</div>
+						<div id=pause_cont>
+							<button id="cmdpause_btn" class="arrowbuttons button_1">
+								<span id="cmdpause_img" class="arrowbuttons">
+									<img src="pause.png" class="psuedo_img"></img>
+								</span>
+							</button>
+						</div>
+						<div id=arrow_cont>
+							<button id="cmdprev_btn" class="arrowbuttons button_1">
+								<span id="cmdprev_img" class="arrowbuttons">
+									<img src="arrow-up.png" class="psuedo_img"></img>
+								</span>
+							</button>
+						</div>
+						<div id=skip_cont>
+							<button id="cmdfirst_btn" class="arrowbuttons button_1">
+								<span id="cmdfirst_img" class="arrowbuttons">
+									<img src="skip-l.png" class="psuedo_img"></img>
+								</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<img src="c-brief-text-window.png"></img>
+			</div>
+			<div id=cmd_anim_window>
+				<div id=cmd_anim_wrapper>
+					<div id=anim_cont>
+						<span id=cmd_anim>
+							<img src="2_cb_train-01_a.png"></img>
+						</span>
+					</div>
+				</div>
+				<img src="c-brief-anim-window.png"></img>
+			</div>
+		</div>
+		<div id=bottom_panel_wrapper>
+			<div id=bottom_panel_a>
+				<div id=a_panel_wrapper>
+					<div id=accept_cont>
+						<button id="accept_btn" class="accept button_1" onclick="controller:commit_pressed(element)">
+							<span id="accept_img" class="accept">
+								<img src="select.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>Continue</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-a.png"></img>
+			</div>
+			<div id=bottom_panel_b>
+				<div id=b_panel_wrapper>
+					<div id=help_cont>
+						<button id="help_btn" class="help button_1" onclick="controller:help_clicked()">
+							<span id="help_img" class="help">
+								<img src="help.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_left">
+								<p>Help</p>
+							</span>
+						</button>
+					</div>
+					<div id=options_cont>
+						<button id="options_btn" class="options button_1" onclick="controller:options_button_clicked()">
+							<span id="options_img" class="options">
+								<img src="options.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_left">
+								<p>Options</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-b.png"></img>
+			</div>
+		</div>
+	</body>
+
+</rml>
