@@ -1,0 +1,163 @@
+<rml>
+	<head>
+		<title>XSTR("Ship Select", -1)</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="scrollbars.rcss"/>
+		<link type="text/rcss" href="ship_select.rcss"/>
+	</head>
+	<body>
+		<div id=top_panel_wrapper>
+			<div id=top_panel_b>
+				<div id=top_b_panel_wrapper>
+					<div id=bullet_cont>
+						<button id="brief_btn" class="bullet button_1">
+							<span id="bullet_img" class="bullet">
+								<img src="bullet-r.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_right">
+								<p>Briefing</p>
+							</span>
+						</button>
+					</div>
+					<div id=bullet_cont>
+						<button id="s_select_btn" class="bullet button_1">
+							<span id="bullet_img" class="bullet">
+								<img src="bullet-r.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_right">
+								<p>Ship Selection</p>
+							</span>
+						</button>
+					</div>
+					<div id=bullet_cont>
+						<button id="w_select_btn" class="bullet button_1">
+							<span id="bullet_img" class="bullet">
+								<img src="bullet-r.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_right">
+								<p>Weapon Selection</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="ops-panel-vert-tall-l.png"></img>
+			</div>
+		</div>
+		<div id=ship_wrapper>
+			<div id=ship_stats_window>
+				<div id=ship_stats_wrapper>
+					<div id=ship_stats_info>
+						<p>Class</p>
+						<p style="color:green;padding-left:5;">GTF Myrmidon</p>
+						<p>Type</p>
+						<p style="color:green;padding-left:5;">Advanced Space Superiority</p>
+						<p>Length</p>
+						<p style="color:green;padding-left:5;">16 M</p>
+						<p>Max Velocity</p>
+						<p style="color:green;padding-left:5;">75 M/S</p>
+						<p>Meneuverability</p>
+						<p style="color:green;padding-left:5;">Average</p>
+						<p>Armor</p>
+						<p style="color:green;padding-left:5;">Average</p>
+						<p>Gun Mounts</p>
+						<p style="color:green;padding-left:5;">2 (2,4)</p>
+						<p>Missile Banks</p>
+						<p style="color:green;padding-left:5;">3 (20,20,40)</p>
+						<p>Manufacturer</p>
+						<p style="color:green;padding-left:5;">RNI Systems</p>
+					</div>
+				</div>
+				<img src="select-window-left.png"></img>
+			</div>
+			<div id=ship_view_window>
+				<div id=ship_view_wrapper>
+					<div id=ship_view>
+					</div>
+				</div>
+				<img src="select-window-right.png"></img>
+			</div>
+		</div>
+		<div id=ship_scroll_panel>
+			<div id=scroll_button_wrapper>
+				<div id=ship_scroll_wrapper>
+					<div id=ship_scroll>
+					</div>
+				</div>
+				<div id=scroll_button_cont_top>
+					<button id="scroll_up_btn" class="text_scroll_btns button_1">
+						<span id="scroll_up_img" class="text_scroll_btns">
+							<img src="arrow-wide-up.png" class="psuedo_img"></img>
+						</span>
+					</button>
+				</div>
+				<div id=scroll_button_cont_bottom>
+					<button id="scroll_down_btn" class="text_scroll_btns button_1">
+						<span id="scroll_down_img" class="text_scroll_btns">
+							<img src="arrow-wide-down.png" class="psuedo_img"></img>
+						</span>
+					</button>
+				</div>
+			</div>
+			<img src="select-scroll-panel.png"></img>
+		</div>
+		<div id=bottom_panel_wrapper>
+			<div id=bottom_panel_c>
+				<div id=c_panel_wrapper>
+					<div id=reset_cont>
+						<button id="reset_btn" class="reset button_1">
+							<span id="reset_img" class="reset">
+								<img src="default.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_top">
+								<p>Reset</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-a.png"></img>
+			</div>
+			<div id=bottom_panel_a>
+				<div id=a_panel_wrapper>
+					<div id=accept_cont>
+						<button id="accept_btn" class="accept button_1" onclick="controller:commit_pressed(element)">
+							<span id="accept_img" class="accept">
+								<img src="select.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>Continue</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-a.png"></img>
+			</div>
+			<div id=bottom_panel_b>
+				<div id=b_panel_wrapper>
+					<div id=help_cont>
+						<button id="help_btn" class="help button_1" onclick="controller:help_clicked()">
+							<span id="help_img" class="help">
+								<img src="help.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_left">
+								<p>Help</p>
+							</span>
+						</button>
+					</div>
+					<div id=options_cont>
+						<button id="options_btn" class="options button_1" onclick="controller:options_button_clicked()">
+							<span id="options_img" class="options">
+								<img src="options.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_left">
+								<p>Options</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-b.png"></img>
+			</div>
+		</div>
+	</body>
+
+</rml>

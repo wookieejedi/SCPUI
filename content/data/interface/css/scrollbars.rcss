@@ -44,7 +44,7 @@ scrollbarvertical sliderarrowdec
 	mouseover-sound: 17;
 	click-sound: 0;
 	icon-decorator: image;
-	icon-image: scroll-asc-right.png;
+	icon-image: arrow-dbl-up.png;
 }
 
 scrollbarvertical sliderarrowinc
@@ -54,27 +54,27 @@ scrollbarvertical sliderarrowinc
 	mouseover-sound: 17;
 	click-sound: 0;
 	icon-decorator: image;
-	icon-image: scroll-desc-right.png;
+	icon-image: arrow-dbl-down.png;
 }
 
 scrollbarvertical sliderarrowdec:hover
 {
-	icon-image: scroll-asc-right-h.png;
+	icon-image: arrow-dbl-up-h.png;
 }
 
 scrollbarvertical sliderarrowinc:hover
 {
-	icon-image: scroll-desc-right-h.png;
+	icon-image: arrow-dbl-down-h.png;
 }
 
 scrollbarvertical sliderarrowdec:active
 {
-	icon-image: scroll-asc-right-o.png;
+	icon-image: arrow-dbl-up-o.png;
 }
 
 scrollbarvertical sliderarrowinc:active
 {
-	icon-image: scroll-desc-right-o.png;
+	icon-image: arrow-dbl-down-o.png;
 }
 
 /*Pilot List Scroll Bar*/
