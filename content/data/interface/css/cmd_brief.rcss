@@ -39,6 +39,8 @@ div#cmd_text
 	color: grey;
 	overflow: auto;
 	height: 52%;
+	font-size: 150%;
+	line-height: 90%;
 }
 
 div#cmd_wrapper

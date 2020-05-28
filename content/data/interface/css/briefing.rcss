@@ -54,9 +54,10 @@ div#brief_text_wrapper
 	width: 88%;
 }
 
-span#brief_text
+div#brief_text
 {
-	
+	font-size: 150%;
+	line-height: 90%;
 }
 
 div#briefing_grid
