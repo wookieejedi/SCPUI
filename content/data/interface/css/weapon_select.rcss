@@ -1,0 +1,577 @@
+body
+{
+	background-decorator: image;
+	background-image: bg.png;
+	z-index: bottom;
+	z-index: -1;
+}
+
+div#weapon_view_wrapper
+{
+	margin: auto;
+	width: 100%;
+	height: auto;
+	position: relative;
+}
+
+div#ship_view_window
+{
+	margin-top: 2%;
+	margin-left: 21%;
+	width: 37%;
+	height: 48%;
+	overflow: hidden;
+	position: relative;
+	float: left;
+}
+
+div#ship_view_window img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#ship_view_wrapper
+{
+	
+}
+
+div#ship_name
+{
+	width: 100%;
+	height: auto;
+	line-height: 90%;
+}
+
+div#weapon_view_window
+{
+	margin-right: 10%;
+	width: 30%;
+	height: auto;
+	overflow: hidden;
+	position: relative;
+	float: right;
+}
+
+div#weapon_view_window img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#weapon_wrapper
+{
+	position: absolute;
+	width: 90%;
+	margin-top: 8%;
+	margin-left: 2%;
+}
+
+div#weapon_view
+{
+	width: 100%;
+	height: 60%;
+}
+
+div#weapon_left_column
+{
+	margin-left: 10%;
+	position: absolute;
+	bottom: 0;
+}
+
+div#copy_to_wing_panel
+{
+	width: 8%;
+	height: 6%;
+	overflow: hidden;
+	position: relative;
+	margin-left: 1%;
+	margin-bottom: 1%;
+}
+
+div#copy_to_wing_panel img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#weapon_scroll_panel
+{
+	width: 11%;
+	height: auto;
+	overflow: hidden;
+	position: relative;
+	margin-bottom: 1%;
+}
+
+div#weapon_scroll_panel img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#primary_scroll_wrapper
+{
+	position: absolute;
+	margin-top: 10%;
+	margin-left: 6%;
+	width: 90%;
+	height: 80%;
+}
+
+div#secondary_scroll_wrapper
+{
+	position: absolute;
+	margin-top: 10%;
+	margin-left: 6%;
+	width: 500%;
+	height: 80%;
+}
+
+div#ship_scroll
+{
+	width: 80%;
+	height: 60%;
+	margin-top: 40%;
+	margin-left: 20%;
+}
+
+/*Top Panel Elements*/
+
+div#top_panel_wrapper
+{
+	width: 100%;
+	height: auto;
+	overflow: hidden;
+
+}
+
+div#top_panel_b
+{
+	width: 4%;
+	height: auto;
+	position: relative;
+	float: left;
+}
+
+div#top_panel_b img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+/*Top B Panel Buttons*/
+
+div#top_b_panel_wrapper
+{
+	position: absolute;
+	margin-top: 5%;
+}
+
+.button_text_right p
+{
+	padding-top: 50%;
+	width: 400%;
+	margin-left: 100%;
+}
+
+/*Bullet Button*/
+
+div#bullet_cont
+{
+	width: 90%;
+	height: auto;
+	margin: auto;
+
+}
+
+.bullet
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+}
+
+button#brief_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#brief_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#s_select_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#s_select_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#w_select_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#w_select_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+/*Bottom Panel Elements*/
+
+div#bottom_panel_wrapper
+{
+	width: 15%;
+	height: auto;
+	overflow: hidden;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+div#bottom_panel_a
+{
+	width: 66%;
+	height: auto;
+	position: relative;
+	float: right;
+}
+
+div#bottom_panel_a img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#bottom_panel_b
+{
+	width: 34%;
+	height: auto;
+	margin-top: 1.1%;
+	position: relative;
+	float: left;
+}
+
+div#bottom_panel_b img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+div#bottom_panel_c
+{
+	width: 66%;
+	height: auto;
+	position: relative;
+	float: right;
+	margin-bottom: 2%;
+}
+
+div#bottom_panel_c img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/*Reset Button*/
+
+div#c_panel_wrapper
+{
+	position: absolute;
+	bottom: 0;
+}
+
+div#reset_cont
+{
+	width: 80%;
+	height: auto;
+
+}
+
+.reset
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#reset_img
+{
+	background-decorator: image;
+	background-image: default.png;
+	margin-left: 15%;
+}
+button#reset_btn:hover #reset_img
+{
+	background-decorator: image;
+	background-image: default-h.png;
+}
+
+button#reset_btn:active #reset_img
+{
+	background-decorator: image;
+	background-image: default-o.png;
+}
+
+/*Copy To Wing Button*/
+
+div#copy_to_wing_wrapper
+{
+	position: absolute;
+	bottom: 0;
+}
+
+div#copy_to_wing_cont
+{
+	width: 50%;
+	height: auto;
+	margin-left: 30%;
+}
+
+.copy
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#copy_img
+{
+	background-decorator: image;
+	background-image: multiplayer.png;
+}
+button#copy_btn:hover #copy_img
+{
+	background-decorator: image;
+	background-image: multiplayer-h.png;
+}
+
+button#copy_btn:active #copy_img
+{
+	background-decorator: image;
+	background-image: multiplayer-o.png;
+}
+
+/*Accept Button*/
+
+div#a_panel_wrapper
+{
+	position: absolute;
+	bottom: 0;
+}
+
+div#accept_cont
+{
+	width: 100%;
+	height: auto;
+
+}
+
+.accept
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#accept_img
+{
+	background-decorator: image;
+	background-image: select.png;
+}
+button#accept_btn:hover #accept_img
+{
+	background-decorator: image;
+	background-image: select-neg-h.png;
+}
+
+button#accept_btn:active #accept_img
+{
+	background-decorator: image;
+	background-image: select-neg-o.png;
+}
+
+/*B Panel Buttons*/
+
+div#b_panel_wrapper
+{
+	position: absolute;
+	bottom: 5%;
+
+}
+
+.button_text_left p
+{
+	padding-top: 20%;
+	width: 100%;
+}
+
+/*Help Button*/
+
+div#help_cont
+{
+	width: 70%;
+	height: auto;
+	margin: auto;
+
+}
+
+.help
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#help_img
+{
+	background-decorator: image;
+	background-image: help.png;
+}
+
+button#help_btn:hover #help_img
+{
+	background-decorator: image;
+	background-image: help-h.png;
+}
+
+button#help_btn:active #help_img
+{
+	background-decorator: image;
+	background-image: help-o.png;
+}
+
+/*Options Button*/
+
+div#options_cont
+{
+	width: 70%;
+	height: auto;
+	margin: auto;
+}
+
+.options
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#options_img
+{
+	background-decorator: image;
+	background-image: options.png;
+}
+button#options_btn:hover #options_img
+{
+	background-decorator: image;
+	background-image: options-h.png;
+}
+
+button#options_btn:active #options_img
+{
+	background-decorator: image;
+	background-image: options-o.png;
+}
+
+/*Scroll Buttons*/
+
+div#scroll_button_wrapper
+{
+	position: absolute;
+	height: 100%;
+}
+
+div#scroll_button_cont_top
+{
+	width: 35%;
+	height: auto;
+	margin: auto;
+}
+
+div#scroll_button_cont_bottom
+{
+	width: 35%;
+	height: auto;
+	margin: auto;
+	position: absolute;
+	bottom: 0;
+}
+
+.text_scroll_btns
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#scroll_up_img
+{
+	background-decorator: image;
+	background-image: arrow-wide-up.png;
+}
+
+#scroll_down_img
+{
+	background-decorator: image;
+	background-image: arrow-wide-down.png;
+}
+
+button#scroll_up_btn:hover #scroll_up_img
+{
+	background-decorator: image;
+	background-image: arrow-wide-up-h.png;
+}
+
+button#scroll_down_btn:hover #scroll_down_img
+{
+	background-decorator: image;
+	background-image: arrow-wide-down-h.png;
+}
+
+button#scroll_up_btn:active #scroll_up_img
+{
+	background-decorator: image;
+	background-image: arrow-wide-up-o.png;
+}
+
+button#scroll_down_btn:active #scroll_down_img
+{
+	background-decorator: image;
+	background-image: arrow-wide-down-o.png;
+}
