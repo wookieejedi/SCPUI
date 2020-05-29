@@ -16,6 +16,8 @@ scrollbarvertical slidertrack
 {
 	background-decorator: image;
 	background-image: scroll-bar-line.png;
+	width: 10%;
+	margin: auto;
 }
 
 scrollbarvertical sliderbar

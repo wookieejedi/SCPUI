@@ -1,0 +1,66 @@
+<rml>
+	<head>
+		<title>XSTR("Command Briefing", -1)</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="scrollbars.rcss"/>
+		<link type="text/rcss" href="fiction_viewer.rcss"/>
+	</head>
+	<body>
+		<div id=fiction_wrapper>
+			<div id=fiction_text_window>
+				<div id=fiction_text>
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse quis ligula sit amet lacus tristique maximus. Fusce in erat metus. Aliquam egestas, nulla non ultrices finibus, lorem libero volutpat leo, id feugiat metus ante fermentum nunc. Sed vitae turpis turpis. In mollis ultricies pellentesque. Ut luctus urna sit amet ullamcorper scelerisque. Ut pulvinar nisl non gravida sagittis. Proin ipsum tellus, luctus vitae dui in, feugiat semper velit. Donec rhoncus porta ipsum ut aliquet. Cras sed tempus sem, in blandit massa. Phasellus quis eros quis libero sagittis interdum ut quis justo. Donec nec sem ut eros efficitur tincidunt nec ut ante. Fusce lacinia ligula imperdiet ultricies imperdiet.</p>
+					<br></br>
+					<p>Maecenas et erat sit amet sapien laoreet gravida. Nulla bibendum nec purus a mollis. Donec vitae urna varius, rutrum sapien quis, pharetra elit. Nam vitae semper erat. Quisque hendrerit, quam et consectetur ornare, nisl ligula fermentum tortor, nec pulvinar enim magna facilisis nisi. Vivamus posuere rhoncus dictum. Donec non venenatis eros. Quisque a dignissim libero. Aliquam feugiat quam sit amet aliquam aliquam. Vivamus vitae viverra lectus. Nulla dictum viverra ligula, at convallis sapien bibendum id. Mauris sed viverra velit. Proin sollicitudin condimentum eros, eu rutrum tortor facilisis ut. In quis sem fermentum, ultrices mauris a, fermentum libero. Pellentesque aliquet rutrum consectetur. Pellentesque bibendum sodales ultrices.</p>
+					<br></br>
+					<p>Phasellus id rhoncus dui. Maecenas quis venenatis arcu. Nulla viverra magna ligula, non dictum quam laoreet vitae. Maecenas vel bibendum arcu. Etiam porta sed augue vel tincidunt. Ut sodales efficitur lobortis. Nullam vestibulum nisi mi, ac tempor eros suscipit quis. Ut in nisl eu mauris iaculis dapibus. Praesent feugiat velit at hendrerit malesuada.</p>
+					<br></br>
+					<p>Etiam erat sapien, imperdiet porta gravida at, consequat mattis tortor. Maecenas volutpat ultrices malesuada. Donec fringilla sagittis elit, at malesuada massa eleifend sed. Donec bibendum finibus odio non aliquet. Donec tristique sapien nec leo blandit, at ornare turpis venenatis. Suspendisse efficitur augue vitae tortor pulvinar, eu rhoncus mi congue. Aenean consectetur nisl lectus, ut finibus dui sollicitudin in. Vestibulum tempor, mi ornare tincidunt congue, lectus felis malesuada tellus, vel mollis ipsum metus sed felis. Maecenas sed venenatis massa, nec aliquam nisl. Maecenas nulla nunc, eleifend in aliquet quis, rutrum eget ante. Suspendisse finibus dapibus arcu at pharetra.</p>
+					<br></br>
+					<p>Vivamus quam est, aliquet at bibendum at, congue at felis. Curabitur viverra, velit id bibendum molestie, lectus neque convallis turpis, in rutrum mi massa quis tortor. Nunc commodo mauris non dolor tempor, nec suscipit dui sodales. Ut lobortis nulla enim, sit amet varius purus consequat eget. Aliquam vitae suscipit odio. Nunc id mattis nunc, vitae vestibulum lectus. In id mauris mi. Donec sed felis eget ante lacinia efficitur. Donec dapibus ipsum sed erat dictum, sed tincidunt nulla mollis. Integer erat turpis, vestibulum sed dui euismod, iaculis mollis libero. Morbi a risus fringilla, imperdiet eros quis, porta lacus. Pellentesque in condimentum metus. Sed dignissim erat at eros porta, non luctus leo congue. Aliquam pulvinar diam eu ligula dignissim, non elementum sapien suscipit. Aenean nec turpis sed tortor mollis placerat. Duis consectetur iaculis auctor.</p>
+				</div>
+				<div id=text_scroll_wrapper>
+					<div id=text_scroll_cont>
+						<button id="scroll_up_btn" class="text_scroll_btns button_1">
+							<span id="scroll_up_img" class="text_scroll_btns">
+								<img src="arrow-dbl-up.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+					<div id=text_scroll_spacer>
+					</div>
+					<div id=text_scroll_cont>
+						<button id="scroll_down_btn" class="text_scroll_btns button_1">
+							<span id="scroll_down_img" class="text_scroll_btns">
+								<img src="arrow-dbl-down.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="fiction-window.png"></img>
+			</div>
+		</div>
+		<div id=bottom_panel_wrapper>
+			<div id=bottom_panel_a>
+				<div id=a_panel_wrapper>
+					<div id=accept_cont>
+						<button id="accept_btn" class="accept button_1" onclick="controller:commit_pressed(element)">
+							<span id="accept_img" class="accept">
+								<img src="select.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>Continue</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-a.png"></img>
+			</div>
+		</div>
+		<div id=logo_wide>
+			<img src="logo-wide.png"></img>
+		</div>
+	</body>
+
+</rml>

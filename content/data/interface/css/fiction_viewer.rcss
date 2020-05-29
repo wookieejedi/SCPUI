@@ -1,0 +1,203 @@
+body
+{
+	background-decorator: image;
+	background-image: bg.png;
+	z-index: bottom;
+	z-index: -1;
+}
+
+.below p
+{
+	padding-top:8%;
+}
+
+div#logo_wide
+{
+	position: absolute;
+	bottom: 1%;
+	margin: auto;
+	width: 35%;
+	height: auto;
+	overflow: hidden;
+	font-size: 10px;
+}
+
+div#logo_wide img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#fiction_text
+{
+	position: absolute;
+	top: 0;
+	margin-top: 4%;
+	margin-left: 2%;
+	margin-right: 5%;
+	color: grey;
+	overflow: auto;
+	height: 92%;
+	font-size: 100%;
+	line-height: 90%;
+}
+
+div#fiction_wrapper
+{
+	margin: auto;
+	width: 75%;
+	height: auto;
+	position: relative;
+}
+
+div#fiction_text_window
+{
+	margin-top: 2%;
+	margin-left: 2%;
+	width: 100%;
+	height: auto;
+	overflow: hidden;
+	position: relative;
+}
+
+div#fiction_text_window img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/*Bottom Panel Elements*/
+
+div#bottom_panel_wrapper
+{
+	width: 15%;
+	height: auto;
+	overflow: hidden;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+div#bottom_panel_a
+{
+	width: 66%;
+	height: auto;
+	position: relative;
+	float: right;
+}
+
+div#bottom_panel_a img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/*Accept Button*/
+
+div#a_panel_wrapper
+{
+	position: absolute;
+	bottom: 0;
+}
+
+div#accept_cont
+{
+	width: 100%;
+	height: auto;
+
+}
+
+.accept
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#accept_img
+{
+	background-decorator: image;
+	background-image: select.png;
+}
+button#accept_btn:hover #accept_img
+{
+	background-decorator: image;
+	background-image: select-neg-h.png;
+}
+
+button#accept_btn:active #accept_img
+{
+	background-decorator: image;
+	background-image: select-neg-o.png;
+}
+
+/*Scroll Buttons*/
+
+div#text_scroll_wrapper
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 4%;
+}
+
+div#text_scroll_spacer
+{
+	height: 83%;
+}
+
+div#text_scroll_cont
+{
+	width: 100%;
+	height: auto;
+	margin: auto;
+	margin-top: 1%;
+}
+
+.text_scroll_btns
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#scroll_up_img
+{
+	background-decorator: image;
+	background-image: arrow-dbl-up.png;
+}
+
+#scroll_down_img
+{
+	background-decorator: image;
+	background-image: arrow-dbl-down.png;
+}
+
+button#scroll_up_btn:hover #scroll_up_img
+{
+	background-decorator: image;
+	background-image: arrow-dbl-up-h.png;
+}
+
+button#scroll_down_btn:hover #scroll_down_img
+{
+	background-decorator: image;
+	background-image: arrow-dbl-down-h.png;
+}
+
+button#scroll_up_btn:active #scroll_up_img
+{
+	background-decorator: image;
+	background-image: arrow-dbl-up-o.png;
+}
+
+button#scroll_down_btn:active #scroll_down_img
+{
+	background-decorator: image;
+	background-image: arrow-dbl-down-o.png;
+}
