@@ -35,7 +35,7 @@ div#cmd_text
 	top: 0;
 	margin-top: 2%;
 	margin-left: 2%;
-	margin-right: 5%;
+	margin-right: 7%;
 	color: grey;
 	overflow: auto;
 	height: 52%;
@@ -417,41 +417,23 @@ button#options_btn:active #options_img
 
 /*Scroll Buttons*/
 
-div#list_scroll_wrapper
+div#text_scroll_wrapper
 {
 	position: absolute;
-	top: 10%;
-}
-
-div#list_scroll_cont
-{
-	width: 5%;
-	height: auto;
-	margin-bottom: 8%;
-}
-
-.list_scroll_btns
-{
-	display: block;
-	width: 100%;
-	height: auto;
-
-}
-
-div#desc_scroll_wrapper
-{
-	position: absolute;
-	top: 12%;
-}
-
-div#desc_scroll_cont
-{
+	top: 4%;
+	right: 0;
 	width: 7%;
-	height: auto;
-	margin-bottom: 10%;
 }
 
-.desc_scroll_btns
+div#text_scroll_cont
+{
+	width: 80%;
+	height: auto;
+	margin: auto;
+	margin-top: 1%;
+}
+
+.text_scroll_btns
 {
 	display: block;
 	width: 100%;
