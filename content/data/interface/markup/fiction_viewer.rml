@@ -1,6 +1,6 @@
 <rml>
 	<head>
-		<title>XSTR("Command Briefing", -1)</title>
+		<title>XSTR("Fiction Viewer", -1)</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
