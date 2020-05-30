@@ -1,0 +1,77 @@
+<rml>
+	<head>
+		<title>XSTR("Red Alert", -1)</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="scrollbars.rcss"/>
+		<link type="text/rcss" href="red_alert.rcss"/>
+	</head>
+	<body>
+		<div id=logo_wide>
+			<img src="logo-wide.png"></img>
+		</div>
+		<div id=red_alert_wrapper>
+			<div id=red_alert_text_window>
+				<div id=red_alert_text>
+					<p>Excellent work. The detonation of the Bastion's Meson bombs created a subspace cataclysm that sealed off the node. You and the 70th Blue Lions deserve the highest commendation.</p>
+					<br></br>
+					<p>The Security Council has authorized the deployment of the GTD Nereid. The destroyer will depart from the Vega system and collapse the node in fifteen minutes. We must therefore complete our evacuation of Capella by that time. Any ship that remains behind will be trapped with teh Shivan Armada.</p>
+					<br></br>
+					<p>Your objective is to defend our convoys as they flee through the Vega node. Cargo ships, personnel transports, medical vessels, and the remnants of the Allied fleet are now in transit. These convoys are under heavy bomber fire. If we don't provide cover, thousands will die.</p>
+					<br></br>
+					<p>Your secondary objective is to prevent Shivan warships from entering the Vega node. The Allied fleet has been pulverized, so fo the sake of all Terrans and Vasudans, the war must end here. You will receive authorization to enter the Vega node and leave the system once the Nereid has been deployed.</p>
+				</div>
+				<div id=text_scroll_wrapper>
+					<div id=text_scroll_cont>
+						<button id="scroll_up_btn" class="text_scroll_btns button_1">
+							<span id="scroll_up_img" class="text_scroll_btns">
+								<img src="arrow-dbl-up.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+					<div id=text_scroll_cont>
+						<button id="scroll_down_btn" class="text_scroll_btns button_1">
+							<span id="scroll_down_img" class="text_scroll_btns">
+								<img src="arrow-dbl-down.png" class="psuedo_img"></img>
+							</span>
+						</button>
+					</div>
+				</div>
+				<div id=replay_wrapper>
+					<div id=replay_cont>
+						<button id="replay_btn" class="replay_btn button_1">
+							<span id="replay_img" class="replay_btn">
+								<img src="replay.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_right">
+								<p>Replay Previous Mission</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="debrief-window.png"></img>
+			</div>
+		</div>
+		<div id=incoming_transmission>
+			<p>Incoming Transmission</p>
+		</div>
+		<div id=bottom_panel_wrapper>
+			<div id=bottom_panel_a>
+				<div id=a_panel_wrapper>
+					<div id=accept_cont>
+						<button id="accept_btn" class="accept button_1" onclick="controller:commit_pressed(element)">
+							<span id="accept_img" class="accept">
+								<img src="select.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>Continue</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-a.png"></img>
+			</div>
+		</div>
+	</body>
+
+</rml>
