@@ -82,6 +82,17 @@ selectvalue
 	position: absolute;
 }
 
+.button_text_bottom
+{
+	text-align: center;
+}
+
+.button_text_bottom p
+{
+	display: block;
+	position: absolute;
+}
+
 .psuedo_img
 {
 	z-index: -1;
