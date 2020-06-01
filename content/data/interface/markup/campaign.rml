@@ -5,13 +5,15 @@
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="campaign.rcss"/>
+		<script>
+			controller = require("campaign")()
+		</script>
 	</head>
-	<body>
+	<body onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
 		<div id=campaign_wrapper>
 			<div id=campaign_select>
 				<div id=campaignlist>
 					<ul id=campaignlist_ul>
-						<p>Freespace 2</p>
 					</ul>
 				</div>
 				<div id=list_scroll_wrapper>
@@ -37,7 +39,6 @@
 			</div>
 			<div id=campaign_desc>
 				<div id=desc_text>
-					<p>The main FreeSpace 2 campaign.</p>
 				</div>
 				<div id=desc_scroll_wrapper>
 					<div id=desc_scroll_cont>
@@ -68,7 +69,7 @@
 			<div id=bottom_panel_a>
 				<div id=a_panel_wrapper>
 					<div id=restart_cont>
-						<button id="restart_btn" class="restart button_1">
+						<button id="restart_btn" class="restart button_1" onclick="controller:restart_pressed(element)">
 							<span id="restart_img" class="restart">
 								<img src="star.png" class="psuedo_img"></img>
 							</span>
@@ -83,7 +84,7 @@
 			<div id=bottom_panel_b>
 				<div id=b_panel_wrapper>
 					<div id=accept_cont>
-						<button id="accept_btn" class="accept button_1">
+						<button id="accept_btn" class="accept button_1" onclick="controller:commit_pressed(element)">
 							<span id="accept_img" class="accept">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>

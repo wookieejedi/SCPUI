@@ -583,7 +583,7 @@ function OptionsController:accept_clicked(element)
     builder:text(dialog_text)
     builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", -1), false)
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), true)
-    builder:show(self.document.context, function(val)
+    builder:show(self.document.context):continueWith(function(val)
         if val then
             ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
         end
@@ -622,7 +622,7 @@ function OptionsController:exit_game_clicked()
     builder:text(ba.XSTR("Exit Game?", -1))
     builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", -1), false)
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Yes", -1), true)
-    builder:show(self.document.context, function(result)
+    builder:show(self.document.context):continueWith(function(result)
         if not result then
             return
         end

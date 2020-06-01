@@ -62,7 +62,8 @@ local function show_dialog(context, properties, finish_func)
     dialog_doc:Show(DocumentFocus.FOCUS) -- MODAL would be better than FOCUS but then the debugger cannot be used anymore
 end
 
--- Metatable for factory instances
+
+---@class DialogFactory A dialog factory
 local factory_mt   = {}
 
 factory_mt.__index = factory_mt
@@ -95,10 +96,14 @@ function factory_mt:button(type, text, value)
     return self
 end
 
-function factory_mt:show(context, finish_func)
-    show_dialog(context, self, finish_func)
+function factory_mt:show(context)
+    return async.promise(function(resolve)
+        show_dialog(context, self, resolve)
+    end)
 end
 
+--- Creates a new dialog factory
+--- @return DialogFactory A factory for creating dialogs
 function module.new()
     local factory = {
         type_val     = module.TYPE_SIMPLE,

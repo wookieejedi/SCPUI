@@ -179,6 +179,10 @@ div#restart_cont
 	background-image: star.png;
 	margin-left: 15%;
 }
+#restart_btn
+{
+	click-sound: (error)10,(success)18;
+}
 button#restart_btn:hover #restart_img
 {
 	background-decorator: image;
@@ -219,6 +223,12 @@ div#accept_cont
 	background-decorator: image;
 	background-image: select.png;
 }
+
+#accept_btn
+{
+	click-sound: (error)15,(success)7;
+}
+
 button#accept_btn:hover #accept_img
 {
 	background-decorator: image;
