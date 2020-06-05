@@ -104,7 +104,7 @@ div#desc_text
 	margin-right: 5%;
 	color: grey;
 	overflow: auto;
-	height: 52%;
+	height: 90%;
 }
 
 /*Bottom Panel Elements*/
@@ -247,11 +247,12 @@ div#list_scroll_wrapper
 {
 	position: absolute;
 	top: 10%;
+	width: 5%;
 }
 
 div#list_scroll_cont
 {
-	width: 5%;
+	width: 100%;
 	height: auto;
 	margin-bottom: 8%;
 }
@@ -268,11 +269,12 @@ div#desc_scroll_wrapper
 {
 	position: absolute;
 	top: 12%;
+	width: 7%;
 }
 
 div#desc_scroll_cont
 {
-	width: 7%;
+	width: 100%;
 	height: auto;
 	margin-bottom: 10%;
 }
