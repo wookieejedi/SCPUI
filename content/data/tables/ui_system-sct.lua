@@ -1,5 +1,6 @@
 
-ba.print("ui_system")
+local updateCategory = engine.createTracingCategory("UpdateRocket", false)
+local renderCategory = engine.createTracingCategory("RenderRocket", true)
 
 local RocketUiSystem = {
     replacements = {}
@@ -52,8 +53,13 @@ function RocketUiSystem:stateFrame()
         return
     end
 
-    self.context:Update()
-    self.context:Render()
+    -- Add some tracing scopes here to see how long this stuff takes
+    updateCategory:trace(function()
+        self.context:Update()
+    end)
+    renderCategory:trace(function()
+        self.context:Render()
+    end)
 end
 
 function RocketUiSystem:stateEnd()
