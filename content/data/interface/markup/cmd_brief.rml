@@ -5,14 +5,17 @@
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="cmd_brief.rcss"/>
+		<script>
+			controller = require("cmd_brief")()
+		</script>
 	</head>
-	<body>
+	<body onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
 		<div id=logo_wide>
 			<img src="logo-wide.png"></img>
 		</div>
 		<div id=cmd_wrapper>
 			<div id=cmd_stage_text>
-				<p>Stage 1 of 5</p>
+				<p id="cmd_stage_text_el">Stage 1 of 5</p>
 			</div>
 			<div id=cmd_text_window>
 				<div id=cmd_text>
