@@ -88,6 +88,7 @@ div#cmd_anim_wrapper
 	position: absolute;
 	margin-top: 4%;
 	margin-left: 4%;
+	height: 92%;
 }
 
 span#cmd_anim
@@ -96,7 +97,13 @@ span#cmd_anim
 	margin: auto;
 	display: block;
 	width: 92%;
-	height: auto;
+	height: 100%;
+	text-align: center;
+}
+
+ani
+{
+	height: 100%;
 }
 
 div#anim_cont
