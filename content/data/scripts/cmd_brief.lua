@@ -61,11 +61,23 @@ function CommandBriefingController:registerEventHandlers()
     self.document:GetElementById("cmdfirst_btn"):AddEventListener("click", function(_, _, _)
         self:go_to_stage(1)
     end)
+    self.document:GetElementById("accept_btn"):AddEventListener("click", function(_, _, _)
+        if mn.isRedAlertMission() then
+            ba.postGameEvent(ba.GameEvents["GS_EVENT_RED_ALERT"])
+        else
+            ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
+        end
+    end)
+    self.document:GetElementById("options_btn"):AddEventListener("click", function(_, _, _)
+        ba.postGameEvent(ba.GameEvents["GS_EVENT_OPTIONS_MENU"])
+    end)
 end
 
 function CommandBriefingController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
+
+        ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
     end
 end
 
@@ -81,6 +93,7 @@ function CommandBriefingController:go_to_stage(stage_idx)
     stage_indicator_el.inner_rml = string.format(ba.XSTR("Stage %d of %d", -1), self.current_stage, #self.stages)
 
     local aniWrapper = self.document:GetElementById("cmd_anim")
+
     if #stage.AniFilename > 0 then
         local aniEl = self.document:CreateElement("ani")
         aniEl:SetAttribute("src", stage.AniFilename)

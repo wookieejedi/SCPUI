@@ -94,7 +94,7 @@
 			<div id=bottom_panel_a>
 				<div id=a_panel_wrapper>
 					<div id=accept_cont>
-						<button id="accept_btn" class="accept button_1" onclick="controller:commit_pressed(element)">
+						<button id="accept_btn" class="accept button_1">
 							<span id="accept_img" class="accept">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
@@ -109,7 +109,7 @@
 			<div id=bottom_panel_b>
 				<div id=b_panel_wrapper>
 					<div id=help_cont>
-						<button id="help_btn" class="help button_1" onclick="controller:help_clicked()">
+						<button id="help_btn" class="help button_1">
 							<span id="help_img" class="help">
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
@@ -119,7 +119,7 @@
 						</button>
 					</div>
 					<div id=options_cont>
-						<button id="options_btn" class="options button_1" onclick="controller:options_button_clicked()">
+						<button id="options_btn" class="options button_1">
 							<span id="options_img" class="options">
 								<img src="options.png" class="psuedo_img"></img>
 							</span>

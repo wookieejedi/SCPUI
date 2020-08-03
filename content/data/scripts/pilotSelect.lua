@@ -13,8 +13,8 @@ PilotSelectController.MODE_PLAYER_SELECT = 1
 PilotSelectController.MODE_BARRACKS      = 2
 
 function PilotSelectController:init()
-    self.selection             = nil
-    self.elements              = {}
+    self.selection = nil
+    self.elements = {}
     self.callsign_input_active = false
 
     self.mode                  = PilotSelectController.MODE_PLAYER_SELECT
