@@ -102,4 +102,28 @@ function utils.table.map(tbl, map_fun)
     return out
 end
 
+--- Reduces a list of values to a single value
+--- @generic T
+--- @generic V
+--- @param tbl T[] The table to reduce
+--- @param reduceFn fun(accumulator: V, el: T):V
+--- @param initial V Initial value to use
+--- @return V The final value after all elements have been looked at
+function utils.table.reduce(tbl, reduceFn, initial)
+    local acc = initial
+    for _, v in ipairs(tbl) do
+        acc = reduceFn(acc, v)
+    end
+    return acc
+end
+
+--- Computes the sum of the specified table
+--- @param tbl number[]
+--- @return number
+function utils.table.sum(tbl)
+    return utils.table.reduce(tbl, function(sum, el)
+        return sum + el
+    end, 0)
+end
+
 return utils

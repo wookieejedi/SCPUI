@@ -241,6 +241,12 @@ button#cmdpause_btn:active #cmdpause_img
 	background-image: pause-o.png;
 }
 
+button#cmdpause_btn:checked #cmdpause_img
+{
+    background-decorator: image;
+    background-image: pause-o.png;
+}
+
 button#cmdnext_btn:active #cmdnext_img
 {
 	background-decorator: image;
@@ -482,4 +488,10 @@ button#scroll_down_btn:active #scroll_down_img
 {
 	background-decorator: image;
 	background-image: arrow-dbl-down-o.png;
+}
+
+.button_brief_stage /*Button sounds for stage selection*/
+{
+    mouseover-sound: 17;
+    click-sound: (success)14,(fail)10;
 }

@@ -142,8 +142,8 @@ button:checked .pos
 
 .button_2 /*Commit*/
 {
+    mouseover-sound: 17;
 	click-sound: (error)15,(commit)7;
-	mouseover-sound: 17;
 }
 
 /*Tooltips*/
