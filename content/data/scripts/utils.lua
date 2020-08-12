@@ -21,7 +21,7 @@ end
 --- @param inputStr string
 --- @return string
 function utils.rml_escape(inputStr)
-    return inputStr:gsub('[<>&\'"]', function(char)
+    return inputStr:gsub('[<>&"]', function(char)
         if char == "<" then
             return "&lt;"
         end
@@ -32,10 +32,6 @@ function utils.rml_escape(inputStr)
 
         if char == "&" then
             return "&amp;"
-        end
-
-        if char == "'" then
-            return "&apos;"
         end
 
         if char == "\"" then

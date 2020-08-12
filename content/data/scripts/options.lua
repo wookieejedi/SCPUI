@@ -1,7 +1,7 @@
 local utils    = require("utils")
 local tblUtil  = utils.table
 
-local rkt_util = require("rocket_util")
+local templates = require("rocket_templates")
 
 local dialogs  = require("dialogs")
 
@@ -150,7 +150,7 @@ end
 
 function OptionsController:createTenPointRangeElement(option, parent_id, parameters, onchange_func)
     local parent_el                                                                                                      = self.document:GetElementById(parent_id)
-    local actual_el, title_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 = rkt_util.instantiate_template(self.document,
+    local actual_el, title_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 = templates.instantiate_template(self.document,
                                                                                                                                                          "tenpoint_selector_template",
                                                                                                                                                          getOptionElementId(option),
                                                                                                                                                          {
@@ -182,7 +182,7 @@ end
 
 function OptionsController:createFivePointRangeElement(option, parent_id, onchange_func)
     local parent_el                                                                             = self.document:GetElementById(parent_id)
-    local actual_el, title_el, value_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4 = rkt_util.instantiate_template(self.document,
+    local actual_el, title_el, value_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4 = templates.instantiate_template(self.document,
                                                                                                                                 "fivepoint_selector_template",
                                                                                                                                 getOptionElementId(option),
                                                                                                                                 {
@@ -236,7 +236,7 @@ end
 
 function OptionsController:createBinaryOptionElement(option, vals, parent_id, onchange_func)
     local parent_el                                                       = self.document:GetElementById(parent_id)
-    local actual_el, title_el, btn_left, text_left, btn_right, text_right = rkt_util.instantiate_template(self.document,
+    local actual_el, title_el, btn_left, text_left, btn_right, text_right = templates.instantiate_template(self.document,
                                                                                                           "binary_selector_template",
                                                                                                           getOptionElementId(option),
                                                                                                           {
@@ -280,7 +280,7 @@ end
 
 function OptionsController:createSelectionOptionElement(option, vals, parent_id, parameters, onchange_func)
     local parent_el                         = self.document:GetElementById(parent_id)
-    local actual_el, text_el, dataselect_el = rkt_util.instantiate_template(self.document, "dropdown_template",
+    local actual_el, text_el, dataselect_el = templates.instantiate_template(self.document, "dropdown_template",
                                                                             getOptionElementId(option), {
                                                                                 "dropdown_text_el",
                                                                                 "dropdown_dataselect_el"
@@ -317,7 +317,7 @@ end
 
 function OptionsController:createRangeOptionElement(option, parent_id, onchange_func)
     local parent_el                               = self.document:GetElementById(parent_id)
-    local actual_el, title_el, value_el, range_el = rkt_util.instantiate_template(self.document, "slider_template",
+    local actual_el, title_el, value_el, range_el = templates.instantiate_template(self.document, "slider_template",
                                                                                   getOptionElementId(option), {
                                                                                       "slider_title_el",
                                                                                       "slider_value_el",
@@ -334,7 +334,7 @@ end
 
 function OptionsController:create(option, parent_id, onchange_func)
     local parent_el                               = self.document:GetElementById(parent_id)
-    local actual_el, title_el, value_el, range_el = rkt_util.instantiate_template(self.document, "slider_template",
+    local actual_el, title_el, value_el, range_el = templates.instantiate_template(self.document, "slider_template",
                                                                                   getOptionElementId(option), {
                                                                                       "slider_title_el",
                                                                                       "slider_value_el",

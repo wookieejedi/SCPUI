@@ -1,5 +1,3 @@
-local utils = require("utils")
-local tblUtil = utils.table
 local dialogs = require("dialogs")
 local class = require("class")
 

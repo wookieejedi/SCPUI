@@ -1,23 +1,7 @@
 local utils = require("utils")
-local tblUtil = utils.table
-local dialogs = require("dialogs")
+local rocket_utils = require("rocket_util")
 local class = require("class")
 local async_util = require("async_util")
-
-local function brief_text_to_rml(brief_text)
-    local lines = utils.split(brief_text, "\n\n")
-
-    local paragraphs = tblUtil.map(lines, function(line)
-        return "<p>" .. utils.rml_escape(line) .. "</p>"
-    end)
-    -- Try to estimate the amount of lines this will get. The value 130 is chosen based on the original width of the
-    -- text window in retail FS2
-    local paragraphLines = tblUtil.map(lines, function(line)
-        return #line / 130
-    end)
-
-    return table.concat(paragraphs, "<br></br>"), tblUtil.sum(paragraphLines) + #lines
-end
 
 local CommandBriefingController = class()
 
@@ -165,12 +149,8 @@ function CommandBriefingController:go_to_stage(stage_idx)
 
     local stage = self.stages[stage_idx]
 
-    local brief_rml, lines = brief_text_to_rml(stage.Text)
-
-    self.current_stage_lines = lines
-
     local text_el = self.document:GetElementById("cmd_text_el")
-    text_el.inner_rml = brief_rml
+    self.current_stage_lines = rocket_utils.set_briefing_text(text_el, stage.Text)
 
     local stage_indicator_el = self.document:GetElementById("cmd_stage_text_el")
     stage_indicator_el.inner_rml = string.format(ba.XSTR("Stage %d of %d", -1), self.current_stage, #self.stages)
