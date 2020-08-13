@@ -17,6 +17,7 @@ end
 
 function CommandBriefingController:initialize(document)
     self.document = document
+    self.loaded = true
 
     local briefing = ui.CommandBriefing.getBriefing()
     for i = 1, #briefing do
@@ -43,6 +44,8 @@ function CommandBriefingController:unload()
     if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
         self.current_voice_handle:close(false)
     end
+    -- We need to keep track of if we are loaded or not to abort coroutines that still have references to this instance
+    self.loaded = false
 end
 
 function CommandBriefingController:startMusic()
@@ -170,6 +173,10 @@ function CommandBriefingController:go_to_stage(stage_idx)
     -- This will ensure that this coroutine only runs if we are still in the same briefing stage and in the same game state
     local execution_context = async.context.combineContexts(async.context.captureGameState(),
         async.context.createLuaState(function()
+            if not self.loaded then
+                return CONTEXT_INVALID
+            end
+
             if self.stage_instance_id ~= stage_id then
                 return CONTEXT_INVALID
             end
