@@ -23,22 +23,6 @@
 					<scrollingText id="cmd_text_el">
 					</scrollingText>
 				</div>
-				<div id=text_scroll_wrapper>
-					<div id=text_scroll_cont>
-						<button id="scroll_up_btn" class="text_scroll_btns button_1">
-							<span id="scroll_up_img" class="text_scroll_btns">
-								<img src="arrow-dbl-up.png" class="psuedo_img"></img>
-							</span>
-						</button>
-					</div>
-					<div id=text_scroll_cont>
-						<button id="scroll_down_btn" class="text_scroll_btns button_1">
-							<span id="scroll_down_img" class="text_scroll_btns">
-								<img src="arrow-dbl-down.png" class="psuedo_img"></img>
-							</span>
-						</button>
-					</div>
-				</div>
 				<div id=stage_select>
 					<div id=button_wrapper>
 						<div id=skip_cont>

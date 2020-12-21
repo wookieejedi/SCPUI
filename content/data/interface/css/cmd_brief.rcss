@@ -37,7 +37,7 @@ div#cmd_text
 	margin-left: 2%;
 	margin-right: 7%;
 	color: grey;
-	overflow: auto;
+	overflow: scroll;
 	height: 52%;
 	font-size: 150%;
 	line-height: 90%;
@@ -426,68 +426,6 @@ button#options_btn:active #options_img
 {
 	background-decorator: image;
 	background-image: options-o.png;
-}
-
-/*Scroll Buttons*/
-
-div#text_scroll_wrapper
-{
-	position: absolute;
-	top: 4%;
-	right: 0;
-	width: 7%;
-}
-
-div#text_scroll_cont
-{
-	width: 80%;
-	height: auto;
-	margin: auto;
-	margin-top: 1%;
-}
-
-.text_scroll_btns
-{
-	display: block;
-	width: 100%;
-	height: auto;
-
-}
-
-#scroll_up_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-up.png;
-}
-
-#scroll_down_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-down.png;
-}
-
-button#scroll_up_btn:hover #scroll_up_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-up-h.png;
-}
-
-button#scroll_down_btn:hover #scroll_down_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-down-h.png;
-}
-
-button#scroll_up_btn:active #scroll_up_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-up-o.png;
-}
-
-button#scroll_down_btn:active #scroll_down_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-down-o.png;
 }
 
 .button_brief_stage /*Button sounds for stage selection*/
