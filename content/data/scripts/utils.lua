@@ -17,6 +17,32 @@ function utils.split(inputstr, sep)
     return t
 end
 
+--- find_first
+---@param str string
+---@param patterns string[]
+---@param startIdx number
+---
+function utils.find_first_either(str, patterns, startIdx)
+    local firstResult = nil
+    for i, v in ipairs(patterns) do
+        local values = { str:find(v, startIdx) }
+
+        if values[1] ~= nil then
+            if firstResult == nil then
+                firstResult = values
+            elseif values[1] < firstResult[1] then
+                firstResult = values
+            end
+        end
+    end
+
+    if firstResult == nil then
+        return nil
+    else
+        return unpack(firstResult)
+    end
+end
+
 ---
 --- @param inputStr string
 --- @return string

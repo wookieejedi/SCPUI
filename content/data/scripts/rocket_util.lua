@@ -9,15 +9,45 @@ function M.remove_children(element)
     end
 end
 
+---@param colorTable table<string, color>
+local function add_text_element(parent, document, text, color_tag, colorTable)
+    if #text == 0 then
+        -- If no text, do not output anything
+        return
+    end
+
+    local colorVal = colorTable[color_tag]
+
+    local spanEl = document:CreateElement("span")
+    local textEl = document:CreateTextNode(text)
+
+    spanEl.style.color = ("rgba(%d, %d, %d, %d)"):format(colorVal.Red, colorVal.Green, colorVal.Blue, colorVal.Alpha)
+
+    spanEl:AppendChild(textEl)
+
+    parent:AppendChild(spanEl)
+
+    ba.print(color_tag .. ": \"" .. text .. "\"\n")
+end
+
 function M.set_briefing_text(parent, brief_text)
     -- First, clear all the children of this element
     M.remove_children(parent)
 
     local document = parent.owner_document
 
+    local colorTags = ui.CommandBriefing.ColorTags
+    local defaultColorTag = ui.CommandBriefing.DefaultTextColorTag
+
+    ---@param color color
+    for tag, color in pairs(colorTags) do
+        ba.print(string.format("Color: %s -> %d,%d,%d\n", tag, color.Red, color.Green, color.Blue))
+    end
+
     local lines = utils.split(brief_text, "\n\n")
     local first = true
-    for _, v in ipairs(lines) do
+    ---@param line string
+    for _, line in ipairs(lines) do
         if not first then
             local newLine = document:CreateElement("br")
             parent:AppendChild(newLine)
@@ -26,7 +56,46 @@ function M.set_briefing_text(parent, brief_text)
         end
 
         local paragraph = document:CreateElement("p")
-        paragraph:AppendChild(document:CreateTextNode(v))
+
+        local searchIndex = 1
+        local currentColorTag = defaultColorTag
+
+        while true do
+            local startIdx, endIdx, colorChar, groupChar = line:find("%$([^%s])([{}]?)%s*", searchIndex)
+            if startIdx == nil then
+                break
+            end
+
+            -- Flush out text that was before our tag
+            local pendingText = line:sub(searchIndex, startIdx - 1)
+            add_text_element(paragraph, document, pendingText, currentColorTag, colorTags)
+
+            currentColorTag = colorChar
+
+            searchIndex = endIdx + 1
+
+            -- We need to know if our word was terminated by white space or an explicit break so we store the whitespace
+            -- in a group and check that later
+            local rangeEndStart, rangeEndEnd, whitespace = utils.find_first_either(line, { "(%s)", "%$|" }, searchIndex)
+
+            local coloredText
+            if whitespace then
+                -- If we broke on whitespace then we still need to include those characters in the colored range
+                -- to ensure the spacing is correct. To do that, we build the substring until the end of the range
+                coloredText = line:sub(endIdx + 1, rangeEndEnd)
+            else
+                coloredText = line:sub(endIdx + 1, rangeEndStart - 1)
+            end
+            add_text_element(paragraph, document, coloredText, currentColorTag, colorTags)
+
+            currentColorTag = defaultColorTag
+
+            searchIndex = rangeEndEnd + 1
+        end
+
+        local remainingText = line:sub(searchIndex)
+        add_text_element(paragraph, document, remainingText, currentColorTag, colorTags)
+
         parent:AppendChild(paragraph)
     end
 
