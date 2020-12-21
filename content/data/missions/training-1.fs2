@@ -4,7 +4,7 @@ $Version: 0.10
 $Name:  XSTR("Training 1", 2115)
 $Author: James Agay
 $Created: 12/29/97 at 12:33:33
-$Modified: 12/21/20 at 08:51:32
+$Modified: 12/21/20 at 09:12:32
 $Notes:
 This is a FRED created mission
 $End Notes:
@@ -96,8 +96,8 @@ $y{ This is a color span! $}
 
 The $y{ quick $g{ brown fox $r jumps over $} the lazy $} dog.", -1)
 $end_multi_text
-$Ani Filename: cb_train-01_e.ani
-+Wave Filename: TR1_CB_05.wav
+$Ani Filename: cb_bta.ani
++Wave Filename: 
 
 #Briefing
 $start_briefing
