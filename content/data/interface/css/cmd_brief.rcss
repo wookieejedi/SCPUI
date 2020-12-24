@@ -39,7 +39,7 @@ div#cmd_text
 	color: grey;
 	overflow: scroll;
 	height: 52%;
-	font-size: 150%;
+	font-size: 14px;
 	line-height: 90%;
 }
 

@@ -37,7 +37,7 @@ div#campaignlist
 	margin-left: 7%;
 	margin-right: 5%;
 	color: white;
-	overflow: auto;
+	overflow: scroll;
 	height: 52%;
 }
 
@@ -103,7 +103,7 @@ div#desc_text
 	margin-left: 10%;
 	margin-right: 5%;
 	color: grey;
-	overflow: auto;
+	overflow: scroll;
 	height: 90%;
 }
 
@@ -239,86 +239,4 @@ button#accept_btn:active #accept_img
 {
 	background-decorator: image;
 	background-image: select-neg-o.png;
-}
-
-/*Scroll Buttons*/
-
-div#list_scroll_wrapper
-{
-	position: absolute;
-	top: 10%;
-	width: 5%;
-}
-
-div#list_scroll_cont
-{
-	width: 100%;
-	height: auto;
-	margin-bottom: 8%;
-}
-
-.list_scroll_btns
-{
-	display: block;
-	width: 100%;
-	height: auto;
-
-}
-
-div#desc_scroll_wrapper
-{
-	position: absolute;
-	top: 12%;
-	width: 7%;
-}
-
-div#desc_scroll_cont
-{
-	width: 100%;
-	height: auto;
-	margin-bottom: 10%;
-}
-
-.desc_scroll_btns
-{
-	display: block;
-	width: 100%;
-	height: auto;
-
-}
-
-#scroll_up_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-up.png;
-}
-
-#scroll_down_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-down.png;
-}
-
-button#scroll_up_btn:hover #scroll_up_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-up-h.png;
-}
-
-button#scroll_down_btn:hover #scroll_down_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-down-h.png;
-}
-
-button#scroll_up_btn:active #scroll_up_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-up-o.png;
-}
-
-button#scroll_down_btn:active #scroll_down_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-down-o.png;
 }

@@ -16,48 +16,10 @@
 					<ul id=campaignlist_ul>
 					</ul>
 				</div>
-				<div id=list_scroll_wrapper>
-					<div id=list_scroll_cont>
-						<button id="scroll_up_btn" class="list_scroll_btns button_1">
-							<span id="scroll_up_img" class="list_scroll_btns">
-								<img src="arrow-dbl-up.png" class="psuedo_img"></img>
-							</span>
-						</button>
-					</div>
-					<div id=list_scroll_cont>
-						<button id="scroll_down_btn" class="list_scroll_btns button_1">
-							<span id="scroll_down_img" class="list_scroll_btns">
-								<img src="arrow-dbl-down.png" class="psuedo_img"></img>
-							</span>
-						</button>
-					</div>
-					<div class="tooltip">
-						<span class="tooltiptext">View pilot stats</span>
-					</div>
-				</div>
 				<img src="campaign-main-window.png"></img>
 			</div>
 			<div id=campaign_desc>
 				<div id=desc_text>
-				</div>
-				<div id=desc_scroll_wrapper>
-					<div id=desc_scroll_cont>
-						<button id="scroll_up_btn" class="desc_scroll_btns button_1">
-							<span id="scroll_up_img" class="desc_scroll_btns">
-								<img src="arrow-dbl-up.png" class="psuedo_img"></img>
-							</span>
-						</button>
-					</div>
-					<div id=desc_scroll_cont>
-						<button id="scroll_down_btn" class="desc_scroll_btns button_1">
-							<span id="scroll_down_img" class="desc_scroll_btns">
-								<img src="arrow-dbl-down.png" class="psuedo_img"></img>
-							</span>
-						</button>
-					</div>
-					<div class="tooltip">
-						<span class="tooltiptext">View pilot stats</span>
-					</div>
 				</div>
 				<img src="campaign-text-window.png"></img>
 			</div>
