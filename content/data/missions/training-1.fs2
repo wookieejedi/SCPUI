@@ -99,6 +99,14 @@ $end_multi_text
 $Ani Filename: cb_bta.ani
 +Wave Filename: 
 
+$Stage Text:
+ XSTR("  !html This is an HTML briefing
+
+<span style=$quotecolor: red;$quote>Red color!</span>", -1)
+$end_multi_text
+$Ani Filename: cb_bta.ani
++Wave Filename:
+
 #Briefing
 $start_briefing
 $num_stages: 2
