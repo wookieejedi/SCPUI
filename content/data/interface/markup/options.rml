@@ -17,7 +17,7 @@
 			<tabset id="ops_tabs_cont">
 				<tab id="options_btn" class="button_1 tab">
 					<span id="options_img" class="options">
-						<img src="options.png" class="psuedo_img"></img>
+						<img src="diamonds.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text">
 						<p>Options</p>

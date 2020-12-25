@@ -146,25 +146,25 @@ div#bottom_panel_c img
 #options_img
 {
 	background-decorator: image;
-	background-image: options.png;
+	background-image: diamonds.png;
 }
 
 #options_btn:hover #options_img
 {
 	background-decorator: image;
-	background-image: options-h.png;
+	background-image: diamonds-h.png;
 }
 
 #options_btn:active #options_img
 {
 	background-decorator: image;
-	background-image: options-o.png;
+	background-image: diamonds-o.png;
 }
 
 #options_btn:selected #options_img
 {
 	background-decorator: image;
-	background-image: options-o.png;
+	background-image: diamonds-o.png;
 }
 
 /*Detail*/

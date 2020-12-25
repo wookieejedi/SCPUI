@@ -424,18 +424,18 @@ div#options_cont
 #options_img
 {
 	background-decorator: image;
-	background-image: options.png;
+	background-image: diamonds.png;
 }
 button#options_btn:hover #options_img
 {
 	background-decorator: image;
-	background-image: options-h.png;
+	background-image: diamonds-h.png;
 }
 
 button#options_btn:active #options_img
 {
 	background-decorator: image;
-	background-image: options-o.png;
+	background-image: diamonds-o.png;
 }
 
 /*Scroll Buttons*/

@@ -173,7 +173,7 @@
 					<div id=options_cont>
 						<button id="options_btn" class="options button_1">
 							<span id="options_img" class="options">
-								<img src="options.png" class="psuedo_img"></img>
+								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
 								<p>Options</p>
