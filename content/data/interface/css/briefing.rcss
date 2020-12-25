@@ -211,6 +211,12 @@ button#cmdpause_btn:active #cmdpause_img
 	background-image: pause-o.png;
 }
 
+button#cmdpause_btn:checked #cmdpause_img
+{
+    background-decorator: image;
+    background-image: pause-o.png;
+}
+
 button#cmdnext_btn:active #cmdnext_img
 {
 	background-decorator: image;

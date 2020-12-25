@@ -5,8 +5,12 @@
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="briefing.rcss"/>
+		<script>
+			controller = require("briefing")()
+		</script>
 	</head>
-	<body>
+	<body onkeydown="controller:global_keydown(element, event)" onload="controller:initialize(document)"
+		  onunload="controller:unload(); controller = nil">
 		<div id=top_panel_wrapper>
 			<div id=top_panel_a>
 				<div id=top_a_panel_wrapper>
@@ -63,7 +67,7 @@
 			<div id=brief_grid_window>
 				<div id=brief_stage_wrapper>
 					<div id=brief_stage_text>
-						<p>Stage 1 of 2</p>
+						<p id="brief_stage_text_el">Stage 1 of 2</p>
 					</div>
 					<div id=mission_title>
 						<p>Training 1</p>
@@ -115,7 +119,8 @@
 			<div id=brief_text_window>
 				<div id=brief_text_wrapper>
 					<div id=brief_text>
-						<p>Welcome to training simulator module TSM-103c, Class C qualification for the Myrmidon space superiority fighter. This module has been designed to acquaint pilots with basic targeting, throttle, and weapons systems.</p>
+						<scrollingText id="brief_text_el">
+						</scrollingText>
 					</div>
 				</div>
 				<div id=text_scroll_wrapper>
@@ -141,7 +146,7 @@
 			<div id=bottom_panel_a>
 				<div id=a_panel_wrapper>
 					<div id=accept_cont>
-						<button id="accept_btn" class="accept button_1" onclick="controller:commit_pressed(element)">
+						<button id="accept_btn" class="accept button_1">
 							<span id="accept_img" class="accept">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
@@ -156,7 +161,7 @@
 			<div id=bottom_panel_b>
 				<div id=b_panel_wrapper>
 					<div id=help_cont>
-						<button id="help_btn" class="help button_1" onclick="controller:help_clicked()">
+						<button id="help_btn" class="help button_1">
 							<span id="help_img" class="help">
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
@@ -166,7 +171,7 @@
 						</button>
 					</div>
 					<div id=options_cont>
-						<button id="options_btn" class="options button_1" onclick="controller:options_button_clicked()">
+						<button id="options_btn" class="options button_1">
 							<span id="options_img" class="options">
 								<img src="options.png" class="psuedo_img"></img>
 							</span>
