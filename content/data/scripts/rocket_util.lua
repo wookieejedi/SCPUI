@@ -66,6 +66,9 @@ local function add_line_elements(document, paragraph, line, defaultColorTag, col
                     -- If we broke on whitespace then we still need to include those characters in the colored range
                     -- to ensure the spacing is correct. To do that, we build the substring until the end of the range
                     coloredText = line:sub(endIdx + 1, rangeEndEnd)
+                elseif rangeEndEnd == nil then
+                    -- If we did not find the end then we ended the line with a color sequence
+                    coloredText = line:sub(endIdx + 1)
                 else
                     coloredText = line:sub(endIdx + 1, rangeEndStart - 1)
                 end
@@ -73,7 +76,12 @@ local function add_line_elements(document, paragraph, line, defaultColorTag, col
 
                 table.remove(colorStack)
 
-                searchIndex = rangeEndEnd + 1
+                if rangeEndEnd ~= nil then
+                    searchIndex = rangeEndEnd + 1
+                else
+                    -- Still need to update this so that the final text element will not be shown twice
+                    searchIndex = #line
+                end
             end
         end
     end

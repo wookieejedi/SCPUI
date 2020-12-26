@@ -41,9 +41,17 @@ $AI Profile: FS2 RETAIL
 #Command Briefing
 
 $Stage Text:
- XSTR("The 53rd Hammerheads
+ XSTR("
+$b * $b GTD $b Intrepid
+$b * $b Beta $b Aquilae $b System
+$b * $b 07/08/36
 
-Welcome to $b Vega, Ensign. I am $w Captain $w Loukakis, squadron leader of the $w 53rd $w Hammerheads$|. You have been assigned to our unit. The $w Hammerheads are a space superiority squadron. We'll be flying the $y Myrmidon fighter, developed to replace the old $y GTF $y Ulysses$|. The Myrmidon is a Terran-Vasudan design and a versatile ship with high marks for speed, maneuverability, armor, and loadout.", 2117)
+$b Your $b new $b Assignment
+
+Pilots, I'm $b Admiral $b Po$| . I'd like to welcome all former $r GTI personnel returning to active service. I know it's been a long year of investigations, and it hasn't been easy on any of us. The rebellion was widespread within the $r GTI$| , but your return means that you have been cleared for duty. This marks a special day pilots, a day when we can return to the foundations of our $b Galactic $b Terran $b Alliance and work together again.
+
+You will be assigned to the $b 47th $b Cutthroats$| , a special ops squadron aboard the $g GTD $g Intrepid$| . Because of your experience and qualifications, your squadron will have multiple roles ranging from escort and raids to intelligence and priority capture.
+", 2117)
 $end_multi_text
 $Ani Filename: cb_train-01_a.ani
 +Wave Filename: TR1_CB_01.wav
