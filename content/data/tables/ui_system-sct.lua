@@ -2,9 +2,11 @@
 local updateCategory = engine.createTracingCategory("UpdateRocket", false)
 local renderCategory = engine.createTracingCategory("RenderRocket", true)
 
-local RocketUiSystem = {
+RocketUiSystem = {
     replacements = {}
 }
+
+local RocketUiScriptState = "None"
 
 RocketUiSystem.context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
 
@@ -17,13 +19,23 @@ function RocketUiSystem:init()
         while parse.optionalString("$State:") do
             local state = parse.getString()
 
-            parse.requiredString("+Markup:")
-
-            local markup = parse.getString()
-
-            self.replacements[state] = {
-                markup = markup
-            }
+			if state == "GS_STATE_SCRIPTING" then
+				parse.requiredString("+Substate:")
+				local state = parse.getString()
+				parse.requiredString("+Markup:")
+				local markup = parse.getString()
+				ba.print("SCPUI found definition for script substate " .. state .. " : " .. markup .. "\n")
+				self.replacements[state] = {
+					markup = markup
+				}
+			else
+				parse.requiredString("+Markup:")
+				local markup = parse.getString()
+				ba.print("SCPUI found definition for game state " .. state .. " : " .. markup .. "\n")
+				self.replacements[state] = {
+					markup = markup
+				}
+			end
         end
 
         parse.requiredString("#End")
@@ -37,11 +49,11 @@ function RocketUiSystem:getDef(state)
 end
 
 function RocketUiSystem:stateStart()
-    if not self:hasOverrideForState(hv.NewState) then
+    if not self:hasOverrideForState(getRocketUiHandle(hv.NewState)) then
         return
     end
 
-    local def = self:getDef(hv.NewState.Name)
+    local def = self:getDef(getRocketUiHandle(hv.NewState).Name)
     def.document = self.context:LoadDocument(def.markup)
     def.document:Show()
 
@@ -63,16 +75,33 @@ function RocketUiSystem:stateFrame()
 end
 
 function RocketUiSystem:stateEnd()
-    if not self:hasOverrideForState(hv.OldState) then
+    if not self:hasOverrideForState(getRocketUiHandle(hv.OldState)) then
         return
     end
 
-    local def = self:getDef(hv.OldState.Name)
+    local def = self:getDef(getRocketUiHandle(hv.OldState).Name)
 
     def.document:Close()
     def.document = nil
 
     ui.disableInput()
+	
+	if hv.OldState.Name == "GS_STATE_SCRIPTING" then
+		RocketUiScriptState = "None"
+	end
+end
+
+function getRocketUiHandle(state)
+    if state.Name == "GS_STATE_SCRIPTING" then
+        return {Name = RocketUiScriptState}
+    else
+        return state
+    end
+end
+
+function RocketUiSystem:beginSubstate(state) 
+	RocketUiScriptState = state
+	ba.postGameEvent(ba.GameEvents["GS_EVENT_SCRIPTING"])
 end
 
 function RocketUiSystem:hasOverrideForState(state)
@@ -80,7 +109,7 @@ function RocketUiSystem:hasOverrideForState(state)
 end
 
 function RocketUiSystem:hasOverrideForCurrentState()
-    return self:hasOverrideForState(ba.getCurrentGameState())
+    return self:hasOverrideForState(getRocketUiHandle(ba.getCurrentGameState()))
 end
 
 RocketUiSystem:init()
@@ -88,7 +117,7 @@ RocketUiSystem:init()
 engine.addHook("On State Start", function()
     RocketUiSystem:stateStart()
 end, {}, function()
-    return RocketUiSystem:hasOverrideForState(hv.NewState)
+    return RocketUiSystem:hasOverrideForState(getRocketUiHandle(hv.NewState))
 end)
 
 engine.addHook("On Frame", function()
@@ -100,6 +129,6 @@ end)
 engine.addHook("On State End", function()
     RocketUiSystem:stateEnd()
 end, {}, function()
-    return RocketUiSystem:hasOverrideForState(hv.OldState)
+    return RocketUiSystem:hasOverrideForState(getRocketUiHandle(hv.OldState))
 end)
 
