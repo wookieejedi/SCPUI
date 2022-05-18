@@ -22,7 +22,7 @@ end
 function CommandBriefingController:initialize(document)
     AbstractBriefingController.initialize(self, document)
 	
-	ui:maybePlayCutscene(MOVIE_PRE_CMD_BRIEF, true, 0)
+	ui.maybePlayCutscene(MOVIE_PRE_CMD_BRIEF, true, 0)
 
     local briefing = ui.CommandBriefing.getBriefing()
     for i = 1, #briefing do
