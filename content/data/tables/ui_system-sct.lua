@@ -3,10 +3,9 @@ local updateCategory = engine.createTracingCategory("UpdateRocket", false)
 local renderCategory = engine.createTracingCategory("RenderRocket", true)
 
 RocketUiSystem = {
-    replacements = {}
+    replacements = {},
+	substate = "none"
 }
-
-local RocketUiScriptState = "None"
 
 RocketUiSystem.context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
 
@@ -49,6 +48,10 @@ function RocketUiSystem:getDef(state)
 end
 
 function RocketUiSystem:stateStart()
+
+	--This allows for states to correctly return to the previous state even if has no rocket ui defined
+	RocketUiSystem.currentState = ba.getCurrentGameState()
+	
     if not self:hasOverrideForState(getRocketUiHandle(hv.NewState)) then
         return
     end
@@ -75,6 +78,10 @@ function RocketUiSystem:stateFrame()
 end
 
 function RocketUiSystem:stateEnd()
+
+	--This allows for states to correctly return to the previous state even if has no rocket ui defined
+	RocketUiSystem.lastState = RocketUiSystem.currentState
+
     if not self:hasOverrideForState(getRocketUiHandle(hv.OldState)) then
         return
     end
@@ -87,21 +94,36 @@ function RocketUiSystem:stateEnd()
     ui.disableInput()
 	
 	if hv.OldState.Name == "GS_STATE_SCRIPTING" then
-		RocketUiScriptState = "None"
+		RocketUiSystem.substate = "None"
 	end
 end
 
 function getRocketUiHandle(state)
     if state.Name == "GS_STATE_SCRIPTING" then
-        return {Name = RocketUiScriptState}
+        return {Name = RocketUiSystem.substate}
     else
         return state
     end
 end
 
 function RocketUiSystem:beginSubstate(state) 
-	RocketUiScriptState = state
+	RocketUiSystem.substate = state
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_SCRIPTING"])
+end
+
+--This allows for states to correctly return to the previous state even if has no rocket ui defined
+function RocketUiSystem:ReturnToState(state)
+
+	local event
+
+	if state.Name == "GS_STATE_BRIEFING" then
+		event = "GS_EVENT_START_BRIEFING"
+	else
+		event = string.gsub(state.Name, "STATE", "EVENT")
+	end
+
+	ba.postGameEvent(ba.GameEvents[event])
+
 end
 
 function RocketUiSystem:hasOverrideForState(state)
