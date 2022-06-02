@@ -52,11 +52,14 @@ function RocketUiSystem:stateStart()
 	--This allows for states to correctly return to the previous state even if has no rocket ui defined
 	RocketUiSystem.currentState = ba.getCurrentGameState()
 	
-    if not self:hasOverrideForState(getRocketUiHandle(hv.NewState)) then
+	--If hv.NewState is nil then use the Current Game State; This allows for Script UIs to jump from substate to substate
+	local state = hv.NewState or ba.getCurrentGameState()
+	
+    if not self:hasOverrideForState(getRocketUiHandle(state)) then
         return
     end
 
-    local def = self:getDef(getRocketUiHandle(hv.NewState).Name)
+    local def = self:getDef(getRocketUiHandle(state).Name)
     def.document = self.context:LoadDocument(def.markup)
     def.document:Show()
 
@@ -108,7 +111,12 @@ end
 
 function RocketUiSystem:beginSubstate(state) 
 	RocketUiSystem.substate = state
-	ba.postGameEvent(ba.GameEvents["GS_EVENT_SCRIPTING"])
+	--If we're already in GS_STATE_SCRIPTING then force loading the new scpui define
+	if ba.getCurrentGameState().Name == "GS_STATE_SCRIPTING" then
+		RocketUiSystem:stateStart()
+	else
+		ba.postGameEvent(ba.GameEvents["GS_EVENT_SCRIPTING"])
+	end
 end
 
 --This allows for states to correctly return to the previous state even if has no rocket ui defined
