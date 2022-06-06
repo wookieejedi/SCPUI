@@ -110,11 +110,14 @@ function getRocketUiHandle(state)
 end
 
 function RocketUiSystem:beginSubstate(state) 
+	local oldSubstate = RocketUiSystem.substate
 	RocketUiSystem.substate = state
 	--If we're already in GS_STATE_SCRIPTING then force loading the new scpui define
 	if ba.getCurrentGameState().Name == "GS_STATE_SCRIPTING" then
+		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. RocketUiSystem.substate .. " in SCPUI SCRIPTING SUBSTATE " .. oldSubstate .. "\n")
 		RocketUiSystem:stateStart()
 	else
+		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. RocketUiSystem.substate .. "\n")
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_SCRIPTING"])
 	end
 end
