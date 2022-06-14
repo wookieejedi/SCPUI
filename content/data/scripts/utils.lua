@@ -17,6 +17,26 @@ function utils.split(inputstr, sep)
     return t
 end
 
+function utils.loadConfig(filename)
+  -- Load the config file.
+  local file = cf.openFile(filename, 'r', 'data/config')
+  local config = require('dkjson').decode(file:read('*a'))
+  file:close()
+  if not config then
+    ba.error('Please ensure that ' .. filename .. ' exists in data/config and is valid JSON.')
+  end
+  return config
+end
+
+function utils.xstr(message)
+  if type(message) == 'string' then
+    ba.print('SCPUI: Got string with missing XSTR index: ' .. message .. "\n")
+    return message
+  else
+    return ba.XSTR(message[1], message[2])
+  end
+end
+
 --- find_first
 ---@param str string
 ---@param patterns string[]
