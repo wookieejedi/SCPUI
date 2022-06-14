@@ -1,0 +1,27 @@
+#Conditional Hooks
+$Application: FS2_Open
+$On State End:
+[
+if hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT" or hv.OldState.Name == "GS_STATE_BARRACKS_MENU" then
+	--Here we load the mod options save data
+	local player = ba.getCurrentPlayer():getName():sub(1,20)
+	local saveFilename = 'mod_options_' .. player .. '.cfg'
+	if cf.fileExists(saveFilename, 'data/config', true) then
+		modOptionValues = loadConfig(saveFilename)
+	else
+		modOptionValues = {}
+		local utils = require('utils')
+		local config = utils.loadConfig('mod-options.cfg')
+		for i, v in ipairs(config) do
+			modOptionValues[v.Key] = v.Value
+		end
+		local json = require('dkjson')
+		local file = cf.openFile(saveFilename, 'w', 'data/config')
+		file:write(json.encode(modOptionValues))
+		file:close()
+	end
+end
+
+]
+
+#End

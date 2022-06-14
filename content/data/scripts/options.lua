@@ -7,6 +7,8 @@ local dialogs  = require("dialogs")
 
 local class    = require("class")
 
+local customValues = {}
+
 local function getFormatterName(key)
     return key:gsub("%.", "_")
 end
@@ -207,9 +209,15 @@ function OptionsController:createFivePointRangeElement(option, parent_id, onchan
 end
 
 function OptionsController:init_binary_element(left_btn, right_btn, option, vals, change_func)
+
+	local Key = option.Key
+
     left_btn:AddEventListener("click", function()
         if vals[1] ~= option.Value then
             option.Value = vals[1]
+			if option.Category == "Custom" then
+				customValues[Key] = option.Value
+			end
             left_btn:SetPseudoClass("checked", true)
             right_btn:SetPseudoClass("checked", false)
             if change_func then
@@ -220,6 +228,9 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
     right_btn:AddEventListener("click", function()
         if vals[2] ~= option.Value then
             option.Value = vals[2]
+			if option.Category == "Custom" then
+				customValues[Key] = option.Value
+			end
             left_btn:SetPseudoClass("checked", false)
             right_btn:SetPseudoClass("checked", true)
             if change_func then
@@ -227,6 +238,10 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
             end
         end
     end)
+	
+	if option.Category == "Custom" then
+		option.Value = modOptionValues[Key] or option.Value
+	end
 
     local value          = option.Value
     local right_selected = value == vals[2]
@@ -250,8 +265,9 @@ function OptionsController:createBinaryOptionElement(option, vals, parent_id, on
 
     title_el.inner_rml   = option.Title
 
-    text_left.inner_rml  = vals[1].Display
-    text_right.inner_rml = vals[2].Display
+	--OR is for custom options built from the CFG file
+    text_left.inner_rml  = vals[1].Display or utils.xstr(option.DisplayNames[vals[1]])
+    text_right.inner_rml = vals[2].Display or utils.xstr(option.DisplayNames[vals[2]])
 
     self:init_binary_element(btn_left, btn_right, option, vals, onchange_func)
 
@@ -298,11 +314,20 @@ function OptionsController:createSelectionOptionElement(option, vals, parent_id,
 end
 
 function OptionsController:init_range_element(element, value_el, option, change_func)
+
+	local Key = option.Key
+
     local range_el = Element.As.ElementFormControlInput(element)
 
     element:AddEventListener("change", function(event, _, _)
-        local value        = option:getValueFromRange(event.parameters.value)
-        value_el.inner_rml = value.Display
+		if option.Category ~= "Custom" then
+			local value        = option:getValueFromRange(event.parameters.value)
+			value_el.inner_rml = value.Display
+		else
+			local value        = event.parameters.value
+			value_el.inner_rml = tostring(value * option.Max):sub(1,4)
+			customValues[Key] = tostring(value * option.Max):sub(1,4)
+		end
 
         if option.Value ~= value then
             option.Value = value
@@ -312,7 +337,12 @@ function OptionsController:init_range_element(element, value_el, option, change_
         end
     end)
 
-    range_el.value = option:getInterpolantFromValue(option.Value)
+	if option.Category ~= "Custom" then
+		range_el.value = option:getInterpolantFromValue(option.Value)
+	else
+		range_el.value = modOptionValues[Key] / option.Max or option.Value / option.Max
+		range_el.step = (option.Max - option.Min) / 100
+	end
 end
 
 function OptionsController:createRangeOptionElement(option, parent_id, onchange_func)
@@ -360,6 +390,21 @@ function OptionsController:createOptionElement(option, parent_id, onchange_func)
             return self:createSelectionOptionElement(option, vals, parent_id, nil, onchange_func)
         end
     elseif option.Type == OPTION_TYPE_RANGE then
+        return self:createRangeOptionElement(option, parent_id, onchange_func)
+    end
+end
+
+function OptionsController:createCustomOptionElement(option, parent_id, onchange_func)
+    if option.Type ~= "Range" then
+        local vals = option.ValidValues
+
+        if #vals == 2 and option.Type == "Binary" then
+            -- Special case for binary options
+            return self:createBinaryOptionElement(option, vals, parent_id, onchange_func)
+        else
+            return self:createModSelectionOptionElement(option, vals, parent_id, nil, onchange_func)
+        end
+    elseif option.Type == "Range" then
         return self:createRangeOptionElement(option, parent_id, onchange_func)
     end
 end
@@ -527,6 +572,38 @@ function OptionsController:initialize_detail_options()
     end
 end
 
+--Here are where we parse and place mod options into the Preferences tab
+function OptionsController:initialize_prefs_options()
+    local current_column = 1
+	
+	local modOptions = {}
+	
+	--Load the custom options save file
+	if cf.fileExists('mod-options.cfg', 'data/config', true) then
+		modOptions = utils.loadConfig('mod-options.cfg')
+	end
+	
+    for _, option in ipairs(modOptions) do
+		--Multi Selection is not currently supported because Mjn is too dumb.
+		if option.Type ~= "Multi" then
+			option.Category = "Custom"
+			option.Title = utils.xstr(option.Title)
+			local el = self:createCustomOptionElement(option, string.format("prefs_column_%d", current_column))
+
+			if current_column == 2 or current_column == 3 then
+				el:SetClass("horz_middle", true)
+			elseif current_column == 4 then
+				el:SetClass("horz_right", true)
+			end
+
+			current_column = current_column + 1
+			if current_column > 4 then
+				current_column = 3
+			end
+		end
+    end
+end
+
 function OptionsController:initialize(document)
     self.document = document
 
@@ -557,9 +634,25 @@ function OptionsController:initialize(document)
     self:initialize_basic_options()
 
     self:initialize_detail_options()
+	
+	self:initialize_prefs_options()
 end
 
 function OptionsController:accept_clicked(element)
+
+	--for k, v in pairs(customValues) do
+	--	modOptionValues[k] = v
+	--end
+	
+	modOptionValues = customValues
+
+	--Save mod options to file
+	saveFilename = "mod_options_" .. ba.getCurrentPlayer():getName():sub(1,20) .. ".cfg"
+	local json = require('dkjson')
+    local file = cf.openFile(saveFilename, 'w', 'data/config')
+    file:write(json.encode(modOptionValues))
+    file:close()
+
     local unchanged = opt.persistChanges()
 
     if #unchanged <= 0 then

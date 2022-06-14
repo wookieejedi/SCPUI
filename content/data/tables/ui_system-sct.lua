@@ -7,6 +7,8 @@ RocketUiSystem = {
 	substate = "none"
 }
 
+modOptionValues = {}
+
 RocketUiSystem.context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
 
 function RocketUiSystem:init()
