@@ -341,7 +341,7 @@ function OptionsController:init_range_element(element, value_el, option, change_
 	if option.Category ~= "Custom" then
 		range_el.value = option:getInterpolantFromValue(option.Value)
 	else
-		range_el.value = modOptionValues[Key] / option.Max or option.Value / option.Max
+		range_el.value = (modOptionValues[Key] / option.Max) or (option.Value / option.Max)
 		range_el.step = (option.Max - option.Min) / 100
 	end
 end
