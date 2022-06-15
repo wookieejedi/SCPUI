@@ -241,6 +241,7 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
 	
 	if option.Category == "Custom" then
 		option.Value = modOptionValues[Key] or option.Value
+		customValues[Key] = modOptionValues[Key] or option.Value
 	end
 
     local value          = option.Value
