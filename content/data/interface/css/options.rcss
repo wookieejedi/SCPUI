@@ -520,7 +520,6 @@ div#horz_panel_wrapper
 	width: 60%;
 	height: auto;
 	position: relative;
-	margin-top: 1%;
 }
 
 .btn_panel_horz img
