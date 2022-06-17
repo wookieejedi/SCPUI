@@ -436,7 +436,8 @@ function OptionsController:init_range_element(element, value_el, option, change_
 	if option.Category ~= "Custom" then
 		range_el.value = option:getInterpolantFromValue(option.Value)
 	else
-		range_el.value = (modOptionValues[Key] / option.Max) or (option.Value / option.Max)
+		local savedValue = modOptionValues[Key] or option.Value
+		range_el.value = savedValue / option.Max
 		range_el.step = (option.Max - option.Min) / 100
 	end
 end
@@ -755,10 +756,6 @@ function OptionsController:initialize(document)
 end
 
 function OptionsController:accept_clicked(element)
-
-	--for k, v in pairs(customValues) do
-	--	modOptionValues[k] = v
-	--end
 	
 	modOptionValues = customValues
 
