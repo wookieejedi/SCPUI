@@ -173,12 +173,12 @@ Parameters:
             <div id="left_arrow_img" class="arrow">
                 <img src="arrow-left.png" class="psuedo_img"></img>
             </div>
-            <if condition="text_alignment == 'left'">
-                <div class="button_text_top">
-                    <p class="tps_title_el">Ten point range selector</p>
-                </div>
-            </if>
         </button>
+		<if condition="text_alignment == 'left'">
+			<div id=ten_dot_text>
+				<p class="tps_title_el">Ten point range selector</p>
+			</div>
+		</if>
     </div>
     <if condition="not no_background">
         <img src="ops-panel-horz-wide.png"></img>

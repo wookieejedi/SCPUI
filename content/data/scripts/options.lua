@@ -24,30 +24,54 @@ end
 local DataSourceWrapper = class()
 
 function DataSourceWrapper:init(option)
-    self.option       = option
+	if option.Category ~= "Custom" then
+		self.option   = option
+	else
+		self.option = {}
+	end
 
     local source      = DataSource.new(getFormatterName(option.Key))
 
-    self.values       = option:getValidValues()
-    source.GetNumRows = function()
-        return #self.values
-    end
-    source.GetRow     = function(_, i, columns)
-        local val = self.values[i]
-        local out = {}
-        for _, v in ipairs(columns) do
-            if v == "serialized" then
-                table.insert(out, val.Serialized)
-            elseif v == "display" then
-                table.insert(out, val.Display)
-            else
-                table.insert(out, "")
-            end
-        end
-        return out
-    end
+	if option.Category ~= "Custom" then
+		self.values   = option:getValidValues()
+	else
+		self.values   = option.ValidValues
+	end
+	
+	if option.Category ~= "Custom" then
+		source.GetNumRows = function()
+			return #self.values
+		end
+		source.GetRow     = function(_, i, columns)
+			local val = self.values[i]
+			local out = {}
+			for _, v in ipairs(columns) do
+				if v == "serialized" then
+					table.insert(out, val.Serialized)
+				elseif v == "display" then
+					table.insert(out, val.Display)
+				else
+					table.insert(out, "")
+				end
+			end
+			return out
+		end
+	else
+		source.GetNumRows = function()
+			return #self.values
+		end
+		source.GetRow	= function(_, i, columns)
+			local val = self.values[i]
+			local out = {}
+			for _, v in ipairs(columns) do
+				table.insert(out, val)
+			end
+			return out
+		end
+	end
 
     self.source       = source
+
 end
 
 function DataSourceWrapper:updateValues()
@@ -77,14 +101,38 @@ end
 
 function OptionsController:init_point_slider_element(value_el, btn_left, btn_right, point_buttons, option,
                                                      onchange_func)
-    local value            = option.Value
-    local range_val        = option:getInterpolantFromValue(value)
+    local value            = nil
+    local range_val        = nil
     local num_value_points = #point_buttons - 1
-
+	local Key = option.Key
+	local custom_init = 0
+	
+	if option.Category ~= "Custom" then
+		value = option.Value
+		range_val = option:getInterpolantFromValue(value)
+	else
+		local cur_val = (modOptionValues[Key]) or option.Value
+		value = (cur_val / #point_buttons) or 0
+		range_val = (cur_val / #point_buttons) or 0
+		customValues[Key] = modOptionValues[Key] or option.Value
+	end
+	
     local function updateRangeValue(value, range_val)
         option.Value = value
         if value_el then
-            value_el.inner_rml = value.Display
+			if option.Category ~= "Custom" then
+				value_el.inner_rml = value.Display
+			else
+				local index = (math.ceil(option.Value * #point_buttons)) + custom_init
+				if index > 5 then index = 5 end
+				if index < 1 then index = 1 end
+				if option.DisplayNames then
+					value_el.inner_rml = utils.xstr(option.DisplayNames[index])
+				else
+					value_el.inner_rml = index
+				end
+				customValues[Key] = (1 + math.ceil(option.Value * #point_buttons))
+			end
         end
 
         -- This gives us the index of the last button that should be shown as active. The value is in the range between
@@ -102,13 +150,27 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 
     for i, v in ipairs(point_buttons) do
         -- Basically the reverse from above, get the range value that corresponds to this button
-        local btn_range_value = (i - 1) / num_value_points;
+        local btn_range_value = (i - 1) / num_value_points
+		
 
         v:AddEventListener("click", function()
-            local option_val = option:getValueFromRange(btn_range_value)
+			local option_val = nil
+			custom_init = 1
+			
+			if option.Category ~= "Custom" then
+				option_val = option:getValueFromRange(btn_range_value)
+			else
+				option_val = (i - 1) / (num_value_points +1)
+			end
 
             if option_val ~= option.Value then
-                updateRangeValue(option_val, btn_range_value)
+				
+				if option.Category ~= "Custom" then
+					updateRangeValue(option_val, btn_range_value)
+				else
+					updateRangeValue(option_val, btn_range_value)
+					customValues[Key] = (1 + math.ceil(option_val * #point_buttons))
+				end
 
                 if onchange_func then
                     onchange_func(option_val)
@@ -119,7 +181,14 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 
     local function make_click_listener(value_increment)
         return function()
-            local current_range_val = option:getInterpolantFromValue(option.Value)
+			custom_init = 0
+            local current_range_val = nil
+			if option.Category ~= "Custom" then
+				current_range_val = option:getInterpolantFromValue(option.Value)
+			else
+				current_range_val = option.Value
+				--value_increment = math.floor(value_increment)
+			end
 
             -- Every point more represents one num_value_points th of the range
             current_range_val       = current_range_val + value_increment
@@ -130,10 +199,21 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
                 current_range_val = 1
             end
 
-            local new_val = option:getValueFromRange(current_range_val)
+			local new_val = nil
+			
+			if option.Category ~= "Custom" then
+				new_val = option:getValueFromRange(current_range_val)
+			else
+				new_val = current_range_val
+			end
 
             if new_val ~= option.Value then
-                updateRangeValue(new_val, current_range_val)
+				if option.Category ~= "Custom" then
+					updateRangeValue(new_val, current_range_val)
+				else
+					updateRangeValue(new_val, current_range_val)
+					customValues[Key] = (math.ceil(new_val * #point_buttons))
+				end
 
                 ui.playElementSound(btn_left, "click", "success")
 
@@ -276,10 +356,22 @@ function OptionsController:createBinaryOptionElement(option, vals, parent_id, on
 end
 
 function OptionsController:init_selection_element(element, option, vals, change_func)
-    local select_el = Element.As.ElementFormControlDataSelect(element)
-    select_el:SetDataSource(getFormatterName(option.Key) .. ".Default")
 
-    local value = option.Value
+	local Key = option.Key
+
+    local select_el = Element.As.ElementFormControlDataSelect(element)
+	if option.Category ~= "Custom" then
+		select_el:SetDataSource(getFormatterName(option.Key) .. ".Default")
+	else
+		select_el:SetDataSource(option.Key .. ".Default")
+	end
+	
+	if option.Category == "Custom" then
+		option.Value = modOptionValues[Key] or option.Value
+		customValues[Key] = modOptionValues[Key] or option.Value
+	end
+	
+	local value = option.Value
 
     element:AddEventListener("change", function(event, _, _)
         for _, v in ipairs(vals) do
@@ -289,6 +381,9 @@ function OptionsController:init_selection_element(element, option, vals, change_
                     change_func(v)
                 end
             end
+			if option.Category == "Custom" then
+				customValues[Key] = event.parameters.value
+			end
         end
     end)
 
@@ -396,18 +491,28 @@ function OptionsController:createOptionElement(option, parent_id, onchange_func)
 end
 
 function OptionsController:createCustomOptionElement(option, parent_id, onchange_func)
-    if option.Type ~= "Range" then
+    if (option.Type == "Binary") or (option.Type == "Multi") then
         local vals = option.ValidValues
+		
+		--self.sources[option.Key] = createOptionSource(option)
 
-        if #vals == 2 and option.Type == "Binary" then
+        if #vals == 2 and not option.ForceSelector then
             -- Special case for binary options
             return self:createBinaryOptionElement(option, vals, parent_id, onchange_func)
         else
-            return self:createModSelectionOptionElement(option, vals, parent_id, nil, onchange_func)
+            return self:createSelectionOptionElement(option, vals, parent_id, nil, onchange_func)
         end
     elseif option.Type == "Range" then
         return self:createRangeOptionElement(option, parent_id, onchange_func)
-    end
+	elseif option.Type == "TenPoint" then
+		local wrapper = option.Key .. "_wrapper"
+		return self:createTenPointRangeElement(option, parent_id, {
+                text_alignment = "left",
+                no_background  = false
+            })
+    elseif option.Type == "FivePoint" then
+		return self:createFivePointRangeElement(option, parent_id)
+	end
 end
 
 function OptionsController:handleBrightnessOption(option, onchange_func)
@@ -585,22 +690,19 @@ function OptionsController:initialize_prefs_options()
 	end
 	
     for _, option in ipairs(modOptions) do
-		--Multi Selection is not currently supported because Mjn is too dumb.
-		if option.Type ~= "Multi" then
-			option.Category = "Custom"
-			option.Title = utils.xstr(option.Title)
-			local el = self:createCustomOptionElement(option, string.format("prefs_column_%d", current_column))
+		option.Category = "Custom"
+		option.Title = utils.xstr(option.Title)
+		local el = self:createCustomOptionElement(option, string.format("prefs_column_%d", option.Column))
 
-			if current_column == 2 or current_column == 3 then
-				el:SetClass("horz_middle", true)
-			elseif current_column == 4 then
-				el:SetClass("horz_right", true)
-			end
+		if option.Column == 2 or option.Column == 3 then
+			el:SetClass("horz_middle", true)
+		elseif option.Column == 4 then
+			el:SetClass("horz_right", true)
+		end
 
-			current_column = current_column + 1
-			if current_column > 4 then
-				current_column = 3
-			end
+		current_column = current_column + 1
+		if current_column > 4 then
+			current_column = 3
 		end
     end
 end
@@ -616,9 +718,22 @@ function OptionsController:initialize(document)
     for _, v in ipairs(self.options) do
         ba.print(string.format("%s (%s): %s\n", v.Title, v.Key, getOptionElementId(v)))
 
+		--Creates data sources for built-in dropdowns
         if v.Type == OPTION_TYPE_SELECTION then
             self.sources[v.Key] = createOptionSource(v)
         end
+		
+		--Creates data sources for custom dropdowns
+		--Load the custom options save file
+		if cf.fileExists('mod-options.cfg', 'data/config', true) then
+			local customOptions = utils.loadConfig('mod-options.cfg')
+			for i, v in ipairs(customOptions) do
+				v.Category = "Custom"
+				if (v.Type == "Multi") or (v.Type == "Binary") then
+					self.sources[v.Key] = createOptionSource(v)
+				end
+			end
+		end
 
         -- TODO: The category might be a translated string at some point so this needs to be fixed then
         local category = v.Category
