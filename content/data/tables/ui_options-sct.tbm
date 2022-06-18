@@ -7,7 +7,8 @@ if hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT" or hv.OldState.Name == "
 	local player = ba.getCurrentPlayer():getName():sub(1,20)
 	local saveFilename = 'mod_options_' .. player .. '.cfg'
 	if cf.fileExists(saveFilename, 'data/config', true) then
-		modOptionValues = loadConfig(saveFilename)
+		local utils = require('utils')
+		modOptionValues = utils.loadConfig(saveFilename)
 	else
 		modOptionValues = {}
 		local utils = require('utils')
