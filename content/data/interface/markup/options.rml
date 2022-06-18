@@ -2,6 +2,7 @@
 	<head>
 		<title>XSTR("Options", -1)</title>
 		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="options.rcss"/>
@@ -9,7 +10,7 @@
 			controller = require("options")()
 		</script>
 	</head>
-	<body onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
 	<div class="hidden">
 		<include src="options_templates.rml"/>
 	</div>
@@ -20,7 +21,7 @@
 						<img src="diamonds.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text">
-						<p>Options</p>
+						<p>XSTR("Options", -1)</p>
 					</span>
 				</tab>
 					<panel class="options_panel">
@@ -31,7 +32,7 @@
 						<img src="detail.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text">
-						<p>Detail</p>
+						<p>XSTR("Detail", -1)</p>
 					</span>
 				</tab>
 					<panel class="options_panel">
@@ -42,7 +43,7 @@
 						<img src="prefs.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text">
-						<p>Preferences</p>
+						<p>XSTR("Preferences", -1)</p>
 					</span>
 				</tab>
 					<panel class="options_panel">
@@ -53,7 +54,7 @@
 						<img src="multiplayer.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text">
-						<p>Multi</p>
+						<p>XSTR("Multi", -1)</p>
 					</span>
 				</tab>
 					<panel class="options_panel">
@@ -74,7 +75,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>Accept</p>
+								<p>XSTR("Accept", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -89,7 +90,7 @@
 								<img src="ship.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
-								<p>Control Config</p>
+								<p>XSTR("Control Config", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -99,7 +100,7 @@
 								<img src="hud.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
-								<p>HUD Config</p>
+								<p>XSTR("HUD Config", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -116,7 +117,7 @@
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>Exit Game</p>
+								<p>XSTR("Exit Game", -1)</p>
 							</span>
 						</button>
 					</div>

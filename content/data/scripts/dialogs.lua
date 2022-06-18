@@ -54,6 +54,11 @@ local function show_dialog(context, properties, finish_func)
 
     dialog_doc:GetElementById("title_container").inner_rml = properties.title_string
     dialog_doc:GetElementById("text_container").inner_rml  = properties.text_string
+	if modOptionValues.Font_Multiplier then
+		dialog_doc:GetElementById("dialog_body"):SetClass(("p1-" .. modOptionValues.Font_Multiplier), true)
+	else
+		dialog_doc:GetElementById("dialog_body"):SetClass("p1-5", true)
+	end
 
     if #properties.buttons > 0 then
         initialize_buttons(dialog_doc, properties, finish_func)

@@ -56,7 +56,7 @@ div#brief_text_wrapper
 
 div#brief_text
 {
-	font-size: 150%;
+	/*font-size: 150%;*/
 	line-height: 90%;
 }
 

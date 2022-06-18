@@ -2,6 +2,7 @@
 	<head>
 		<title>XSTR("Campaign Room", -1)</title>
 		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="campaign.rcss"/>
@@ -9,7 +10,7 @@
 			controller = require("campaign")()
 		</script>
 	</head>
-	<body onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
 		<div id=campaign_wrapper>
 			<div id=campaign_select>
 				<div id=campaignlist>
@@ -36,7 +37,7 @@
 								<img src="star.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
-								<p>Restart Campaign</p>
+								<p>XSTR("Restart Campaign", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -51,7 +52,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>Select</p>
+								<p>XSTR("Select", -1)</p>
 							</span>
 						</button>
 					</div>

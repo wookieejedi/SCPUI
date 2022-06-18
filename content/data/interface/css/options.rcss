@@ -19,7 +19,6 @@ div#logo_wide
 	width: 45%;
 	height: auto;
 	overflow: hidden;
-	font-size: 10px;
 }
 
 div#logo_wide img
@@ -546,6 +545,7 @@ div#horz_panel_wrapper
 	height: auto;
 	position: relative;
 	margin-top: 1%;
+	margin-bottom: 4%;
 }
 
 .btn_panel_vert img
@@ -918,8 +918,8 @@ div#round_mute_cont
 .ten_dot_slider #ten_dot_text
 {
 	position: absolute;
-	top: -35%;
-	width: 500%;
+	top: -45%;
+	width: 800%;
 	margin-left: 35%;
 
 }
@@ -927,8 +927,8 @@ div#round_mute_cont
 .options_column_25 .ten_dot_slider #ten_dot_text
 {
 	position: absolute;
-	top: -55%;
-	width: 500%;
+	top: -70%;
+	width: 800%;
 	margin-left: 75%;
 
 }

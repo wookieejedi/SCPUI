@@ -23,6 +23,15 @@ function CommandBriefingController:initialize(document)
     AbstractBriefingController.initialize(self, document)
 	
 	ui.maybePlayCutscene(MOVIE_PRE_CMD_BRIEF, true, 0)
+	---Load the desired font size from the save file
+	if modOptionValues.Font_Multiplier then
+		local fontChoice = modOptionValues.Font_Multiplier
+		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
+		self.document:GetElementById("cmd_text"):SetClass(("p2-" .. fontChoice), true)
+	else
+		self.document:GetElementById("main_background"):SetClass("p1-5", true)
+		self.document:GetElementById("cmd_text"):SetClass("p2-5", true)
+	end
 
     local briefing = ui.CommandBriefing.getBriefing()
     for i = 1, #briefing do
@@ -44,6 +53,7 @@ function CommandBriefingController:acceptPressed()
 end
 
 function CommandBriefingController:go_to_stage(stage_idx)
+    local old_stage = self.current_stage or 0
     self:leaveStage()
 
     local stage = self.stages[stage_idx]
@@ -59,6 +69,8 @@ function CommandBriefingController:go_to_stage(stage_idx)
     else
         aniWrapper:RemoveChild(aniWrapper.first_child)
     end
+
+    ui.CommandBriefing.runBriefingStageHook(old_stage, stage_idx)
 end
 
 return CommandBriefingController

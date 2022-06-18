@@ -19,7 +19,6 @@ div#logo_wide
 	width: 50%;
 	height: auto;
 	overflow: hidden;
-	font-size: 10px;
 }
 
 div#logo_wide img
@@ -38,9 +37,9 @@ div#cmd_text
 	margin-right: 7%;
 	color: grey;
 	overflow: scroll;
-	height: 52%;
-	font-size: 14px;
-	line-height: 90%;
+	height: 75%;
+	/*font-size: 15px;*/
+	line-height: 50%;
 }
 
 div#cmd_wrapper

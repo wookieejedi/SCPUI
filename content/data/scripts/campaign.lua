@@ -11,6 +11,14 @@ function CampaignController:initialize(document)
     self.elements = {}
     self.selection = nil
 
+	---Load the desired font size from the save file
+	if modOptionValues.Font_Multiplier then
+		local fontChoice = modOptionValues.Font_Multiplier
+		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
+	else
+		self.document:GetElementById("main_background"):SetClass("p-5", true)
+	end
+
     ui.CampaignMenu.loadCampaignList();
 
     local names, fileNames, descriptions = ui.CampaignMenu.getCampaignList()

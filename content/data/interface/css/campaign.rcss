@@ -19,7 +19,6 @@ div#logo_wide
 	width: 50%;
 	height: auto;
 	overflow: hidden;
-	font-size: 10px;
 }
 
 div#logo_wide img

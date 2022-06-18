@@ -8,6 +8,7 @@ local dialogs  = require("dialogs")
 local class    = require("class")
 
 local customValues = {}
+local fontChoice = nil
 
 local function getFormatterName(key)
     return key:gsub("%.", "_")
@@ -131,7 +132,7 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 				else
 					value_el.inner_rml = index
 				end
-				customValues[Key] = (1 + math.ceil(option.Value * #point_buttons))
+				customValues[Key] = (math.ceil(option.Value * #point_buttons)) + custom_init
 			end
         end
 
@@ -170,6 +171,12 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 				else
 					updateRangeValue(option_val, btn_range_value)
 					customValues[Key] = (1 + math.ceil(option_val * #point_buttons))
+					---This is a special case just for Font_Multiplier to allow live update
+					if Key == "Font_Multiplier" then
+						self.document:GetElementById("main_background"):SetClass(fontChoice, false)
+						fontChoice = "p1-" .. customValues[Key]
+						self.document:GetElementById("main_background"):SetClass(fontChoice, true)
+					end
 				end
 
                 if onchange_func then
@@ -213,6 +220,12 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 				else
 					updateRangeValue(new_val, current_range_val)
 					customValues[Key] = (math.ceil(new_val * #point_buttons))
+					---This is a special case just for Font_Multiplier to allow live update
+					if Key == "Font_Multiplier" then
+						self.document:GetElementById("main_background"):SetClass(fontChoice, false)
+						fontChoice = "p1-" .. customValues[Key]
+						self.document:GetElementById("main_background"):SetClass(fontChoice, true)
+					end
 				end
 
                 ui.playElementSound(btn_left, "click", "success")
@@ -685,7 +698,7 @@ function OptionsController:initialize_prefs_options()
 	
 	local modOptions = {}
 	
-	--Load the custom options save file
+	--Load the custom options file
 	if cf.fileExists('mod-options.cfg', 'data/config', true) then
 		modOptions = utils.loadConfig('mod-options.cfg')
 	end
@@ -711,6 +724,14 @@ end
 function OptionsController:initialize(document)
     self.document = document
 
+	---Load the desired font size from the save file
+	if modOptionValues.Font_Multiplier then
+		fontChoice = "p1-" .. modOptionValues.Font_Multiplier
+		self.document:GetElementById("main_background"):SetClass(fontChoice, true)
+	else
+		self.document:GetElementById("main_background"):SetClass("p1-5", true)
+	end
+
     -- Persist current changes since we might discard them in this screen
     opt.persistChanges()
 
@@ -725,7 +746,7 @@ function OptionsController:initialize(document)
         end
 		
 		--Creates data sources for custom dropdowns
-		--Load the custom options save file
+		--Load the custom options file
 		if cf.fileExists('mod-options.cfg', 'data/config', true) then
 			local customOptions = utils.loadConfig('mod-options.cfg')
 			for i, v in ipairs(customOptions) do

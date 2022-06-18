@@ -19,6 +19,15 @@ function BarracksScreenController:initialize(document)
     self.squadImages = ui.Barracks.listSquadImages()
 
     PilotSelectController.initialize(self, document)
+	
+	---Load the desired font size from the save file
+	if modOptionValues.Font_Multiplier then
+		fontChoice = modOptionValues.Font_Multiplier
+		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
+	else
+		self.document:GetElementById("main_background"):SetClass("p-5", true)
+	end
+	
 end
 
 function BarracksScreenController:changeImage(new_img)

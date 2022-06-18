@@ -2,6 +2,7 @@
 	<head>
 		<title>XSTR("Briefing", -1)</title>
 		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="briefing.rcss"/>
@@ -9,7 +10,7 @@
 			controller = require("briefing")()
 		</script>
 	</head>
-	<body onkeydown="controller:global_keydown(element, event)" onload="controller:initialize(document)"
+	<body id=main_background onkeydown="controller:global_keydown(element, event)" onload="controller:initialize(document)"
 		  onunload="controller:unload(); controller = nil">
 		<div id=top_panel_wrapper>
 			<div id=top_panel_a>
@@ -20,7 +21,7 @@
 								<img src="skip-r.png" class="psuedo_img"></img>
 							</span>
 							<span id="skip_m_text" class="pos button_text_left">
-								<p>Skip Training/Mission</p>
+								<p>XSTR("Skip Training/Mission", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -35,7 +36,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Briefing</p>
+								<p>XSTR("Briefing", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -45,7 +46,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Ship Selection</p>
+								<p>XSTR("Ship Selection", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -55,7 +56,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Weapon Selection</p>
+								<p>XSTR("Weapon Selection", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -151,7 +152,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>Continue</p>
+								<p>XSTR("Continue", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -166,7 +167,7 @@
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>Help</p>
+								<p>XSTR("Help", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -176,7 +177,7 @@
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>Options</p>
+								<p>XSTR("Options", -1)</p>
 							</span>
 						</button>
 					</div>

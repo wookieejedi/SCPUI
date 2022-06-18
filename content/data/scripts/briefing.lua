@@ -22,6 +22,14 @@ end
 function BriefingController:initialize(document)
     AbstractBriefingController.initialize(self, document)
 
+	---Load the desired font size from the save file
+	if modOptionValues.Font_Multiplier then
+		fontChoice = modOptionValues.Font_Multiplier
+		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
+	else
+		self.document:GetElementById("main_background"):SetClass("p-5", true)
+	end
+
     local briefing = ui.Briefing.getBriefing()
     for i = 1, #briefing do
         --- @type briefing_stage
