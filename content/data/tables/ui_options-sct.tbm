@@ -2,7 +2,7 @@
 $Application: FS2_Open
 $On State End:
 [
-if hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT" or hv.OldState.Name == "GS_STATE_BARRACKS_MENU" then
+if ((hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT") and (hv.NewState.Name == "GS_STATE_MAIN_MENU")) or hv.OldState.Name == "GS_STATE_BARRACKS_MENU" then
 	--Here we load the mod options save data
 	local player = ba.getCurrentPlayer():getName():sub(1,20)
 	local saveFilename = 'mod_options_' .. player .. '.cfg'
