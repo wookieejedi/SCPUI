@@ -226,5 +226,11 @@ Parameters:
     </div>
     <img src="ops-panel-horz.png"></img>
 </div>
+<!--This begins all the rml for a title header-->
+<div id="header_template" class="title_panel_horz">
+    <div id="horz_panel_text" class="ops_center_header">
+        <span class="header_title_el">Header Title</span>
+    </div>
+</div>
 
 </body>

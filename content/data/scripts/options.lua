@@ -472,6 +472,29 @@ function OptionsController:createRangeOptionElement(option, parent_id, onchange_
     return actual_el
 end
 
+function OptionsController:createHeaderOptionElement(option, parent_id)
+    local parent_el                               = self.document:GetElementById(parent_id)
+    local actual_el, title_el = templates.instantiate_template(self.document, "header_template",
+                                                               getOptionElementId(option), {
+                                                                   "header_title_el"
+                                                               })
+    parent_el:AppendChild(actual_el)
+
+    title_el.inner_rml = option.Title
+
+	---Load the desired font size from the save file
+	if modOptionValues.Font_Multiplier then
+		local fontSize = modOptionValues.Font_Multiplier + 1
+		if fontSize > 10 then fontSize = 10 end
+		headerFontChoice = "p1-" .. modOptionValues.Font_Multiplier
+		self.document:GetElementById(actual_el.id):SetClass(headerFontChoice, true)
+	else
+		self.document:GetElementById(actual_el.id):SetClass("p1-6", true)
+	end
+
+    return actual_el
+end
+
 function OptionsController:create(option, parent_id, onchange_func)
     local parent_el                               = self.document:GetElementById(parent_id)
     local actual_el, title_el, value_el, range_el = templates.instantiate_template(self.document, "slider_template",
@@ -526,6 +549,8 @@ function OptionsController:createCustomOptionElement(option, parent_id, onchange
             })
     elseif option.Type == "FivePoint" then
 		return self:createFivePointRangeElement(option, parent_id)
+	elseif option.Type == "Header" then
+        return self:createHeaderOptionElement(option, parent_id)
 	end
 end
 

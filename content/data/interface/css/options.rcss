@@ -475,6 +475,11 @@ button#exit_btn:active #exit_img
 	text-align: right;
 }
 
+.ops_center_header
+{
+	text-align: center;
+}
+
 .options_column_25 #large_panel_text
 {
 	margin-left: 6.5%;
@@ -523,7 +528,7 @@ div#horz_panel_wrapper
 
 .btn_panel_horz
 {
-	width: 60%;
+	width: 67%;
 	height: auto;
 	position: relative;
 
@@ -534,6 +539,16 @@ div#horz_panel_wrapper
 	display: block;
 	width: 100%;
 	height: auto;
+
+}
+
+.title_panel_horz
+{
+	width: 67%;
+	height: auto;
+	position: relative;
+	border-bottom-width: 2px;
+	border-bottom-color: grey;
 
 }
 
