@@ -1,0 +1,26 @@
+#Conditional Hooks
+$Application: FS2_Open
+$On Game Init:
+[
+
+	local saveFilename = 'mod_options_global.cfg'
+	if cf.fileExists(saveFilename, 'data/config', true) then
+		local utils = require('utils')
+		modOptionValues = utils.loadConfig(saveFilename)
+	else
+		modOptionValues = {}
+		local utils = require('utils')
+		local config = utils.loadConfig('mod-options.cfg')
+		for i, v in ipairs(config) do
+			modOptionValues[v.Key] = v.Value
+		end
+		local json = require('dkjson')
+		local file = cf.openFile(saveFilename, 'w', 'data/config')
+		file:write(json.encode(modOptionValues))
+		file:close()
+	end
+
+
+]
+
+#End

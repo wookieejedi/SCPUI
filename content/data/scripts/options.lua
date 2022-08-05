@@ -811,6 +811,13 @@ function OptionsController:accept_clicked(element)
     local file = cf.openFile(saveFilename, 'w', 'data/config')
     file:write(json.encode(modOptionValues))
     file:close()
+	
+	--Save mod options to global file for recalling before a player is selected
+	saveFilename = "mod_options_global.cfg"
+	local json = require('dkjson')
+    local file = cf.openFile(saveFilename, 'w', 'data/config')
+    file:write(json.encode(modOptionValues))
+    file:close()
 
     local unchanged = opt.persistChanges()
 

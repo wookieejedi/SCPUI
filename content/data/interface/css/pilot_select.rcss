@@ -19,7 +19,6 @@ div#logo_wide
 	width: 70%;
 	height: auto;
 	overflow: hidden;
-	font-size: 10px;
 }
 
 div#logo_wide img
@@ -38,7 +37,6 @@ div#copyright_info
 	width: 70%;
 	height: auto;
 	overflow: hidden;
-	font-size: 10px;
 	text-align: center;
 }
 

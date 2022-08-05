@@ -10,7 +10,7 @@
 			controller = require("pilotSelect")()
 		</script>
 	</head>
-	<body onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
 		<div id=pilot_select>
 			<div class=window_title>
 				<p>XSTR("Choose Pilot", -1)</p>

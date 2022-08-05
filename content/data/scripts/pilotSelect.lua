@@ -23,6 +23,16 @@ end
 function PilotSelectController:initialize(document)
     self.document  = document
 
+	---Load the desired font size from the save file
+	if modOptionValues.Font_Multiplier then
+		local fontChoice = modOptionValues.Font_Multiplier
+		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
+		self.document:GetElementById("copyright_info"):SetClass(("s1-" .. fontChoice), true)
+	else
+		self.document:GetElementById("main_background"):SetClass("p1-9", true)
+		self.document:GetElementById("copyright_info"):SetClass("s1-9", true)
+	end
+
     local pilot_ul = document:GetElementById("pilotlist_ul")
     local pilots   = ui.PilotSelect.enumeratePilots()
 
