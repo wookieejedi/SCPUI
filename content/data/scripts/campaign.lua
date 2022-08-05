@@ -16,7 +16,7 @@ function CampaignController:initialize(document)
 		local fontChoice = modOptionValues.Font_Multiplier
 		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
 	else
-		self.document:GetElementById("main_background"):SetClass("p-5", true)
+		self.document:GetElementById("main_background"):SetClass("p1-5", true)
 	end
 
     ui.CampaignMenu.loadCampaignList();
