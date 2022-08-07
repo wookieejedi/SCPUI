@@ -27,10 +27,15 @@ function PilotSelectController:initialize(document)
 	if modOptionValues.Font_Multiplier then
 		local fontChoice = modOptionValues.Font_Multiplier
 		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
-		self.document:GetElementById("copyright_info"):SetClass(("s1-" .. fontChoice), true)
+		--This initialize function can be called by barracks which doesn't have this element, so let's check
+		if self.document:GetElementById("copyright_info") then
+			self.document:GetElementById("copyright_info"):SetClass(("s1-" .. fontChoice), true)
+		end
 	else
 		self.document:GetElementById("main_background"):SetClass("p1-9", true)
-		self.document:GetElementById("copyright_info"):SetClass("s1-9", true)
+		if self.document:GetElementById("copyright_info") then
+			self.document:GetElementById("copyright_info"):SetClass("s1-9", true)
+		end
 	end
 
     local pilot_ul = document:GetElementById("pilotlist_ul")
