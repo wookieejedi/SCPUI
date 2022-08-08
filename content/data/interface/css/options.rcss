@@ -1016,6 +1016,32 @@ button#bullet_r_btn:checked #bullet_r_img
 	background-image: bullet-r-o.png;
 }
 
+button#mod_default_btn:hover #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#mod_default_btn:active #bullet_r_img,
+button#mod_default_btn:checked #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#mod_custom_btn:hover #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#mod_custom_btn:active #bullet_r_img,
+button#mod_custom_btn:checked #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
 #bullet_l_img
 {
 	background-decorator: image;
@@ -1167,13 +1193,13 @@ div#arrow_cont
 	background-image: arrow-left.png;
 }
 
-.left_arrow_btn:hover #left_arrow_img
+button#left_arrow_btn:hover #left_arrow_img
 {
 	background-decorator: image;
 	background-image: arrow-left-h.png;
 }
 
-.left_arrow_btn:active #left_arrow_img
+button#left_arrow_btn:active #left_arrow_img
 {
 	background-decorator: image;
 	background-image: arrow-left-o.png;
@@ -1185,13 +1211,13 @@ div#arrow_cont
 	background-image: arrow-right.png;
 }
 
-.right_arrow_btn:hover #right_arrow_img
+button#right_arrow_btn:hover #right_arrow_img
 {
 	background-decorator: image;
 	background-image: arrow-right-h.png;
 }
 
-.right_arrow_btn:active #right_arrow_img
+button#right_arrow_btn:active #right_arrow_img
 {
 	background-decorator: image;
 	background-image: arrow-right-o.png;
@@ -1387,7 +1413,7 @@ selectbox option:hover
 
 .mouse_settings
 {
-	margin-top: 160px;
+	margin-top: 210px;
 }
 
 #option_input_joystick_element
