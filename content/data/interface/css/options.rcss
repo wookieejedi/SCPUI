@@ -1413,7 +1413,7 @@ selectbox option:hover
 
 .mouse_settings
 {
-	margin-top: 210px;
+	margin-top: 20%;
 }
 
 #option_input_joystick_element
