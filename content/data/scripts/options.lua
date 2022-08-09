@@ -429,11 +429,12 @@ function OptionsController:init_range_element(element, value_el, option, change_
     local range_el = Element.As.ElementFormControlInput(element)
 
     element:AddEventListener("change", function(event, _, _)
+		local value = nil
 		if option.Category ~= "Custom" then
-			local value        = option:getValueFromRange(event.parameters.value)
+			value        = option:getValueFromRange(event.parameters.value)
 			value_el.inner_rml = value.Display
 		else
-			local value        = event.parameters.value
+			value        = event.parameters.value
 			value_el.inner_rml = tostring(value * option.Max):sub(1,4)
 			customValues[Key] = tostring(value * option.Max):sub(1,4)
 		end
