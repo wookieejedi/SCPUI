@@ -854,19 +854,6 @@ end
 
 function OptionsController:initialize(document)
     self.document = document
-
-	---Load background based on config for BtA - Mjn
-	-- Open the config file for reading.
-	local file = cf.openFile('backgrounds.cfg', 'r', 'data/config')
-	-- Read the entire config file using the dkjson library.
-	local config = require('dkjson').decode(file:read('*a'))
-	file:close()
-	local campaignfilename = ba.getCurrentPlayer():getCampaignFilename()
-	local bgclass = config[campaignfilename]
-	if not bgclass then
-		bgclass = "general_bg"
-	end
-	self.document:GetElementById("main_background"):SetClass(bgclass, true)
 	
 	---Load the desired font size from the save file
 	if modOptionValues.Font_Multiplier then
