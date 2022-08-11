@@ -8,6 +8,7 @@ local dialogs  = require("dialogs")
 local class    = require("class")
 
 local customValues = {}
+local customOptions = {}
 local fontChoice = nil
 
 local function getFormatterName(key)
@@ -101,12 +102,13 @@ function OptionsController:init()
 end
 
 function OptionsController:init_point_slider_element(value_el, btn_left, btn_right, point_buttons, option,
-                                                     onchange_func)
+                                                     onchange_func, el_actual)
     local value            = nil
     local range_val        = nil
     local num_value_points = #point_buttons - 1
 	local Key = option.Key
 	local custom_init = 0
+	local default = nil
 	
 	if option.Category ~= "Custom" then
 		value = option.Value
@@ -116,6 +118,7 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 		value = (cur_val / #point_buttons) or 0
 		range_val = (cur_val / #point_buttons) or 0
 		customValues[Key] = modOptionValues[Key] or option.Value
+		default = option.Value
 	end
 	
     local function updateRangeValue(value, range_val)
@@ -124,7 +127,7 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 			if option.Category ~= "Custom" then
 				value_el.inner_rml = value.Display
 			else
-				local index = (math.ceil(option.Value * #point_buttons)) + custom_init
+				local index = (math.floor(option.Value * #point_buttons)) + custom_init
 				if index > 5 then index = 5 end
 				if index < 1 then index = 1 end
 				if option.DisplayNames then
@@ -132,9 +135,16 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 				else
 					value_el.inner_rml = index
 				end
-				customValues[Key] = (math.ceil(option.Value * #point_buttons)) + custom_init
 			end
         end
+		
+		if option.Category == "Custom" then
+			customValues[Key] = (math.ceil(option.Value * #point_buttons)) + custom_init
+			customOptions[Key].currentValue = (math.ceil(option.Value * #point_buttons)) + custom_init
+			customOptions[Key].incrementValue = option.Value
+			customOptions[Key].savedValue = (math.ceil(option.Value * #point_buttons)) + custom_init
+			self:setModDefaultStatus()
+		end
 
         -- This gives us the index of the last button that should be shown as active. The value is in the range between
         -- 0 and 1 so multiplying that with 9 maps that to our buttons since the first button has the value 0. We floor
@@ -146,6 +156,30 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
             button:SetPseudoClass("checked", i <= last_active)
         end
     end
+	
+	--Save all the data for custom options here for resetting to default
+	if option.Category == "Custom" then
+		local displayStrings = nil
+		if option.DisplayNames then
+			displayStrings = option.DisplayNames
+		end
+		customOptions[Key] = {
+			key = Key,
+			optType = "MultiPoint",
+			defaultValue = default,
+			currentValue = customValues[Key],
+			savedValue = customValues[Key],
+			incrementValue = value,
+			parentID = el_actual,
+			buttons = point_buttons,
+			numPoints = num_value_points,
+			strings = displayStrings,
+			range = range_val,
+			valueID = value_el,
+			noDefault = option.NoDefault
+			
+		}
+	end
 
     updateRangeValue(value, range_val)
 
@@ -157,18 +191,18 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
         v:AddEventListener("click", function()
 			local option_val = nil
 			custom_init = 1
-			
+
 			if option.Category ~= "Custom" then
 				option_val = option:getValueFromRange(btn_range_value)
+				if option_val ~= option.Value then
+					updateRangeValue(option_val, btn_range_value)
+					if onchange_func then
+						onchange_func(option_val)
+					end
+				end
 			else
 				option_val = (i - 1) / (num_value_points +1)
-			end
-
-            if option_val ~= option.Value then
-				
-				if option.Category ~= "Custom" then
-					updateRangeValue(option_val, btn_range_value)
-				else
+				if option_val ~= customOptions[Key].incrementValue then
 					updateRangeValue(option_val, btn_range_value)
 					customValues[Key] = (1 + math.ceil(option_val * #point_buttons))
 					---This is a special case just for Font_Multiplier to allow live update
@@ -177,12 +211,11 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 						fontChoice = "p1-" .. customValues[Key]
 						self.document:GetElementById("main_background"):SetClass(fontChoice, true)
 					end
+					if onchange_func then
+						onchange_func(option_val)
+					end
 				end
-
-                if onchange_func then
-                    onchange_func(option_val)
-                end
-            end
+			end
         end)
     end
 
@@ -193,8 +226,7 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 			if option.Category ~= "Custom" then
 				current_range_val = option:getInterpolantFromValue(option.Value)
 			else
-				current_range_val = option.Value
-				--value_increment = math.floor(value_increment)
+				current_range_val = customOptions[Key].incrementValue
 			end
 
             -- Every point more represents one num_value_points th of the range
@@ -270,7 +302,7 @@ function OptionsController:createTenPointRangeElement(option, parent_id, paramet
 
     self:init_point_slider_element(nil, btn_left, btn_right,
                                    { btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 }, option,
-                                   onchange_func)
+                                   onchange_func, actual_el)
 
     return actual_el
 end
@@ -296,21 +328,27 @@ function OptionsController:createFivePointRangeElement(option, parent_id, onchan
     title_el.inner_rml = option.Title
 
     self:init_point_slider_element(value_el, btn_left, btn_right, { btn_0, btn_1, btn_2, btn_3, btn_4 }, option,
-                                   onchange_func)
+                                   onchange_func, actual_el)
 
     return actual_el
 end
 
-function OptionsController:init_binary_element(left_btn, right_btn, option, vals, change_func)
+function OptionsController:init_binary_element(left_btn, right_btn, option, vals, change_func, el_actual)
 
 	local Key = option.Key
+	local default = nil
 
     left_btn:AddEventListener("click", function()
-        if vals[1] ~= option.Value then
-            option.Value = vals[1]
-			if option.Category == "Custom" then
-				customValues[Key] = option.Value
-			end
+		if option.Category == "Custom" then
+			option.Value = vals[1]
+			customValues[Key] = option.Value
+			customOptions[Key].currentValue = option.Value
+			customOptions[Key].savedValue = option.Value
+			left_btn:SetPseudoClass("checked", true)
+            right_btn:SetPseudoClass("checked", false)
+			self:setModDefaultStatus()
+		elseif option.Category ~= "Custom" and vals[1] ~= option.Value then
+			option.Value = vals[1]
             left_btn:SetPseudoClass("checked", true)
             right_btn:SetPseudoClass("checked", false)
             if change_func then
@@ -319,11 +357,16 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
         end
     end)
     right_btn:AddEventListener("click", function()
-        if vals[2] ~= option.Value then
-            option.Value = vals[2]
-			if option.Category == "Custom" then
-				customValues[Key] = option.Value
-			end
+		if option.Category == "Custom" then
+			option.Value = vals[2]
+			customValues[Key] = option.Value
+			customOptions[Key].currentValue = option.Value
+			customOptions[Key].savedValue = option.Value
+			left_btn:SetPseudoClass("checked", false)
+            right_btn:SetPseudoClass("checked", true)
+			self:setModDefaultStatus()
+		elseif option.Category ~= "Custom" and vals[2] ~= option.Value then
+			option.Value = vals[2]
             left_btn:SetPseudoClass("checked", false)
             right_btn:SetPseudoClass("checked", true)
             if change_func then
@@ -333,6 +376,7 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
     end)
 	
 	if option.Category == "Custom" then
+		default = option.Value
 		option.Value = modOptionValues[Key] or option.Value
 		customValues[Key] = modOptionValues[Key] or option.Value
 	end
@@ -341,6 +385,21 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
     local right_selected = value == vals[2]
     left_btn:SetPseudoClass("checked", not right_selected)
     right_btn:SetPseudoClass("checked", right_selected)
+	
+	--Save all the data for custom options here for resetting to default
+	if option.Category == "Custom" then
+		customOptions[Key] = {
+			key = Key,
+			optType = "Binary",
+			defaultValue = default,
+			currentValue = option.Value,
+			savedValue = option.Value,
+			validVals = vals,
+			parentID = el_actual,
+			noDefault = option.NoDefault
+		}
+	end
+			
 end
 
 function OptionsController:createBinaryOptionElement(option, vals, parent_id, onchange_func)
@@ -363,14 +422,15 @@ function OptionsController:createBinaryOptionElement(option, vals, parent_id, on
     text_left.inner_rml  = vals[1].Display or utils.xstr(option.DisplayNames[vals[1]])
     text_right.inner_rml = vals[2].Display or utils.xstr(option.DisplayNames[vals[2]])
 
-    self:init_binary_element(btn_left, btn_right, option, vals, onchange_func)
+    self:init_binary_element(btn_left, btn_right, option, vals, onchange_func, actual_el)
 
     return actual_el
 end
 
-function OptionsController:init_selection_element(element, option, vals, change_func)
+function OptionsController:init_selection_element(element, option, vals, change_func, el_actual)
 
 	local Key = option.Key
+	local default = nil
 
     local select_el = Element.As.ElementFormControlDataSelect(element)
 	if option.Category ~= "Custom" then
@@ -380,6 +440,7 @@ function OptionsController:init_selection_element(element, option, vals, change_
 	end
 	
 	if option.Category == "Custom" then
+		default = option.Value
 		option.Value = modOptionValues[Key] or option.Value
 		customValues[Key] = modOptionValues[Key] or option.Value
 	end
@@ -396,10 +457,28 @@ function OptionsController:init_selection_element(element, option, vals, change_
             end
 			if option.Category == "Custom" then
 				customValues[Key] = event.parameters.value
+				customOptions[Key].currentValue = event.parameters.value
+				customOptions[Key].savedValue = event.parameters.value
+				self:setModDefaultStatus()
 			end
         end
     end)
-
+	
+	--Save all the data for custom options here for resetting to default
+	if option.Category == "Custom" then
+		customOptions[Key] = {
+			key = Key,
+			optType = "Multi",
+			defaultValue = default,
+			currentValue = option.Value,
+			savedValue = option.Value,
+			validVals = vals,
+			parentID = el_actual,
+			selectID = select_el,
+			noDefault = option.NoDefault
+		}
+	end
+	
     select_el.selection = tblUtil.ifind(vals, value)
 end
 
@@ -417,14 +496,15 @@ function OptionsController:createSelectionOptionElement(option, vals, parent_id,
         text_el.inner_rml = option.Title
     end
 
-    self:init_selection_element(dataselect_el, option, vals, onchange_func)
+    self:init_selection_element(dataselect_el, option, vals, onchange_func, actual_el)
 
     return actual_el
 end
 
-function OptionsController:init_range_element(element, value_el, option, change_func)
+function OptionsController:init_range_element(element, value_el, option, change_func, el_actual)
 
 	local Key = option.Key
+	local default = nil
 
     local range_el = Element.As.ElementFormControlInput(element)
 
@@ -437,6 +517,11 @@ function OptionsController:init_range_element(element, value_el, option, change_
 			value        = event.parameters.value
 			value_el.inner_rml = tostring(value * option.Max):sub(1,4)
 			customValues[Key] = tostring(value * option.Max):sub(1,4)
+			if customOptions[Key] then
+				customOptions[Key].currentValue = tostring(value * option.Max):sub(1,4)
+				customOptions[Key].savedValue = tostring(value * option.Max):sub(1,4)
+				self:setModDefaultStatus()
+			end
 		end
 
         if option.Value ~= value then
@@ -450,9 +535,26 @@ function OptionsController:init_range_element(element, value_el, option, change_
 	if option.Category ~= "Custom" then
 		range_el.value = option:getInterpolantFromValue(option.Value)
 	else
-		local savedValue = modOptionValues[Key] or option.Value
-		range_el.value = savedValue / option.Max
+		local thisValue = modOptionValues[Key] or option.Value
+		default = option.Value
+		option.Value = thisValue
+		range_el.value = thisValue / option.Max
 		range_el.step = (option.Max - option.Min) / 100
+	end
+	
+	--Save all the data for custom options here for resetting to default
+	if option.Category == "Custom" then
+		customOptions[Key] = {
+			key = Key,
+			optType = "Range",
+			defaultValue = default,
+			currentValue = option.Value,
+			savedValue = option.Value,
+			parentID = el_actual,
+			rangeID = range_el,
+			maxValue = option.Max,
+			noDefault = option.NoDefault
+		}
 	end
 end
 
@@ -468,7 +570,7 @@ function OptionsController:createRangeOptionElement(option, parent_id, onchange_
 
     title_el.inner_rml = option.Title
 
-    self:init_range_element(range_el, value_el, option, onchange_func)
+    self:init_range_element(range_el, value_el, option, onchange_func, actual_el)
 
     return actual_el
 end
@@ -745,11 +847,27 @@ function OptionsController:initialize_prefs_options()
 			current_column = 3
 		end
     end
+	
+	self:setModDefaultStatus()
+	
 end
 
 function OptionsController:initialize(document)
     self.document = document
 
+	---Load background based on config for BtA - Mjn
+	-- Open the config file for reading.
+	local file = cf.openFile('backgrounds.cfg', 'r', 'data/config')
+	-- Read the entire config file using the dkjson library.
+	local config = require('dkjson').decode(file:read('*a'))
+	file:close()
+	local campaignfilename = ba.getCurrentPlayer():getCampaignFilename()
+	local bgclass = config[campaignfilename]
+	if not bgclass then
+		bgclass = "general_bg"
+	end
+	self.document:GetElementById("main_background"):SetClass(bgclass, true)
+	
 	---Load the desired font size from the save file
 	if modOptionValues.Font_Multiplier then
 		fontChoice = "p1-" .. modOptionValues.Font_Multiplier
@@ -848,6 +966,166 @@ function OptionsController:accept_clicked(element)
             ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
         end
     end)
+end
+
+function OptionsController:ModDefault(element)
+
+	for k, v in pairs(customOptions) do
+		local option = customOptions[k]
+		if not option.noDefault then
+			if option.optType == "Binary" and option.currentValue ~= option.defaultValue then
+				local parent = self.document:GetElementById(option.parentID.id)
+				customValues[option.key] = option.defaultValue
+				option.currentValue = option.defaultValue
+				local right_selected = option.defaultValue == option.validVals[2]
+				parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
+				parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
+			end
+			
+			if option.optType == "Multi" and option.currentValue ~= option.defaultValue then
+				local parent = self.document:GetElementById(option.parentID.id)
+				customValues[option.key] = option.defaultValue
+				option.currentValue = option.defaultValue
+				local savedValue = option.savedValue
+				option.selectID.selection = tblUtil.ifind(option.validVals, option.defaultValue)
+				option.savedValue = savedValue
+			end
+			
+			if option.optType == "Range" and option.currentValue ~= option.defaultValue then
+				local parent = self.document:GetElementById(option.parentID.id)
+				customValues[option.key] = option.defaultValue
+				option.currentValue = option.defaultValue
+				local savedValue = option.savedValue
+				option.rangeID.value = option.defaultValue / option.maxValue
+				option.savedValue = savedValue
+			end
+			
+			if option.optType == "MultiPoint" and option.currentValue ~= option.defaultValue then
+				local parent = self.document:GetElementById(option.parentID.id)
+				--local value_el = self.document:GetElementById(option.valueID.id)
+				--ba.warning(option.currentValue .. " \ " .. option.defaultValue)
+				customValues[option.key] = option.defaultValue
+				option.currentValue = option.defaultValue
+				local savedValue = option.savedValue
+				--if value_el then
+					local index = option.defaultValue
+					if option.strings then
+						if index > 5 then index = 5 end
+						if index < 1 then index = 1 end
+						parent.first_child.first_child.next_sibling.next_sibling.inner_rml = utils.xstr(option.strings[index])
+					else
+						--value_el.inner_rml = index
+					end
+					option.incrementValue = (option.defaultValue / #option.buttons)
+					customValues[option.key] = option.defaultValue
+					customOptions[option.key].currentValue = option.defaultValue
+				--end
+
+				local last_active = option.defaultValue --math.floor(option.range * option.numPoints) + 1
+
+				for i, button in ipairs(option.buttons) do
+					button:SetPseudoClass("checked", i <= last_active)
+				end
+				option.savedValue = savedValue
+			end
+		end
+	end
+	
+	local custombullet = self.document:GetElementById("mod_custom_btn")
+	local modbullet = self.document:GetElementById("mod_default_btn")
+	custombullet:SetPseudoClass("checked", false)
+	modbullet:SetPseudoClass("checked", true)
+
+end
+
+function OptionsController:ModCustom(element)
+
+	for k, v in pairs(customOptions) do
+		local option = customOptions[k]
+		if not option.noDefault then
+			if option.optType == "Binary" and option.currentValue ~=savedValue then
+				local parent = self.document:GetElementById(option.parentID.id)
+				customValues[option.key] = option.savedValue
+				option.currentValue = option.savedValue
+				local right_selected = option.savedValue == option.validVals[2]
+				parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
+				parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
+			end
+			
+			if option.optType == "Multi" and option.currentValue ~= option.savedValue then
+				local parent = self.document:GetElementById(option.parentID.id)
+				customValues[option.key] = option.defaultValue
+				option.currentValue = option.savedValue
+				option.selectID.selection = tblUtil.ifind(option.validVals, option.savedValue)
+			end
+			
+			if option.optType == "Range" and option.currentValue ~= option.savedValue then
+				local parent = self.document:GetElementById(option.parentID.id)
+				customValues[option.key] = option.defaultValue
+				option.currentValue = option.savedValue
+				option.rangeID.value = option.savedValue / option.maxValue
+			end
+			
+			if option.optType == "MultiPoint" and option.currentValue ~= option.savedValue then
+				local parent = self.document:GetElementById(option.parentID.id)
+				--local value_el = self.document:GetElementById(option.valueID.id)
+				customValues[option.key] = option.savedValue
+				option.currentValue = option.savedValue
+				local savedValue = option.savedValue
+				--if value_el then
+					local index = option.savedValue
+					if option.strings then
+						if index > 5 then index = 5 end
+						if index < 1 then index = 1 end
+						parent.first_child.first_child.next_sibling.next_sibling.inner_rml = utils.xstr(option.strings[index])
+					else
+						--value_el.inner_rml = index
+					end
+					option.incrementValue = (option.savedValue / #option.buttons)
+					customValues[option.key] = option.savedValue
+					customOptions[option.key].currentValue = option.savedValue
+				--end
+
+				local last_active = option.savedValue --math.floor(option.range * option.numPoints) + 1
+
+				for i, button in ipairs(option.buttons) do
+					button:SetPseudoClass("checked", i <= last_active)
+				end
+				option.savedValue = savedValue
+			end
+		end
+	end
+
+	local custombullet = self.document:GetElementById("mod_custom_btn")
+	local modbullet = self.document:GetElementById("mod_default_btn")
+	custombullet:SetPseudoClass("checked", true)
+	modbullet:SetPseudoClass("checked", false)
+
+end
+
+function OptionsController:isModDefault()
+	for k, v in pairs(customOptions) do
+		local option = customOptions[k]
+		if not option.noDefault then
+			if option.currentValue ~= option.defaultValue then
+				return false
+			end
+		end
+	end
+	return true
+end
+
+function OptionsController:setModDefaultStatus()
+	local custombullet = self.document:GetElementById("mod_custom_btn")
+	local modbullet = self.document:GetElementById("mod_default_btn")
+	
+	if self:isModDefault() == true then
+		custombullet:SetPseudoClass("checked", false)
+		modbullet:SetPseudoClass("checked", true)
+	else
+		custombullet:SetPseudoClass("checked", true)
+		modbullet:SetPseudoClass("checked", false)
+	end
 end
 
 function OptionsController:discardChanges()
