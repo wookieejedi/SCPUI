@@ -1016,6 +1016,120 @@ button#bullet_r_btn:checked #bullet_r_img
 	background-image: bullet-r-o.png;
 }
 
+#det_min_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+}
+
+button#det_min_btn:hover #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#det_min_btn:active #bullet_r_img,
+button#det_min_btn:checked #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+#det_low_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+}
+
+button#det_low_btn:hover #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#det_low_btn:active #bullet_r_img,
+button#det_low_btn:checked #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+#det_med_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+}
+
+button#det_med_btn:hover #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#det_med_btn:active #bullet_r_img,
+button#det_med_btn:checked #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+#det_hig_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+}
+
+button#det_hig_btn:hover #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#det_hig_btn:active #bullet_r_img,
+button#det_hig_btn:checked #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+#det_ult_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+}
+
+button#det_ult_btn:hover #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#det_ult_btn:active #bullet_r_img,
+button#det_ult_btn:checked #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+#det_cst_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+}
+
+button#det_cst_btn:hover #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#det_cst_btn:active #bullet_r_img,
+button#det_cst_btn:checked #bullet_r_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
 button#mod_default_btn:hover #bullet_r_img
 {
 	background-decorator: image;

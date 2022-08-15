@@ -9,6 +9,25 @@ local class    = require("class")
 
 local customValues = {}
 local customOptions = {}
+local detailOptions = {}
+
+local detailPresets = {
+	"option_graphics_detail_element",
+	"option_graphics_nebuladetail_element",
+	"option_graphics_texture_element",
+	"option_graphics_particles_element",
+	"option_graphics_smalldebris_element",
+	"option_graphics_shieldeffects_element",
+	"option_graphics_stars_element",
+	"option_graphics_lighting_element",
+	"option_graphics_shadows_element",
+	"option_graphics_anisotropy_element",
+	"option_graphics_aamode_element",
+	"option_graphics_postprocessing_element",
+	"option_graphics_lightshafts_element",
+	"option_graphics_softparticles_element"
+	}
+
 local fontChoice = nil
 
 local function getFormatterName(key)
@@ -354,6 +373,7 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
             if change_func then
                 change_func(vals[1])
             end
+			self:setDetailDefaultStatus()
         end
     end)
     right_btn:AddEventListener("click", function()
@@ -372,6 +392,7 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
             if change_func then
                 change_func(vals[2])
             end
+			self:setDetailDefaultStatus()
         end
     end)
 	
@@ -398,6 +419,22 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
 			parentID = el_actual,
 			noDefault = option.NoDefault
 		}
+	else
+		for k, v in pairs(detailPresets) do
+			if el_actual.id == v then
+				detailOptions[Key] = {
+					key = Key,
+					title = option.Title,
+					optType = "Binary",
+					validVals = vals,
+					optionID = option,
+					currentValue = value,
+					savedValue = value,
+					validVals = vals,
+					parentID = el_actual
+				}
+			end
+		end
 	end
 			
 end
@@ -460,6 +497,21 @@ function OptionsController:init_selection_element(element, option, vals, change_
 				customOptions[Key].currentValue = event.parameters.value
 				customOptions[Key].savedValue = event.parameters.value
 				self:setModDefaultStatus()
+			else
+				for k, v in pairs(detailPresets) do
+					if el_actual.id == v then
+						if el_actual.id == "option_graphics_anisotropy_element" then
+							--This option saves its actual value as a string instead of the index
+							detailOptions[Key].currentValue = event.parameters.value
+							detailOptions[Key].savedValue = event.parameters.value
+						else
+							--Translate from a 0 based index to a 1 based index because reasons??
+							detailOptions[Key].currentValue = event.parameters.value + 1
+							detailOptions[Key].savedValue = event.parameters.value + 1
+						end
+						self:setDetailDefaultStatus()
+					end
+				end
 			end
         end
     end)
@@ -477,6 +529,20 @@ function OptionsController:init_selection_element(element, option, vals, change_
 			selectID = select_el,
 			noDefault = option.NoDefault
 		}
+	else
+		for k, v in pairs(detailPresets) do
+			if el_actual.id == v then
+				detailOptions[Key] = {
+					key = Key,
+					optType = "Multi",
+					currentValue = tblUtil.ifind(vals, value),
+					savedValue = tblUtil.ifind(vals, value),
+					validVals = vals,
+					parentID = el_actual,
+					selectID = select_el
+				}
+			end
+		end
 	end
 	
     select_el.selection = tblUtil.ifind(vals, value)
@@ -818,6 +884,8 @@ function OptionsController:initialize_detail_options()
             end
         end
     end
+	
+	self:setDetailDefaultStatus()
 end
 
 --Here are where we parse and place mod options into the Preferences tab
@@ -953,6 +1021,316 @@ function OptionsController:accept_clicked(element)
             ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
         end
     end)
+end
+
+function OptionsController:SetDetailBullet(level)
+	
+	local lowbullet = self.document:GetElementById("det_low_btn")
+	local medbullet = self.document:GetElementById("det_med_btn")
+	local higbullet = self.document:GetElementById("det_hig_btn")
+	local ultbullet = self.document:GetElementById("det_ult_btn")
+	local cstbullet = self.document:GetElementById("det_cst_btn")
+	local minbullet = self.document:GetElementById("det_min_btn")
+	
+	minbullet:SetPseudoClass("checked", level == "min")
+	lowbullet:SetPseudoClass("checked", level == "low")
+	medbullet:SetPseudoClass("checked", level == "med")
+	higbullet:SetPseudoClass("checked", level == "hig")
+	ultbullet:SetPseudoClass("checked", level == "ult")
+	cstbullet:SetPseudoClass("checked", level == "cst")
+
+end
+
+function OptionsController:DetailMinimum(element)
+
+	for k, v in pairs(detailOptions) do
+		local option = detailOptions[k]
+		for k, v in pairs(detailPresets) do
+			if option.parentID.id == v then
+				local parent = self.document:GetElementById(option.parentID.id)
+				local savedValue = option.savedValue
+				if option.optType == "Multi" then
+					if option.parentID.id == "option_graphics_aamode_element" then
+						option.currentValue = 1
+						option.selectID.selection = 1
+					else
+						option.currentValue = 1
+						option.selectID.selection = 1
+					end
+				elseif option.optType == "Binary" then
+					option.currentValue = option.validVals[1]
+					local right_selected = option.currentValue == option.validVals[2]
+					parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
+					parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
+					local opts = opt.Options
+					for k, v in pairs(opts) do
+						if v.Key == option.key then
+							v.Value = option.validVals[1]
+						end
+					end
+				end
+				option.savedValue = savedValue
+			end
+		end
+	end
+	
+	self:SetDetailBullet("min")
+
+end
+
+function OptionsController:DetailLow(element)
+	
+	for k, v in pairs(detailOptions) do
+		local option = detailOptions[k]
+		for k, v in pairs(detailPresets) do
+			if option.parentID.id == v then
+				local parent = self.document:GetElementById(option.parentID.id)
+				local savedValue = option.savedValue
+				if option.optType == "Multi" then
+					if option.parentID.id == "option_graphics_aamode_element" then
+						option.currentValue = 5
+						option.selectID.selection = 5
+					else
+						option.currentValue = 2
+						option.selectID.selection = 2
+					end
+				elseif option.optType == "Binary" then
+					option.currentValue = option.validVals[1]
+					local right_selected = option.currentValue == option.validVals[2]
+					parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
+					parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
+					local opts = opt.Options
+					for k, v in pairs(opts) do
+						if v.Key == option.key then
+							v.Value = option.validVals[1]
+						end
+					end
+				end
+				option.savedValue = savedValue
+			end
+		end
+	end
+	
+	self:SetDetailBullet("low")
+
+end
+
+function OptionsController:DetailMedium(element)
+	
+	for k, v in pairs(detailOptions) do
+		local option = detailOptions[k]
+		for k, v in pairs(detailPresets) do
+			if option.parentID.id == v then
+				local parent = self.document:GetElementById(option.parentID.id)
+				local savedValue = option.savedValue
+				if option.optType == "Multi" then
+					if option.parentID.id == "option_graphics_aamode_element" then
+						option.currentValue = 6
+						option.selectID.selection = 6
+					else
+						option.currentValue = 3
+						option.selectID.selection = 3
+					end
+				elseif option.optType == "Binary" then
+					option.currentValue = option.validVals[1]
+					local right_selected = option.currentValue == option.validVals[2]
+					parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
+					parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
+					local opts = opt.Options
+					for k, v in pairs(opts) do
+						if v.Key == option.key then
+							v.Value = option.validVals[1]
+						end
+					end
+				end
+				option.savedValue = savedValue
+			end
+		end
+	end
+	
+	self:SetDetailBullet("med")
+
+end
+
+function OptionsController:DetailHigh(element)
+	
+	for k, v in pairs(detailOptions) do
+		local option = detailOptions[k]
+		for k, v in pairs(detailPresets) do
+			if option.parentID.id == v then
+				local parent = self.document:GetElementById(option.parentID.id)
+				local savedValue = option.savedValue
+				if option.optType == "Multi" then
+					if option.parentID.id == "option_graphics_aamode_element" then
+						option.currentValue = 7
+						option.selectID.selection = 7
+					else
+						option.currentValue = 4
+						option.selectID.selection = 4
+					end
+				elseif option.optType == "Binary" then
+					option.currentValue = option.validVals[2]
+					local right_selected = option.currentValue == option.validVals[2]
+					parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
+					parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
+					local opts = opt.Options
+					for k, v in pairs(opts) do
+						if v.Key == option.key then
+							v.Value = option.validVals[2]
+						end
+					end
+				end
+				option.savedValue = savedValue
+			end
+		end
+	end
+	
+	self:SetDetailBullet("hig")
+
+end
+
+function OptionsController:DetailUltra(element)
+	
+	for k, v in pairs(detailOptions) do
+		local option = detailOptions[k]
+		for k, v in pairs(detailPresets) do
+			if option.parentID.id == v then
+				local parent = self.document:GetElementById(option.parentID.id)
+				local savedValue = option.savedValue
+				if option.optType == "Multi" then
+					if option.parentID.id == "option_graphics_aamode_element" then
+						option.currentValue = 8
+						option.selectID.selection = 8
+					else
+						option.currentValue = 5
+						option.selectID.selection = 5
+					end
+				elseif option.optType == "Binary" then
+					option.currentValue = option.validVals[2]
+					local right_selected = option.currentValue == option.validVals[2]
+					parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
+					parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
+					local opts = opt.Options
+					for k, v in pairs(opts) do
+						if v.Key == option.key then
+							v.Value = option.validVals[2]
+						end
+					end
+				end
+				option.savedValue = savedValue
+			end
+		end
+	end
+	
+	self:SetDetailBullet("ult")
+
+end
+
+function OptionsController:DetailCustom(element)
+	
+	for k, v in pairs(detailOptions) do
+		local option = detailOptions[k]
+		for k, v in pairs(detailPresets) do
+			if option.parentID.id == v then
+				local parent = self.document:GetElementById(option.parentID.id)
+				if option.optType == "Multi" then
+					option.currentValue = option.savedValue
+					option.selectID.selection = option.savedValue
+				elseif option.optType == "Binary" then
+					option.currentValue = option.savedValue
+					local right_selected = option.savedValue == option.validVals[2]
+					parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
+					parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
+					local opts = opt.Options
+					for k, v in pairs(opts) do
+						if v.Key == option.key then
+							v.Value = option.savedValue
+						end
+					end
+				end
+			end
+		end
+	end
+	
+	self:SetDetailBullet("cst")
+
+end
+
+function OptionsController:isDetailPreset(value)
+	for k, v in pairs(detailOptions) do
+		local option = detailOptions[k]
+		if option.parentID.id == "option_graphics_anisotropy_element" then
+			local a_value = "16.0"
+			if value == 1 then a_value = "1.0" end
+			if value == 2 then a_value = "2.0" end
+			if value == 3 then a_value = "4.0" end
+			if value == 4 then a_value = "8.0" end
+			if option.currentValue ~= a_value then
+				return false
+			end
+		elseif option.parentID.id == "option_graphics_aamode_element" then
+			local a_value = 8
+			if value == 1 then a_value = 1 end
+			if value == 2 then a_value = 5 end
+			if value == 3 then a_value = 6 end
+			if value == 4 then a_value = 7 end
+			if option.currentValue ~= a_value then
+				return false
+			end
+		elseif option.parentID.id == "option_graphics_postprocessing_element" then
+			local a_value = "On"
+			if value == 1 then a_value = "Off" end
+			if value == 2 then a_value = "Off" end
+			if value == 3 then a_value = "Off" end
+			if value == 4 then a_value = "On" end
+			if option.currentValue.Display ~= a_value then
+				return false
+			end
+		elseif option.parentID.id == "option_graphis_lightshafts_element" then
+			local a_value = "On"
+			if value == 1 then a_value = "Off" end
+			if value == 2 then a_value = "Off" end
+			if value == 3 then a_value = "Off" end
+			if value == 4 then a_value = "On" end
+			if option.currentValue.Display ~= a_value then
+				return false
+			end
+		elseif option.parentID.id == "option_graphis_softparticles_element" then
+			local a_value = "On"
+			if value == 1 then a_value = "Off" end
+			if value == 2 then a_value = "Off" end
+			if value == 3 then a_value = "Off" end
+			if value == 4 then a_value = "On" end
+			if option.currentValue.Display ~= a_value then
+				return false
+			end
+		else
+			if option.currentValue ~= value then
+				return false
+			end
+		end
+	end
+	return true
+end
+
+function OptionsController:setDetailDefaultStatus()
+	
+	local preset = "cst"
+	
+	if self:isDetailPreset(1) then
+		preset = "min"
+	elseif self:isDetailPreset(2) then
+		preset = "low"
+	elseif self:isDetailPreset(3) then
+		preset = "med"
+	elseif self:isDetailPreset(4) then
+		preset = "hig"
+	elseif self:isDetailPreset(5) then
+		preset = "ult"
+	end
+
+	self:SetDetailBullet(preset)
+
 end
 
 function OptionsController:ModDefault(element)
