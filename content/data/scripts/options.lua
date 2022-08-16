@@ -498,7 +498,6 @@ function OptionsController:init_selection_element(element, option, vals, change_
 				customValues[Key] = event.parameters.value
 				customOptions[Key].currentValue = event.parameters.value
 				customOptions[Key].savedValue = event.parameters.value
-				self:setModDefaultStatus()
 			else
 				for k, v in pairs(detailPresets) do
 					if el_actual.id == v then
@@ -513,14 +512,20 @@ function OptionsController:init_selection_element(element, option, vals, change_
 							detailOptions[Key].savedValue = a_value
 						else
 							--Translate from a 0 based index to a 1 based index because reasons??
-							detailOptions[Key].currentValue = event.parameters.value + 1
-							detailOptions[Key].savedValue = event.parameters.value + 1
+							if tonumber(event.parameters.value) then
+								detailOptions[Key].currentValue = event.parameters.value + 1
+								detailOptions[Key].savedValue = event.parameters.value + 1
+							end
 						end
-						self:setDetailDefaultStatus()
 					end
 				end
 			end
         end
+		if option.Category ~= "Custom" then
+			self:setDetailDefaultStatus()
+		else
+			self:setModDefaultStatus()
+		end
     end)
 	
 	--Save all the data for custom options here for resetting to default
@@ -551,7 +556,6 @@ function OptionsController:init_selection_element(element, option, vals, change_
 			end
 		end
 	end
-	
     select_el.selection = tblUtil.ifind(vals, value)
 end
 
@@ -1292,7 +1296,7 @@ function OptionsController:isDetailPreset(value)
 			if option.currentValue.Display ~= a_value then
 				return false
 			end
-		elseif option.parentID.id == "option_graphis_lightshafts_element" then
+		elseif option.parentID.id == "option_graphics_lightshafts_element" then
 			local a_value = "On"
 			if value == 1 then a_value = "Off" end
 			if value == 2 then a_value = "Off" end
@@ -1301,7 +1305,7 @@ function OptionsController:isDetailPreset(value)
 			if option.currentValue.Display ~= a_value then
 				return false
 			end
-		elseif option.parentID.id == "option_graphis_softparticles_element" then
+		elseif option.parentID.id == "option_graphics_softparticles_element" then
 			local a_value = "On"
 			if value == 1 then a_value = "Off" end
 			if value == 2 then a_value = "Off" end
