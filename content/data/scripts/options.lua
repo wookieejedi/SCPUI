@@ -10,6 +10,8 @@ local class    = require("class")
 local customValues = {}
 local customOptions = {}
 local detailOptions = {}
+local modCustom = true
+local graphicsCustom = true
 
 local detailPresets = {
 	"option_graphics_detail_element",
@@ -501,9 +503,14 @@ function OptionsController:init_selection_element(element, option, vals, change_
 				for k, v in pairs(detailPresets) do
 					if el_actual.id == v then
 						if el_actual.id == "option_graphics_anisotropy_element" then
-							--This option saves its actual value as a string instead of the index
-							detailOptions[Key].currentValue = event.parameters.value
-							detailOptions[Key].savedValue = event.parameters.value
+							--This option saves reports the string so we need to save the known index
+							local a_value = 5
+							if event.parameters.value == "1.0" then a_value = 1 end
+							if event.parameters.value == "2.0" then a_value = 2 end
+							if event.parameters.value == "4.0" then a_value = 3 end
+							if event.parameters.value == "8.0" then a_value = 4 end
+							detailOptions[Key].currentValue = a_value
+							detailOptions[Key].savedValue = a_value
 						else
 							--Translate from a 0 based index to a 1 based index because reasons??
 							detailOptions[Key].currentValue = event.parameters.value + 1
@@ -1074,6 +1081,7 @@ function OptionsController:DetailMinimum(element)
 		end
 	end
 	
+	graphicsCustom = false
 	self:SetDetailBullet("min")
 
 end
@@ -1111,6 +1119,7 @@ function OptionsController:DetailLow(element)
 		end
 	end
 	
+	graphicsCustom = false
 	self:SetDetailBullet("low")
 
 end
@@ -1148,6 +1157,7 @@ function OptionsController:DetailMedium(element)
 		end
 	end
 	
+	graphicsCustom = false
 	self:SetDetailBullet("med")
 
 end
@@ -1185,6 +1195,7 @@ function OptionsController:DetailHigh(element)
 		end
 	end
 	
+	graphicsCustom = false
 	self:SetDetailBullet("hig")
 
 end
@@ -1222,53 +1233,48 @@ function OptionsController:DetailUltra(element)
 		end
 	end
 	
+	graphicsCustom = false
 	self:SetDetailBullet("ult")
 
 end
 
 function OptionsController:DetailCustom(element)
 	
-	for k, v in pairs(detailOptions) do
-		local option = detailOptions[k]
-		for k, v in pairs(detailPresets) do
-			if option.parentID.id == v then
-				local parent = self.document:GetElementById(option.parentID.id)
-				if option.optType == "Multi" then
-					option.currentValue = option.savedValue
-					option.selectID.selection = option.savedValue
-				elseif option.optType == "Binary" then
-					option.currentValue = option.savedValue
-					local right_selected = option.savedValue == option.validVals[2]
-					parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
-					parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
-					local opts = opt.Options
-					for k, v in pairs(opts) do
-						if v.Key == option.key then
-							v.Value = option.savedValue
+	if graphicsCustom == false then
+		for k, v in pairs(detailOptions) do
+			local option = detailOptions[k]
+			for k, v in pairs(detailPresets) do
+				if option.parentID.id == v then
+					local parent = self.document:GetElementById(option.parentID.id)
+					if option.optType == "Multi" then
+						option.currentValue = option.savedValue
+						option.selectID.selection = option.savedValue
+					elseif option.optType == "Binary" then
+						option.currentValue = option.savedValue
+						local right_selected = option.savedValue == option.validVals[2]
+						parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
+						parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
+						local opts = opt.Options
+						for k, v in pairs(opts) do
+							if v.Key == option.key then
+								v.Value = option.savedValue
+							end
 						end
 					end
 				end
 			end
 		end
+		
+		graphicsCustom = true
+		self:SetDetailBullet("cst")
 	end
-	
-	self:SetDetailBullet("cst")
 
 end
 
 function OptionsController:isDetailPreset(value)
 	for k, v in pairs(detailOptions) do
 		local option = detailOptions[k]
-		if option.parentID.id == "option_graphics_anisotropy_element" then
-			local a_value = "16.0"
-			if value == 1 then a_value = "1.0" end
-			if value == 2 then a_value = "2.0" end
-			if value == 3 then a_value = "4.0" end
-			if value == 4 then a_value = "8.0" end
-			if option.currentValue ~= a_value then
-				return false
-			end
-		elseif option.parentID.id == "option_graphics_aamode_element" then
+		if option.parentID.id == "option_graphics_aamode_element" then
 			local a_value = 8
 			if value == 1 then a_value = 1 end
 			if value == 2 then a_value = 5 end
@@ -1316,17 +1322,23 @@ end
 function OptionsController:setDetailDefaultStatus()
 	
 	local preset = "cst"
+	graphicsCustom = true
 	
 	if self:isDetailPreset(1) then
 		preset = "min"
+		graphicsCustom = false
 	elseif self:isDetailPreset(2) then
 		preset = "low"
+		graphicsCustom = false
 	elseif self:isDetailPreset(3) then
 		preset = "med"
+		graphicsCustom = false
 	elseif self:isDetailPreset(4) then
 		preset = "hig"
+		graphicsCustom = false
 	elseif self:isDetailPreset(5) then
 		preset = "ult"
+		graphicsCustom = false
 	end
 
 	self:SetDetailBullet(preset)
@@ -1396,6 +1408,7 @@ function OptionsController:ModDefault(element)
 		end
 	end
 	
+	modCustom = false
 	local custombullet = self.document:GetElementById("mod_custom_btn")
 	local modbullet = self.document:GetElementById("mod_default_btn")
 	custombullet:SetPseudoClass("checked", false)
@@ -1405,66 +1418,69 @@ end
 
 function OptionsController:ModCustom(element)
 
-	for k, v in pairs(customOptions) do
-		local option = customOptions[k]
-		if not option.noDefault then
-			if option.optType == "Binary" and option.currentValue ~=savedValue then
-				local parent = self.document:GetElementById(option.parentID.id)
-				customValues[option.key] = option.savedValue
-				option.currentValue = option.savedValue
-				local right_selected = option.savedValue == option.validVals[2]
-				parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
-				parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
-			end
-			
-			if option.optType == "Multi" and option.currentValue ~= option.savedValue then
-				local parent = self.document:GetElementById(option.parentID.id)
-				customValues[option.key] = option.defaultValue
-				option.currentValue = option.savedValue
-				option.selectID.selection = tblUtil.ifind(option.validVals, option.savedValue)
-			end
-			
-			if option.optType == "Range" and option.currentValue ~= option.savedValue then
-				local parent = self.document:GetElementById(option.parentID.id)
-				customValues[option.key] = option.defaultValue
-				option.currentValue = option.savedValue
-				option.rangeID.value = option.savedValue / option.maxValue
-			end
-			
-			if option.optType == "MultiPoint" and option.currentValue ~= option.savedValue then
-				local parent = self.document:GetElementById(option.parentID.id)
-				--local value_el = self.document:GetElementById(option.valueID.id)
-				customValues[option.key] = option.savedValue
-				option.currentValue = option.savedValue
-				local savedValue = option.savedValue
-				--if value_el then
-					local index = option.savedValue
-					if option.strings then
-						if index > 5 then index = 5 end
-						if index < 1 then index = 1 end
-						parent.first_child.first_child.next_sibling.next_sibling.inner_rml = utils.xstr(option.strings[index])
-					else
-						--value_el.inner_rml = index
-					end
-					option.incrementValue = (option.savedValue / #option.buttons)
+	if modCustom == false then
+		for k, v in pairs(customOptions) do
+			local option = customOptions[k]
+			if not option.noDefault then
+				if option.optType == "Binary" and option.currentValue ~=savedValue then
+					local parent = self.document:GetElementById(option.parentID.id)
 					customValues[option.key] = option.savedValue
-					customOptions[option.key].currentValue = option.savedValue
-				--end
-
-				local last_active = option.savedValue --math.floor(option.range * option.numPoints) + 1
-
-				for i, button in ipairs(option.buttons) do
-					button:SetPseudoClass("checked", i <= last_active)
+					option.currentValue = option.savedValue
+					local right_selected = option.savedValue == option.validVals[2]
+					parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
+					parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
 				end
-				option.savedValue = savedValue
+				
+				if option.optType == "Multi" and option.currentValue ~= option.savedValue then
+					local parent = self.document:GetElementById(option.parentID.id)
+					customValues[option.key] = option.defaultValue
+					option.currentValue = option.savedValue
+					option.selectID.selection = tblUtil.ifind(option.validVals, option.savedValue)
+				end
+				
+				if option.optType == "Range" and option.currentValue ~= option.savedValue then
+					local parent = self.document:GetElementById(option.parentID.id)
+					customValues[option.key] = option.defaultValue
+					option.currentValue = option.savedValue
+					option.rangeID.value = option.savedValue / option.maxValue
+				end
+				
+				if option.optType == "MultiPoint" and option.currentValue ~= option.savedValue then
+					local parent = self.document:GetElementById(option.parentID.id)
+					--local value_el = self.document:GetElementById(option.valueID.id)
+					customValues[option.key] = option.savedValue
+					option.currentValue = option.savedValue
+					local savedValue = option.savedValue
+					--if value_el then
+						local index = option.savedValue
+						if option.strings then
+							if index > 5 then index = 5 end
+							if index < 1 then index = 1 end
+							parent.first_child.first_child.next_sibling.next_sibling.inner_rml = utils.xstr(option.strings[index])
+						else
+							--value_el.inner_rml = index
+						end
+						option.incrementValue = (option.savedValue / #option.buttons)
+						customValues[option.key] = option.savedValue
+						customOptions[option.key].currentValue = option.savedValue
+					--end
+
+					local last_active = option.savedValue --math.floor(option.range * option.numPoints) + 1
+
+					for i, button in ipairs(option.buttons) do
+						button:SetPseudoClass("checked", i <= last_active)
+					end
+					option.savedValue = savedValue
+				end
 			end
 		end
-	end
 
-	local custombullet = self.document:GetElementById("mod_custom_btn")
-	local modbullet = self.document:GetElementById("mod_default_btn")
-	custombullet:SetPseudoClass("checked", true)
-	modbullet:SetPseudoClass("checked", false)
+		modCustom = true
+		local custombullet = self.document:GetElementById("mod_custom_btn")
+		local modbullet = self.document:GetElementById("mod_default_btn")
+		custombullet:SetPseudoClass("checked", true)
+		modbullet:SetPseudoClass("checked", false)
+	end
 
 end
 
@@ -1487,9 +1503,11 @@ function OptionsController:setModDefaultStatus()
 	if self:isModDefault() == true then
 		custombullet:SetPseudoClass("checked", false)
 		modbullet:SetPseudoClass("checked", true)
+		modCustom = false
 	else
 		custombullet:SetPseudoClass("checked", true)
 		modbullet:SetPseudoClass("checked", false)
+		modCustom = true
 	end
 end
 
