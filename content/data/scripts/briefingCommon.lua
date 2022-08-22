@@ -127,7 +127,7 @@ function AbstractBriefingController:startMusic()
         return
     end
 
-    self.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC);
+    self.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
     async.run(function()
         async.await(async_util.wait_for(2.5))
         self.music_handle:play(ad.MasterEventMusicVolume, true)
