@@ -38,6 +38,10 @@ $Skybox Model: Starfield.pof
 
 $AI Profile: FS2 RETAIL
 
+#Fiction Viewer
+
+$File: test.txt
+
 #Command Briefing
 
 $Stage Text:
@@ -105,7 +109,7 @@ $y{ This is a color span! $}
 The $y{ quick $g{ brown fox $r jumps over $} the lazy $} dog.", -1)
 $end_multi_text
 $Ani Filename: cb_bta.ani
-+Wave Filename: 
++Wave Filename: TR1_CB_05.wav
 
 $Stage Text:
  XSTR("  !html This is an HTML briefing
@@ -113,7 +117,7 @@ $Stage Text:
 <span style=$quotecolor: red;$quote>Red color!</span>", -1)
 $end_multi_text
 $Ani Filename: cb_bta.ani
-+Wave Filename:
++Wave Filename: TR1_CB_05.wav
 
 #Briefing
 $start_briefing
@@ -1433,117 +1437,7 @@ $Num stars: 2000
 $Ambient light level: 7895160
 
 $Bitmap List:
-$Sun: SunVega
-+Angles: 1.151916 0.000000 0.000000
-+Scale: 2.000000
-$Starbitmap: NebulC5-Whisp
-+Angles: 0.000000 0.000000 0.575958
-+ScaleX: 3.000000
-+ScaleY: 3.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulC12-Whisp
-+Angles: 0.383972 0.000000 0.575958
-+ScaleX: 5.000000
-+ScaleY: 5.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulC1-Main
-+Angles: 0.000000 0.000000 0.558505
-+ScaleX: 1.000000
-+ScaleY: 1.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulH8-Whisp
-+Angles: 0.052360 0.000000 0.558505
-+ScaleX: 1.000000
-+ScaleY: 1.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulH5-Whisp
-+Angles: 6.213367 0.000000 0.593412
-+ScaleX: 1.000000
-+ScaleY: 1.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulH3-Main
-+Angles: 6.248274 0.000000 0.506145
-+ScaleX: 1.000000
-+ScaleY: 1.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulH7-Whisp
-+Angles: 6.213367 0.296706 0.488692
-+ScaleX: 2.000000
-+ScaleY: 2.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulH14-Whisp
-+Angles: 0.000000 0.000000 0.244346
-+ScaleX: 3.000000
-+ScaleY: 3.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulC12-Whisp
-+Angles: 6.003928 1.535889 0.261799
-+ScaleX: 3.000000
-+ScaleY: 3.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulC14-Whisp
-+Angles: 6.038835 0.000000 0.296706
-+ScaleX: 1.000000
-+ScaleY: 1.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulH13-Whisp
-+Angles: 6.038835 0.000000 0.296706
-+ScaleX: 2.000000
-+ScaleY: 2.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulH1-Main
-+Angles: 5.742129 3.874628 6.195914
-+ScaleX: 5.000000
-+ScaleY: 5.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulC1-Main
-+Angles: 5.689769 1.535889 6.230821
-+ScaleX: 2.000000
-+ScaleY: 2.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulC11-Whisp
-+Angles: 5.445423 0.000000 6.003928
-+ScaleX: 3.000000
-+ScaleY: 3.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulC2-Main
-+Angles: 5.550143 0.000000 6.108648
-+ScaleX: 3.000000
-+ScaleY: 3.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulH2-Main
-+Angles: 5.550143 3.141590 6.108648
-+ScaleX: 2.000000
-+ScaleY: 2.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulH3-Main
-+Angles: 5.619956 0.575958 6.161007
-+ScaleX: 2.000000
-+ScaleY: 2.000000
-+DivX: 1
-+DivY: 1
-$Starbitmap: NebulC5-Whisp
-+Angles: 5.619956 0.000000 6.161007
-+ScaleX: 5.000000
-+ScaleY: 5.000000
-+DivX: 1
-+DivY: 1
+
 
 #Asteroid Fields
 

@@ -1,9 +1,101 @@
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse quis ligula sit amet lacus tristique maximus. Fusce in erat metus. Aliquam egestas, nulla non ultrices finibus, lorem libero volutpat leo, id feugiat metus ante fermentum nunc. Sed vitae turpis turpis. In mollis ultricies pellentesque. Ut luctus urna sit amet ullamcorper scelerisque. Ut pulvinar nisl non gravida sagittis. Proin ipsum tellus, luctus vitae dui in, feugiat semper velit. Donec rhoncus porta ipsum ut aliquet. Cras sed tempus sem, in blandit massa. Phasellus quis eros quis libero sagittis interdum ut quis justo. Donec nec sem ut eros efficitur tincidunt nec ut ante. Fusce lacinia ligula imperdiet ultricies imperdiet.
+$E{ Interrogation Report: Senator Hoshi $}
+$E{ Date: August 13, 2336 $}
 
-Maecenas et erat sit amet sapien laoreet gravida. Nulla bibendum nec purus a mollis. Donec vitae urna varius, rutrum sapien quis, pharetra elit. Nam vitae semper erat. Quisque hendrerit, quam et consectetur ornare, nisl ligula fermentum tortor, nec pulvinar enim magna facilisis nisi. Vivamus posuere rhoncus dictum. Donec non venenatis eros. Quisque a dignissim libero. Aliquam feugiat quam sit amet aliquam aliquam. Vivamus vitae viverra lectus. Nulla dictum viverra ligula, at convallis sapien bibendum id. Mauris sed viverra velit. Proin sollicitudin condimentum eros, eu rutrum tortor facilisis ut. In quis sem fermentum, ultrices mauris a, fermentum libero. Pellentesque aliquet rutrum consectetur. Pellentesque bibendum sodales ultrices.
+$E{ [Loud movements and sounds] $}
 
-Phasellus id rhoncus dui. Maecenas quis venenatis arcu. Nulla viverra magna ligula, non dictum quam laoreet vitae. Maecenas vel bibendum arcu. Etiam porta sed augue vel tincidunt. Ut sodales efficitur lobortis. Nullam vestibulum nisi mi, ac tempor eros suscipit quis. Ut in nisl eu mauris iaculis dapibus. Praesent feugiat velit at hendrerit malesuada.
+$g{ LT. SCEFFE: $} What is your name?
 
-Etiam erat sapien, imperdiet porta gravida at, consequat mattis tortor. Maecenas volutpat ultrices malesuada. Donec fringilla sagittis elit, at malesuada massa eleifend sed. Donec bibendum finibus odio non aliquet. Donec tristique sapien nec leo blandit, at ornare turpis venenatis. Suspendisse efficitur augue vitae tortor pulvinar, eu rhoncus mi congue. Aenean consectetur nisl lectus, ut finibus dui sollicitudin in. Vestibulum tempor, mi ornare tincidunt congue, lectus felis malesuada tellus, vel mollis ipsum metus sed felis. Maecenas sed venenatis massa, nec aliquam nisl. Maecenas nulla nunc, eleifend in aliquet quis, rutrum eget ante. Suspendisse finibus dapibus arcu at pharetra.
+$y{ SATO HOSHI: $} $e{ Sato Hoshi $}
 
-Vivamus quam est, aliquet at bibendum at, congue at felis. Curabitur viverra, velit id bibendum molestie, lectus neque convallis turpis, in rutrum mi massa quis tortor. Nunc commodo mauris non dolor tempor, nec suscipit dui sodales. Ut lobortis nulla enim, sit amet varius purus consequat eget. Aliquam vitae suscipit odio. Nunc id mattis nunc, vitae vestibulum lectus. In id mauris mi. Donec sed felis eget ante lacinia efficitur. Donec dapibus ipsum sed erat dictum, sed tincidunt nulla mollis. Integer erat turpis, vestibulum sed dui euismod, iaculis mollis libero. Morbi a risus fringilla, imperdiet eros quis, porta lacus. Pellentesque in condimentum metus. Sed dignissim erat at eros porta, non luctus leo congue. Aliquam pulvinar diam eu ligula dignissim, non elementum sapien suscipit. Aenean nec turpis sed tortor mollis placerat. Duis consectetur iaculis auctor.
+$g{ LT. SCEFFE: $} Alright, let's talk about the transport you were on, the Tranquility. Do you own it?
+
+$y{ SATO HOSHI: $} $e{ Of course. You have the registration papers. $}
+
+$g{ LT. SCEFFE: $} You're right, I do. What I don't have is a record of the cargo on board. You understand that it's illegal to transport neutrinium.
+
+$y{ SATO HOSHI: $} $e{ Then it must've been placed by someone else. Someone's trying to frame me. $}
+
+$g{ LT. SCEFFE: $} You were making deals with smugglers.
+
+$y{ SATO HOSHI: $} $e{ I don't know what you're talking about. $}
+
+$g{ LT. SCEFFE: $} We have evidence.
+
+$y{ SATO HOSHI: $} $e{ Then why am I here? You have nothing. $}
+
+$g{ LT. SCEFFE: $} We have an audio recording of you communicating with known smugglers.
+
+$y{ SATO HOSHI: $} $e{ What do you want from me? $}
+
+$g{ LT. SCEFFE: $} What were you doing with neutrinium?
+
+$y{ SATO HOSHI: $} $e{ I said I don't know what you are talking about. $}
+
+$g{ LT. SCEFFE: $} Playing dumb doesn't put you above the law.
+
+$y{ SATO HOSHI: $} $e{ I'm a senator! $}
+
+$g{ LT. SCEFFE: $} You're a criminal.
+
+$y{ SATO HOSHI: $} $e{ And you're a pawn! You don't know what you're getting yourselves in to. $}
+
+$g{ LT. SCEFFE: $} What does that mean?
+
+$y{ SATO HOSHI: $} $e{ You think you control these systems? The whole world's corrupt. $}
+
+$g{ LT. SCEFFE: $} This coming from a senator involved in smuggling?
+
+$y{ SATO HOSHI: $} $e{ Smuggling! That's not even half of it. $}
+
+$g{ LT. SCEFFE: $} Oh? Then enlighten me.
+
+$y{ SATO HOSHI: $} $e{ (inaudible) $}
+
+$g{ LT. SCEFFE: $} What did you say?
+
+$y{ SATO HOSHI: $} $e{ (inaudible) $}
+
+$g{ LT. SCEFFE: $} Speak up. I can't hear you.
+
+$y{ SATO HOSHI: $} $e{ (speaking Vasudan) $}
+
+$g{ LT. SCEFFE: $} Why are you speaking Vasudan? What do they have to do with anything?
+
+$y{ SATO HOSHI: $} $e{ He has to do with everything, and he's going to win. $}
+
+$g{ LT. SCEFFE: $} Who?
+
+$y{ SATO HOSHI: $} $e{ (inaudible) $}
+
+$g{ LT. SCEFFE: $} Ozymandias? Speak up, Senator!
+
+$y{ SATO HOSHI: $} $e{ Yes. Ozymandias. $}
+
+$g{ LT. SCEFFE: $} What can you tell me about him, Ozymandias?
+
+$y{ SATO HOSHI: $} $e{ Nothing. I know nothing about him, except that, except that.. (inaudible) $}
+
+$g{ LT. SCEFFE: $} Except what?
+
+$y{ SATO HOSHI: $} $e{ He has enough force to challenge the Intrepid. $}
+
+$g{ LT. SCEFFE: $} Did you meet with Ozymandias? Can you tell me where?
+
+$y{ SATO HOSHI: $} $e{ I can't remember. Somewhere in Sirius. $}
+
+$g{ LT. SCEFFE: $} And he promised you that he'll force the GTA to reprioritize their targets?
+
+$g{ LT. SCEFFE: $} Senator?
+
+$y{ SATO HOSHI: $} $e{ I have my rights. $}
+
+$g{ LT. SCEFFE: $} Senator Hoshi! Answer the que-
+
+$y{ SATO HOSHI: $} $e{ I'm Sato Hoshi, Senator of Regulus, and I demand that you let me out immediately! $}
+
+$E{ [Loud movement sounds] $}
+
+$g{ LT. SCEFFE: $} Sit down!
+
+$E{ [Banging sounds. Voices inaudible over noise.] $}
+$E{ [Recording ends.] $}
