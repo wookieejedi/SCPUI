@@ -5,21 +5,18 @@
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="red_alert.rcss"/>
+		<script>
+			controller = require("redalert")()
+		</script>
 	</head>
-	<body>
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
 		<div id=logo_wide>
 			<img src="logo-wide.png"></img>
 		</div>
 		<div id=red_alert_wrapper>
 			<div id=red_alert_text_window>
 				<div id=red_alert_text>
-					<p>Excellent work. The detonation of the Bastion's Meson bombs created a subspace cataclysm that sealed off the node. You and the 70th Blue Lions deserve the highest commendation.</p>
-					<br></br>
-					<p>The Security Council has authorized the deployment of the GTD Nereid. The destroyer will depart from the Vega system and collapse the node in fifteen minutes. We must therefore complete our evacuation of Capella by that time. Any ship that remains behind will be trapped with teh Shivan Armada.</p>
-					<br></br>
-					<p>Your objective is to defend our convoys as they flee through the Vega node. Cargo ships, personnel transports, medical vessels, and the remnants of the Allied fleet are now in transit. These convoys are under heavy bomber fire. If we don't provide cover, thousands will die.</p>
-					<br></br>
-					<p>Your secondary objective is to prevent Shivan warships from entering the Vega node. The Allied fleet has been pulverized, so fo the sake of all Terrans and Vasudans, the war must end here. You will receive authorization to enter the Vega node and leave the system once the Nereid has been deployed.</p>
+					<p></p>
 				</div>
 				<div id=text_scroll_wrapper>
 					<div id=text_scroll_cont>
@@ -39,7 +36,7 @@
 				</div>
 				<div id=replay_wrapper>
 					<div id=replay_cont>
-						<button id="replay_btn" class="replay_btn button_1">
+						<button id="replay_btn" class="replay_btn button_1" onclick="controller:replay_pressed(element)">
 							<span id="replay_img" class="replay_btn">
 								<img src="replay.png" class="psuedo_img"></img>
 							</span>

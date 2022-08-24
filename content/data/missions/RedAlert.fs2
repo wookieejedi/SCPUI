@@ -41,7 +41,7 @@ $start_stage
 $multi_text
  XSTR("Red alert Stage 1 text goes here", -1)
 $end_multi_text
-$voice: none.wav
+$voice: 1_backup.wav
 $camera_pos: 0.000000, 150.000000, -200.000000
 $camera_orient:
 	1.000000, 0.000000, -0.000000,
@@ -57,7 +57,7 @@ $start_stage
 $multi_text
  XSTR("Red alert Stage 2 text goes here", -1)
 $end_multi_text
-$voice: none.wav
+$voice: 1_backup.wav
 $camera_pos: 0.000000, 150.000000, -200.000000
 $camera_orient:
 	1.000000, 0.000000, -0.000000,
