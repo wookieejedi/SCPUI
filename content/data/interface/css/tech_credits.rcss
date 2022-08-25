@@ -153,37 +153,73 @@ div#bullet_cont
 	background-image: bullet-r.png;
 }
 
-button#brief_btn:hover #bullet_img
+button#data_btn:hover #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-h.png;
 }
 
-button#brief_btn:active #bullet_img
+button#data_btn:active #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
 }
 
-button#s_select_btn:hover #bullet_img
-{
-	background-decorator: image;
-	background-image: bullet-r-h.png;
-}
-
-button#s_select_btn:active #bullet_img
+button#data_btn:checked #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
 }
 
-button#w_select_btn:hover #bullet_img
+button#mission_btn:hover #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-h.png;
 }
 
-button#w_select_btn:active #bullet_img
+button#mission_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#mission_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#cutscene_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#cutscene_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#cutscene_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#credits_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#credits_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#credits_btn:checked #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
