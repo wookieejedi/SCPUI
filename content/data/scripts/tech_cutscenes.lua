@@ -4,6 +4,7 @@ local class = require("class")
 local TechCutscenesController = class()
 
 function TechCutscenesController:init()
+	
 end
 
 function TechCutscenesController:initialize(document)
@@ -18,6 +19,8 @@ function TechCutscenesController:initialize(document)
 	else
 		self.document:GetElementById("main_background"):SetClass("p1-5", true)
 	end
+	
+	--ba.warning(ui.TechRoom.Cutscenes[1].Filename)
 
     --[[ui.CampaignMenu.loadCampaignList();
 
@@ -120,6 +123,17 @@ function TechCutscenesController:init_campaign_list()
         -- Add all the elements
         campaign_list_el:AppendChild(self:create_pilot_li(v))
     end
+end
+
+function TechCutscenesController:play_pressed(element)
+	RocketUiSystem.cutscene = ui.TechRoom.Cutscenes[1].Filename
+	RocketUiSystem:beginSubstate("Cutscene")
+	self.document:Close()
+    --[[ad.stopMusic(0, true, "mainhall")
+	ui.MainHall.stopAmbientSound()
+	ui.playCutscene(ui.TechRoom.Cutscenes[1].Filename, true, 0)
+	ui.MainHall.startAmbientSound()
+	ui.MainHall.startMusic()]]--
 end
 
 function TechCutscenesController:commit_pressed(element)

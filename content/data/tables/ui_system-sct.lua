@@ -4,7 +4,8 @@ local renderCategory = engine.createTracingCategory("RenderRocket", true)
 
 RocketUiSystem = {
     replacements = {},
-	substate = "none"
+	substate = "none",
+	cutscene = "none"
 }
 
 modOptionValues = {}

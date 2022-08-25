@@ -19,10 +19,10 @@ function TechMissionsController:initialize(document)
 		self.document:GetElementById("main_background"):SetClass("p1-5", true)
 	end
 	
-	listComplete = ui.TechRoom.buildMissionList()
+	local listComplete = ui.TechRoom.buildMissionList()
 	
-	ba.warning(ui.TechRoom.SingleMissions[1].Name)
-	ba.warning(ui.TechRoom.CampaignMissions[1].Name)
+	--ba.warning(ui.TechRoom.SingleMissions[1].Name)
+	--ba.warning(ui.TechRoom.CampaignMissions[1].Name)
 	
 	--while (listComplete == 0) do
 
@@ -130,7 +130,15 @@ function TechMissionsController:init_campaign_list()
 end
 
 function TechMissionsController:commit_pressed(element)
-    if self.selection == nil then
+	--mn.loadMission(ui.TechRoom.SingleMissions[1].Filename)
+	--local test = mn.startMission(ui.TechRoom.SingleMissions[1].Filename)
+	--ba.warning(toString(test))
+	
+	--event:StopPropagation()
+	--ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+	mn.startMission(ui.TechRoom.SingleMissions[1].Filename)
+	--ba.postGameEvent(ba.GameEvents["GS_EVENT_START_GAME"])
+    --[[if self.selection == nil then
         ui.playElementSound(element, "click", "error")
         return
     end
@@ -139,7 +147,7 @@ function TechMissionsController:commit_pressed(element)
     ui.CampaignMenu.selectCampaign(self.fileNames[self.selection])
 
     ui.playElementSound(element, "click", "success")
-    ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+    ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])]]--
 end
 
 function TechMissionsController:restart_pressed(element)
