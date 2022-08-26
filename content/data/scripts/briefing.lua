@@ -21,6 +21,10 @@ end
 
 function BriefingController:initialize(document)
     AbstractBriefingController.initialize(self, document)
+	
+	ui.Briefing.startBriefingMap()
+	--ba.warning(mn.getMissionModifiedDate())
+	--ba.warning(mn.getMissionFilename() .. ".fs2")
 
 	---Load the desired font size from the save file
 	if modOptionValues.Font_Multiplier then
@@ -29,6 +33,8 @@ function BriefingController:initialize(document)
 	else
 		self.document:GetElementById("main_background"):SetClass("p1-5", true)
 	end
+	
+	self.document:GetElementById("mission_title").inner_rml = mn.getMissionTitle()
 
     local briefing = ui.Briefing.getBriefing()
     for i = 1, #briefing do
@@ -37,8 +43,9 @@ function BriefingController:initialize(document)
 
         self.stages[i] = stage
     end
-
-    self:go_to_stage(1)
+	if #briefing > 0 then
+		self:go_to_stage(1)
+	end
 end
 
 function BriefingController:go_to_stage(stage_idx)
@@ -50,11 +57,15 @@ function BriefingController:go_to_stage(stage_idx)
 end
 
 function BriefingController:acceptPressed()
-    if mn.isRedAlertMission() then
-        ba.postGameEvent(ba.GameEvents["GS_EVENT_RED_ALERT"])
-    else
-        ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
-    end
+    
+	ba.postGameEvent(ba.GameEvents["GS_EVENT_ENTER_GAME"])
+
+end
+
+function BriefingController:skip_pressed()
+    
+	ui.Briefing.skipTraining()
+
 end
 
 return BriefingController

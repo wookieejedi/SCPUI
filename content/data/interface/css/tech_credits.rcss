@@ -83,9 +83,10 @@ div#credits_text
 	margin-left: 7%;
 	margin-right: 5%;
 	color: grey;
-	overflow: auto;
+	overflow: scroll;
 	width: 91%;
 	height: 90%;
+	text-align: center;
 }
 
 /*Top Panel Elements*/

@@ -67,7 +67,7 @@
 		</div>
 		<div id=credits_text_wrapper>
 			<div id=credits_text>
-				<p>The credits go here.</p>
+				<p></p>
 			</div>
 			<img src="credits-text-window.png"></img>
 		</div>

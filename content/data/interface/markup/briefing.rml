@@ -16,7 +16,7 @@
 			<div id=top_panel_a>
 				<div id=top_a_panel_wrapper>
 					<div id=skip_m_cont>
-						<button id="skip_btn" class="skip button_1">
+						<button id="skip_btn" class="skip button_1" onclick="controller:skip_pressed(element)">
 							<span id="skip_img" class="skip">
 								<img src="skip-r.png" class="psuedo_img"></img>
 							</span>
@@ -68,10 +68,10 @@
 			<div id=brief_grid_window>
 				<div id=brief_stage_wrapper>
 					<div id=brief_stage_text>
-						<p id="brief_stage_text_el">Stage 1 of 2</p>
+						<p id="brief_stage_text_el"></p>
 					</div>
 					<div id=mission_title>
-						<p>Training 1</p>
+						<p></p>
 					</div>
 				</div>
 				<div id=briefing_grid>

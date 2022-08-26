@@ -3,8 +3,6 @@ local async_util = require("async_util")
 
 local class = require("class")
 
-local AbstractBriefingController = require("briefingCommon")
-
 local RedAlertController = class()
 
 function RedAlertController:init()
@@ -12,7 +10,6 @@ end
 
 function RedAlertController:initialize(document)
 	self.document = document
-    --AbstractLoopBriefController.initialize(self, document)
 
 	---Load the desired font size from the save file
 	if modOptionValues.Font_Multiplier then
@@ -22,19 +19,18 @@ function RedAlertController:initialize(document)
 		self.document:GetElementById("main_background"):SetClass("p1-5", true)
 	end
 
-    local loop = ui.RedAlert.getRedAlert()
+    local alert_info = ui.RedAlert.getRedAlert()
+	ba.warning(alert_info.Text)
+	ba.warning(alert_info.AudioFilename)
 	
-	--ba.warning(loop.Text)
-	--ba.warning(loop.AudioFilename)
+	--local text_el = self.document:GetElementById("red_alert_text")
 	
-	local text_el = self.document:GetElementById("red_alert_text")
+	--local color_text = rocket_utils.set_briefing_text(text_el, alert_info.Text)
 	
-	local color_text = rocket_utils.set_briefing_text(text_el, loop.Text)
-	
-	if loop.AudioFilename then
-		voice_handle = ad.openAudioStream(loop.AudioFilename, AUDIOSTREAM_VOICE)
-		voice_handle:play(ad.MasterVoiceVolume)
-	end
+	--if alert_info.AudioFilename then
+	--	voice_handle = ad.openAudioStream(alert_info.AudioFilename, AUDIOSTREAM_VOICE)
+	--	voice_handle:play(ad.MasterVoiceVolume)
+	--end
 
 end
 
@@ -43,7 +39,7 @@ function RedAlertController:commit_pressed()
 end
 
 function RedAlertController:replay_pressed()
-    if ui.RedAlert.replayMission() and mn.isInCampaign() then
+    if ui.RedAlert.replayPreviousMission() and mn.isInCampaign() then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_GAME"])
 	end
 end

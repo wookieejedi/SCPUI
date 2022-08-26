@@ -18,6 +18,26 @@ function TechCreditsController:initialize(document)
 	else
 		self.document:GetElementById("main_background"):SetClass("p1-5", true)
 	end
+	
+	local listComplete = ui.TechRoom.buildCredits()
+	
+	--ba.warning(ui.TechRoom.Credits.Music)
+	--ba.warning(ui.TechRoom.Credits.FadeTime)
+	--ba.warning(ui.TechRoom.Credits.Complete)
+	
+	local text_el = self.document:GetElementById("credits_text")
+	
+	CompleteCredits = string.gsub(ui.TechRoom.Credits.Complete,"\n","<br></br>")
+	
+	text_el.inner_rml = CompleteCredits
+	
+	imageFile = "2_Crim0" .. ui.TechRoom.Credits.StartIndex .. ".png"
+	
+	local aniWrapper = self.document:GetElementById("credits_image")
+	local aniEl = self.document:CreateElement("img")
+	aniEl:SetAttribute("src", imageFile)
+
+	aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
 
     --[[ui.CampaignMenu.loadCampaignList();
 
