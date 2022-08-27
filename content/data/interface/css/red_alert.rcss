@@ -14,7 +14,6 @@ div#logo_wide
 	width: 50%;
 	height: auto;
 	overflow: hidden;
-	font-size: 10px;
 }
 
 div#logo_wide img
@@ -32,9 +31,8 @@ div#red_alert_text
 	margin-left: 10%;
 	margin-right: 7%;
 	color: grey;
-	overflow: auto;
+	overflow: scroll;
 	height: 85%;
-	font-size: 125%;
 	line-height: 90%;
 }
 
@@ -192,61 +190,73 @@ button#accept_btn:active #accept_img
 
 /*Scroll Buttons*/
 
-div#text_scroll_wrapper
+#red_alert_text scrollbarvertical
 {
+	scrollchange-sound: 9;
+	width: 10%;
 	position: absolute;
-	top: 21%;
-	width: 7%;
+	left: -12.5%;
+	z-index: 5;
 }
 
-div#text_scroll_cont
+#red_alert_text scrollbarvertical slidertrack
+{
+	visibility: hidden;
+}
+
+#red_alert_text scrollbarvertical sliderbar
+{
+	visibility: hidden;
+}
+
+#red_alert_text scrollbarvertical sliderbar:hover
+{
+	
+}
+
+#red_alert_text scrollbarvertical sliderbar:active
+{
+	
+}
+
+#red_alert_text scrollbarvertical sliderarrowdec
 {
 	width: 100%;
-	height: auto;
-	margin: auto;
-	margin-top: 1%;
+	height: 10%;
+	margin-top: 23%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
 }
 
-.text_scroll_btns
+#red_alert_text scrollbarvertical sliderarrowinc
 {
-	display: block;
 	width: 100%;
-	height: auto;
-
+	height: 10%;
+	margin-bottom: 54%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
 }
 
-#scroll_up_img
+#red_alert_text scrollbarvertical sliderarrowdec:hover
 {
-	background-decorator: image;
-	background-image: arrow-dbl-up.png;
+	icon-image: arrow-dbl-up-h.png;
 }
 
-#scroll_down_img
+#red_alert_text scrollbarvertical sliderarrowinc:hover
 {
-	background-decorator: image;
-	background-image: arrow-dbl-down.png;
+	icon-image: arrow-dbl-down-h.png;
 }
 
-button#scroll_up_btn:hover #scroll_up_img
+#red_alert_text scrollbarvertical sliderarrowdec:active
 {
-	background-decorator: image;
-	background-image: arrow-dbl-up-h.png;
+	icon-image: arrow-dbl-up-o.png;
 }
 
-button#scroll_down_btn:hover #scroll_down_img
+#red_alert_text scrollbarvertical sliderarrowinc:active
 {
-	background-decorator: image;
-	background-image: arrow-dbl-down-h.png;
-}
-
-button#scroll_up_btn:active #scroll_up_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-up-o.png;
-}
-
-button#scroll_down_btn:active #scroll_down_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-down-o.png;
+	icon-image: arrow-dbl-down-o.png;
 }

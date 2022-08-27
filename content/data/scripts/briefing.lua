@@ -22,6 +22,7 @@ end
 function BriefingController:initialize(document)
     AbstractBriefingController.initialize(self, document)
 
+	ui.maybePlayCutscene(MOVIE_PRE_BRIEF, true, 0)
 	ui.Briefing.startBriefingMap()
 	--ba.warning(mn.getMissionModifiedDate())
 	--ba.warning(mn.getMissionFilename() .. ".fs2")
