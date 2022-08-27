@@ -5,17 +5,16 @@ local class = require("class")
 
 local AbstractBriefingController = require("briefingCommon")
 
-local FictionViewerController = class()
+local FictionViewerController = class(AbstractBriefingController)
 
 function FictionViewerController:init()
 end
 
 function FictionViewerController:initialize(document)
-    self.document = document
-	self.textFile = ui.FictionViewer.getFiction().TextFile
-	self.voiceFile = ui.FictionViewer.getFiction().VoiceFile
+	AbstractBriefingController.initialize(self, document)
 	
 	ui.maybePlayCutscene(MOVIE_PRE_FICTION, true, 0)
+	
 	---Load the desired font size from the save file
 	if modOptionValues.Font_Multiplier then
 		local fontChoice = modOptionValues.Font_Multiplier
@@ -25,6 +24,9 @@ function FictionViewerController:initialize(document)
 		self.document:GetElementById("main_background"):SetClass("p1-5", true)
 		self.document:GetElementById("fiction_text"):SetClass("p2-5", true)
 	end
+	
+	self.textFile = ui.FictionViewer.getFiction().TextFile
+	self.voiceFile = ui.FictionViewer.getFiction().VoiceFile
 
 	local file = cf.openFile(self.textFile, 'r', '')
 	self.text = file:read('*a')
@@ -36,25 +38,7 @@ function FictionViewerController:initialize(document)
 	
 	self.voice_handle = ad.openAudioStream(self.voiceFile, AUDIOSTREAM_VOICE)
 	self.voice_handle:play(ad.MasterVoiceVolume)
-	
-	self:startMusic()
 
-end
-
-function FictionViewerController:startMusic()
-    local filename = ui.FictionViewer.getFictionMusicName()
-
-    if #filename <= 0 then
-        return
-    end
-
-    self.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
-	self.music_handle:play(ad.MasterEventMusicVolume, true)
-	--Causes a CTD???
-    --[[async.run(function()
-        async.await(async_util.wait_for(2.5))
-        self.music_handle:play(ad.MasterEventMusicVolume, true)
-    end, async.OnFrameExecutor, self.uiActiveContext)]]--
 end
 
 function FictionViewerController:accept_pressed()
@@ -72,7 +56,6 @@ end
 
 function FictionViewerController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-        self.music_handle:stop()
 		event:StopPropagation()
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
