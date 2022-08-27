@@ -7,7 +7,7 @@ local BriefingController = class(AbstractBriefingController)
 function BriefingController:init()
     --- @type briefing_stage[]
     self.stages = {}
-
+	
     self.element_names = {
         pause_btn = "cmdpause_btn",
         last_btn = "cmdlast_btn",
@@ -21,7 +21,7 @@ end
 
 function BriefingController:initialize(document)
     AbstractBriefingController.initialize(self, document)
-	
+
 	ui.Briefing.startBriefingMap()
 	--ba.warning(mn.getMissionModifiedDate())
 	--ba.warning(mn.getMissionFilename() .. ".fs2")
@@ -37,14 +37,62 @@ function BriefingController:initialize(document)
 	self.document:GetElementById("mission_title").inner_rml = mn.getMissionTitle()
 
     local briefing = ui.Briefing.getBriefing()
+	
+	local numStages = 0
+	
     for i = 1, #briefing do
         --- @type briefing_stage
         local stage = briefing[i]
-
-        self.stages[i] = stage
+		if stage.isValid then
+			self.stages[i] = stage
+			numStages = numStages + 1
+			--This is where we should replace variables and containers probably!
+		end
     end
-	if #briefing > 0 then
+	if mn.hasGoalsSlide() then
+		local g = numStages + 1
+		self.stages[g] = {
+			Text = ba.XSTR( "Please review your objectives for this mission.", 395)
+		}
+		numStages = numStages + 1
+	end
+	if #self.stages > 0 then
 		self:go_to_stage(1)
+	end
+	
+	self:buildGoals()
+end
+
+function BriefingController:buildGoals()
+    if mn.hasGoalsSlide() then
+		goals = ui.Briefing.Objectives
+		local bulletHTML = "<div id=\"goalsdot_img\" class=\"goalsdot brightblue\"><img src=\"scroll-button.png\" class=\"psuedo_img\"></img></div>"
+		local primaryWrapper = self.document:GetElementById("primary_goal_list")
+		local primaryText = ""
+		local secondaryWrapper = self.document:GetElementById("secondary_goal_list")
+		local secondaryText = ""
+		local bonusWrapper = self.document:GetElementById("bonus_goal_list")
+		local bonusText = ""
+		for i = 0, #goals do
+			goal = goals[i]
+			if goal.isValid and goal.Message ~= "" then
+				if goal.Type == "primary" then
+					local text = bulletHTML .. goal.Message .. "<br></br>"
+					primaryText = primaryText .. text
+				end
+				if goal.Type == "secondary" then
+					local text = bulletHTML .. goal.Message .. "<br></br>"
+					secondaryText = secondaryText .. text
+				end
+				if goal.Type == "bonus" then
+					local text = bulletHTML .. goal.Message .. "<br></br>"
+					bonusText = bonusText .. text
+				end
+			end
+		end
+		primaryWrapper.inner_rml = primaryText
+		secondaryWrapper.inner_rml = secondaryText
+		bonusWrapper.inner_rml = bonusText
 	end
 end
 
@@ -53,7 +101,13 @@ function BriefingController:go_to_stage(stage_idx)
 
     local stage = self.stages[stage_idx]
 
-    self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
+	if mn.hasGoalsSlide() and stage_idx == #self.stages then
+		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
+		self.document:GetElementById("briefing_goals"):SetClass("hidden", false)
+	else
+		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
+		self.document:GetElementById("briefing_goals"):SetClass("hidden", true)
+	end
 end
 
 function BriefingController:acceptPressed()

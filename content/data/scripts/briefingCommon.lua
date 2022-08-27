@@ -13,6 +13,8 @@ function AbstractBriefingController:init()
     self.stage_instance_id = 0
 
     self.loaded = true
+	
+	self.briefState = "briefing"
 
     self.uiActiveContext = async.context.combineContexts(async.context.captureGameState(),
         async.context.createLuaState(function()
@@ -37,15 +39,27 @@ end
 function AbstractBriefingController:initialize(document)
     self.document = document
     self.loaded = true
+	
+	if ba.getCurrentGameState().Name == "GS_STATE_FICTION_VIEWER" then
+		self.briefState = "fiction"
+	end
+	
+	if ba.getCurrentGameState().Name == "GS_STATE_CMD_BRIEF" then
+		self.briefState = "command"
+	end
+    
+	self:startMusic()
 
-    self:startMusic()
-
-    self:registerEventHandlers()
+	if self.briefState ~= "fiction" then
+		self:registerEventHandlers()
+	end
 
     local player = ba.getCurrentPlayer()
     local autoAdvance = player.AutoAdvance
-
-    self.document:GetElementById(self.element_names.pause_btn):SetPseudoClass("checked", not autoAdvance)
+	
+	if self.briefState ~= "fiction" then
+		self.document:GetElementById(self.element_names.pause_btn):SetPseudoClass("checked", not autoAdvance)
+	end
 end
 
 function AbstractBriefingController:global_keydown(_, event)
@@ -67,7 +81,8 @@ function AbstractBriefingController:registerEventHandlers()
         ui.playElementSound(el, "click", "success")
     end)
     self.document:GetElementById(self.element_names.next_btn):AddEventListener("click", function(_, el, _)
-        if self.current_stage >= #self.stages then
+        --Special handling will go here to handle Briefing Objectives state
+		if self.current_stage >= #self.stages then
             ui.playElementSound(el, "click", "fail")
             return
         end
@@ -122,6 +137,10 @@ end
 
 function AbstractBriefingController:startMusic()
     local filename = ui.CommandBriefing.getBriefingMusicName()
+	
+	if self.briefState == "fiction" then
+		filename = ui.FictionViewer.getFictionMusicName()
+	end
 
     if #filename <= 0 then
         return
@@ -181,11 +200,13 @@ function AbstractBriefingController:initializeStage(stageIdx, briefingText, audi
         -- First, wait until the text has been shown fully
         async.await(async_util.wait_for(2.0))
 
-        -- And now we can start playing the void file
-        if #audioFileName > 0 and string.lower(audioFileName) ~= "none" then
-            self.current_voice_handle = ad.openAudioStream(audioFileName, AUDIOSTREAM_VOICE)
-            self.current_voice_handle:play(ad.MasterVoiceVolume)
-        end
+        -- And now we can start playing the voice file
+		if self.stages[stageIdx].AudioFilename then
+			if #audioFileName > 0 and string.lower(audioFileName) ~= "none" then
+				self.current_voice_handle = ad.openAudioStream(audioFileName, AUDIOSTREAM_VOICE)
+				self.current_voice_handle:play(ad.MasterVoiceVolume)
+			end
+		end
 
         self:waitForStageFinishAsync(num_stage_lines)
 

@@ -67,6 +67,135 @@ div#briefing_grid
 
 }
 
+div#briefing_goals
+{
+	width: 100%;
+	height: auto;
+	position: absolute;
+	top: 17%;
+	left: 5%;
+}
+
+/*hide bonus goals by default*/
+#bonus_goals
+{
+	visibility: hidden;
+}
+
+#primary_goal_list
+{
+	margin-left: 10%;
+}
+
+#secondary_goal_list
+{
+	margin-left: 10%;
+}
+
+#bonus_goal_list
+{
+	margin-left: 10%;
+}
+
+#goal_wrapper
+{
+	display: block;
+}
+
+#primary_goals_header
+{
+	width: 94%;
+	margin-bottom: 3%;
+	overflow: hidden;
+}
+
+#secondary_goals_header
+{
+	width: 94%;
+	margin-top: 5%;
+	margin-bottom: 3%;
+}
+
+#bonus_goals_header
+{
+	width: 94%;
+	margin-top: 5%;
+	margin-bottom: 3%;
+}
+
+#primary_goal_text
+{
+	width: 14%;
+	float: left;
+}
+
+#secondary_goal_text
+{
+	width: 16%;
+	float: left;
+}
+
+#bonus_goal_text
+{
+	width: 13%;
+	float: left;
+}
+
+.goalsdot
+{
+	width: 2%;
+	height: auto;
+	float: left;
+	margin-right: 3.5%;
+}
+
+.leftline
+{
+	width: 15%;
+	height: auto;
+	float: left;
+	margin-right: 1%;
+	margin-top: 1.5%;
+}
+
+.rightline
+{
+	height: auto;
+	float: left;
+	margin-right: 1%;
+	margin-top: 1.5%;
+	overflow: hidden;
+}
+
+.primary_rightline
+{
+	width: 71%;
+}
+
+.secondary_rightline
+{
+	width: 59%;
+}
+
+.bonus_rightline
+{
+	width: 62%;
+}
+
+#goalsdot_img
+{
+	background-decorator: image;
+	background-image: scroll-button.png;
+}
+
+#goalsline_img
+{
+	background-decorator: image;
+	background-image: scroll-bar-line-horz.png;
+	height: 0.4%;
+	overflow: hidden;
+}
+
 div#brief_stage_text
 {
 	text-align: left;
