@@ -132,6 +132,8 @@ function RocketUiSystem:ReturnToState(state)
 
 	if state.Name == "GS_STATE_BRIEFING" then
 		event = "GS_EVENT_START_BRIEFING"
+	elseif state.Name == "GS_STATE_VIEW_CUTSCENES" then
+		event = "GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"
 	else
 		event = string.gsub(state.Name, "STATE", "EVENT")
 	end

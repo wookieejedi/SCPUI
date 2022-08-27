@@ -14,7 +14,7 @@ function CutsceneController:initialize(document)
 	ui.MainHall.startAmbientSound()
 	ui.MainHall.startMusic()
 	RocketUiSystem.cutscene = "none"
-	ba.postGameEvent(ba.GameEvents["GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"])
+	RocketUiSystem:ReturnToState(RocketUiSystem.lastState)
 	self.document:Close()
 end
 
