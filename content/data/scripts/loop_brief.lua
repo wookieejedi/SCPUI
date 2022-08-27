@@ -1,5 +1,6 @@
 local rocket_utils = require("rocket_util")
 local async_util = require("async_util")
+local dialogs = require("dialogs")
 
 local class = require("class")
 
@@ -19,6 +20,7 @@ function LoopBriefController:initialize(document)
 		fontChoice = modOptionValues.Font_Multiplier
 		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
 	else
+		ba.warning("default")
 		self.document:GetElementById("main_background"):SetClass("p1-5", true)
 	end
 
@@ -53,12 +55,34 @@ function LoopBriefController:deny_pressed()
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_START_GAME"])
 end
 
+function LoopBriefController:Show(text, title)
+	--Create a simple dialog box with the text and title
+
+	currentDialog = true
+	
+	dialogs.new()
+		:title(title)
+		:text(text)
+		:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Accept", 1035), true)
+		:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Decline", 1467), false)
+		:show(self.document.context)
+		:continueWith(function(accepted)
+        if not accepted then
+            self:deny_pressed()
+            return
+        end
+        self:accept_pressed()
+    end)
+	-- Route input to our context until the user dismisses the dialog box.
+	ui.enableInput(self.document.context)
+end
+
 function LoopBriefController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-        --self.music_handle:stop()
-		event:StopPropagation()
 
-        ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+		local text = ba.XSTR("You must either Accept or Decline before returning to the Main Hall", 1618)
+		local title = ""
+		self:Show(text, title)
     end
 end
 

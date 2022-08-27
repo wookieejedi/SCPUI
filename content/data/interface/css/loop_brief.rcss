@@ -19,7 +19,6 @@ div#logo_wide
 	width: 50%;
 	height: auto;
 	overflow: hidden;
-	font-size: 10px;
 }
 
 div#logo_wide img
@@ -37,7 +36,6 @@ div#loop_logo
 	width: 25%;
 	height: auto;
 	overflow: hidden;
-	font-size: 10px;
 }
 
 div#loop_logo img
@@ -57,7 +55,6 @@ div#loop_text
 	color: grey;
 	overflow: auto;
 	height: 52%;
-	font-size: 150%;
 	line-height: 90%;
 }
 
