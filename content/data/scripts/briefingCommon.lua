@@ -136,7 +136,7 @@ function AbstractBriefingController:unload()
 end
 
 function AbstractBriefingController:startMusic()
-    local filename = ui.CommandBriefing.getBriefingMusicName()
+    local filename = ui.Briefing.getBriefingMusicName()
 	
 	if self.briefState == "fiction" then
 		filename = ui.FictionViewer.getFictionMusicName()

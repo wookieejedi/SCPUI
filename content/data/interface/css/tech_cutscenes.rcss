@@ -63,18 +63,25 @@ div#cutscene_list
 	overflow: auto;
 }
 
-.cutscene_list_element
+.cutscenelist_element
 {
 	display: block;
 	color: #7b7b7b;
 }
-.cutscene_list_element:hover
+.cutscenelist_element:hover
 {
 	color: #abbbab;
 }
-.cutscene_list_element:checked
+.cutscenelist_element:checked
 {
 	color: #6f92f5;
+}
+
+.cutscenelist_name
+{
+	position: relative;
+	width: 40%;
+	float: left;
 }
 
 div#cutscene_desc_wrapper

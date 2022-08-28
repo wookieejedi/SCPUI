@@ -102,6 +102,7 @@ selectvalue
 {
 	visibility: hidden;
 	display: none;
+	size: 0px;
 }
 
 .shown

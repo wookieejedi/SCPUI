@@ -41,20 +41,6 @@ function RedAlertController:initialize(document)
 end
 
 function RedAlertController:blink()
-
-	--[[async.run(function()
-	
-		async.await(async_util.wait_for(3.0))
-		
-		if self.alert then
-			self.alert_el:SetClass("hidden", true)
-			RedAlertController:blink()
-		else
-			self.alert_el:SetClass("hidden", false)
-			RedAlertController:blink()
-		end
-		
-	end, async.OnFrameExecutor, self.document)]]--
 	
 	async.run(function()
         async.await(async_util.wait_for(0.5))

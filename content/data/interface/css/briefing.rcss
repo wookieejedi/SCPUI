@@ -56,8 +56,9 @@ div#brief_text_wrapper
 
 div#brief_text
 {
-	/*font-size: 150%;*/
 	line-height: 90%;
+	height: 85%;
+	overflow: scroll;
 }
 
 div#briefing_grid
@@ -125,19 +126,19 @@ div#briefing_goals
 
 #primary_goal_text
 {
-	width: 14%;
+	width: 17%;
 	float: left;
 }
 
 #secondary_goal_text
 {
-	width: 16%;
+	width: 19%;
 	float: left;
 }
 
 #bonus_goal_text
 {
-	width: 13%;
+	width: 16%;
 	float: left;
 }
 
@@ -169,7 +170,7 @@ div#briefing_goals
 
 .primary_rightline
 {
-	width: 71%;
+	width: 61%;
 }
 
 .secondary_rightline
@@ -209,6 +210,14 @@ div#mission_title
 	text-align: right;
 	width: 40%;
 	float: right;
+}
+
+div#mission_debug_info
+{
+	text-align: left;
+	position: absolute;
+	top: -4%;
+	left: 3%;
 }
 
 div#brief_stage_wrapper
@@ -426,7 +435,9 @@ div#skip_m_cont
 #skip_m_text
 {
 	position: absolute;
-	top: 0;
+	top: 100%;
+	left: -50%;
+	margin-right: 50%;
 }
 
 #skip_m_text p
@@ -503,6 +514,12 @@ button#brief_btn:active #bullet_img
 	background-image: bullet-r-o.png;
 }
 
+button#brief_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
 button#s_select_btn:hover #bullet_img
 {
 	background-decorator: image;
@@ -515,6 +532,12 @@ button#s_select_btn:active #bullet_img
 	background-image: bullet-r-o.png;
 }
 
+button#s_select_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
 button#w_select_btn:hover #bullet_img
 {
 	background-decorator: image;
@@ -522,6 +545,12 @@ button#w_select_btn:hover #bullet_img
 }
 
 button#w_select_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#w_select_btn:checked #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
@@ -698,58 +727,76 @@ button#options_btn:active #options_img
 
 /*Scroll Buttons*/
 
-div#text_scroll_wrapper
+#brief_text scrollbarvertical
 {
+	scrollchange-sound: 9;
+	width: 8%;
 	position: absolute;
-	top: 18%;
+	top: 15%;
+	left: -8.6%;
+	z-index: 5;
 }
 
-div#text_scroll_cont
+#brief_text scrollbarvertical slidertrack
 {
-	width: 6%;
-	height: auto;
+	visibility: hidden;
 }
 
-.text_scroll_btns
+#brief_text scrollbarvertical sliderbar
 {
-	display: block;
+	width: 55%;
+	height: 5%;
+	visibility: hidden;
+}
+
+#brief_text scrollbarvertical sliderbar:hover
+{
+	visibility: hidden;
+}
+
+#brief_text scrollbarvertical sliderbar:active
+{
+	visibility: hidden;
+}
+
+#brief_text scrollbarvertical sliderarrowdec
+{
 	width: 100%;
-	height: auto;
-
+	height: 42%;
+	margin-top: 2%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
 }
 
-#scroll_up_img
+#brief_text scrollbarvertical sliderarrowinc
 {
-	background-decorator: image;
-	background-image: arrow-dbl-up.png;
+	width: 100%;
+	height: 42%;
+	margin-bottom: 12%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
 }
 
-#scroll_down_img
+#brief_text scrollbarvertical sliderarrowdec:hover
 {
-	background-decorator: image;
-	background-image: arrow-dbl-down.png;
+	icon-image: arrow-dbl-up-h.png;
 }
 
-button#scroll_up_btn:hover #scroll_up_img
+#brief_text scrollbarvertical sliderarrowinc:hover
 {
-	background-decorator: image;
-	background-image: arrow-dbl-up-h.png;
+	icon-image: arrow-dbl-down-h.png;
 }
 
-button#scroll_down_btn:hover #scroll_down_img
+#brief_text scrollbarvertical sliderarrowdec:active
 {
-	background-decorator: image;
-	background-image: arrow-dbl-down-h.png;
+	icon-image: arrow-dbl-up-o.png;
 }
 
-button#scroll_up_btn:active #scroll_up_img
+#brief_text scrollbarvertical sliderarrowinc:active
 {
-	background-decorator: image;
-	background-image: arrow-dbl-up-o.png;
-}
-
-button#scroll_down_btn:active #scroll_down_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-down-o.png;
+	icon-image: arrow-dbl-down-o.png;
 }

@@ -33,7 +33,7 @@ function CommandBriefingController:initialize(document)
 		self.document:GetElementById("cmd_text"):SetClass("p2-5", true)
 	end
 
-    local briefing = ui.CommandBriefing.getBriefing()
+    local briefing = ui.CommandBriefing.getCmdBriefing()
     for i = 1, #briefing do
         --- @type cmd_briefing_stage
         local stage = briefing[i]
@@ -70,7 +70,7 @@ function CommandBriefingController:go_to_stage(stage_idx)
         aniWrapper:RemoveChild(aniWrapper.first_child)
     end
 
-    ui.CommandBriefing.runBriefingStageHook(old_stage, stage_idx)
+    ui.Briefing.runBriefingStageHook(old_stage, stage_idx)
 end
 
 return CommandBriefingController

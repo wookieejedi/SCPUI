@@ -2,6 +2,7 @@
 	<head>
 		<title>XSTR("Mission Simulator", -1)</title>
 		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="tech_missions.rcss"/>
@@ -14,42 +15,42 @@
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
 					<div id=bullet_cont>
-						<button id="data_btn" class="bullet button_1" onclick="controller:ChangeSection(1)">
+						<button id="data_btn" class="bullet button_1" onclick="controller:ChangeTechState(1)">
 							<span id="bullet_img" class="bullet">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Technical Database</p>
+								<p>XSTR("Technical Database", -1)</p>
 							</span>
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="mission_btn" class="bullet button_1" onclick="controller:ChangeSection(2)">
+						<button id="mission_btn" class="bullet button_1" onclick="controller:ChangeTechState(2)">
 							<span id="bullet_img" class="bullet">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Mission Simulator</p>
+								<p>XSTR("Mission Simulator", -1)</p>
 							</span>
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="cutscene_btn" class="bullet button_1" onclick="controller:ChangeSection(3)">
+						<button id="cutscene_btn" class="bullet button_1" onclick="controller:ChangeTechState(3)">
 							<span id="bullet_img" class="bullet">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Cutscenes</p>
+								<p>XSTR("Cutscenes", -1)</p>
 							</span>
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="credits_btn" class="bullet button_1" onclick="controller:ChangeSection(4)">
+						<button id="credits_btn" class="bullet button_1" onclick="controller:ChangeTechState(4)">
 							<span id="bullet_img" class="bullet">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Credits</p>
+								<p>XSTR("Credits", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -63,46 +64,24 @@
 		<div id=simulator_panel_wrapper>
 			<div id=simulator_window_wrapper>
 				<div id=column_titles>
-					<div id=mission_header>
-						<p>Mission</p>
-					</div>
-					<div id=filename_header>
-						<p>Filename</p>
-					</div>
+					<span class="missionlist_name">XSTR("Mission", -1)</span>
+					<span class="missionlist_author">XSTR("Author", -1)</span>
+					<span class="missionlist_filename">XSTR("Filename", -1)</span>
+					<span class="missionlist_Description">XSTR("Description", -1)</span>
 				</div>
-				<div id=campaign_name_wrapper>
+				<div id=campaign_name_wrapper class="blue">
 					<div id=campaign_title>
-						<p>Campaign Name</p>
 					</div>
 					<div id=campaign_file>
-						<p>Campaign File</p>
 					</div>
 				</div>
 				<div id=mission_list>
-					<div id=mission_title>
-						<p>Mission Name</p>
-					</div>
-					<div id=mission_file>
-						<p>Mission File</p>
-					</div>
-				</div>
-				<div id=text_scroll_wrapper>
-					<div id=text_scroll_cont>
-						<button id="scroll_up_btn" class="text_scroll_btns button_1">
-							<span id="scroll_up_img" class="text_scroll_btns">
-								<img src="arrow-dbl-up.png" class="psuedo_img"></img>
-							</span>
-						</button>
-					</div>
-					<div id=scroll_spacer>
-					</div>
-					<div id=text_scroll_cont>
-						<button id="scroll_down_btn" class="text_scroll_btns button_1">
-							<span id="scroll_down_img" class="text_scroll_btns">
-								<img src="arrow-dbl-down.png" class="psuedo_img"></img>
-							</span>
-						</button>
-					</div>
+					<ul id=list_item_names_ul>
+						<p></p>
+					</ul>
+					<ul id=list_item_filenames_ul>
+						<p></p>
+					</ul>
 				</div>
 				<img src="mission-sim-window.png"></img>
 			</div>
@@ -111,22 +90,22 @@
 			<div id=bot_left_panel>
 				<div id=bot_left_wrapper>
 					<div id=bullet_cont>
-						<button id="brief_btn" class="bullet button_1">
+						<button id="single_btn" class="bullet button_1" onclick="controller:ChangeSection(1)">
 							<span id="bullet_img" class="bullet">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span id="simulator_type" class="pos button_text_right">
-								<p>Single Missions</p>
+								<p>XSTR("Single Missions", -1)</p>
 							</span>
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="s_select_btn" class="bullet button_1">
+						<button id="campaign_btn" class="bullet button_1" onclick="controller:ChangeSection(2)">
 							<span id="bullet_img" class="bullet">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span id="simulator_type" class="pos button_text_right">
-								<p>Campaign Missions</p>
+								<p>XSTR("Campaign Missions", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -143,7 +122,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>Commit</p>
+								<p>XSTR("Commit", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -158,7 +137,7 @@
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>Help</p>
+								<p>XSTR("Help", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -168,7 +147,7 @@
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>Options</p>
+								<p>XSTR("Options", -1)</p>
 							</span>
 						</button>
 					</div>

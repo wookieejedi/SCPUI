@@ -97,8 +97,8 @@ function M.set_briefing_text(parent, brief_text)
 
     local document = parent.owner_document
 
-    local colorTags = ui.CommandBriefing.ColorTags
-    local defaultColorTag = ui.CommandBriefing.DefaultTextColorTag
+    local colorTags = ui.ColorTags
+    local defaultColorTag = ui.DefaultTextColorTag(2)
 
     local rml_mode = false
     local escapeStart, escapeEnd = brief_text:find("^%s*!html%s*")

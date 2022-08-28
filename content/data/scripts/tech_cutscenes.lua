@@ -4,13 +4,12 @@ local class = require("class")
 local TechCutscenesController = class()
 
 function TechCutscenesController:init()
-	
+	self.show_all = false
 end
 
 function TechCutscenesController:initialize(document)
     self.document = document
     self.elements = {}
-    self.section = 1
 
 	---Load the desired font size from the save file
 	if modOptionValues.Font_Multiplier then
@@ -21,39 +20,91 @@ function TechCutscenesController:initialize(document)
 	end
 	
 	--ba.warning(ui.TechRoom.Cutscenes[1].Filename)
-
-    --[[ui.CampaignMenu.loadCampaignList();
-
-    local names, fileNames, descriptions = ui.CampaignMenu.getCampaignList()
-
-    local currentCampaignFile = ba.getCurrentPlayer():getCampaignFilename()
-    local selectedCampaign = nil
-
-    self.names = names
-    self.descriptions = {}
-    self.fileNames = {}
-    for i, v in ipairs(names) do
-        self.descriptions[v] = descriptions[i]
-        self.fileNames[v] = fileNames[i]
-
-        if fileNames[i] == currentCampaignFile then
-            selectedCampaign = v
-        end
-    end
-
-    self:init_campaign_list()
-
-    -- Initialize selection
-    self:selectCampaign(selectedCampaign)]]--
 	
 	self.document:GetElementById("data_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("mission_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("cutscene_btn"):SetPseudoClass("checked", true)
 	self.document:GetElementById("credits_btn"):SetPseudoClass("checked", false)
 	
+	self.SelectedEntry = nil
+	self.list = {}
+	
+	local cutsceneList = ui.TechRoom.Cutscenes
+	local i = 0
+	while (i ~= #cutsceneList) do
+		self.list[i+1] = {
+			Name = cutsceneList[i].Name,
+			Filename = cutsceneList[i].Filename,
+			Description = cutsceneList[i].Description,
+			Visibility = cutsceneList[i].Visibility,
+			Index = i + 1
+		}
+		i = i + 1
+	end
+	
+	--Only create entries if there are any to create
+	if self.list[1] then
+		self:CreateEntries(self.list)
+	end
+	
+	if self.list[1].Name then
+		self:SelectEntry(self.list[1])
+	end
+	
 end
 
-function TechCutscenesController:ChangeSection(section)
+function TechCutscenesController:CreateEntryItem(entry, index)
+
+	local li_el = self.document:CreateElement("li")
+
+	li_el.inner_rml = "<div class=\"cutscenelist_name\">" .. entry.Name .. "</div>"
+	li_el.id = entry.Filename
+
+	li_el:SetClass("cutscenelist_element", true)
+	li_el:SetClass("button_1", true)
+	li_el:AddEventListener("click", function(_, _, _)
+		self:SelectEntry(entry)
+	end)
+	
+	entry.key = li_el.id
+	
+	if entry.Visibility == 0 then
+		li_el:SetClass("hidden", not self.show_all)
+	end
+
+	return li_el
+end
+
+function TechCutscenesController:CreateEntries(list)
+
+	local list_names_el = self.document:GetElementById("cutscene_list_ul")
+
+	for i, v in pairs(list) do
+		list_names_el:AppendChild(self:CreateEntryItem(v, i))
+	end
+end
+
+function TechCutscenesController:SelectEntry(entry)
+
+	if entry.key ~= self.SelectedEntry then
+		
+		if self.SelectedEntry then
+			local oldEntry = self.document:GetElementById(self.SelectedEntry)
+			if oldEntry then oldEntry:SetPseudoClass("checked", false) end
+		end
+		
+		local thisEntry = self.document:GetElementById(entry.key)
+		self.SelectedEntry = entry.key
+		self.SelectedIndex = entry.Index
+		thisEntry:SetPseudoClass("checked", true)
+		
+		self.document:GetElementById("cutscene_desc").inner_rml = entry.Description
+		
+	end
+
+end
+
+function TechCutscenesController:ChangeTechState(section)
 
 	if section == 1 then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_TECH_MENU"])
@@ -62,6 +113,7 @@ function TechCutscenesController:ChangeSection(section)
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_SIMULATOR_ROOM"])
 	end
 	if section == 3 then
+		--This is where we are already, so don't do anything
 		--ba.postGameEvent(ba.GameEvents["GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"])
 	end
 	if section == 4 then
@@ -75,103 +127,55 @@ function TechCutscenesController:global_keydown(element, event)
         event:StopPropagation()
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
-    end
+    elseif event.parameters.key_identifier == rocket.key_identifier.S and event.parameters.ctrl_key == 1 and event.parameters.shift_key == 1 then
+		self.show_all  = not self.show_all
+		for i, v in pairs(self.list) do
+			if v.Visibility == 0 then
+				self.document:GetElementById(v.key):SetClass("hidden", not self.show_all)
+			end
+		end
+		if self.list[1].Name then
+			self:SelectEntry(self.list[1])
+		end
+	end
 end
 
-function TechCutscenesController:selectCampaign(campaign)
-    if self.selection == campaign then
-        -- No changes
-        return
-    end
-
-    if self.selection ~= nil and self.elements[self.selection] ~= nil then
-        self.elements[self.selection]:SetPseudoClass("checked", false)
-    end
-
-    self.selection = campaign
-
-    local desc_el = self.document:GetElementById("desc_text")
-    if self.selection ~= nil then
-        desc_el.inner_rml = self.descriptions[campaign]
-    else
-        desc_el.inner_rml = ""
-    end
-
-    if self.selection ~= nil and self.elements[self.selection] ~= nil then
-        self.elements[self.selection]:SetPseudoClass("checked", true)
-        self.elements[self.selection]:ScrollIntoView()
-    end
+function TechCutscenesController:prev_pressed(element)
+	if self.SelectedIndex == 1 then
+		ui.playElementSound(element, "click", "error")
+	else
+		newEntry = self.list[self.SelectedIndex - 1]
+		if newEntry.Visibility == 1 or self.show_all == true then
+			self:SelectEntry(newEntry)
+		else
+			ui.playElementSound(element, "click", "error")
+		end
+	end
 end
 
-function TechCutscenesController:create_pilot_li(campaign)
-    local li_el = self.document:CreateElement("li")
-
-    li_el.inner_rml = campaign
-    li_el:SetClass("campaignlist_element", true)
-    li_el:AddEventListener("click", function(_, _, _)
-        self:selectCampaign(campaign)
-    end)
-
-    self.elements[campaign] = li_el
-
-    return li_el
-end
-
-function TechCutscenesController:init_campaign_list()
-    local campaign_list_el = self.document:GetElementById("campaignlist_ul")
-    for _, v in ipairs(self.names) do
-        -- Add all the elements
-        campaign_list_el:AppendChild(self:create_pilot_li(v))
-    end
+function TechCutscenesController:next_pressed(element)
+	local num = #ui.TechRoom.Cutscenes
+	
+	if self.SelectedIndex == num then
+		ui.playElementSound(element, "click", "error")
+	else
+		newEntry = self.list[self.SelectedIndex + 1]
+		if newEntry.Visibility == 1 or self.show_all == true then
+			self:SelectEntry(newEntry)
+		else
+			ui.playElementSound(element, "click", "error")
+		end
+	end
 end
 
 function TechCutscenesController:play_pressed(element)
-	RocketUiSystem.cutscene = ui.TechRoom.Cutscenes[1].Filename
+	RocketUiSystem.cutscene = self.SelectedEntry
 	RocketUiSystem:beginSubstate("Cutscene")
 	self.document:Close()
-    --[[ad.stopMusic(0, true, "mainhall")
-	ui.MainHall.stopAmbientSound()
-	ui.playCutscene(ui.TechRoom.Cutscenes[1].Filename, true, 0)
-	ui.MainHall.startAmbientSound()
-	ui.MainHall.startMusic()]]--
 end
 
-function TechCutscenesController:commit_pressed(element)
-    if self.selection == nil then
-        ui.playElementSound(element, "click", "error")
-        return
-    end
-    assert(self.fileNames[self.selection] ~= nil)
-
-    ui.CampaignMenu.selectCampaign(self.fileNames[self.selection])
-
-    ui.playElementSound(element, "click", "success")
+function TechCutscenesController:exit_pressed(element)
     ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
-end
-
-function TechCutscenesController:restart_pressed(element)
-    if self.selection == nil then
-        ui.playElementSound(element, "click", "error")
-        return
-    end
-    assert(self.fileNames[self.selection] ~= nil)
-
-    local builder = dialogs.new()
-    builder:title(ba.XSTR("Warning", -1));
-    builder:text(ba.XSTR("This will cause all progress in your\nCurrent campaign to be lost", -1))
-    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), true)
-    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", -1), false)
-    builder:show(self.document.context):continueWith(function(accepted)
-        if not accepted then
-            ui.playElementSound(element, "click", "error")
-            return
-        end
-
-        ui.CampaignMenu.resetCampaign(self.fileNames[self.selection])
-
-        ba.savePlayer(ba.getCurrentPlayer())
-        ui.playElementSound(element, "click", "success")
-    end)
 end
 
 return TechCutscenesController

@@ -19,7 +19,6 @@ div#logo_wide
 	width: 50%;
 	height: auto;
 	overflow: hidden;
-	font-size: 10px;
 }
 
 div#logo_wide img
@@ -59,7 +58,6 @@ div#column_titles
 	top: -3%;
 	margin-top: 2%;
 	margin-left: 6%;
-	color: grey;
 	overflow: auto;
 }
 
@@ -82,7 +80,6 @@ div#campaign_title
 	float: left;
 	width: 50%;
 	position: relative;
-	color: grey;
 }
 
 div#campaign_file
@@ -90,7 +87,6 @@ div#campaign_file
 	width: 50%;
 	position: relative;
 	float: right;
-	color: grey;
 }
 
 div#mission_title
@@ -98,7 +94,6 @@ div#mission_title
 	float: left;
 	width: 50%;
 	position: relative;
-	color: white;
 }
 
 div#mission_file
@@ -106,7 +101,6 @@ div#mission_file
 	width: 50%;
 	position: relative;
 	float: right;
-	color: white;
 }
 
 div#campaign_name_wrapper
@@ -115,7 +109,6 @@ div#campaign_name_wrapper
 	top: 2%;
 	margin-top: 2%;
 	margin-left: 6%;
-	color: white;
 	overflow: auto;
 	height: 90%;
 }
@@ -126,23 +119,50 @@ div#mission_list
 	top: 5%;
 	margin-top: 2%;
 	margin-left: 7%;
-	color: white;
-	overflow: auto;
-	height: 90%;
+	overflow: scroll;
+	height: 89%;
 }
 
-.mission_list_element
+.missionlist_element
 {
 	display: block;
 	color: #7b7b7b;
 }
-.mission_list_element:hover
+.missionlist_element:hover
 {
 	color: #abbbab;
 }
-.mission_list_element:checked
+.missionlist_element:checked
 {
 	color: #6f92f5;
+}
+
+.missionlist_name
+{
+	position: relative;
+	width: 20%;
+	float: left;
+}
+
+.missionlist_author
+{
+	position: relative;
+	width: 20%;
+	float: left;
+}
+
+.missionlist_filename
+{
+	position: relative;
+	width: 20%;
+	float: left;
+}
+
+.missionlist_description
+{
+	position: relative;
+	width: 39%;
+	float: right;
 }
 
 /*Bottom Left Panel Elements*/
@@ -321,6 +341,42 @@ button#credits_btn:checked #bullet_img
 	background-image: bullet-r-o.png;
 }
 
+button#single_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#single_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#single_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#campaign_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#campaign_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#campaign_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
 /*Bottom Panel Elements*/
 
 div#bottom_panel_wrapper
@@ -492,62 +548,75 @@ button#options_btn:active #options_img
 
 /*Scroll Buttons*/
 
-div#text_scroll_wrapper
+#mission_list scrollbarvertical
 {
-	position: absolute;
-}
-
-div#text_scroll_cont
-{
+	scrollchange-sound: 9;
 	width: 5%;
-	height: auto;
+	position: absolute;
+	top: -7.5%;
+	left: -7.6%;
+	z-index: 5;
 }
 
-div#scroll_spacer
+#mission_list scrollbarvertical slidertrack
 {
-	height: 77%;
+
 }
 
-.text_scroll_btns
+#mission_list scrollbarvertical sliderbar
 {
-	display: block;
+	width: 55%;
+	height: 5%;
+}
+
+#mission_list scrollbarvertical sliderbar:hover
+{
+	
+}
+
+#mission_list scrollbarvertical sliderbar:active
+{
+	
+}
+
+#mission_list scrollbarvertical sliderarrowdec
+{
 	width: 100%;
-	height: auto;
-
+	height: 12%;
+	margin-top: 2%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
 }
 
-#scroll_up_img
+#mission_list scrollbarvertical sliderarrowinc
 {
-	background-decorator: image;
-	background-image: arrow-dbl-up.png;
+	width: 100%;
+	height: 12%;
+	margin-bottom: -8%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
 }
 
-#scroll_down_img
+#mission_list scrollbarvertical sliderarrowdec:hover
 {
-	background-decorator: image;
-	background-image: arrow-dbl-down.png;
+	icon-image: arrow-dbl-up-h.png;
 }
 
-button#scroll_up_btn:hover #scroll_up_img
+#mission_list scrollbarvertical sliderarrowinc:hover
 {
-	background-decorator: image;
-	background-image: arrow-dbl-up-h.png;
+	icon-image: arrow-dbl-down-h.png;
 }
 
-button#scroll_down_btn:hover #scroll_down_img
+#mission_list scrollbarvertical sliderarrowdec:active
 {
-	background-decorator: image;
-	background-image: arrow-dbl-down-h.png;
+	icon-image: arrow-dbl-up-o.png;
 }
 
-button#scroll_up_btn:active #scroll_up_img
+#mission_list scrollbarvertical sliderarrowinc:active
 {
-	background-decorator: image;
-	background-image: arrow-dbl-up-o.png;
-}
-
-button#scroll_down_btn:active #scroll_down_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-down-o.png;
+	icon-image: arrow-dbl-down-o.png;
 }

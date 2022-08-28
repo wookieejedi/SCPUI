@@ -24,8 +24,6 @@ function BriefingController:initialize(document)
 
 	ui.maybePlayCutscene(MOVIE_PRE_BRIEF, true, 0)
 	ui.Briefing.startBriefingMap()
-	--ba.warning(mn.getMissionModifiedDate())
-	--ba.warning(mn.getMissionFilename() .. ".fs2")
 
 	---Load the desired font size from the save file
 	if modOptionValues.Font_Multiplier then
@@ -60,6 +58,31 @@ function BriefingController:initialize(document)
 	if #self.stages > 0 then
 		self:go_to_stage(1)
 	end
+	
+	if mn.isInCampaign() then
+		if mn.isTraining() then
+			self.document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Skip Training", -1)
+			self.document:GetElementById("top_panel_a"):SetClass("hidden", false)
+		elseif mn.isInCampaignLoop() then
+			self.document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Exit Loop", -1)
+			self.document:GetElementById("top_panel_a"):SetClass("hidden", false)
+		elseif mn.isMissionSkipAllowed() then
+			self.document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Skip Mission", -1)
+			self.document:GetElementById("top_panel_a"):SetClass("hidden", false)
+		else
+			self.document:GetElementById("top_panel_a"):SetClass("hidden", true)
+		end
+	else
+		self.document:GetElementById("top_panel_a"):SetClass("hidden", true)
+	end
+	
+	if ba.inDebug() then
+		local missionFile = mn.getMissionFilename() .. ".fs2"
+		local missionDate = mn.getMissionModifiedDate()
+		self.document:GetElementById("mission_debug_info").inner_rml = missionFile .. " mod " .. missionDate
+	end
+	
+	self.document:GetElementById("brief_btn"):SetPseudoClass("checked", true)
 	
 	self:buildGoals()
 end
@@ -97,6 +120,17 @@ function BriefingController:buildGoals()
 	end
 end
 
+function BriefingController:ChangeBriefState(state)
+	if state == 1 then
+		--Do nothing because we're this is the current state!
+		--ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
+	elseif state == 2 then
+		ba.postGameEvent(ba.GameEvents["GS_EVENT_SHIP_SELECTION"])
+	elseif state == 3 then
+		ba.postGameEvent(ba.GameEvents["GS_EVENT_WEAPON_SELECTION"])
+	end
+end
+
 function BriefingController:go_to_stage(stage_idx)
     self:leaveStage()
 
@@ -119,7 +153,13 @@ end
 
 function BriefingController:skip_pressed()
     
-	ui.Briefing.skipTraining()
+	if mn.isTraining() then
+		ui.Briefing.skipTraining()
+	elseif mn.isInCampaignLoop() then
+		ui.Briefing.exitLoop()
+	elseif mn.isMissionSkipAllowed() then
+		ui.Briefing.skipMission()
+	end
 
 end
 
