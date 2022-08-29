@@ -76,7 +76,11 @@ function AbstractBriefingController:registerEventHandlers()
             ui.playElementSound(el, "click", "fail")
             return
         end
-
+		
+		if self.briefState == "briefing" then
+			ui.Briefing.callLastMapStage()
+		end
+		
         self:go_to_stage(#self.stages)
         ui.playElementSound(el, "click", "success")
     end)
@@ -86,6 +90,10 @@ function AbstractBriefingController:registerEventHandlers()
             ui.playElementSound(el, "click", "fail")
             return
         end
+		
+		if self.briefState == "briefing" then
+			ui.Briefing.callNextMapStage()
+		end
 
         self:go_to_stage(self.current_stage + 1)
         ui.playElementSound(el, "click", "success")
@@ -96,6 +104,10 @@ function AbstractBriefingController:registerEventHandlers()
             return
         end
 
+		if self.briefState == "briefing" then
+			ui.Briefing.callPrevMapStage()
+		end
+
         self:go_to_stage(self.current_stage - 1)
         ui.playElementSound(el, "click", "success")
     end)
@@ -104,6 +116,10 @@ function AbstractBriefingController:registerEventHandlers()
             ui.playElementSound(el, "click", "fail")
             return
         end
+
+		if self.briefState == "briefing" then
+			ui.Briefing.callFirstMapStage()
+		end
 
         self:go_to_stage(1)
         ui.playElementSound(el, "click", "success")
@@ -131,6 +147,7 @@ function AbstractBriefingController:unload()
     if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
         self.current_voice_handle:close(false)
     end
+	drawMap = nil
     -- We need to keep track of if we are loaded or not to abort coroutines that still have references to this instance
     self.loaded = false
 end
@@ -212,6 +229,9 @@ function AbstractBriefingController:initializeStage(stageIdx, briefingText, audi
 
         if ba.getCurrentPlayer().AutoAdvance and self.current_stage < #self.stages then
             self:go_to_stage(self.current_stage + 1)
+			if self.briefState == "briefing" then
+				ui.Briefing.callNextMapStage()
+			end
         end
     end, async.OnFrameExecutor, execution_context)
 end

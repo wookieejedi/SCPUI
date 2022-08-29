@@ -239,7 +239,9 @@ function TechMissionsController:global_keydown(element, event)
 end
 
 function TechMissionsController:commit_pressed(element)
-	mn.startMission(self.SelectedEntry)
+	if self.SelectedEntry then
+		mn.startMission(self.SelectedEntry)
+	end
 end
 
 function TechMissionsController:options_button_clicked(element)

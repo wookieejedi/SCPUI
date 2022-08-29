@@ -4,6 +4,8 @@ local AbstractBriefingController = require("briefingCommon")
 
 local BriefingController = class(AbstractBriefingController)
 
+drawMap = false
+
 function BriefingController:init()
     --- @type briefing_stage[]
     self.stages = {}
@@ -21,9 +23,10 @@ end
 
 function BriefingController:initialize(document)
     AbstractBriefingController.initialize(self, document)
-
+	
 	ui.maybePlayCutscene(MOVIE_PRE_BRIEF, true, 0)
-	ui.Briefing.startBriefingMap()
+	
+	ui.Briefing.startBriefingMap(70, 205)
 
 	---Load the desired font size from the save file
 	if modOptionValues.Font_Multiplier then
@@ -85,6 +88,8 @@ function BriefingController:initialize(document)
 	self.document:GetElementById("brief_btn"):SetPseudoClass("checked", true)
 	
 	self:buildGoals()
+	
+	drawMap = true
 end
 
 function BriefingController:buildGoals()
@@ -147,6 +152,7 @@ end
 
 function BriefingController:acceptPressed()
     
+	drawMap = nil
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_ENTER_GAME"])
 
 end
@@ -162,5 +168,19 @@ function BriefingController:skip_pressed()
 	end
 
 end
+
+function BriefingController:DrawMap()
+	if drawMap then
+		ui.Briefing.drawBriefingMap()
+	end
+end
+
+engine.addHook("On Frame", function()
+	if ba.getCurrentGameState().Name == "GS_STATE_BRIEFING" then
+		BriefingController:DrawMap()
+	end
+end, {}, function()
+	return false
+end)
 
 return BriefingController
