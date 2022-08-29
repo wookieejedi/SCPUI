@@ -23,7 +23,7 @@ function TechDatabaseController:LoadData()
 	list = tb.ShipClasses
 	
 	i = 1
-	while (i ~= #list) do
+	while (i ~= #list + 1) do
 		self.ships[i] = {
 			Name = tostring(list[i]),
 			Description = list[i].TechDescription,
@@ -35,7 +35,7 @@ function TechDatabaseController:LoadData()
 	list = tb.WeaponClasses
 	
 	i = 1
-	while (i ~= #list) do
+	while (i ~= #list + 1) do
 		self.weapons[i] = {
 			Name = tostring(list[i]),
 			Description = list[i].TechDescription,
@@ -48,7 +48,7 @@ function TechDatabaseController:LoadData()
 	list = tb.IntelEntries
 	
 	i = 1
-	while (i ~= #list) do
+	while (i ~= #list + 1) do
 		self.intel[i] = {
 			Name = tostring(list[i]),
 			Description = list[i].Description,
@@ -95,6 +95,7 @@ function TechDatabaseController:ReloadList()
 	self:ClearData()
 	self.SelectedEntry = nil
 	self.visibleList = {}
+	self.Counter = 0
 	self:CreateEntries(self.currentList)
 	self:SelectEntry(self.visibleList[1])
 
@@ -173,6 +174,10 @@ end
 function TechDatabaseController:CreateEntryItem(entry, index)
 
 	self.Counter = self.Counter + 1
+	
+	if self.show_all then
+		--ba.warning(self.currentList[self.Counter].Name)
+	end
 
 	local li_el = self.document:CreateElement("li")
 
@@ -288,7 +293,7 @@ function TechDatabaseController:DrawShip()
 		
 		modelView = modelDraw.element
 						
-		local modelLeft = modelView.offset_left + modelView.parent_node.offset_left + modelView.parent_node.parent_node.offset_left + 25 --This is pretty messy, but it's functional
+		local modelLeft = modelView.offset_left + modelView.parent_node.offset_left + modelView.parent_node.parent_node.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top - 7 --Does not include modelView.offset_top because that element's padding is set for anims also subtracts 7px for funsies
 		local modelWidth = modelView.offset_width
 		local modelHeight = modelView.offset_height

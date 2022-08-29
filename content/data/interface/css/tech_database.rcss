@@ -104,13 +104,14 @@ div#tech_view
 	margin-left: 2%;
 	margin-right: 15%;
 	overflow: visible;
+	width: 92%;
 	height: 80%;
 }
 
 .anim
 {
-	width: 110%;
-	margin-left: 0.7%;
+	width: 100%;
+	text-align: center;
 }
 
 div#tech_desc_wrapper
