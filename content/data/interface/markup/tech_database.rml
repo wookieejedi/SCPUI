@@ -145,7 +145,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>Commit</p>
+								<p>Exit</p>
 							</span>
 						</button>
 					</div>

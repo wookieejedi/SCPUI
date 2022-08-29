@@ -357,6 +357,16 @@ function TechDatabaseController:commit_pressed(element)
     ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 end
 
+function TechDatabaseController:options_button_clicked(element)
+    ui.playElementSound(element, "click", "success")
+    ba.postGameEvent(ba.GameEvents["GS_EVENT_OPTIONS_MENU"])
+end
+
+function TechDatabaseController:help_clicked(element)
+    ui.playElementSound(element, "click", "success")
+    --TODO
+end
+
 engine.addHook("On Frame", function()
 	TechDatabaseController:DrawShip()
 end, {}, function()
