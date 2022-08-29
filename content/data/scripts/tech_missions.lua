@@ -115,9 +115,7 @@ function TechMissionsController:ChangeSection(section)
 			self:CreateEntries(self.list)
 		else
 			local list_names_el = self.document:GetElementById("list_item_names_ul")
-			local list_filenames_el = self.document:GetElementById("list_item_filenames_ul")
 			self:ClearEntries(list_names_el)
-			self:ClearEntries(list_filenames_el)
 			self:ClearData()
 		end
 

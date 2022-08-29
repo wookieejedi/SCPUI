@@ -19,7 +19,6 @@ div#logo_wide
 	width: 50%;
 	height: auto;
 	overflow: hidden;
-	font-size: 10px;
 }
 
 div#logo_wide img
@@ -42,7 +41,6 @@ div#tech_list_wrapper
 {
 	width: 30%;
 	height: auto;
-	overflow: hidden;
 	position: relative;
 	float: left;
 }
@@ -60,10 +58,25 @@ div#tech_list
 	top: 5%;
 	margin-top: 2%;
 	margin-left: 20%;
-	color: grey;
-	overflow: auto;
-	height: 90%;
+	overflow: scroll;
+	height: 88%;
 	line-height: 75%;
+}
+
+.list_element
+{
+	display: block;
+	color: #7b7b7b;
+	width: 90%;
+}
+.list_element:hover
+{
+	color: #abbbab;
+}
+.list_element:checked
+{
+	color: #6f92f5;
+
 }
 
 div#tech_view_wrapper
@@ -90,8 +103,14 @@ div#tech_view
 	margin-top: 2%;
 	margin-left: 2%;
 	margin-right: 15%;
-	overflow: auto;
+	overflow: visible;
 	height: 80%;
+}
+
+.anim
+{
+	width: 110%;
+	margin-left: 0.7%;
 }
 
 div#tech_desc_wrapper
@@ -106,7 +125,6 @@ div#tech_desc_panel
 {
 	width: 58%;
 	height: auto;
-	overflow: hidden;
 	position: relative;
 	float: left;
 }
@@ -125,9 +143,8 @@ div#tech_desc
 	width: 80%;
 	margin-top: 2%;
 	margin-left: 7%;
-	color: grey;
-	overflow: auto;
-	height: 86%;
+	overflow: scroll;
+	height: 85%;
 	line-height: 75%;
 }
 
@@ -236,6 +253,24 @@ button#weapons_btn:active #weapons_img
 }
 
 button#intel_btn:active #intel_img
+{
+	background-decorator: image;
+	background-image: computer-o.png;
+}
+
+button#ships_btn:checked #ships_img
+{
+	background-decorator: image;
+	background-image: ship-pos-o.png;
+}
+
+button#weapons_btn:checked #weapons_img
+{
+	background-decorator: image;
+	background-image: gun-pos-o.png;
+}
+
+button#intel_btn:checked #intel_img
 {
 	background-decorator: image;
 	background-image: computer-o.png;
@@ -605,81 +640,149 @@ button#options_btn:active #options_img
 
 /*Scroll Buttons*/
 
-div#text_scroll_wrapper
+#tech_list scrollbarvertical
 {
+	scrollchange-sound: 9;
+	width: 20%;
 	position: absolute;
-	width: 16%;
+	top: -8.5%;
+	left: -24.0%;
+	z-index: 5;
 }
 
-div#text_scroll_cont
+#tech_list scrollbarvertical slidertrack
+{
+	visibility: hidden;
+}
+
+#tech_list scrollbarvertical sliderbar
+{
+	width: 55%;
+	height: 7.5%;
+}
+
+#tech_list scrollbarvertical sliderbar:hover
+{
+	
+}
+
+#tech_list scrollbarvertical sliderbar:active
+{
+	
+}
+
+#tech_list scrollbarvertical sliderarrowdec
 {
 	width: 100%;
-	height: auto;
+	height: 18%;
+	margin-top: 2%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
 }
 
-div#scroll_spacer
+#tech_list scrollbarvertical sliderarrowinc
 {
-	height: 70%;
+	width: 100%;
+	height: 18%;
+	margin-bottom: -12%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
 }
 
-div#desc_scroll_wrapper
+#tech_list scrollbarvertical sliderarrowdec:hover
 {
+	icon-image: arrow-dbl-up-h.png;
+}
+
+#tech_list scrollbarvertical sliderarrowinc:hover
+{
+	icon-image: arrow-dbl-down-h.png;
+}
+
+#tech_list scrollbarvertical sliderarrowdec:active
+{
+	icon-image: arrow-dbl-up-o.png;
+}
+
+#tech_list scrollbarvertical sliderarrowinc:active
+{
+	icon-image: arrow-dbl-down-o.png;
+}
+
+/*Scroll Buttons*/
+
+#tech_desc scrollbarvertical
+{
+	scrollchange-sound: 9;
+	width: 10%;
 	position: absolute;
-	width: 6%;
-	padding-top: 6%;
+	top: 19.5%;
+	left: -10.0%;
+	z-index: 5;
 }
 
-div#desc_scroll_cont
+#tech_desc scrollbarvertical slidertrack
+{
+	visibility: hidden;
+}
+
+#tech_desc scrollbarvertical sliderbar
+{
+	visibility: hidden;
+}
+
+#tech_desc scrollbarvertical sliderbar:hover
+{
+	
+}
+
+#tech_desc scrollbarvertical sliderbar:active
+{
+	
+}
+
+#tech_desc scrollbarvertical sliderarrowdec
 {
 	width: 100%;
-	height: auto;
+	height: 30%;
+	margin-top: 2%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
 }
 
-div#desc_scroll_spacer
+#tech_desc scrollbarvertical sliderarrowinc
 {
-	height: 25%;
-}
-
-.text_scroll_btns
-{
-	display: block;
 	width: 100%;
-	height: auto;
-
+	height: 30%;
+	margin-bottom: 22%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
 }
 
-#scroll_up_img
+#tech_desc scrollbarvertical sliderarrowdec:hover
 {
-	background-decorator: image;
-	background-image: arrow-dbl-up.png;
+	icon-image: arrow-dbl-up-h.png;
 }
 
-#scroll_down_img
+#tech_desc scrollbarvertical sliderarrowinc:hover
 {
-	background-decorator: image;
-	background-image: arrow-dbl-down.png;
+	icon-image: arrow-dbl-down-h.png;
 }
 
-button#scroll_up_btn:hover #scroll_up_img
+#tech_desc scrollbarvertical sliderarrowdec:active
 {
-	background-decorator: image;
-	background-image: arrow-dbl-up-h.png;
+	icon-image: arrow-dbl-up-o.png;
 }
 
-button#scroll_down_btn:hover #scroll_down_img
+#tech_desc scrollbarvertical sliderarrowinc:active
 {
-	background-decorator: image;
-	background-image: arrow-dbl-down-h.png;
-}
-
-button#scroll_up_btn:active #scroll_up_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-up-o.png;
-}
-
-button#scroll_down_btn:active #scroll_down_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-down-o.png;
+	icon-image: arrow-dbl-down-o.png;
 }
