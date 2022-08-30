@@ -373,7 +373,9 @@ function TechDatabaseController:help_clicked(element)
 end
 
 engine.addHook("On Frame", function()
-	TechDatabaseController:DrawShip()
+	if ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU" then
+		TechDatabaseController:DrawShip()
+	end
 end, {}, function()
 	return false
 end)

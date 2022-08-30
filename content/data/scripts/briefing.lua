@@ -4,7 +4,7 @@ local AbstractBriefingController = require("briefingCommon")
 
 local BriefingController = class(AbstractBriefingController)
 
-drawMap = false
+drawMap = nil
 
 function BriefingController:init()
     --- @type briefing_stage[]
@@ -19,6 +19,7 @@ function BriefingController:init()
         text_el = "brief_text_el",
         stage_text_el = "brief_stage_text_el",
     }
+	
 end
 
 function BriefingController:initialize(document)
@@ -26,7 +27,19 @@ function BriefingController:initialize(document)
 	
 	ui.maybePlayCutscene(MOVIE_PRE_BRIEF, true, 0)
 	
-	ui.Briefing.startBriefingMap(70, 205)
+	--Default width is 888, default height is 371
+	
+	briefView = self.document:GetElementById("briefing_grid")
+						
+	local viewLeft = briefView.offset_left
+	local viewTop = briefView.offset_top
+	
+	local x1 = viewLeft
+	local y1 = viewTop
+	local x2 = self:calcPercent(888, 94.5)
+	local y2 = self:calcPercent(371, 94.5)
+
+	ui.Briefing.startBriefingMap(x1, y1, x2, y2)
 
 	---Load the desired font size from the save file
 	if modOptionValues.Font_Multiplier then
@@ -90,6 +103,13 @@ function BriefingController:initialize(document)
 	self:buildGoals()
 	
 	drawMap = true
+end
+
+function BriefingController:calcPercent(value, percent)
+    if value == nil or percent == nil then  
+		return false;
+	end
+    return value * (percent/100)
 end
 
 function BriefingController:buildGoals()

@@ -30,6 +30,13 @@ div#brief_grid_window img
 	height: auto;
 }
 
+div#briefing_grid
+{
+	position: absolute;
+	top: 54%;
+	left: 11.5%;
+}
+
 div#brief_text_window
 {
 	width: 90%;
