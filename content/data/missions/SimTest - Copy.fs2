@@ -4,7 +4,7 @@ $Version: 0.10
 $Name:  XSTR("Sim Test with spaces", -1)
 $Author: Your Mom
 $Created: 08/23/22 at 09:48:04
-$Modified: 08/23/22 at 09:49:07
+$Modified: 08/31/22 at 10:55:23
 $Notes:
 This is a FRED2_OPEN created mission.
 $End Notes:
@@ -36,7 +36,63 @@ $AI Profile: FS2 RETAIL
 
 #Briefing
 $start_briefing
-$num_stages: 0
+$num_stages: 2
+$start_stage
+$multi_text
+ XSTR("Stage 1", -1)
+$end_multi_text
+$voice: none.wav
+$camera_pos: 0.000000, 150.000000, -200.000000
+$camera_orient:
+	1.000000, 0.000000, -0.000000,
+	0.000000, 0.866025, 0.500000,
+	0.000000, -0.500000, 0.866025
+$camera_time: 500
+$num_lines: 0
+$num_icons: 1
+$Flags: 1
+$Formula: ( true ) 
+$start_icon
+$type: 0
+$team: Friendly
+$class: GTF Ulysses
+$pos: -57.399361, 0.000000, 69.032379
+$label:  XSTR("Alpha 1", -1)
++id: 1
+$hlight: 0
+$mirror: 0
+$multi_text
+$end_multi_text
+$end_icon
+$end_stage
+$start_stage
+$multi_text
+ XSTR("Stage 2", -1)
+$end_multi_text
+$voice: none.wav
+$camera_pos: 0.000000, 150.000000, -200.000000
+$camera_orient:
+	1.000000, 0.000000, -0.000000,
+	0.000000, 0.866025, 0.500000,
+	0.000000, -0.500000, 0.866025
+$camera_time: 500
+$num_lines: 0
+$num_icons: 1
+$Flags: 2
+$Formula: ( true ) 
+$start_icon
+$type: 0
+$team: Friendly
+$class: GTF Ulysses
+$pos: 48.844780, 0.000000, 62.828796
+$label:  XSTR("Alpha 1", -1)
++id: 1
+$hlight: 0
+$mirror: 0
+$multi_text
+$end_multi_text
+$end_icon
+$end_stage
 $end_briefing
 
 #Debriefing_info
@@ -129,6 +185,7 @@ $Determination: 10
 +Flags: ( "cargo-known" "player-start" )
 +Flags2: ( )
 +Respawn priority: 0
++Group: 0
 +Use Table Score:
 +Score: 8
 

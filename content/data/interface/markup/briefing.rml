@@ -66,6 +66,9 @@
 		</div>
 		<div id=brief_wrapper>
 			<div id=brief_grid_window>
+				<div id=brief_grid_cut>
+					<p></p>
+				</div>
 				<div id=mission_debug_info>
 					<p></p>
 				</div>

@@ -93,6 +93,9 @@ function AbstractBriefingController:registerEventHandlers()
 		
 		if self.briefState == "briefing" then
 			ui.Briefing.callNextMapStage()
+			if self.stages[self.current_stage].hasForwardCut then
+				self:CutToStage()
+			end
 		end
 
         self:go_to_stage(self.current_stage + 1)
@@ -106,6 +109,9 @@ function AbstractBriefingController:registerEventHandlers()
 
 		if self.briefState == "briefing" then
 			ui.Briefing.callPrevMapStage()
+			if self.stages[self.current_stage].hasBackwardCut then
+				self:CutToStage()
+			end
 		end
 
         self:go_to_stage(self.current_stage - 1)
@@ -148,6 +154,11 @@ function AbstractBriefingController:unload()
         self.current_voice_handle:close(false)
     end
 	drawMap = nil
+	
+	if self.briefState == "briefing" then
+		ui.Briefing.closeBriefingMap()
+	end
+	
     -- We need to keep track of if we are loaded or not to abort coroutines that still have references to this instance
     self.loaded = false
 end

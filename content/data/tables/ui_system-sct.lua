@@ -1,3 +1,4 @@
+local utils = require("utils")
 
 local updateCategory = engine.createTracingCategory("UpdateRocket", false)
 local renderCategory = engine.createTracingCategory("RenderRocket", true)
@@ -7,6 +8,9 @@ RocketUiSystem = {
 	substate = "none",
 	cutscene = "none"
 }
+
+modelDraw = nil
+drawMap = nil
 
 modOptionValues = {}
 
@@ -160,6 +164,14 @@ end)
 
 engine.addHook("On Frame", function()
     RocketUiSystem:stateFrame()
+	if ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU" then
+		utils.DrawShip()
+	end
+	if ba.getCurrentGameState().Name == "GS_STATE_BRIEFING" then
+		if drawMap then
+			ui.Briefing.drawBriefingMap()
+		end
+	end
 end, {}, function()
     return RocketUiSystem:hasOverrideForCurrentState()
 end)

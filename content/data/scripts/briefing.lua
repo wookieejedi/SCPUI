@@ -1,10 +1,9 @@
 local class = require("class")
+local async_util = require("async_util")
 
 local AbstractBriefingController = require("briefingCommon")
 
 local BriefingController = class(AbstractBriefingController)
-
-drawMap = nil
 
 function BriefingController:init()
     --- @type briefing_stage[]
@@ -150,9 +149,17 @@ function BriefingController:ChangeBriefState(state)
 		--Do nothing because we're this is the current state!
 		--ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
 	elseif state == 2 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_SHIP_SELECTION"])
+		if mn.isScramble() then
+			ad.playInterfaceSound(10)
+		else
+			ba.postGameEvent(ba.GameEvents["GS_EVENT_SHIP_SELECTION"])
+		end
 	elseif state == 3 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_WEAPON_SELECTION"])
+		if mn.isScramble() then
+			ad.playInterfaceSound(10)
+		else
+			ba.postGameEvent(ba.GameEvents["GS_EVENT_WEAPON_SELECTION"])
+		end
 	end
 end
 
@@ -170,10 +177,27 @@ function BriefingController:go_to_stage(stage_idx)
 	end
 end
 
+function BriefingController:CutToStage()
+	ad.playInterfaceSound(42)
+	--[[drawMap = false
+	self.aniWrapper = self.document:GetElementById("brief_grid_cut")
+	ad.playInterfaceSound(42)
+    local aniEl = self.document:CreateElement("ani")
+    aniEl:SetAttribute("src", "BriefMap.ani")
+	self.aniWrapper:ReplaceChild(aniEl, self.aniWrapper.first_child)
+	
+	async.run(function()
+        async.await(async_util.wait_for(0.2))
+        drawMap = true
+		self.aniWrapper:RemoveChild(self.aniWrapper.first_child)
+    end, async.OnFrameExecutor, self.uiActiveContext)]]--
+end
+
 function BriefingController:acceptPressed()
     
 	drawMap = nil
-	ba.postGameEvent(ba.GameEvents["GS_EVENT_ENTER_GAME"])
+	--ba.postGameEvent(ba.GameEvents["GS_EVENT_ENTER_GAME"])
+	ui.Briefing.commitToMission()
 
 end
 
@@ -188,19 +212,5 @@ function BriefingController:skip_pressed()
 	end
 
 end
-
-function BriefingController:DrawMap()
-	if drawMap then
-		ui.Briefing.drawBriefingMap()
-	end
-end
-
-engine.addHook("On Frame", function()
-	if ba.getCurrentGameState().Name == "GS_STATE_BRIEFING" then
-		BriefingController:DrawMap()
-	end
-end, {}, function()
-	return false
-end)
 
 return BriefingController
