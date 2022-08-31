@@ -125,16 +125,16 @@ function BriefingController:buildGoals()
 			goal = goals[i]
 			if goal.isValid and goal.Message ~= "" then
 				if goal.Type == "primary" then
-					local text = bulletHTML .. goal.Message .. "<br></br>"
+					local text = "<div class=\"goal\">" .. bulletHTML .. goal.Message .. "<br></br></div>"
 					primaryText = primaryText .. text
 				end
 				if goal.Type == "secondary" then
-					local text = bulletHTML .. goal.Message .. "<br></br>"
-					secondaryText = secondaryText .. text
+					local text = bulletHTML .. goal.Message .. "<br></br></div>"
+					secondaryText = "<div class=\"goal\">" .. secondaryText .. text
 				end
 				if goal.Type == "bonus" then
-					local text = bulletHTML .. goal.Message .. "<br></br>"
-					bonusText = bonusText .. text
+					local text = bulletHTML .. goal.Message .. "<br></br></div>"
+					bonusText = "<div class=\"goal\">" .. bonusText .. text
 				end
 			end
 		end
