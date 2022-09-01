@@ -2,11 +2,16 @@
 	<head>
 		<title>XSTR("Debrief", -1)</title>
 		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="debrief.rcss"/>
+		<script>
+			controller = require("debrief")()
+		</script>
 	</head>
-	<body>
+	<body id=main_background onkeydown="controller:global_keydown(element, event)" onload="controller:initialize(document)"
+		  onunload="controller:unload(); controller = nil">
 		<div id=top_panel_wrapper>
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
@@ -131,7 +136,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>Accept</p>
+								<p>missiondebrief.cpp line 1304 stats handling</p>
 							</span>
 						</button>
 					</div>

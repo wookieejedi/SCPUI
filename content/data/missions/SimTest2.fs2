@@ -4,7 +4,7 @@ $Version: 0.10
 $Name:  XSTR("Sim Test XSTR", -1)
 $Author: XSTR
 $Created: 08/23/22 at 09:48:04
-$Modified: 08/31/22 at 15:43:03
+$Modified: 09/01/22 at 13:12:47
 $Notes:
 This is a FRED2_OPEN created mission.
 $End Notes:
@@ -106,7 +106,7 @@ $Ship Choices: (
 	"EMP Adv."	500
 )
 
-#Objects		;! 1 total
+#Objects		;! 2 total
 
 $Name: Alpha 1		;! Object #0
 $Class: GTF Ulysses
@@ -132,6 +132,31 @@ $Determination: 10
 +Group: 0
 +Use Table Score:
 +Score: 8
+
+$Name: SF Manticore 1		;! Object #1
+$Class: SF Manticore
+$Team: Hostile
+$Location: -0.970154, 0.000000, 196.922485
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$AI Goals: ( goals ( ai-play-dead-persistent 50 ) )
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( true ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( )
++Flags2: ( )
++Respawn priority: 0
++Orders Accepted List: ( )
++Use Table Score:
++Score: 12
 
 #Wings		;! 1 total
 
