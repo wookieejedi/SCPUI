@@ -36,7 +36,7 @@ function TechCutscenesController:initialize(document)
 			Name = cutsceneList[i].Name,
 			Filename = cutsceneList[i].Filename,
 			Description = cutsceneList[i].Description,
-			Visibility = cutsceneList[i].Visibility,
+			isVisible = cutsceneList[i].isVisible,
 			Index = i + 1
 		}
 		i = i + 1
@@ -68,7 +68,7 @@ function TechCutscenesController:CreateEntryItem(entry, index)
 	
 	entry.key = li_el.id
 	
-	if entry.Visibility == 0 then
+	if entry.isVisible == true then
 		li_el:SetClass("hidden", not self.show_all)
 	end
 
@@ -130,7 +130,7 @@ function TechCutscenesController:global_keydown(element, event)
     elseif event.parameters.key_identifier == rocket.key_identifier.S and event.parameters.ctrl_key == 1 and event.parameters.shift_key == 1 then
 		self.show_all  = not self.show_all
 		for i, v in pairs(self.list) do
-			if v.Visibility == 0 then
+			if v.isVisible == true then
 				self.document:GetElementById(v.key):SetClass("hidden", not self.show_all)
 			end
 		end
@@ -145,7 +145,7 @@ function TechCutscenesController:prev_pressed(element)
 		ui.playElementSound(element, "click", "error")
 	else
 		newEntry = self.list[self.SelectedIndex - 1]
-		if newEntry.Visibility == 1 or self.show_all == true then
+		if newEntry.isVisible == false or self.show_all == true then
 			self:SelectEntry(newEntry)
 		else
 			ui.playElementSound(element, "click", "error")
@@ -160,7 +160,7 @@ function TechCutscenesController:next_pressed(element)
 		ui.playElementSound(element, "click", "error")
 	else
 		newEntry = self.list[self.SelectedIndex + 1]
-		if newEntry.Visibility == 1 or self.show_all == true then
+		if newEntry.isVisible == false or self.show_all == true then
 			self:SelectEntry(newEntry)
 		else
 			ui.playElementSound(element, "click", "error")

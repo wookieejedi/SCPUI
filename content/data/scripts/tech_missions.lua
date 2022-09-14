@@ -78,7 +78,7 @@ function TechMissionsController:ChangeSection(section)
 					Filename = missionList[i].Filename,
 					Description = missionList[i].Description,
 					Author = missionList[i].Author,
-					Visibility = 1
+					isVisible = true
 				}
 				i = i + 1
 			end
@@ -92,7 +92,7 @@ function TechMissionsController:ChangeSection(section)
 					Filename = missionList[i].Filename,
 					Description = missionList[i].Description,
 					Author = missionList[i].Author,
-					Visibility = missionList[i].Visibility
+					isVisible = missionList[i].isVisible
 				}
 				i = i + 1
 			end
@@ -141,7 +141,7 @@ function TechMissionsController:CreateEntryItem(entry, index)
 	
 	entry.key = li_el.id
 	
-	if entry.Visibility == 0 then
+	if entry.isVisible == false then
 		li_el:SetClass("hidden", not self.show_all)
 	end
 
@@ -231,7 +231,7 @@ function TechMissionsController:global_keydown(element, event)
     elseif event.parameters.key_identifier == rocket.key_identifier.S and event.parameters.ctrl_key == 1 and event.parameters.shift_key == 1 then
 		self.show_all  = not self.show_all
 		for i, v in pairs(self.list) do
-			if v.Visibility == 0 then
+			if v.isVisible == false then
 				self.document:GetElementById(v.key):SetClass("hidden", not self.show_all)
 			end
 		end
