@@ -30,13 +30,17 @@ function BriefingController:initialize(document)
 	
 	briefView = self.document:GetElementById("briefing_grid")
 						
-	local viewLeft = briefView.offset_left
-	local viewTop = briefView.offset_top
+	local viewLeft = briefView.offset_left + briefView.parent_node.offset_left + briefView.parent_node.parent_node.offset_left
+	local viewTop = briefView.offset_top + briefView.parent_node.offset_top + briefView.parent_node.parent_node.offset_top
+	
+	--The grid needs to be a very specific aspect ratio, so we'll calculate
+	--the percent change here and use that to calculate the height below.
+	local percentChange = ((briefView.offset_width - 888) / 888) * 100
 	
 	local x1 = viewLeft
 	local y1 = viewTop
-	local x2 = self:calcPercent(888, 94.5)
-	local y2 = self:calcPercent(371, 94.5)
+	local x2 = briefView.offset_width
+	local y2 = self:calcPercent(371, (100 + percentChange))
 
 	ui.Briefing.startBriefingMap(x1, y1, x2, y2)
 	
@@ -184,18 +188,18 @@ end
 
 function BriefingController:CutToStage()
 	ad.playInterfaceSound(42)
-	--[[drawMap = false
+	drawMap = false
 	self.aniWrapper = self.document:GetElementById("brief_grid_cut")
 	ad.playInterfaceSound(42)
     local aniEl = self.document:CreateElement("ani")
-    aniEl:SetAttribute("src", "BriefMap.ani")
+    aniEl:SetAttribute("src", "static.png")
 	self.aniWrapper:ReplaceChild(aniEl, self.aniWrapper.first_child)
 	
 	async.run(function()
-        async.await(async_util.wait_for(0.2))
+        async.await(async_util.wait_for(0.7))
         drawMap = true
 		self.aniWrapper:RemoveChild(self.aniWrapper.first_child)
-    end, async.OnFrameExecutor, self.uiActiveContext)]]--
+    end, async.OnFrameExecutor, self.uiActiveContext)
 end
 
 function BriefingController:acceptPressed()

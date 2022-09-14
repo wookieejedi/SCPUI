@@ -30,11 +30,39 @@ div#brief_grid_window img
 	height: auto;
 }
 
-div#briefing_grid
+/*div#briefing_grid
 {
 	position: absolute;
 	top: 54%;
 	left: 11.5%;
+	width: 100%;
+
+}*/
+
+div#briefing_grid
+{
+	position: absolute;
+	top: 15.5%;
+	left: 7.2%;
+	width: 87.7%;
+	height: 83%;
+
+}
+
+div#brief_grid_cut
+{
+	position: absolute;
+	top: 15.5%;
+	left: 7.2%;
+	width: 100%;
+
+}
+
+div#brief_grid_cut ani
+{
+
+	width: 87.7%;
+
 }
 
 div#brief_text_window
@@ -66,13 +94,6 @@ div#brief_text
 	line-height: 90%;
 	height: 85%;
 	overflow: scroll;
-}
-
-div#briefing_grid
-{
-	width: 100%;
-	height: auto;
-
 }
 
 div#briefing_goals

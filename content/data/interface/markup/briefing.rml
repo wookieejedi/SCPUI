@@ -67,17 +67,14 @@
 		<div id=brief_wrapper>
 			<div id=brief_grid_window>
 				<div id=brief_grid_cut>
-					<p></p>
 				</div>
 				<div id=mission_debug_info>
-					<p></p>
 				</div>
 				<div id=brief_stage_wrapper>
 					<div id=brief_stage_text>
 						<p id="brief_stage_text_el"></p>
 					</div>
 					<div id=mission_title>
-						<p></p>
 					</div>
 				</div>
 				<div id=briefing_grid>

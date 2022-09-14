@@ -78,6 +78,7 @@ function AbstractBriefingController:registerEventHandlers()
         end
 		
 		if self.briefState == "briefing" then
+			self:CutToStage()
 			ui.Briefing.callLastMapStage()
 		end
 		
@@ -124,6 +125,7 @@ function AbstractBriefingController:registerEventHandlers()
         end
 
 		if self.briefState == "briefing" then
+			self:CutToStage()
 			ui.Briefing.callFirstMapStage()
 		end
 
