@@ -9,7 +9,7 @@
 			controller = require("tech_credits")()
 		</script>
 	</head>
-	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload(); controller = nil">
 		<div id=top_panel_wrapper>
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
@@ -75,7 +75,7 @@
 			<div id=bottom_panel_b>
 				<div id=b_panel_wrapper>
 					<div id=accept_cont>
-						<button id="accept_btn" class="accept button_1">
+						<button id="accept_btn" class="accept button_1" onclick="controller:exit_pressed()">
 							<span id="accept_img" class="accept">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>

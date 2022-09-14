@@ -67,7 +67,7 @@ function DebriefingController:initialize(document)
 		for i = 1, #debriefing do
 			--- @type debriefing_stage
 			local stage = debriefing[i]
-			if stage.isValid then
+			if stage.isVisible then
 				numStages = numStages + 1
 				self.stages[numStages] = stage
 				if self.stages[numStages].Recommendation ~= "" then
