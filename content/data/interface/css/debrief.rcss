@@ -21,8 +21,18 @@ div#debrief_text
 	color: grey;
 	overflow: auto;
 	height: 52%;
-	font-size: 125%;
 	line-height: 90%;
+}
+
+.debrief_text_actual
+{
+	margin-top: 4%;
+	margin-bottom: 1%;
+}
+
+.recommendation
+{
+	margin: 1%;
 }
 
 div#debrief_wrapper
@@ -204,37 +214,37 @@ div#bullet_cont
 	background-image: bullet-r.png;
 }
 
-button#brief_btn:hover #bullet_img
+button#debrief_btn:hover #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-h.png;
 }
 
-button#brief_btn:active #bullet_img
+button#debrief_btn:active #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
 }
 
-button#s_select_btn:hover #bullet_img
-{
-	background-decorator: image;
-	background-image: bullet-r-h.png;
-}
-
-button#s_select_btn:active #bullet_img
+button#debrief_btn:checked #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
 }
 
-button#w_select_btn:hover #bullet_img
+button#recs_btn:hover #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-h.png;
 }
 
-button#w_select_btn:active #bullet_img
+button#recs_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#recs_btn:checked #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;

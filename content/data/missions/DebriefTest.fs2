@@ -4,7 +4,7 @@ $Version: 0.10
 $Name:  XSTR("Debrief Test", -1)
 $Author: Mike Nelson
 $Created: 09/01/22 at 13:55:44
-$Modified: 09/01/22 at 16:52:19
+$Modified: 09/01/22 at 20:25:24
 $Notes:
 This is a FRED2_OPEN created mission.
 $End Notes:
@@ -49,7 +49,7 @@ $Multi text
 $end_multi_text
 $Voice: none.wav
 $Recommendation text:
-    XSTR("", -1)
+    XSTR("Nice work bruh", -1)
 $end_multi_text
 
 $Formula: ( not 
@@ -270,6 +270,7 @@ $AI Behavior: None
 $Cargo 1:  XSTR("Nothing", -1)
 +Initial Velocity: 33
 +Initial Hull: 100
++Initial Shields: 100
 +Subsystem: Pilot
 +Subsystem: turret01
 +Subsystem: turret02
@@ -282,10 +283,11 @@ $Arrival Cue: ( true )
 $Departure Location: Hyperspace
 $Departure Cue: ( false ) 
 $Determination: 10
-+Flags: ( "cargo-known" )
-+Flags2: ( )
++Flags: ( "cargo-known" "no-shields" )
++Flags2: ( "lock-all-turrets" )
 +Respawn priority: 0
 +Orders Accepted List: ( "attack ship" )
++Group: 0
 +Use Table Score:
 +Score: 50
 

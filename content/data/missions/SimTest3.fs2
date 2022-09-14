@@ -4,7 +4,7 @@ $Version: 0.10
 $Name:  XSTR("Sim Test 3", -1)
 $Author: Mike Nelson
 $Created: 08/23/22 at 09:48:04
-$Modified: 08/23/22 at 09:49:07
+$Modified: 08/31/22 at 20:51:52
 $Notes:
 This is a FRED2_OPEN created mission.
 $End Notes:
@@ -14,7 +14,7 @@ $Mission Desc:
 ", -1)
 $end_multi_text
 +Game Type Flags: 1
-+Flags: 0
++Flags: 1024
 +Fog Near Mult: 1.000000
 
 +Fog Far Mult: 1.000000
@@ -129,6 +129,7 @@ $Determination: 10
 +Flags: ( "cargo-known" "player-start" )
 +Flags2: ( )
 +Respawn priority: 0
++Group: 0
 +Use Table Score:
 +Score: 8
 

@@ -39,6 +39,11 @@ function BriefingController:initialize(document)
 	local y2 = self:calcPercent(371, 94.5)
 
 	ui.Briefing.startBriefingMap(x1, y1, x2, y2)
+	
+	if mn.hasNoBriefing() then
+		ui.Briefing.commitToMission()
+	end
+		
 
 	---Load the desired font size from the save file
 	if modOptionValues.Font_Multiplier then
@@ -57,7 +62,7 @@ function BriefingController:initialize(document)
     for i = 1, #briefing do
         --- @type briefing_stage
         local stage = briefing[i]
-		if stage.isValid then
+		if stage.isVisible then
 			self.stages[i] = stage
 			numStages = numStages + 1
 			--This is where we should replace variables and containers probably!
@@ -123,7 +128,7 @@ function BriefingController:buildGoals()
 		local bonusText = ""
 		for i = 0, #goals do
 			goal = goals[i]
-			if goal.isValid and goal.Message ~= "" then
+			if goal.isGoalValid and goal.Message ~= "" then
 				if goal.Type == "primary" then
 					local text = "<div class=\"goal\">" .. bulletHTML .. goal.Message .. "<br></br></div>"
 					primaryText = primaryText .. text

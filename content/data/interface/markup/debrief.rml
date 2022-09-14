@@ -16,22 +16,22 @@
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
 					<div id=bullet_cont>
-						<button id="brief_btn" class="bullet button_1">
+						<button id="debrief_btn" class="bullet button_1">
 							<span id="bullet_img" class="bullet">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Debriefing</p>
+								<p>XSTR("Debriefing", -1)</p>
 							</span>
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="s_select_btn" class="bullet button_1">
+						<button id="recs_btn" class="bullet button_1">
 							<span id="bullet_img" class="bullet">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Statistics</p>
+								<p>XSTR("Statistics", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -41,11 +41,10 @@
 		</div>
 		<div id=debrief_wrapper>
 			<div id=mission_name>
-				<p>Surrender, Belisarius!</p>
+				<p></p>
 			</div>
 			<div id=debrief_text_window>
 				<div id=debrief_text>
-					<p>You did not have authorization to return to base. Your actions jeopordized the lives of those involved in the mission and the GTVA's objectives in this theatre. Desertion is grounds for a court martial, and you are confined to quarters pending your preliminary hearing. Until a military court decides otherwise, you are hereby stripped of your wings and all your privileges bestowed upon you as an officer of the Galactic Terran-Vasudan Alliance.</p>
 				</div>
 				<div id=text_scroll_wrapper>
 					<div id=text_scroll_cont>
@@ -65,12 +64,12 @@
 				</div>
 				<div id=replay_wrapper>
 					<div id=replay_cont>
-						<button id="replay_btn" class="replay_btn button_1">
+						<button id="replay_btn" class="replay_btn button_1" onclick="controller:replay_pressed(element)">
 							<span id="replay_img" class="replay_btn">
 								<img src="replay.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_right">
-								<p>Replay Mission</p>
+								<p>XSTR("Replay Mission", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -80,7 +79,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Recommendations</p>
+								<p>XSTR("Recommendations", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -131,12 +130,12 @@
 			<div id=bottom_panel_a>
 				<div id=a_panel_wrapper>
 					<div id=accept_cont>
-						<button id="accept_btn" class="accept button_1" onclick="controller:commit_pressed(element)">
+						<button id="accept_btn" class="accept button_1" onclick="controller:accept_pressed(element)">
 							<span id="accept_img" class="accept">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>missiondebrief.cpp line 1304 stats handling</p>
+								<p>XSTR("Accept", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -151,7 +150,7 @@
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>Help</p>
+								<p>XSTR("Help", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -161,7 +160,7 @@
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>Options</p>
+								<p>XSTR("Options", -1)</p>
 							</span>
 						</button>
 					</div>

@@ -85,13 +85,13 @@ local function add_line_elements(document, paragraph, line, defaultColorTag, col
             end
         end
     end
-
+	
     local remainingText = line:sub(searchIndex)
     add_text_element(paragraph, document, remainingText, colorStack[#colorStack], colorTags)
 end
 
 ---@param brief_text string
-function M.set_briefing_text(parent, brief_text)
+function M.set_briefing_text(parent, brief_text, recommendation)
     -- First, clear all the children of this element
     M.remove_children(parent)
 
@@ -129,6 +129,12 @@ function M.set_briefing_text(parent, brief_text)
 
         parent:AppendChild(paragraph)
     end
+	
+	if recommendation then
+		local paragraph = document:CreateElement("p")
+		paragraph.inner_rml = recommendation
+		parent:AppendChild(paragraph)
+	end
 
     -- Try to estimate the amount of lines this will get. The value 130 is chosen based on the original width of the
     -- text window in retail FS2

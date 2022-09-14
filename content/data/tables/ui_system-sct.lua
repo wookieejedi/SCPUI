@@ -6,7 +6,8 @@ local renderCategory = engine.createTracingCategory("RenderRocket", true)
 RocketUiSystem = {
     replacements = {},
 	substate = "none",
-	cutscene = "none"
+	cutscene = "none",
+	debriefInit = false
 }
 
 modelDraw = nil
