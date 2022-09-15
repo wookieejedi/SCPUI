@@ -2,6 +2,7 @@
 	<head>
 		<title>XSTR("Credits", -1)</title>
 		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="tech_credits.rcss"/>
@@ -19,7 +20,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Technical Database</p>
+								<p>XSTR("Technical Database", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -29,7 +30,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Mission Simulator</p>
+								<p>XSTR("Mission Simulator", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -39,7 +40,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Cutscenes</p>
+								<p>XSTR("Cutscenes", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -49,7 +50,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Credits</p>
+								<p>XSTR("Credits", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -80,7 +81,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>Exit</p>
+								<p>XSTR("Exit", -1)</p>
 							</span>
 						</button>
 					</div>
