@@ -243,7 +243,7 @@ function TechDatabaseController:SelectEntry(entry)
 		elseif self.SelectedSection == "weapons" then			
 			self.document:GetElementById("tech_desc").inner_rml = entry.Description
 			
-			if entry.Anim then
+			if entry.Anim ~= "" then
 				modelDraw.class = nil
 
 				local aniEl = self.document:CreateElement("ani")

@@ -24,10 +24,7 @@ function DebriefingController:initialize(document)
 		RocketUiSystem.debriefInit = true
 	end
 	
-	local player = ba.getCurrentPlayer()
-	
-	ba.warning(player.Stats.MissionSecondaryShotsFired)
-		
+	local player = ba.getCurrentPlayer()	
 	
 	---Load the desired font size from the save file
 	if modOptionValues.Font_Multiplier then
