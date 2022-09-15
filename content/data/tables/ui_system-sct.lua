@@ -10,7 +10,6 @@ RocketUiSystem = {
 	debriefInit = false
 }
 
-modelDraw = nil
 drawMap = nil
 
 modOptionValues = {}
@@ -165,9 +164,6 @@ end)
 
 engine.addHook("On Frame", function()
     RocketUiSystem:stateFrame()
-	if ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU" then
-		utils.DrawShip()
-	end
 	if ba.getCurrentGameState().Name == "GS_STATE_BRIEFING" then
 		if drawMap then
 			ui.Briefing.drawBriefingMap()

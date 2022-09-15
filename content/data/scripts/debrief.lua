@@ -67,7 +67,7 @@ function DebriefingController:initialize(document)
 		for i = 1, #debriefing do
 			--- @type debriefing_stage
 			local stage = debriefing[i]
-			if stage.isVisible then
+			if stage.checkVisible then
 				numStages = numStages + 1
 				self.stages[numStages] = stage
 				if self.stages[numStages].Recommendation ~= "" then
@@ -175,6 +175,7 @@ function DebriefingController:replay_pressed(element)
         self.music_handle:close(true)
     end
 	RocketUiSystem.debriefInit = false
+	ui.Debriefing.clearMissionStats()
     ui.Debriefing.replayMission()
 end
 

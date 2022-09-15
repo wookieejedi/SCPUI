@@ -3,12 +3,12 @@ local class = require("class")
 
 local TechDatabaseController = class()
 
-
+local modelDraw = nil
 
 function TechDatabaseController:init()
 	self.show_all = false
-	modelDraw = {}
 	self.Counter = 0
+	modelDraw = {}
 end
 
 --Iterate over all the ships, weapons, and intel but only grab the necessary data
@@ -251,8 +251,8 @@ function TechDatabaseController:SelectEntry(entry)
 				aniEl:SetClass("anim", true)
 				aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
 			else --If we don't have an anim, then draw the tech model WAITING ON MERGE
-				--modelDraw.class = entry.Name
-				--modelDraw.element = self.document:GetElementById("tech_view")
+				modelDraw.class = entry.Name
+				modelDraw.element = self.document:GetElementById("tech_view")
 			end
 		elseif self.SelectedSection == "intel" then			
 			self.document:GetElementById("tech_desc").inner_rml = entry.Description
@@ -294,6 +294,36 @@ function TechDatabaseController:ClearEntries(parent)
 
 	while parent:HasChildNodes() do
 		parent:RemoveChild(parent.first_child)
+	end
+
+end
+
+function TechDatabaseController:drawModel()
+
+	if modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU" then  --Haaaaaaacks
+
+		local thisItem = nil
+		if modelDraw.section == "ships" then
+			thisItem = tb.ShipClasses[modelDraw.class]
+		elseif modelDraw.section == "weapons" then
+			thisItem = tb.WeaponClasses[modelDraw.class]
+		end
+		
+		modelDraw.Rot = modelDraw.Rot + (7 * ba.getRealFrametime())
+
+		if modelDraw.Rot >= 100 then
+			modelDraw.Rot = modelDraw.Rot - 100
+		end
+		
+		modelView = modelDraw.element
+						
+		local modelLeft = modelView.offset_left + modelView.parent_node.offset_left + modelView.parent_node.parent_node.offset_left --This is pretty messy, but it's functional
+		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top - 7 --Does not include modelView.offset_top because that element's padding is set for anims also subtracts 7px for funsies
+		local modelWidth = modelView.offset_width
+		local modelHeight = modelView.offset_height
+		
+		local test = thisItem:renderTechModel(modelLeft, modelTop, modelLeft + modelWidth, modelTop + modelHeight, modelDraw.Rot, -15, 0, 1.1)
+		
 	end
 
 end
@@ -341,5 +371,13 @@ function TechDatabaseController:help_clicked(element)
     ui.playElementSound(element, "click", "success")
     --TODO
 end
+
+engine.addHook("On Frame", function()
+	if ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU" then
+		TechDatabaseController:drawModel()
+	end
+end, {}, function()
+    return false
+end)
 
 return TechDatabaseController

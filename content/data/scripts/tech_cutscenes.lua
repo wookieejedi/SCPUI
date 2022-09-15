@@ -5,6 +5,7 @@ local TechCutscenesController = class()
 
 function TechCutscenesController:init()
 	self.show_all = false
+	self.Counter = 0
 end
 
 function TechCutscenesController:initialize(document)
@@ -44,6 +45,7 @@ function TechCutscenesController:initialize(document)
 	
 	--Only create entries if there are any to create
 	if self.list[1] then
+		self.visibleList = {}
 		self:CreateEntries(self.list)
 	end
 	
@@ -53,7 +55,21 @@ function TechCutscenesController:initialize(document)
 	
 end
 
+function TechCutscenesController:ReloadList()
+
+	local list_items_el = self.document:GetElementById("cutscene_list_ul")
+	self:ClearEntries(list_items_el)
+	self.SelectedEntry = nil
+	self.visibleList = {}
+	self.Counter = 0
+	self:CreateEntries(self.list)
+	self:SelectEntry(self.visibleList[1])
+
+end
+
 function TechCutscenesController:CreateEntryItem(entry, index)
+
+	self.Counter = self.Counter + 1
 
 	local li_el = self.document:CreateElement("li")
 
@@ -65,12 +81,10 @@ function TechCutscenesController:CreateEntryItem(entry, index)
 	li_el:AddEventListener("click", function(_, _, _)
 		self:SelectEntry(entry)
 	end)
-	
+	self.visibleList[self.Counter] = entry
 	entry.key = li_el.id
 	
-	if entry.isVisible == true then
-		li_el:SetClass("hidden", not self.show_all)
-	end
+	self.visibleList[self.Counter].Index = self.Counter
 
 	return li_el
 end
@@ -78,9 +92,15 @@ end
 function TechCutscenesController:CreateEntries(list)
 
 	local list_names_el = self.document:GetElementById("cutscene_list_ul")
+	
+	self:ClearEntries(list_names_el)
 
 	for i, v in pairs(list) do
-		list_names_el:AppendChild(self:CreateEntryItem(v, i))
+		if self.show_all then
+			list_names_el:AppendChild(self:CreateEntryItem(v, i))
+		elseif v.isVisible ~= true then
+			list_names_el:AppendChild(self:CreateEntryItem(v, i))
+		end
 	end
 end
 
@@ -122,6 +142,14 @@ function TechCutscenesController:ChangeTechState(section)
 	
 end
 
+function TechCutscenesController:ClearEntries(parent)
+
+	while parent:HasChildNodes() do
+		parent:RemoveChild(parent.first_child)
+	end
+
+end
+
 function TechCutscenesController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
@@ -129,14 +157,7 @@ function TechCutscenesController:global_keydown(element, event)
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
     elseif event.parameters.key_identifier == rocket.key_identifier.S and event.parameters.ctrl_key == 1 and event.parameters.shift_key == 1 then
 		self.show_all  = not self.show_all
-		for i, v in pairs(self.list) do
-			if v.isVisible == true then
-				self.document:GetElementById(v.key):SetClass("hidden", not self.show_all)
-			end
-		end
-		if self.list[1].Name then
-			self:SelectEntry(self.list[1])
-		end
+		self:ReloadList()
 	end
 end
 
@@ -144,27 +165,17 @@ function TechCutscenesController:prev_pressed(element)
 	if self.SelectedIndex == 1 then
 		ui.playElementSound(element, "click", "error")
 	else
-		newEntry = self.list[self.SelectedIndex - 1]
-		if newEntry.isVisible == false or self.show_all == true then
-			self:SelectEntry(newEntry)
-		else
-			ui.playElementSound(element, "click", "error")
-		end
+		self:SelectEntry(self.visibleList[self.SelectedIndex - 1])
 	end
 end
 
 function TechCutscenesController:next_pressed(element)
-	local num = #ui.TechRoom.Cutscenes
+	local num = #self.visibleList
 	
 	if self.SelectedIndex == num then
 		ui.playElementSound(element, "click", "error")
 	else
-		newEntry = self.list[self.SelectedIndex + 1]
-		if newEntry.isVisible == false or self.show_all == true then
-			self:SelectEntry(newEntry)
-		else
-			ui.playElementSound(element, "click", "error")
-		end
+		self:SelectEntry(self.visibleList[self.SelectedIndex + 1])
 	end
 end
 
