@@ -182,7 +182,15 @@ function TechCreditsController:global_keydown(element, event)
         event:StopPropagation()
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
-    end
+    elseif event.parameters.key_identifier == rocket.key_identifier.TAB then
+		self.rate = ui.TechRoom.Credits.ScrollRate * 10
+	end
+end
+
+function TechCreditsController:global_keyup(element, event)
+    if event.parameters.key_identifier == rocket.key_identifier.TAB then
+		self.rate = ui.TechRoom.Credits.ScrollRate
+	end
 end
 
 function TechCreditsController:exit_pressed(element)
