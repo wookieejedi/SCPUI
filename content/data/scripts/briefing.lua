@@ -5,6 +5,8 @@ local AbstractBriefingController = require("briefingCommon")
 
 local BriefingController = class(AbstractBriefingController)
 
+local drawMap = nil
+
 function BriefingController:init()
     --- @type briefing_stage[]
     self.stages = {}
@@ -18,6 +20,8 @@ function BriefingController:init()
         text_el = "brief_text_el",
         stage_text_el = "brief_stage_text_el",
     }
+	
+	drawMap = {}
 	
 end
 
@@ -37,12 +41,14 @@ function BriefingController:initialize(document)
 	--the percent change here and use that to calculate the height below.
 	local percentChange = ((briefView.offset_width - 888) / 888) * 100
 	
-	local x1 = viewLeft
-	local y1 = viewTop
-	local x2 = briefView.offset_width
-	local y2 = self:calcPercent(371, (100 + percentChange))
+	drawMap.x1 = viewLeft
+	drawMap.y1 = viewTop
+	drawMap.x2 = briefView.offset_width
+	drawMap.y2 = self:calcPercent(371, (100 + percentChange))
+	
+	ui.Briefing.initBriefing()
 
-	ui.Briefing.startBriefingMap(x1, y1, x2, y2)
+	--ui.Briefing.startBriefingMap(drawMap.x1, drawMap.y1, drawMap.x2, drawMap.y2)
 	
 	if mn.hasNoBriefing() then
 		ui.Briefing.commitToMission()
@@ -66,13 +72,13 @@ function BriefingController:initialize(document)
     for i = 1, #briefing do
         --- @type briefing_stage
         local stage = briefing[i]
-		if stage.isVisible then
+		if stage then
 			self.stages[i] = stage
 			numStages = numStages + 1
 			--This is where we should replace variables and containers probably!
 		end
     end
-	if mn.hasGoalsSlide() then
+	if mn.hasGoalsStage() then
 		local g = numStages + 1
 		self.stages[g] = {
 			Text = ba.XSTR( "Please review your objectives for this mission.", 395)
@@ -110,7 +116,7 @@ function BriefingController:initialize(document)
 	
 	self:buildGoals()
 	
-	drawMap = true
+	drawMap.draw = true
 end
 
 function BriefingController:calcPercent(value, percent)
@@ -121,7 +127,7 @@ function BriefingController:calcPercent(value, percent)
 end
 
 function BriefingController:buildGoals()
-    if mn.hasGoalsSlide() then
+    if mn.hasGoalsStage() then
 		goals = ui.Briefing.Objectives
 		local bulletHTML = "<div id=\"goalsdot_img\" class=\"goalsdot brightblue\"><img src=\"scroll-button.png\" class=\"psuedo_img\"></img></div>"
 		local primaryWrapper = self.document:GetElementById("primary_goal_list")
@@ -177,7 +183,7 @@ function BriefingController:go_to_stage(stage_idx)
 
     local stage = self.stages[stage_idx]
 
-	if mn.hasGoalsSlide() and stage_idx == #self.stages then
+	if mn.hasGoalsStage() and stage_idx == #self.stages then
 		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
 		self.document:GetElementById("briefing_goals"):SetClass("hidden", false)
 	else
@@ -188,7 +194,7 @@ end
 
 function BriefingController:CutToStage()
 	ad.playInterfaceSound(42)
-	drawMap = false
+	drawMap.draw = false
 	self.aniWrapper = self.document:GetElementById("brief_grid_cut")
 	ad.playInterfaceSound(42)
     local aniEl = self.document:CreateElement("ani")
@@ -197,9 +203,17 @@ function BriefingController:CutToStage()
 	
 	async.run(function()
         async.await(async_util.wait_for(0.7))
-        drawMap = true
+        drawMap.draw = true
 		self.aniWrapper:RemoveChild(self.aniWrapper.first_child)
     end, async.OnFrameExecutor, self.uiActiveContext)
+end
+
+function BriefingController:drawMap()
+
+	if drawMap.draw == true then
+		ui.Briefing.drawBriefingMap(drawMap.x1, drawMap.y1, drawMap.x2, drawMap.y2)
+	end
+
 end
 
 function BriefingController:acceptPressed()
@@ -221,5 +235,13 @@ function BriefingController:skip_pressed()
 	end
 
 end
+
+engine.addHook("On Frame", function()
+	if ba.getCurrentGameState().Name == "GS_STATE_BRIEFING" then
+		BriefingController:drawMap()
+	end
+end, {}, function()
+    return false
+end)
 
 return BriefingController

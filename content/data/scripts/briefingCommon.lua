@@ -158,7 +158,7 @@ function AbstractBriefingController:unload()
 	drawMap = nil
 	
 	if self.briefState == "briefing" then
-		ui.Briefing.closeBriefingMap()
+		ui.Briefing.closeBriefing()
 	end
 	
     -- We need to keep track of if we are loaded or not to abort coroutines that still have references to this instance

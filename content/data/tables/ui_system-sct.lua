@@ -10,8 +10,6 @@ RocketUiSystem = {
 	debriefInit = false
 }
 
-drawMap = nil
-
 modOptionValues = {}
 
 RocketUiSystem.context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
@@ -164,11 +162,6 @@ end)
 
 engine.addHook("On Frame", function()
     RocketUiSystem:stateFrame()
-	if ba.getCurrentGameState().Name == "GS_STATE_BRIEFING" then
-		if drawMap then
-			ui.Briefing.drawBriefingMap()
-		end
-	end
 end, {}, function()
     return RocketUiSystem:hasOverrideForCurrentState()
 end)
