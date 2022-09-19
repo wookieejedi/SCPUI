@@ -16,7 +16,7 @@
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
 					<div id=bullet_cont>
-						<button id="debrief_btn" class="bullet button_1">
+						<button id="debrief_btn" class="bullet button_1" onclick="controller:debrief_pressed(element)">
 							<span id="bullet_img" class="bullet">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -26,7 +26,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="recs_btn" class="bullet button_1">
+						<button id="stats_btn" class="bullet button_1" onclick="controller:stats_pressed(element)">
 							<span id="bullet_img" class="bullet">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -74,7 +74,7 @@
 						</button>
 					</div>
 					<div id=recommend_cont>
-						<button id="recommend_btn" class="recommend_btn button_1">
+						<button id="recommend_btn" class="recommend_btn button_1" onclick="controller:recommend_pressed(element)">
 							<span id="recommend_img" class="recommend_btn">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -87,35 +87,28 @@
 				<div id=stage_select>
 					<div id=button_wrapper>
 						<div id=skip_cont>
-							<button id="cmdlast_btn" class="arrowbuttons button_1">
+							<button id="cmdlast_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(4)">
 								<span id="cmdlast_img" class="arrowbuttons">
 									<img src="skip-r.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=arrow_cont>
-							<button id="cmdnext_btn" class="arrowbuttons button_1">
+							<button id="cmdnext_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(3)">
 								<span id="cmdnext_img" class="arrowbuttons">
 									<img src="arrow-down.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
-						<div id=pause_cont>
-							<button id="cmdpause_btn" class="arrowbuttons button_1">
-								<span id="cmdpause_img" class="arrowbuttons">
-									<img src="pause.png" class="psuedo_img"></img>
-								</span>
-							</button>
-						</div>
 						<div id=arrow_cont>
-							<button id="cmdprev_btn" class="arrowbuttons button_1">
+							<button id="cmdprev_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(2)">
 								<span id="cmdprev_img" class="arrowbuttons">
 									<img src="arrow-up.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=skip_cont>
-							<button id="cmdfirst_btn" class="arrowbuttons button_1">
+							<button id="cmdfirst_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(1)">
 								<span id="cmdfirst_img" class="arrowbuttons">
 									<img src="skip-l.png" class="psuedo_img"></img>
 								</span>

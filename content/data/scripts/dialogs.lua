@@ -8,10 +8,12 @@ module.TYPE_SIMPLE          = 1
 -- The various button
 module.BUTTON_TYPE_POSITIVE = 1
 module.BUTTON_TYPE_NEGATIVE = 2
+module.BUTTON_TYPE_NEUTRAL  = 3
 
 module.BUTTON_MAPPING       = {
     [module.BUTTON_TYPE_POSITIVE] = "button_positive",
-    [module.BUTTON_TYPE_NEGATIVE] = "button_negative"
+    [module.BUTTON_TYPE_NEGATIVE] = "button_negative",
+	[module.BUTTON_TYPE_NEUTRAL] = "button_neutral"
 }
 
 local function initialize_buttons(document, properties, finish_func)

@@ -14,7 +14,7 @@
 				<div class="button_image_container">
 					<img class="button_image_id psuedo_img"></img>
 				</div>
-				<span class="button_text_left">
+				<span class="button_text_dialog">
 					<p class="button_text_id"></p>
 				</span>
 			</button>

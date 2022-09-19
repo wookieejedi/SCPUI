@@ -20,7 +20,7 @@ div#debrief_text
 	margin-right: 7%;
 	color: grey;
 	overflow: auto;
-	height: 52%;
+	height: auto;
 	line-height: 90%;
 }
 
@@ -73,6 +73,45 @@ div#stage_select
 	bottom: 0;
 	right: 0;
 	width: 50%;
+}
+
+.stats_header
+{
+	margin-top: 5%;
+	margin-bottom: 5%;
+}
+
+.stats_subheader
+{
+	margin-bottom: 5%;
+}
+
+.stats_header_left
+{
+	float: left;
+	width: 50%;
+	text-align: left;
+}
+
+.stats_header_right
+{
+	float: right;
+	width: 50%;
+	text-align: right;
+}
+
+.stats_left
+{
+	float: left;
+	width: 75%;
+	text-align: left;
+}
+
+.stats_right
+{
+	float: right;
+	width: 25%;
+	text-align: left;
 }
 
 /*Replay Buttons*/
@@ -232,19 +271,19 @@ button#debrief_btn:checked #bullet_img
 	background-image: bullet-r-o.png;
 }
 
-button#recs_btn:hover #bullet_img
+button#stats_btn:hover #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-h.png;
 }
 
-button#recs_btn:active #bullet_img
+button#stats_btn:active #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
 }
 
-button#recs_btn:checked #bullet_img
+button#stats_btn:checked #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
@@ -257,7 +296,7 @@ div#arrow_cont
 	float: right;
 	width: 14%;
 	height: auto;
-	margin-right: 3%;
+	margin-right: 5%;
 	margin-bottom: 0.0%;
 	margin-top: 9%;
 }
@@ -267,18 +306,8 @@ div#skip_cont
 	float: right;
 	width: 8%;
 	height: auto;
-	margin-right: 3%;
+	margin-right: 5%;
 	margin-bottom: 0.0%;
-	margin-top: 10%;
-}
-
-div#pause_cont
-{
-	float: right;
-	width: 6%;
-	height: auto;
-	margin-right: 3%;
-	margin-bottom: 0.0;
 	margin-top: 10%;
 }
 
@@ -300,12 +329,6 @@ div#pause_cont
 {
 	background-decorator: image;
 	background-image: arrow-left.png;
-}
-
-#cmdpause_img
-{
-	background-decorator: image;
-	background-image: pause.png;
 }
 
 #cmdnext_img

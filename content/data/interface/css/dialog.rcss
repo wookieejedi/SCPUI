@@ -16,6 +16,24 @@
 	z-index: 4;
 }
 
+#button_container p
+{
+	width: 500%;
+}
+
+.button_text_dialog
+{
+	text-align: right;
+}
+
+.button_text_dialog p
+{
+	display: block;
+	margin-left: -540%;
+	margin-top: -35%;
+	position: absolute;
+}
+
 .button_positive div
 {
 	background-decorator: image;
@@ -52,6 +70,24 @@
 	background-image: decline-o.png;
 }
 
+.button_neutral div
+{
+	background-decorator: image;
+	background-image: bullet-l.png;
+}
+
+.button_neutral:hover div
+{
+	background-decorator: image;
+	background-image: bullet-l-h.png;
+}
+
+.button_neutral:active div
+{
+	background-decorator: image;
+	background-image: bullet-l-o.png;
+}
+
 .button_positive:hover p
 {
 	color: #abbbab;
@@ -70,6 +106,16 @@
 .button_negative:active p
 {
 	color: #dd9393;
+}
+
+.button_neutral:hover p
+{
+	color: #abbbab;
+}
+
+.button_neutral:active p
+{
+	color: #c9e4c9;
 }
 
 div#content
