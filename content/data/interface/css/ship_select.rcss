@@ -103,12 +103,40 @@ div#ship_scroll_wrapper
 	height: 80%;
 }
 
+div#ship_icon_list
+{
+	width: 18%;
+	height: 100%;
+	padding-left: 7%;
+	float: left;
+}
+
+.icon
+{
+	width: 25%;
+
+	drag: clone;
+}
+
 div#ship_scroll
 {
-	width: 80%;
+	width: 70%;
 	height: 60%;
 	margin-top: 40%;
-	margin-left: 20%;
+	float: right;
+}
+
+div#wing_slot_one
+{
+	width:25%;
+	height:25%;
+
+}
+
+div#wing_slot_one img
+{
+	width:25%;
+	height:auto;
 }
 
 /*Top Panel Elements*/

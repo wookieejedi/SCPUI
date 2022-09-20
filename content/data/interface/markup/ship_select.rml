@@ -2,41 +2,45 @@
 	<head>
 		<title>XSTR("Ship Select", -1)</title>
 		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="ship_select.rcss"/>
+		<script>
+			controller = require("shipselect")()
+		</script>
 	</head>
-	<body>
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload(); controller = nil">
 		<div id=top_panel_wrapper>
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
 					<div id=bullet_cont>
-						<button id="brief_btn" class="bullet button_1">
+						<button id="brief_btn" class="bullet button_1" onclick="controller:ChangeBriefState(1)">
 							<span id="bullet_img" class="bullet">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Briefing</p>
+								<p>XSTR("Briefing", -1)</p>
 							</span>
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="s_select_btn" class="bullet button_1">
+						<button id="s_select_btn" class="bullet button_1" onclick="controller:ChangeBriefState(2)">
 							<span id="bullet_img" class="bullet">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Ship Selection</p>
+								<p>XSTR("Ship Selection", -1)</p>
 							</span>
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="w_select_btn" class="bullet button_1">
+						<button id="w_select_btn" class="bullet button_1" onclick="controller:ChangeBriefState(3)">
 							<span id="bullet_img" class="bullet">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>Weapon Selection</p>
+								<p>XSTR("Weapon Selection", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -81,7 +85,15 @@
 		<div id=ship_scroll_panel>
 			<div id=scroll_button_wrapper>
 				<div id=ship_scroll_wrapper>
+					<div id=ship_icon_list>
+						<div id=myrm_icon class="icon" ondragend="controller:DragEnd(element)">
+						<img src="icon_myrm.png"></img>
+						</div>
+					</div>
 					<div id=ship_scroll>
+						<div id=wing_slot_one ondragover="controller:DragOver(element)">
+						<img src="diamonds.png"></img>
+						</div>
 					</div>
 				</div>
 				<div id=scroll_button_cont_top>
