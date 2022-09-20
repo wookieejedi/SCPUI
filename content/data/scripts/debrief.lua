@@ -48,6 +48,7 @@ function DebriefingController:initialize(document)
 	end
 	
 	self.document:GetElementById("mission_name").inner_rml = mn.getMissionTitle()
+	self.document:GetElementById("awards_wrapper"):SetClass("hidden", true)
 	
 	local li_el = self.document:CreateElement("li")
 	
@@ -64,11 +65,35 @@ function DebriefingController:initialize(document)
 		if promoName then
 			numStages = numStages + 1
 			self.stages[numStages] = promoStage
+			self.document:GetElementById("awards_wrapper"):SetClass("hidden", false)
+			local awards_el = self.document:GetElementById("medal_image_wrapper")
+			local imgEl = self.document:CreateElement("img")
+			imgEl:SetAttribute("src", promoFile)
+			imgEl:SetClass("medal_img", true)
+			awards_el:AppendChild(imgEl)
+			self.document:GetElementById("promotion_text").inner_rml = promoName
 		end
 		
 		if badgeName then
 			numStages = numStages + 1
 			self.stages[numStages] = badgeStage
+			self.document:GetElementById("awards_wrapper"):SetClass("hidden", false)
+			local awards_el = self.document:GetElementById("medal_image_wrapper")
+			local imgEl = self.document:CreateElement("img")
+			imgEl:SetAttribute("src", badgeFile)
+			imgEl:SetClass("medal_img", true)
+			awards_el:AppendChild(imgEl)
+			self.document:GetElementById("badge_text").inner_rml = badgeName
+		end
+		
+		if medalName then
+			self.document:GetElementById("awards_wrapper"):SetClass("hidden", false)
+			local awards_el = self.document:GetElementById("medal_image_wrapper")
+			local imgEl = self.document:CreateElement("img")
+			imgEl:SetAttribute("src", medalFile)
+			imgEl:SetClass("medal_img", true)
+			awards_el:AppendChild(imgEl)
+			self.document:GetElementById("medal_text").inner_rml = medalName
 		end
 		
 		local debriefing = ui.Debriefing.getDebriefing()
@@ -182,6 +207,10 @@ function DebriefingController:BuildStats()
 	local stats = self.player.Stats
 	local name = self.player:getName()
 	local difficulty = ba.getGameDifficulty()
+	local missionTime = mn.getMissionTime()
+	
+	--Convert mission time to minutes + seconds
+	missionTime = (math.floor(missionTime/60)) .. ":" .. (math.floor(missionTime % 60))
 	
 	if difficulty == 1 then difficulty = "very easy" end
 	if difficulty == 2 then difficulty = "easy" end
@@ -240,7 +269,7 @@ function DebriefingController:BuildStats()
 			secondaryFrHitPer = 0 .. "%"
 		end
 		
-		numbers = mn.getMissionTime() .. "<br></br><br></br><br></br><br></br>" .. stats.MissionTotalKills .. "<br></br><br></br>" .. stats.MissionPrimaryShotsFired .. "<br></br>" .. stats.MissionPrimaryShotsHit  .. "<br></br>" .. stats.MissionPrimaryFriendlyHit .. "<br></br>" .. primaryHitPer .. "<br></br>" .. primaryFrHitPer .. "<br></br><br></br>" .. stats.MissionSecondaryShotsFired .. "<br></br>" .. stats.MissionSecondaryShotsHit .. "<br></br>" .. stats.MissionSecondaryFriendlyHit .. "<br></br>" .. secondaryHitPer .. "<br></br>" .. secondaryFrHitPer .. "<br></br><br></br>" .. stats.MissionAssists
+		numbers = missionTime .. "<br></br><br></br><br></br><br></br>" .. stats.MissionTotalKills .. "<br></br><br></br>" .. stats.MissionPrimaryShotsFired .. "<br></br>" .. stats.MissionPrimaryShotsHit  .. "<br></br>" .. stats.MissionPrimaryFriendlyHit .. "<br></br>" .. primaryHitPer .. "<br></br>" .. primaryFrHitPer .. "<br></br><br></br>" .. stats.MissionSecondaryShotsFired .. "<br></br>" .. stats.MissionSecondaryShotsHit .. "<br></br>" .. stats.MissionSecondaryFriendlyHit .. "<br></br>" .. secondaryHitPer .. "<br></br>" .. secondaryFrHitPer .. "<br></br><br></br>" .. stats.MissionAssists
 	end
 	
 	if self.page == 2 then
@@ -341,22 +370,27 @@ end
 function DebriefingController:dialog_response(response)
 	local switch = {
 		accept = function()
+			self:close()
 			ui.Debriefing.acceptMission()
 		end, 
 		acceptquit = function()
+			self:close()
 			ui.Debriefing.acceptMission(false)
 			ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 		end,
 		replay = function()
+			self:close()
 			ui.Debriefing.clearMissionStats()
 			ui.Debriefing.replayMission()
 		end,
 		quit = function()
+			self:close()
 			ui.Debriefing.clearMissionStats()
 			ui.Debriefing.replayMission(false)
 			ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 		end,
 		skip = function()
+			self:close()
 			ui.Debriefing.acceptMission(false)
 			ui.Briefing.skipMission()
 		end,
@@ -479,6 +513,7 @@ function DebriefingController:replay_pressed(element)
     ui.playElementSound(element, "click", "success")
 	if ui.Debriefing:mustReplay() then
 		ui.Debriefing.clearMissionStats()
+		self:close()
 		ui.Debriefing.replayMission()
 	else
 		local text = ba.XSTR("If you choose to replay this mission, you will be required to complete it again before proceeding to future missions.\n\nIn addition, any statistics gathered during this mission will be discarded if you choose to replay.", 452)
@@ -528,12 +563,20 @@ function DebriefingController:accept_pressed()
 			
 		self:Show(text, title, buttons)
 	else
+		self:close()
 		ui.Debriefing.acceptMission()
 	end
 end
 
+function DebriefingController:medals_button_clicked(element)
+    ui.playElementSound(element, "click", "success")
+	self.selectedSection = 0
+    ba.postGameEvent(ba.GameEvents["GS_EVENT_VIEW_MEDALS"])
+end
+
 function DebriefingController:options_button_clicked(element)
     ui.playElementSound(element, "click", "success")
+	self.selectedSection = 0
     ba.postGameEvent(ba.GameEvents["GS_EVENT_OPTIONS_MENU"])
 end
 
@@ -587,14 +630,17 @@ function DebriefingController:global_keydown(_, event)
     end
 end
 
-function DebriefingController:unload()
-    if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
-        self.current_voice_handle:close(false)
-    end
+function DebriefingController:close()
 	if self.music_handle ~= nil and self.music_handle:isValid() then
         self.music_handle:close(false)
     end
 	RocketUiSystem.debriefInit = false
+end
+
+function DebriefingController:unload()
+    if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
+        self.current_voice_handle:close(false)
+    end
 end
 
 return DebriefingController

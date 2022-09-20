@@ -19,8 +19,8 @@ div#debrief_text
 	margin-left: 10%;
 	margin-right: 7%;
 	color: grey;
-	overflow: auto;
-	height: auto;
+	overflow: scroll;
+	height: 85%;
 	line-height: 90%;
 }
 
@@ -122,6 +122,7 @@ div#replay_wrapper
 	bottom: 2%;
 	width: 7%;
 	padding-left: 0.3%;
+	z-index: 7;
 }
 
 div#replay_cont
@@ -296,7 +297,7 @@ div#arrow_cont
 	float: right;
 	width: 14%;
 	height: auto;
-	margin-right: 5%;
+	margin-right: 4%;
 	margin-bottom: 0.0%;
 	margin-top: 9%;
 }
@@ -306,7 +307,7 @@ div#skip_cont
 	float: right;
 	width: 8%;
 	height: auto;
-	margin-right: 5%;
+	margin-right: 4%;
 	margin-bottom: 0.0%;
 	margin-top: 10%;
 }
@@ -400,6 +401,131 @@ button#cmdfirst_btn:active #cmdfirst_img
 {
 	background-decorator: image;
 	background-image: skip-l-o.png;
+}
+
+/* Awards Window Elements */
+
+div#awards_wrapper
+{
+	width: 34%;
+	height: auto;
+	margin-top: 1.1%;
+	position: absolute;
+	top: 25%;
+	right: 3%;
+}
+
+div#awards_wrapper img
+{
+
+	width: 100%;
+	height: auto;
+
+}
+
+div#medal_image_wrapper
+{
+	width: 93%;
+	height: 83%;
+	margin-top: 1.1%;
+	position: absolute;
+	top: 1%;
+	left: 2%;
+}
+
+/*Unused but could be used if medal images are saved as properly
+cropped instead of the retail style where the image has lots of
+empty space to account for it's position in the box*/
+/*div#badge_wrapper
+{
+	width: 47%;
+	height: 25%;
+	margin-top: 1.1%;
+	position: absolute;
+	top: 1%;
+	left: 2%;
+	z-index: 10;
+}
+
+div#promotion_wrapper
+{
+	width: 47%;
+	height: 25%;
+	margin-top: 1.1%;
+	position: absolute;
+	top: 27%;
+	left: 2%;
+}
+
+div#medal_wrapper
+{
+	width: 45%;
+	height: 83%;
+	margin-top: 1.1%;
+	position: absolute;
+	top: 1%;
+	right: 5%;
+}*/
+
+div#medal_image_wrapper .medal_img
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+div#award_text_wrapper
+{
+	width: 47%;
+	height: 33%;
+	margin-top: 1.1%;
+	position: absolute;
+	top: 54%;
+	left: 2%;
+}
+
+.award_text
+{
+	margin: 3%;
+	margin-top: 10%;
+	margin-bottom: 10%;
+}
+
+div#medals_cont
+{
+	width: 7%;
+	height: auto;
+	margin: auto;
+	position: absolute;
+	bottom: 0;
+	left: 39%;
+
+}
+
+.medals
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#medals_img
+{
+	background-decorator: image;
+	background-image: medals.png;
+}
+
+button#medals_btn:hover #medals_img
+{
+	background-decorator: image;
+	background-image: medals-h.png;
+}
+
+button#medals_btn:active #medals_img
+{
+	background-decorator: image;
+	background-image: medals-o.png;
 }
 
 /*Bottom Panel Elements*/
@@ -573,61 +699,74 @@ button#options_btn:active #options_img
 
 /*Scroll Buttons*/
 
-div#text_scroll_wrapper
+#debrief_text scrollbarvertical
 {
+	scrollchange-sound: 9;
+	width: 7%;
 	position: absolute;
 	top: 21%;
-	width: 7%;
+	left: -11.1%;
+	z-index: 5;
 }
 
-div#text_scroll_cont
+#debrief_text scrollbarvertical slidertrack
+{
+	visibility: hidden;
+}
+
+#debrief_text scrollbarvertical sliderbar
+{
+	visibility: hidden;
+}
+
+#debrief_text scrollbarvertical sliderbar:hover
+{
+	
+}
+
+#debrief_text scrollbarvertical sliderbar:active
+{
+	
+}
+
+#debrief_text scrollbarvertical sliderarrowdec
 {
 	width: 100%;
-	height: auto;
-	margin: auto;
-	margin-top: 1%;
+	height: 11%;
+	margin-top: 2%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
 }
 
-.text_scroll_btns
+#debrief_text scrollbarvertical sliderarrowinc
 {
-	display: block;
 	width: 100%;
-	height: auto;
-
+	height: 11%;
+	margin-bottom: 75%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
 }
 
-#scroll_up_img
+#debrief_text scrollbarvertical sliderarrowdec:hover
 {
-	background-decorator: image;
-	background-image: arrow-dbl-up.png;
+	icon-image: arrow-dbl-up-h.png;
 }
 
-#scroll_down_img
+#debrief_text scrollbarvertical sliderarrowinc:hover
 {
-	background-decorator: image;
-	background-image: arrow-dbl-down.png;
+	icon-image: arrow-dbl-down-h.png;
 }
 
-button#scroll_up_btn:hover #scroll_up_img
+#debrief_text scrollbarvertical sliderarrowdec:active
 {
-	background-decorator: image;
-	background-image: arrow-dbl-up-h.png;
+	icon-image: arrow-dbl-up-o.png;
 }
 
-button#scroll_down_btn:hover #scroll_down_img
+#debrief_text scrollbarvertical sliderarrowinc:active
 {
-	background-decorator: image;
-	background-image: arrow-dbl-down-h.png;
-}
-
-button#scroll_up_btn:active #scroll_up_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-up-o.png;
-}
-
-button#scroll_down_btn:active #scroll_down_img
-{
-	background-decorator: image;
-	background-image: arrow-dbl-down-o.png;
+	icon-image: arrow-dbl-down-o.png;
 }
