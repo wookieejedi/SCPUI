@@ -22,6 +22,37 @@ function ShipSelectController:initialize(document)
 	else
 		self.document:GetElementById("main_background"):SetClass("p1-5", true)
 	end
+	
+	ui.ShipWepSelect.initSelect()
+	
+	local loadout = ui.ShipWepSelect.Loadout_Wings[1]
+	--ba.warning(#ui.ShipWepSelect.Loadout_Wings .. " " .. loadout.Name)
+	one = loadout[1]
+	two = loadout[2]
+	three = loadout[3]
+	four = loadout[4]
+	
+	local all = ""
+	
+	local i = 1
+	while (i < 5) do
+		all = all .. tostring(loadout[i].isDisabled) .. " "
+		i = i + 1
+	end
+	
+	ba.warning(all)
+	
+	local all = ""
+	
+	local i = 1
+	while (i < 5) do
+		local idx = loadout[i].ShipClassIndex
+		local name = tb.ShipClasses[idx].Name
+		all = all .. name .. " "
+		i = i + 1
+	end
+	
+	ba.warning(all)
 
 end
 
@@ -82,6 +113,10 @@ function ShipSelectController:global_keydown(element, event)
 	--elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then
 	--	self:ChangeTechState(1)
 	end
+end
+
+function ShipSelectController:unload()
+	
 end
 
 return ShipSelectController

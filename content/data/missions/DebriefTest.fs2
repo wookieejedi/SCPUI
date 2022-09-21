@@ -4,7 +4,7 @@ $Version: 0.10
 $Name:  XSTR("Debrief Test", -1)
 $Author: Mike Nelson
 $Created: 09/01/22 at 13:55:44
-$Modified: 09/19/22 at 09:26:00
+$Modified: 09/21/22 at 16:39:05
 $Notes:
 This is a FRED2_OPEN created mission.
 $End Notes:
@@ -94,53 +94,49 @@ $Ship Choices: (
 	"GTB Ursa"	5
 	"GTB Zeus"	5
 	"GTB Boanerges"	5
+	"GVF Seth"	5
+	"GVF Horus"	5
+	"GVF Thoth"	5
+	"GVF Serapis"	5
+	"GVF Tauret"	5
+	"GVB Sekhmet"	5
+	"GVB Osiris"	5
+	"GVB Bakha"	5
 	"GVF Ptah"	5
 )
 
 +Weaponry Pool: (
-	"Subach HL-7"	20
-	"Subach HL-D"	16
-	"Mekhu HL-7"	16
-	"Mekhu HL-7D"	16
+	"Subach HL-7"	27
+	"Mekhu HL-7"	100
 	"Akheton SDG"	16
 	"Morning Star"	16
-	"MorningStar D"	16
-	"Prometheus R"	20
+	"Prometheus R"	26
 	"Prometheus S"	16
-	"Prometheus D"	16
 	"Maxim"	16
-	"Maxim D"	16
 	"UD-8 Kayser"	16
-	"UD-D Kayser"	16
 	"Circe"	16
 	"Lamprey"	16
 	"Rockeye"	500
-	"Rockeye D"	500
 	"Tempest"	500
-	"Tempest D"	500
-	"Hornet"	500
-	"Hornet D"	500
+	"Hornet"	690
 	"Tornado"	500
-	"Tornado D"	500
-	"Harpoon"	564
-	"Harpoon D"	500
+	"Harpoon"	676
 	"Trebuchet"	500
 	"TAG-A"	500
 	"TAG-B"	500
 	"Piranha"	500
 	"Stiletto II"	500
 	"Infyrno"	500
-	"Infyrno D"	500
 	"Cyclops"	500
-	"Cyclops#short"	500
 	"Helios"	500
 	"EMP Adv."	500
+	"Cyclops#short"	8
 )
 
-#Objects		;! 6 total
+#Objects		;! 13 total
 
 $Name: Alpha 1		;! Object #0
-$Class: GTF Ulysses
+$Class: GTF Erinyes
 $Team: Friendly
 $Location: 0.000000, 0.000000, 0.000000
 $Orientation:
@@ -150,7 +146,6 @@ $Orientation:
 $AI Behavior: None
 $AI Goals: ( goals ( ai-play-dead-persistent 50 ) )
 $Cargo 1:  XSTR("Nothing", -1)
-+Initial Velocity: 33
 +Initial Hull: 100
 +Subsystem: Pilot
 $Arrival Location: Hyperspace
@@ -161,8 +156,8 @@ $Determination: 10
 +Flags: ( "cargo-known" "player-start" )
 +Flags2: ( )
 +Respawn priority: 0
++Orders Accepted List: ( )
 +Group: 0
-+Use Table Score:
 +Score: 8
 
 $Name: SF Manticore 1		;! Object #1
@@ -192,7 +187,7 @@ $Determination: 10
 +Score: 12
 
 $Name: Alpha 2		;! Object #2
-$Class: GTF Ulysses
+$Class: GTF Hercules Mark II
 $Team: Friendly
 $Location: -27.331554, 0.000000, -24.639969
 $Orientation:
@@ -202,7 +197,6 @@ $Orientation:
 $AI Behavior: None
 $AI Goals: ( goals ( ai-play-dead-persistent 50 ) )
 $Cargo 1:  XSTR("Nothing", -1)
-+Initial Velocity: 33
 +Initial Hull: 100
 +Subsystem: Pilot
 $Arrival Location: Hyperspace
@@ -211,14 +205,14 @@ $Departure Location: Hyperspace
 $Departure Cue: ( false ) 
 $Determination: 10
 +Flags: ( "cargo-known" )
-+Flags2: ( )
++Flags2: ( "ship-locked" )
 +Respawn priority: 0
++Orders Accepted List: ( )
 +Group: 0
-+Use Table Score:
 +Score: 8
 
 $Name: Alpha 3		;! Object #3
-$Class: GTF Ulysses
+$Class: GTB Artemis
 $Team: Friendly
 $Location: 45.275669, 0.000000, -32.105484
 $Orientation:
@@ -228,7 +222,6 @@ $Orientation:
 $AI Behavior: None
 $AI Goals: ( goals ( ai-play-dead-persistent 50 ) )
 $Cargo 1:  XSTR("Nothing", -1)
-+Initial Velocity: 33
 +Initial Hull: 100
 +Subsystem: Pilot
 $Arrival Location: Hyperspace
@@ -237,39 +230,13 @@ $Departure Location: Hyperspace
 $Departure Cue: ( false ) 
 $Determination: 10
 +Flags: ( "cargo-known" )
-+Flags2: ( )
++Flags2: ( "weapons-locked" )
 +Respawn priority: 0
++Orders Accepted List: ( )
 +Group: 0
-+Use Table Score:
 +Score: 8
 
-$Name: Alpha 4		;! Object #4
-$Class: GTF Ulysses
-$Team: Friendly
-$Location: 0.642333, 0.000000, -46.498489
-$Orientation:
-	1.000000, 0.000000, 0.000000,
-	0.000000, 1.000000, 0.000000,
-	0.000000, 0.000000, 1.000000
-$AI Behavior: None
-$AI Goals: ( goals ( ai-play-dead-persistent 50 ) )
-$Cargo 1:  XSTR("Nothing", -1)
-+Initial Velocity: 33
-+Initial Hull: 100
-+Subsystem: Pilot
-$Arrival Location: Hyperspace
-$Arrival Cue: ( false ) 
-$Departure Location: Hyperspace
-$Departure Cue: ( false ) 
-$Determination: 10
-+Flags: ( "cargo-known" )
-+Flags2: ( )
-+Respawn priority: 0
-+Group: 0
-+Use Table Score:
-+Score: 8
-
-$Name: GTSC Faustus 5		;! Object #5
+$Name: GTSC Faustus 5		;! Object #4
 $Class: GTSC Faustus
 $Team: Friendly
 $Location: -97.890961, 0.000015, 33.674637
@@ -302,7 +269,215 @@ $Determination: 10
 +Use Table Score:
 +Score: 50
 
-#Wings		;! 1 total
+$Name: Beta 1		;! Object #5
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: 355.464508, 0.000000, 433.574829
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Orders Accepted List: ( )
++Group: 0
++Use Table Score:
++Score: 8
+
+$Name: Beta 2		;! Object #6
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: 332.773346, 0.000000, 388.516968
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Orders Accepted List: ( )
++Group: 0
++Use Table Score:
++Score: 8
+
+$Name: Beta 3		;! Object #7
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: 330.015961, 0.000000, 355.062195
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Orders Accepted List: ( )
++Group: 0
++Use Table Score:
++Score: 8
+
+$Name: Beta 4		;! Object #8
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: 367.473572, 0.000000, 401.065674
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Orders Accepted List: ( )
++Group: 0
++Use Table Score:
++Score: 8
+
+$Name: Gamma 1		;! Object #9
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: 254.680634, 0.000000, 528.812317
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Orders Accepted List: ( )
++Group: 0
++Use Table Score:
++Score: 8
+
+$Name: Gamma 2		;! Object #10
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: 228.066818, 0.000000, 499.125000
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Orders Accepted List: ( )
++Group: 0
++Use Table Score:
++Score: 8
+
+$Name: Gamma 3		;! Object #11
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: 249.302124, 0.000000, 464.923279
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Orders Accepted List: ( )
++Group: 0
++Use Table Score:
++Score: 8
+
+$Name: Gamma 4		;! Object #12
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: 219.568481, 0.000000, 417.901917
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Orders Accepted List: ( )
++Group: 0
++Use Table Score:
++Score: 8
+
+#Wings		;! 3 total
 
 $Name: Alpha
 $Waves: 1
@@ -312,13 +487,48 @@ $Arrival Location: Hyperspace
 $Arrival Cue: ( true ) 
 $Departure Location: Hyperspace
 $Departure Cue: ( false ) 
-$Ships: (		;! 4 total
+$Ships: (		;! 3 total
 	"Alpha 1"
 	"Alpha 2"
 	"Alpha 3"
-	"Alpha 4"
 )
 +Hotkey: 0
++Flags: ( )
+
+$Name: Beta
+$Waves: 1
+$Wave Threshold: 0
+$Special Ship: 0		;! Beta 1
+$Arrival Location: Hyperspace
+$Arrival Cue: ( true ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Ships: (		;! 4 total
+	"Beta 1"
+	"Beta 2"
+	"Beta 3"
+	"Beta 4"
+)
+$AI Goals: ( goals ( ai-play-dead-persistent 200 ) )
++Hotkey: 1
++Flags: ( )
+
+$Name: Gamma
+$Waves: 1
+$Wave Threshold: 0
+$Special Ship: 0		;! Gamma 1
+$Arrival Location: Hyperspace
+$Arrival Cue: ( true ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Ships: (		;! 4 total
+	"Gamma 1"
+	"Gamma 2"
+	"Gamma 3"
+	"Gamma 4"
+)
+$AI Goals: ( goals ( ai-play-dead-persistent 200 ) )
++Hotkey: 2
 +Flags: ( )
 
 #Events		;! 2 total
