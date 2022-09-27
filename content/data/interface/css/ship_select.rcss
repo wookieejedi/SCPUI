@@ -105,17 +105,40 @@ div#ship_scroll_wrapper
 
 div#ship_icon_list
 {
-	width: 18%;
+	width: 8%;
 	height: 100%;
-	padding-left: 7%;
+	padding-left: 4%;
+	padding-right: 2%;
 	float: left;
+	overflow: scroll;
+}
+
+.amount
+{
+	width: 25%;
+	float: left;
+	padding-top: 20%;
 }
 
 .icon
 {
-	width: 25%;
-
+	width: 75%;
 	drag: clone;
+	float: right;
+}
+
+.shiplist_element
+{
+	display: block;
+	color: #7b7b7b;
+}
+.shiplist_element:hover
+{
+	color: #abbbab;
+}
+.shiplist_element:checked
+{
+	color: #6f92f5;
 }
 
 div#ship_scroll
@@ -130,7 +153,6 @@ div#wing_slot_one
 {
 	width:25%;
 	height:25%;
-
 }
 
 div#wing_slot_one img
@@ -216,6 +238,12 @@ button#brief_btn:active #bullet_img
 	background-image: bullet-r-o.png;
 }
 
+button#brief_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
 button#s_select_btn:hover #bullet_img
 {
 	background-decorator: image;
@@ -228,6 +256,12 @@ button#s_select_btn:active #bullet_img
 	background-image: bullet-r-o.png;
 }
 
+button#s_select_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
 button#w_select_btn:hover #bullet_img
 {
 	background-decorator: image;
@@ -235,6 +269,12 @@ button#w_select_btn:hover #bullet_img
 }
 
 button#w_select_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#w_select_btn:checked #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;

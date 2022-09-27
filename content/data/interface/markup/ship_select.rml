@@ -86,12 +86,14 @@
 			<div id=scroll_button_wrapper>
 				<div id=ship_scroll_wrapper>
 					<div id=ship_icon_list>
-						<div id=myrm_icon class="icon" ondragend="controller:DragEnd(element)">
+						<!--<div id=myrm_icon class="icon" ondragend="controller:DragEnd(element)">
 						<img src="icon_myrm.png"></img>
-						</div>
+						</div>!-->
+						<ul id=ship_icon_list_ul>
+						</ul>
 					</div>
 					<div id=ship_scroll>
-						<div id=wing_slot_one ondragover="controller:DragOver(element)">
+						<div id=wing_slot_one ondragover="controller:DragOver(element, 1)">
 						<img src="diamonds.png"></img>
 						</div>
 					</div>
@@ -132,7 +134,7 @@
 			<div id=bottom_panel_a>
 				<div id=a_panel_wrapper>
 					<div id=accept_cont>
-						<button id="accept_btn" class="accept button_1" onclick="controller:commit_pressed(element)">
+						<button id="accept_btn" class="accept button_1" onclick="controller:accept_pressed(element)">
 							<span id="accept_img" class="accept">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
