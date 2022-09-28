@@ -74,11 +74,6 @@
 						<ul id=ship_icon_list_ul>
 						</ul>
 					</div>
-					<div id=ship_scroll>
-						<div id=wing_slot_one ondragover="controller:DragOver(element, 1)">
-						<img src="diamonds.png"></img>
-						</div>
-					</div>
 				</div>
 				<div id=scroll_button_cont_top>
 					<button id="scroll_up_btn" class="text_scroll_btns button_1">
@@ -97,11 +92,13 @@
 			</div>
 			<img src="select-scroll-panel.png"></img>
 		</div>
+		<div id=wings_wrapper>
+		</div>
 		<div id=bottom_panel_wrapper>
 			<div id=bottom_panel_c>
 				<div id=c_panel_wrapper>
 					<div id=reset_cont>
-						<button id="reset_btn" class="reset button_1">
+						<button id="reset_btn" class="reset button_1" onclick="controller:reset_pressed(element)">
 							<span id="reset_img" class="reset">
 								<img src="default.png" class="psuedo_img"></img>
 							</span>

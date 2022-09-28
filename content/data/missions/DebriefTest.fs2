@@ -4,7 +4,7 @@ $Version: 0.10
 $Name:  XSTR("Debrief Test", -1)
 $Author: Mike Nelson
 $Created: 09/01/22 at 13:55:44
-$Modified: 09/21/22 at 16:39:05
+$Modified: 09/28/22 at 16:01:16
 $Notes:
 This is a FRED2_OPEN created mission.
 $End Notes:
@@ -133,7 +133,7 @@ $Ship Choices: (
 	"Cyclops#short"	8
 )
 
-#Objects		;! 13 total
+#Objects		;! 21 total
 
 $Name: Alpha 1		;! Object #0
 $Class: GTF Erinyes
@@ -477,7 +477,199 @@ $Determination: 10
 +Use Table Score:
 +Score: 8
 
-#Wings		;! 3 total
+$Name: Delta 1		;! Object #13
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: -332.737701, 0.000000, 390.281555
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Use Table Score:
++Score: 8
+
+$Name: Delta 2		;! Object #14
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: -339.569763, 0.000000, 433.574829
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Use Table Score:
++Score: 8
+
+$Name: Delta 3		;! Object #15
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: -298.281677, 0.000000, 397.432983
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Use Table Score:
++Score: 8
+
+$Name: Delta 4		;! Object #16
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: -280.578278, 0.000000, 339.548096
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Use Table Score:
++Score: 8
+
+$Name: Epsilon 1		;! Object #17
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: -227.011124, 0.000000, 435.583313
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Use Table Score:
++Score: 8
+
+$Name: Epsilon 2		;! Object #18
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: -226.803467, 0.000000, 473.749146
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Use Table Score:
++Score: 8
+
+$Name: Epsilon 3		;! Object #19
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: -192.663666, 0.000000, 433.574829
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Use Table Score:
++Score: 8
+
+$Name: Epsilon 4		;! Object #20
+$Class: GTF Ulysses
+$Team: Friendly
+$Location: -188.015320, 0.000000, 376.418030
+$Orientation:
+	1.000000, 0.000000, 0.000000,
+	0.000000, 1.000000, 0.000000,
+	0.000000, 0.000000, 1.000000
+$AI Behavior: None
+$Cargo 1:  XSTR("Nothing", -1)
++Initial Velocity: 33
++Initial Hull: 100
++Subsystem: Pilot
+$Arrival Location: Hyperspace
+$Arrival Cue: ( false ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Determination: 10
++Flags: ( "cargo-known" )
++Flags2: ( )
++Respawn priority: 0
++Use Table Score:
++Score: 8
+
+#Wings		;! 5 total
 
 $Name: Alpha
 $Waves: 1
@@ -531,6 +723,38 @@ $AI Goals: ( goals ( ai-play-dead-persistent 200 ) )
 +Hotkey: 2
 +Flags: ( )
 
+$Name: Delta
+$Waves: 1
+$Wave Threshold: 0
+$Special Ship: 0		;! Delta 1
+$Arrival Location: Hyperspace
+$Arrival Cue: ( true ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Ships: (		;! 4 total
+	"Delta 1"
+	"Delta 2"
+	"Delta 3"
+	"Delta 4"
+)
++Flags: ( "reinforcement" )
+
+$Name: Epsilon
+$Waves: 1
+$Wave Threshold: 0
+$Special Ship: 0		;! Epsilon 1
+$Arrival Location: Hyperspace
+$Arrival Cue: ( true ) 
+$Departure Location: Hyperspace
+$Departure Cue: ( false ) 
+$Ships: (		;! 4 total
+	"Epsilon 1"
+	"Epsilon 2"
+	"Epsilon 3"
+	"Epsilon 4"
+)
++Flags: ( "reinforcement" )
+
 #Events		;! 2 total
 
 $Formula: ( when 
@@ -575,8 +799,21 @@ $Team: -1
 $MessageNew:  XSTR("You got stuff", -1)
 $end_multi_text
 
-#Reinforcements		;! 0 total
+#Reinforcements		;! 2 total
 
+$Name: Delta
+$Type: Attack/Protect
+$Num times: 1
++Arrival Delay: 0
++No Messages: ( )
++Yes Messages: ( )
+
+$Name: Epsilon
+$Type: Attack/Protect
+$Num times: 1
++Arrival Delay: 0
++No Messages: ( )
++Yes Messages: ( )
 
 #Background bitmaps		;! 0 total
 
