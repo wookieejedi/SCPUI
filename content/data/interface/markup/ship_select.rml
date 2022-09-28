@@ -52,24 +52,6 @@
 			<div id=ship_stats_window>
 				<div id=ship_stats_wrapper>
 					<div id=ship_stats_info>
-						<p>Class</p>
-						<p style="color:green;padding-left:5;">GTF Myrmidon</p>
-						<p>Type</p>
-						<p style="color:green;padding-left:5;">Advanced Space Superiority</p>
-						<p>Length</p>
-						<p style="color:green;padding-left:5;">16 M</p>
-						<p>Max Velocity</p>
-						<p style="color:green;padding-left:5;">75 M/S</p>
-						<p>Meneuverability</p>
-						<p style="color:green;padding-left:5;">Average</p>
-						<p>Armor</p>
-						<p style="color:green;padding-left:5;">Average</p>
-						<p>Gun Mounts</p>
-						<p style="color:green;padding-left:5;">2 (2,4)</p>
-						<p>Missile Banks</p>
-						<p style="color:green;padding-left:5;">3 (20,20,40)</p>
-						<p>Manufacturer</p>
-						<p style="color:green;padding-left:5;">RNI Systems</p>
 					</div>
 				</div>
 				<img src="select-window-left.png"></img>
@@ -124,7 +106,7 @@
 								<img src="default.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
-								<p>Reset</p>
+								<p>XSTR("Reset", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -139,7 +121,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>Continue</p>
+								<p>XSTR("Commit", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -154,7 +136,7 @@
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>Help</p>
+								<p>XSTR("Help", -1)</p>
 							</span>
 						</button>
 					</div>
@@ -164,7 +146,7 @@
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>Options</p>
+								<p>XSTR("Options", -1)</p>
 							</span>
 						</button>
 					</div>

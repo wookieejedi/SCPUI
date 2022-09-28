@@ -141,6 +141,12 @@ div#ship_icon_list
 	color: #6f92f5;
 }
 
+.info
+{
+	color: green;
+	padding-left: 5;
+}
+
 div#ship_scroll
 {
 	width: 70%;

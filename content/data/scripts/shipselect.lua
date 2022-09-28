@@ -46,12 +46,12 @@ function ShipSelectController:initialize(document)
 				Anim = shipList[i].SelectAnimFilename,
 				Name = shipList[i].Name,
 				Type = shipList[i].TypeString,
-				Length = "No support added yet",
-				Velocity = "No support added yet",
+				Length = shipList[i].LengthString,
+				Velocity = shipList[i].VelocityString,
 				Maneuverability = shipList[i].ManeuverabilityString,
 				Armor = shipList[i].ArmorString,
-				GunMounts = "No support added yet",
-				MissileBanks = "No support added yet",
+				GunMounts = shipList[i].GunMountsString,
+				MissileBanks = shipList[i].MissileBanksString,
 				Manufacturer = shipList[i].ManufacturerString
 			}
 		end
@@ -232,10 +232,17 @@ function ShipSelectController:SelectEntry(entry)
 		
 		local thisEntry = self.document:GetElementById(entry.key)
 		self.SelectedEntry = entry.key
-		self.SelectedIndex = entry.Index
+		--self.SelectedIndex = entry.Index
 		thisEntry:SetPseudoClass("checked", true)
 		
-		--self.document:GetElementById("cutscene_desc").inner_rml = entry.Description
+		self:BuildInfo(entry)
+		
+		local aniWrapper = self.document:GetElementById("ship_view")
+		aniWrapper:RemoveChild(aniWrapper.first_child)
+		local aniEl = self.document:CreateElement("ani")
+		aniEl:SetAttribute("src", entry.Anim)
+		aniEl:SetClass("anim", true)
+		aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
 		
 	end
 
@@ -246,6 +253,28 @@ function ShipSelectController:ClearEntries(parent)
 	while parent:HasChildNodes() do
 		parent:RemoveChild(parent.first_child)
 	end
+
+end
+
+function ShipSelectController:BuildInfo(entry)
+
+	local infoEl = self.document:GetElementById("ship_stats_info")
+	
+	local midString = "</p><p class=\"info\">"
+	
+	local shipClass    = "<p>" .. ba.XSTR("Class", 739) .. midString .. entry.Name .. "</p>"
+	local shipType     = "<p>" .. ba.XSTR("Type", 740) .. midString .. entry.Type .. "</p>"
+	local shipLength   = "<p>" .. ba.XSTR("Length", 741) .. midString .. entry.Length .. "</p>"
+	local shipVelocity = "<p>" .. ba.XSTR("Max Velocity", 742) .. midString .. entry.Velocity .. "</p>"
+	local shipManeuv   = "<p>" .. ba.XSTR("Maneuverability", 744) .. midString .. entry.Maneuverability .. "</p>"
+	local shipArmor    = "<p>" .. ba.XSTR("Armor", 745) .. midString .. entry.Armor .. "</p>"
+	local shipGuns     = "<p>" .. ba.XSTR("Gun Mounts", 746) .. midString .. entry.GunMounts .. "</p>"
+	local shipMissiles = "<p>" .. ba.XSTR("Missile Banks", 747) .. midString .. entry.MissileBanks .. "</p>"
+	local shipManufac  = "<p>" .. ba.XSTR("Manufacturer", 748) .. midString .. entry.Manufacturer .. "</p>"
+
+	local completeRML = shipClass .. shipType .. shipLength .. shipVelocity .. shipManeuv .. shipArmor .. shipGuns .. shipMissiles .. shipManufac
+	
+	infoEl.inner_rml = completeRML
 
 end
 
@@ -275,29 +304,32 @@ function ShipSelectController:DragOver(element, slot)
 end
 
 function ShipSelectController:DragEnd(element, class, index)
-	if self.slots[self.activeSlot].Class == nil then
-		self.slots[self.activeSlot].Class = class
-		local countEl = self.document:GetElementById(class).first_child
-		local count = tonumber(countEl.first_child.inner_rml) - 1
-		countEl.first_child.inner_rml = count
-	else
-		local countEl = self.document:GetElementById(self.slots[self.activeSlot].Class).first_child
-		local count = tonumber(countEl.first_child.inner_rml) + 1
-		countEl.first_child.inner_rml = count
-		self.slots[self.activeSlot].Class = class
-		local countEl = self.document:GetElementById(class).first_child
-		local count = tonumber(countEl.first_child.inner_rml) - 1
-		countEl.first_child.inner_rml = count
+	if self.replace ~= nil then
+		if self.slots[self.activeSlot].Class == nil then
+			self.slots[self.activeSlot].Class = class
+			local countEl = self.document:GetElementById(class).first_child
+			local count = tonumber(countEl.first_child.inner_rml) - 1
+			countEl.first_child.inner_rml = count
+		else
+			local countEl = self.document:GetElementById(self.slots[self.activeSlot].Class).first_child
+			local count = tonumber(countEl.first_child.inner_rml) + 1
+			countEl.first_child.inner_rml = count
+			self.slots[self.activeSlot].Class = class
+			local countEl = self.document:GetElementById(class).first_child
+			local count = tonumber(countEl.first_child.inner_rml) - 1
+			countEl.first_child.inner_rml = count
+		end
+		local replace_el = self.document:GetElementById(self.replace.id)
+		local icon_el = self.document:GetElementById(element.id)
+		local imgEl = self.document:CreateElement("img")
+		imgEl:SetAttribute("src", element:GetAttribute("src"))
+		self.document:GetElementById(replace_el.id):RemoveChild(replace_el.first_child)
+		self.document:GetElementById(replace_el.id):AppendChild(imgEl)
+		
+		ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex = index
+		self:SetDefaultWeapons(self.activeSlot, index)
+		self.replace = nil
 	end
-	local replace_el = self.document:GetElementById(self.replace.id)
-	local icon_el = self.document:GetElementById(element.id)
-	local imgEl = self.document:CreateElement("img")
-	imgEl:SetAttribute("src", element:GetAttribute("src"))
-	self.document:GetElementById(replace_el.id):RemoveChild(replace_el.first_child)
-	self.document:GetElementById(replace_el.id):AppendChild(imgEl)
-	
-	ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex = index
-	self:SetDefaultWeapons(self.activeSlot, index)
 end
 
 function ShipSelectController:SetDefaultWeapons(slot, shipIndex)
@@ -328,16 +360,14 @@ function ShipSelectController:accept_pressed()
 
 end
 
-function ShipSelectController:skip_pressed()
-    
-	if mn.isTraining() then
-		ui.Briefing.skipTraining()
-	elseif mn.isInCampaignLoop() then
-		ui.Briefing.exitLoop()
-	elseif mn.isMissionSkipAllowed() then
-		ui.Briefing.skipMission()
-	end
+function ShipSelectController:options_button_clicked(element)
+    ui.playElementSound(element, "click", "success")
+    ba.postGameEvent(ba.GameEvents["GS_EVENT_OPTIONS_MENU"])
+end
 
+function ShipSelectController:help_clicked(element)
+    ui.playElementSound(element, "click", "success")
+    --TODO
 end
 
 function ShipSelectController:global_keydown(element, event)
