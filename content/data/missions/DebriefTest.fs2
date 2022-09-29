@@ -133,6 +133,8 @@ $Ship Choices: (
 	"Cyclops#short"	8
 )
 
++Required for mission: ( "Helios" )
+
 #Objects		;! 21 total
 
 $Name: Alpha 1		;! Object #0

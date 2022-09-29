@@ -20,6 +20,14 @@ function ShipSelectController:initialize(document)
 	self.slots = {}
 	self.aniEl = self.document:CreateElement("ani")
 	
+	j = 1
+	while (j < #tb.WeaponClasses) do
+		if tb.WeaponClasses[j]:isWeaponRequired() then
+			ba.warning(tb.WeaponClasses[j].Name)
+		end
+		j = j + 1
+	end
+	
 	--Create the anim here so that it can be restarted with each new selection
 	local aniWrapper = self.document:GetElementById("ship_view")
 	aniWrapper:ReplaceChild(self.aniEl, aniWrapper.first_child)
