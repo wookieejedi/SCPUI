@@ -10,6 +10,7 @@ local ShipSelectController = class()
 
 function ShipSelectController:init()
 	self.Counter = 0
+	ui.ShipWepSelect.initSelect()
 end
 
 function ShipSelectController:initialize(document)
@@ -35,7 +36,7 @@ function ShipSelectController:initialize(document)
 	self.document:GetElementById("s_select_btn"):SetPseudoClass("checked", true)
 	self.document:GetElementById("w_select_btn"):SetPseudoClass("checked", false)
 	
-	ui.ShipWepSelect.initSelect()
+	--ui.ShipWepSelect.initSelect()
 	
 	self.SelectedEntry = nil
 	self.list = {}
@@ -69,12 +70,12 @@ function ShipSelectController:initialize(document)
 		self:CreateEntries(self.list)
 	end
 	
-	if self.list[1].Name then
-		self:SelectEntry(self.list[1])
-	end
-	
 	--self:InitSlots()
 	self:BuildWings()
+	
+	if self.list[1] then
+		self:SelectEntry(self.list[1])
+	end
 			
 	
 	--[[local loadout = ui.ShipWepSelect.Loadout_Wings[1]
@@ -146,29 +147,11 @@ function ShipSelectController:initialize(document)
 
 end
 
-function ShipSelectController:InitSlots()
-
-	local slotNum = 1
-	for i = 1, #ui.ShipWepSelect.Loadout_Wings, 1 do
-		for j = 1, #ui.ShipWepSelect.Loadout_Wings[i], 1 do
-			self.slots[slotNum] = {}
-			if ui.ShipWepSelect.Loadout_Wings[i][j].isDisabled then
-				self.slots[slotNum].isDisabled = true
-			else
-				self.slots[slotNum].isDisabled = false
-			end
-			self.slots[slotNum].Class = nil
-			slotNum = slotNum + 1
-		end
-	end
-
-end
-
 function ShipSelectController:BuildWings()
 
 	local slotNum = 1
 	local wrapperEl = self.document:GetElementById("wings_wrapper")
-	ba.warning(#ui.ShipWepSelect.Loadout_Wings)
+	self:ClearEntries(wrapperEl)
 
 	--#ui.ShipWepSelect.Loadout_Wings
 	for i = 1, #ui.ShipWepSelect.Loadout_Wings, 1 do
@@ -203,42 +186,68 @@ function ShipSelectController:BuildWings()
 			slotsEl:AppendChild(slotEl)
 			
 			--default to empty slot image for now, but don't show disabled slots
-			if not self.slots[slotNum].isDisabled then
-				local slotImg = self.document:CreateElement("img")
-				slotImg:SetAttribute("src", "diamonds.png")
-				slotEl:AppendChild(slotImg)
-			end
+			local slotIcon = "iconwing01.ani"
+			self.slots[slotNum].Name = nil
 			
 			--This is messy, but we have to check which exact slot we are in the wing
 			if j == 1 then
 				slotEl:SetClass("wing_one", true)
-				--This is probably where we need to check what the current loadout is for this slot and load that img
-				self.slots[slotNum].Class = nil
+				--Get the current ship in this slot
+				local shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
+				if shipIndex > 0 then
+					slotIcon = tb.ShipClasses[shipIndex].SelectIconFilename
+					self.slots[slotNum].Name = tb.ShipClasses[shipIndex].Name
+				end
 			elseif j == 2 then
 				slotEl:SetClass("wing_two", true)
-				--This is probably where we need to check what the current loadout is for this slot and load that img
-				self.slots[slotNum].Class = nil
+				--Get the current ship in this slot
+				local shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
+				if shipIndex > 0 then
+					slotIcon = tb.ShipClasses[shipIndex].SelectIconFilename
+					self.slots[slotNum].Name = tb.ShipClasses[shipIndex].Name
+				end
 			elseif j == 3 then
 				slotEl:SetClass("wing_three", true)
-				--This is probably where we need to check what the current loadout is for this slot and load that img
-				self.slots[slotNum].Class = nil
+				--Get the current ship in this slot
+				local shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
+				if shipIndex > 0 then
+					slotIcon = tb.ShipClasses[shipIndex].SelectIconFilename
+					self.slots[slotNum].Name = tb.ShipClasses[shipIndex].Name
+				end
 			else
 				slotEl:SetClass("wing_four", true)
-				--This is probably where we need to check what the current loadout is for this slot and load that img
-				self.slots[slotNum].Class = nil
+				--Get the current ship in this slot
+				local shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
+				if shipIndex > 0 then
+					slotIcon = tb.ShipClasses[shipIndex].SelectIconFilename
+					self.slots[slotNum].Name = tb.ShipClasses[shipIndex].Name
+				end
 			end
+			--ba.warning(slotNum)
+			--ba.warning(self.slots[slotNum].Name)
+			
+			local slotImg = self.document:CreateElement("ani")
+			slotImg:SetAttribute("src", slotIcon)
+			slotEl:AppendChild(slotImg)
 			
 			slotEl.id = "slot_" .. slotNum
 			local index = slotNum
-			--slotEl:SetClass("button_1", true)
-			--slotEl:AddEventListener("click", function(_, _, _)
-			--	self:SelectEntry(entry)
-			--end)
-			
-			--Add dragover detection for active slots only
 			if not self.slots[slotNum].isDisabled then
-				slotEl:AddEventListener("dragover", function(_, _, _)
+				local thisEntry = self:GetShipEntry(self.slots[slotNum].Name)
+				if thisEntry == nil then
+					thisEntry = self:AppendToPool(self.slots[slotNum].Name)
+				end
+				self.slots[slotNum].entry = thisEntry
+				
+				--Add dragover detection for active slots only
+				slotEl:AddEventListener("dragdrop", function(_, _, _)
 					self:DragOver(slotEl, index)
+				end)
+			
+				--Add click detection for active slots only
+				slotEl:SetClass("button_3", true)
+				slotEl:AddEventListener("click", function(_, _, _)
+					self:SelectEntry(thisEntry)
 				end)
 			end
 			
@@ -246,6 +255,38 @@ function ShipSelectController:BuildWings()
 		end
 	end
 
+end
+
+function ShipSelectController:GetShipEntry(className)
+
+	for i, v in ipairs(self.list) do
+		if v.Name == className then
+			return v
+		end
+	end
+
+end
+
+function ShipSelectController:AppendToPool(className)
+
+	i = #self.list + 1
+	self.list[i] = {
+		Index = i,
+		Amount = 0,
+		Icon = tb.ShipClasses[className].SelectIconFilename,
+		Anim = tb.ShipClasses[className].SelectAnimFilename,
+		Name = tb.ShipClasses[className].Name,
+		Type = tb.ShipClasses[className].TypeString,
+		Length = tb.ShipClasses[className].LengthString,
+		Velocity = tb.ShipClasses[className].VelocityString,
+		Maneuverability = tb.ShipClasses[className].ManeuverabilityString,
+		Armor = tb.ShipClasses[className].ArmorString,
+		GunMounts = tb.ShipClasses[className].GunMountsString,
+		MissileBanks = tb.ShipClasses[className].MissileBanksString,
+		Manufacturer = tb.ShipClasses[className].ManufacturerString,
+		key = tb.ShipClasses[className].Name
+	}
+	return self.list[i]
 end
 
 function ShipSelectController:ReloadList()
@@ -257,7 +298,7 @@ function ShipSelectController:ReloadList()
 	self.Counter = 0
 	self:CreateEntries(self.list)
 	self:SelectEntry(self.visibleList[1])
-
+	self:BuildWings()
 end
 
 function ShipSelectController:CreateEntryItem(entry, idx)
@@ -267,6 +308,7 @@ function ShipSelectController:CreateEntryItem(entry, idx)
 	local li_el = self.document:CreateElement("li")
 	local iconWrapper = self.document:CreateElement("div")
 	iconWrapper.id = entry.Name
+	iconWrapper:SetClass("select_item", true)
 	
 	li_el:AppendChild(iconWrapper)
 	
@@ -284,7 +326,7 @@ function ShipSelectController:CreateEntryItem(entry, idx)
 	li_el.id = entry.Name
 
 	--iconEl:SetClass("shiplist_element", true)
-	iconEl:SetClass("button_1", true)
+	iconEl:SetClass("button_3", true)
 	iconEl:SetClass("icon", true)
 	iconEl:AddEventListener("click", function(_, _, _)
 		self:SelectEntry(entry)
@@ -320,10 +362,10 @@ function ShipSelectController:SelectEntry(entry)
 			if oldEntry then oldEntry:SetPseudoClass("checked", false) end
 		end
 		
-		local thisEntry = self.document:GetElementById(entry.key)
+		--local thisEntry = self.document:GetElementById(entry.key)
 		self.SelectedEntry = entry.key
 		--self.SelectedIndex = entry.Index
-		thisEntry:SetPseudoClass("checked", true)
+		--thisEntry:SetPseudoClass("checked", true)
 		
 		self:BuildInfo(entry)
 		
@@ -379,12 +421,6 @@ function ShipSelectController:ChangeBriefState(state)
 	end
 end
 
-function ShipSelectController:BuildShipList()
-
-	
-
-end
-
 function ShipSelectController:DragOver(element, slot)
 	self.replace = element
 	self.activeSlot = slot
@@ -392,36 +428,40 @@ end
 
 function ShipSelectController:DragEnd(element, entry, index)
 	if self.replace ~= nil then
-		if self.slots[self.activeSlot].Class == nil then
-			self.slots[self.activeSlot].Class = entry.Name
-			local countEl = self.document:GetElementById(entry.Name).first_child
-			local count = tonumber(countEl.first_child.inner_rml) - 1
-			countEl.first_child.inner_rml = count
-		else
-			local countEl = self.document:GetElementById(self.slots[self.activeSlot].Class).first_child
-			local count = tonumber(countEl.first_child.inner_rml) + 1
-			countEl.first_child.inner_rml = count
-			self.slots[self.activeSlot].Class = entry.Name
-			local countEl = self.document:GetElementById(entry.Name).first_child
-			local count = tonumber(countEl.first_child.inner_rml) - 1
-			countEl.first_child.inner_rml = count
+		--Get the amount of the ship we're dragging
+		local countEl = self.document:GetElementById(entry.Name).first_child
+		local count = tonumber(countEl.first_child.inner_rml)
+		if count > 0 then
+			if self.slots[self.activeSlot].Name == nil then
+				self.slots[self.activeSlot].Name = entry.Name
+				local count = count - 1
+				countEl.first_child.inner_rml = count
+			else
+				--Get the amount of the ship we're sending back
+				local countBackEl = self.document:GetElementById(self.slots[self.activeSlot].Name).first_child
+				local countBack = tonumber(countBackEl.first_child.inner_rml) + 1
+				countBackEl.first_child.inner_rml = countBack
+				self.slots[self.activeSlot].Name = entry.Name
+				local count = count - 1
+				countEl.first_child.inner_rml = count
+			end
+			local replace_el = self.document:GetElementById(self.replace.id)
+			local icon_el = self.document:GetElementById(element.id)
+			local imgEl = self.document:CreateElement("img")
+			imgEl:SetAttribute("src", element:GetAttribute("src"))
+			self.document:GetElementById(replace_el.id):RemoveChild(replace_el.first_child)
+			self.document:GetElementById(replace_el.id):AppendChild(imgEl)
+			
+			ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex = index
+			self:SetDefaultWeapons(self.activeSlot, index)
+			
+			replace_el:SetClass("button_3", true)
+			replace_el:AddEventListener("click", function(_, _, _)
+				self:SelectEntry(entry)
+			end)
+			
+			self.replace = nil
 		end
-		local replace_el = self.document:GetElementById(self.replace.id)
-		local icon_el = self.document:GetElementById(element.id)
-		local imgEl = self.document:CreateElement("img")
-		imgEl:SetAttribute("src", element:GetAttribute("src"))
-		self.document:GetElementById(replace_el.id):RemoveChild(replace_el.first_child)
-		self.document:GetElementById(replace_el.id):AppendChild(imgEl)
-		
-		ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex = index
-		self:SetDefaultWeapons(self.activeSlot, index)
-		
-		replace_el:SetClass("button_1", true)
-		replace_el:AddEventListener("click", function(_, _, _)
-			self:SelectEntry(entry)
-		end)
-		
-		self.replace = nil
 	end
 end
 
@@ -446,6 +486,7 @@ end
 function ShipSelectController:reset_pressed(element)
     ui.playElementSound(element, "click", "success")
     ui.ShipWepSelect:resetSelect()
+	self:ReloadList()
 end
 
 function ShipSelectController:accept_pressed()

@@ -147,6 +147,11 @@ button:checked .pos
 	click-sound: (error)15,(commit)7;
 }
 
+.button_3 /*Select Icons*/
+{
+	click-sound: 0,(error)15,(commit)0;
+}
+
 /*Tooltips*/
 /*Tooltip divs need to be a child of a parent with absolute positioning!*/
 
