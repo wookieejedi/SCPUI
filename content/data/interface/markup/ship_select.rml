@@ -65,11 +65,8 @@
 			</div>
 		</div>
 		<div id=ship_scroll_panel>
-			<div id=ship_scroll_wrapper>
+			<div id=ship_scroll_wrapper ondragdrop="controller:DragOver(element, 0)">
 				<div id=ship_icon_list>
-					<!--<div id=myrm_icon class="icon" ondragend="controller:DragEnd(element)">
-					<img src="icon_myrm.png"></img>
-					</div>!-->
 					<ul id=ship_icon_list_ul>
 					</ul>
 				</div>

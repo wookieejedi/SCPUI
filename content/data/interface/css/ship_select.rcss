@@ -138,7 +138,6 @@ div#ship_icon_list
 .icon
 {
 	width: 70%;
-	drag: clone;
 	float: right;
 	z-index: 7;
 }

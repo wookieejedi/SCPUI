@@ -110,6 +110,11 @@ selectvalue
 	visibility: visible;
 }
 
+.drag
+{
+	drag: clone;
+}
+
 /*Button Highlight Colors*/
 
 button:hover .neg
