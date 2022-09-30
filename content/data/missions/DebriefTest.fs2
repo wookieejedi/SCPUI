@@ -120,7 +120,7 @@ $Ship Choices: (
 	"Tempest"	500
 	"Hornet"	690
 	"Tornado"	500
-	"Harpoon"	676
+	"Harpoon"	0
 	"Trebuchet"	500
 	"TAG-A"	500
 	"TAG-B"	500
@@ -133,7 +133,7 @@ $Ship Choices: (
 	"Cyclops#short"	8
 )
 
-+Required for mission: ( "Helios" )
++Required for mission: ( "Subach HL-7" )
 
 #Objects		;! 21 total
 

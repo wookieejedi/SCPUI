@@ -8,9 +8,12 @@ local async_util = require("async_util")
 
 local ShipSelectController = class()
 
+local modelDraw = nil
+
 function ShipSelectController:init()
 	self.Counter = 0
 	ui.ShipWepSelect.initSelect()
+	modelDraw = {}
 end
 
 function ShipSelectController:initialize(document)
@@ -19,11 +22,13 @@ function ShipSelectController:initialize(document)
 	self.elements = {}
 	self.slots = {}
 	self.aniEl = self.document:CreateElement("ani")
+	self.requiredWeps = {}
 	
+	--Get all the required weapons
 	j = 1
 	while (j < #tb.WeaponClasses) do
 		if tb.WeaponClasses[j]:isWeaponRequired() then
-			ba.warning(tb.WeaponClasses[j].Name)
+			self.requiredWeps[#self.requiredWeps + 1] = tb.WeaponClasses[j].Name
 		end
 		j = j + 1
 	end
@@ -245,6 +250,7 @@ end
 
 function ShipSelectController:ReloadList()
 
+	modelDraw.class = nil
 	local list_items_el = self.document:GetElementById("ship_icon_list_ul")
 	self:ClearEntries(list_items_el)
 	self.SelectedEntry = nil
@@ -317,16 +323,17 @@ function ShipSelectController:SelectEntry(entry)
 			if oldEntry then oldEntry:SetPseudoClass("checked", false) end
 		end
 		
-		--local thisEntry = self.document:GetElementById(entry.key)
 		self.SelectedEntry = entry.key
-		--self.SelectedIndex = entry.Index
-		--thisEntry:SetPseudoClass("checked", true)
+		
+		modelDraw.class = entry.Index
+		modelDraw.element = self.document:GetElementById("ship_view_wrapper")
+		modelDraw.start = true
 		
 		self:BuildInfo(entry)
 		
 		--the anim is already created so we only need to remove and reset the src
-		self.aniEl:RemoveAttribute("src")
-		self.aniEl:SetAttribute("src", entry.Anim)
+		--self.aniEl:RemoveAttribute("src")
+		--self.aniEl:SetAttribute("src", entry.Anim)
 		
 	end
 
@@ -409,6 +416,9 @@ function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
 			
 			self:SetFilled(self.activeSlot, true)
 			
+			--This is where we return the previous ship and its weapons to the pool
+			self:ReturnShip(self.activeSlot)
+			--Now set the new ship and weapons
 			ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex = shipIndex
 			self:SetDefaultWeapons(self.activeSlot, shipIndex)
 			
@@ -448,6 +458,9 @@ function ShipSelectController:DragSlotEnd(element, entry, shipIndex, currentSlot
 		self:SetFilled(currentSlot, false)
 		self:SetFilled(self.activeSlot, true)
 		
+		--This is where we return the previous ship and its weapons to the pool
+		self:ReturnShip(self.activeSlot)
+		--Now set the new ship and weapons
 		ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex = shipIndex
 		self:SetDefaultWeapons(self.activeSlot, shipIndex)
 		
@@ -490,22 +503,89 @@ function ShipSelectController:SetFilled(thisSlot, status)
 			
 end
 
+function ShipSelectController:ReturnShip(slot)
+
+	--Return all the weapons to the pool
+	for i = 1, #ui.ShipWepSelect.Loadout_Ships[slot].Weapons, 1 do
+		local weapon = ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i]
+		if weapon > 0 then
+			local amount = ui.ShipWepSelect.Loadout_Ships[slot].Amounts[i]
+			ui.ShipWepSelect.Weapon_Pool[weapon] = ui.ShipWepSelect.Weapon_Pool[weapon] + amount
+		end
+	end
+	
+	--Return the ship
+	local ship = ui.ShipWepSelect.Loadout_Ships[slot].ShipClassIndex
+	ui.ShipWepSelect.Ship_Pool[ship] = ui.ShipWepSelect.Ship_Pool[ship] + 1
+
+end
 
 function ShipSelectController:SetDefaultWeapons(slot, shipIndex)
 
 	--Primaries
 	for i = 1, #tb.ShipClasses[shipIndex].defaultPrimaries, 1 do
-		ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i] = tb.ShipClasses[shipIndex].defaultPrimaries[i]:getWeaponClassIndex()
-		--Eventually we need to check the weapon pool here!
-		ui.ShipWepSelect.Loadout_Ships[slot].Amounts[i] = 1
+		local weapon = tb.ShipClasses[shipIndex].defaultPrimaries[i]:getWeaponClassIndex()
+		--Check the weapon pool
+		if ui.ShipWepSelect.Weapon_Pool[weapon] <= 0 then
+			--Find a new weapon
+			weapon = self:GetFirstAllowedWeapon(shipIndex, i, 2)
+		end
+		--Get an appropriate amount for the weapon and bank
+			amount = self:GetWeaponAmount(shipIndex, weapon, i)
+		--Set the weapon
+		ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i] = weapon
+		ui.ShipWepSelect.Loadout_Ships[slot].Amounts[i] = amount
+		--Subtract from the pool
+		ui.ShipWepSelect.Weapon_Pool[weapon] = ui.ui.ShipWepSelect.Weapon_Pool[weapon] - amount
 	end
 	
 	--Secondaries
 	for i = 1, #tb.ShipClasses[shipIndex].defaultSecondaries, 1 do
-		ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i + 3] = tb.ShipClasses[shipIndex].defaultSecondaries[i]:getWeaponClassIndex()
-		--Eventually we need to check the weapon pool here!
-		ui.ShipWepSelect.Loadout_Ships[slot].Amounts[i + 3] = 1000
+		local weapon = tb.ShipClasses[shipIndex].defaultSecondaries[i]:getWeaponClassIndex()
+		--Check the weapon pool
+		if ui.ShipWepSelect.Weapon_Pool[weapon] <= 0 then
+			--Find a new weapon
+			weapon = self:GetFirstAllowedWeapon(shipIndex, i, 2)
+			--Get an appropriate amount for the weapon and bank
+			amount = self:GetWeaponAmount(shipIndex, weapon, i)
+		end
+		--Set the weapon
+		ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i + 3] = weapon
+		ui.ShipWepSelect.Loadout_Ships[slot].Amounts[i + 3] = amount
+		--Subtract from the pool
+		ui.ShipWepSelect.Weapon_Pool[weapon] = ui.ui.ShipWepSelect.Weapon_Pool[weapon] - amount
 	end
+
+end
+
+function ShipSelectController:GetWeaponAmount(shipIndex, weaponIndex, bank)
+	
+	--Primaries always get set to 1, even ballistics
+	if tb.WeaponClasses[weaponIndex]:isPrimary() then
+		return 1
+	end
+	
+	local capacity = tb.ShipClasses[shipIndex]:getSecondaryBankCapacity(bank)
+	local amount = capacity / tb.WeaponClasses[weaponIndex].CargoSize
+	return math.floor(amount+0.5)
+
+end
+
+function ShipSelectController:GetFirstAllowedWeapon(shipIndex, bank, category)
+
+	i = 1
+	while (i < #tb.WeaponClasses) do
+		if (tb.WeaponClasses[i]:isPrimary() and (category == 1)) or (tb.WeaponClasses[i]:isSecondary() and (category == 2)) then
+			if ui.ShipWepSelect.Weapon_Pool[i] > 0 then
+				if tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(i, bank) then
+					return i
+				end
+			end
+		end
+		i = i + 1
+	end
+	
+	return -1
 
 end
 
@@ -547,16 +627,21 @@ function ShipSelectController:accept_pressed()
 		text = ba.XSTR("Player ship has no weapons", 461)
 	--The required weapon was not loaded on a ship
 	elseif errorValue == 3 then
-		text = ba.XSTR("The %s is required for this mission, but it has not been added to any ship loadout.", 1624)
+		text = ba.XSTR("The " .. self.requiredWeps[1] .. " is required for this mission, but it has not been added to any ship loadout.", 1624)
 	--Two or more required weapons were not loaded on a ship
 	elseif errorValue == 4 then
-		text = ba.XSTR("The following weapons are required for this mission, but at least one of them has not been added to any ship loadout:\n\n%s", 1625)
+		local WepsString = ""
+		for i = 1, #self.requiredWeps, 1 do
+			WepsString = WepsString .. self.requiredWeps[i] .. "\n"
+		end
+		text = ba.XSTR("The following weapons are required for this mission, but at least one of them has not been added to any ship loadout:\n\n" .. WepsString, 1625)
 	--There is a gap in a ship's weapon banks
 	elseif errorValue == 5 then
 		text = ba.XSTR("At least one ship has an empty weapon bank before a full weapon bank.\n\nAll weapon banks must have weapons assigned, or if there are any gaps, they must be at the bottom of the set of banks.", 1642)
 	--A player has no weapons
 	elseif errorValue == 6 then
-		text = ba.XSTR("Player %s must select a place in player wing", 462)
+		local player = ba.getCurrentPlayer():getName()
+		text = ba.XSTR("Player " .. player .. " must select a place in player wing", 462)
 	--Success!
 	else
 		text = nil
@@ -600,7 +685,39 @@ function ShipSelectController:global_keydown(element, event)
 end
 
 function ShipSelectController:unload()
+
+	modelDraw.class = nil
 	
 end
+
+function ShipSelectController:drawSelectModel()
+
+	if modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_SHIP_SELECT" then  --Haaaaaaacks
+
+		--local thisItem = tb.ShipClasses(modelDraw.class)
+		
+		modelView = modelDraw.element	
+		local modelLeft = modelView.parent_node.offset_left --This is pretty messy, but it's functional
+		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top - 7 --Does not include modelView.offset_top because that element's padding is set for anims also subtracts 7px for funsies
+		local modelWidth = modelView.offset_width
+		local modelHeight = modelView.offset_height
+		
+		--ba.warning(modelView.absolute_left)
+		
+		local test = tb.ShipClasses[modelDraw.class]:renderSelectModel(modelDraw.start, 1200, 0, 50, 50)
+		
+		modelDraw.start = false
+		
+	end
+
+end
+
+engine.addHook("On Frame", function()
+	if ba.getCurrentGameState().Name == "GS_STATE_SHIP_SELECT" then
+		ShipSelectController:drawSelectModel()
+	end
+end, {}, function()
+    return false
+end)
 
 return ShipSelectController

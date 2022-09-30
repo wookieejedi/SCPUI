@@ -48,21 +48,19 @@
 				<img src="ops-panel-vert-tall-l.png"></img>
 			</div>
 		</div>
-		<div id=ship_wrapper>
-			<div id=ship_stats_window>
-				<div id=ship_stats_wrapper>
-					<div id=ship_stats_info>
-					</div>
+		<div id=ship_stats_window>
+			<div id=ship_stats_wrapper>
+				<div id=ship_stats_info>
 				</div>
-				<img src="select-window-left.png"></img>
 			</div>
-			<div id=ship_view_window>
-				<div id=ship_view_wrapper>
-					<div id=ship_view>
-					</div>
+			<img src="select-window-left.png"></img>
+		</div>
+		<div id=ship_view_window>
+			<div id=ship_view_wrapper>
+				<div id=ship_view>
 				</div>
-				<img src="select-window-right.png"></img>
 			</div>
+			<img src="select-window-right.png"></img>
 		</div>
 		<div id=ship_scroll_panel>
 			<div id=ship_scroll_wrapper ondragdrop="controller:DragOver(element, 0)">

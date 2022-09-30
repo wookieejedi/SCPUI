@@ -21,8 +21,9 @@ div#ship_stats_window
 	width: 30%;
 	height: auto;
 	overflow: hidden;
-	position: relative;
-	float: left;
+	position: absolute;
+	left: 0%;
+	top: 16%;
 }
 
 div#ship_stats_window img
@@ -49,12 +50,12 @@ div#ship_stats_info
 div#ship_view_window
 {
 	margin-top: 2%;
-	margin-right: 10%;
-	width: 40%;
+	width: 38%;
 	height: auto;
 	overflow: hidden;
-	position: relative;
-	float: right;
+	position: absolute;
+	right: 13%;
+	top: 16%;
 }
 
 div#ship_view_window img
@@ -69,11 +70,13 @@ div#ship_view_wrapper
 	position: absolute;
 	margin-top: 10%;
 	margin-left: 2%;
+	margin-right: 10%;
+	height: 85%;
 }
 
 div#ship_view
 {
-	width: 90%;
+	width: 100%;
 	height: auto;
 }
 
