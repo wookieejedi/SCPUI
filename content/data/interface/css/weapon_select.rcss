@@ -80,12 +80,14 @@ div#weapon_left_column
 	margin-left: 10%;
 	position: absolute;
 	bottom: 0;
+	width: 10.5%;
+	height: 80%;
 }
 
 div#copy_to_wing_panel
 {
-	width: 8%;
-	height: 6%;
+	width: 50%;
+	height: 7%;
 	overflow: hidden;
 	position: relative;
 	margin-left: 1%;
@@ -101,7 +103,7 @@ div#copy_to_wing_panel img
 
 div#weapon_scroll_panel
 {
-	width: 11%;
+	width: 100%;
 	height: auto;
 	overflow: hidden;
 	position: relative;
@@ -139,6 +141,115 @@ div#ship_scroll
 	height: 60%;
 	margin-top: 40%;
 	margin-left: 20%;
+}
+
+.select_item
+{
+	width: 150%;
+}
+
+.amount
+{
+	width: 25%;
+	float: left;
+	padding-top: 20%;
+	padding-right: 5%;
+}
+
+.icon
+{
+	width: 70%;
+	float: right;
+	z-index: 7;
+}
+
+.shiplist_element
+{
+	display: block;
+	color: #7b7b7b;
+}
+.shiplist_element:hover
+{
+	color: #abbbab;
+}
+.shiplist_element:checked
+{
+	color: #6f92f5;
+}
+
+.info
+{
+	color: green;
+	padding-left: 5;
+}
+
+div#wings_wrapper
+{
+	position: absolute;
+	left: 28%;
+	bottom: 5%;
+	width: 50%;
+	height: 20%;
+}
+
+.wing
+{
+	width: 20%;
+	float: left;
+	margin-right: 3%;
+}
+
+.slot_wrapper
+{
+	height: 85%;
+}
+
+.wing_name
+{
+	height: 15%;
+	text-align: center;
+}
+
+.wing_slot
+{
+	width:33%;
+	height:33%;
+}
+
+.wing_slot img
+{
+	width: 100%;
+	height: 100%;
+}
+
+.wing_slot ani
+{
+	width: 100%;
+	height: 100%;
+}
+
+.wing_one
+{
+	margin-left: 33.5%;
+	margin-right: 33.5%;
+}
+
+.wing_two
+{
+	margin-right: 33%;
+	float: left;
+}
+
+.wing_three
+{
+	float: right;
+}
+
+.wing_four
+{
+	margin-top: 33%;
+	margin-left: 33.5%;
+	margin-right: 33.5%;
 }
 
 /*Top Panel Elements*/
@@ -218,6 +329,12 @@ button#brief_btn:active #bullet_img
 	background-image: bullet-r-o.png;
 }
 
+button#brief_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
 button#s_select_btn:hover #bullet_img
 {
 	background-decorator: image;
@@ -230,6 +347,12 @@ button#s_select_btn:active #bullet_img
 	background-image: bullet-r-o.png;
 }
 
+button#s_select_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
 button#w_select_btn:hover #bullet_img
 {
 	background-decorator: image;
@@ -237,6 +360,12 @@ button#w_select_btn:hover #bullet_img
 }
 
 button#w_select_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#w_select_btn:checked #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
@@ -353,9 +482,9 @@ div#copy_to_wing_wrapper
 
 div#copy_to_wing_cont
 {
-	width: 50%;
+	width: 65%;
 	height: auto;
-	margin-left: 30%;
+	margin-left: 20%;
 }
 
 .copy

@@ -6,23 +6,24 @@ local async_util = require("async_util")
 
 --local BriefingController = class(AbstractBriefingController)
 
-local ShipSelectController = class()
+local WeaponSelectController = class()
 
 local modelDraw = nil
 
-function ShipSelectController:init()
+function WeaponSelectController:init()
+	self.Counter = 0
 	ui.ShipWepSelect.initSelect()
 	modelDraw = {}
 end
 
-function ShipSelectController:initialize(document)
+function WeaponSelectController:initialize(document)
     --AbstractBriefingController.initialize(self, document)
 	self.document = document
 	self.elements = {}
 	self.slots = {}
-	self.aniEl = self.document:CreateElement("ani")
+	self.aniEl = self.document:CreateElement("img")
 	self.requiredWeps = {}
-	self.select3d = true
+	self.select3d = false
 	
 	--Get all the required weapons
 	j = 1
@@ -46,12 +47,13 @@ function ShipSelectController:initialize(document)
 	end
 	
 	self.document:GetElementById("brief_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("s_select_btn"):SetPseudoClass("checked", true)
-	self.document:GetElementById("w_select_btn"):SetPseudoClass("checked", false)
+	self.document:GetElementById("s_select_btn"):SetPseudoClass("checked", false)
+	self.document:GetElementById("w_select_btn"):SetPseudoClass("checked", true)
 	
 	--ui.ShipWepSelect.initSelect()
 	
 	self.SelectedEntry = nil
+	self.SelectedShip = nil
 	self.list = {}
 	
 	local shipList = tb.ShipClasses
@@ -79,20 +81,23 @@ function ShipSelectController:initialize(document)
 	end
 	
 	--Only create entries if there are any to create
-	if self.list[1] then
-		self:CreateEntries(self.list)
-	end
+	--if self.list[1] then
+	--	self.visibleList = {}
+	--	self:CreateEntries(self.list)
+	--end
 	
 	--self:InitSlots()
 	self:BuildWings()
+	local callsign = ui.ShipWepSelect.Loadout_Wings[1].Name .. " 1"
+	self:SelectShip(ui.ShipWepSelect.Loadout_Ships[1].ShipClassIndex, callsign, 1)
 	
-	if self.list[1] then
-		self:SelectEntry(self.list[1])
-	end
+	--if self.list[1] then
+	--	self:SelectEntry(self.list[1])
+	--end
 
 end
 
-function ShipSelectController:BuildWings()
+function WeaponSelectController:BuildWings()
 
 	local slotNum = 1
 	local wrapperEl = self.document:GetElementById("wings_wrapper")
@@ -138,6 +143,7 @@ function ShipSelectController:BuildWings()
 			--This is messy, but we have to check which exact slot we are in the wing
 			if j == 1 then
 				slotEl:SetClass("wing_one", true)
+				self.slots[slotNum].Callsign = ui.ShipWepSelect.Loadout_Wings[i].Name .. " 1"
 				--Get the current ship in this slot
 				shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
 				if shipIndex > 0 then
@@ -146,6 +152,7 @@ function ShipSelectController:BuildWings()
 				end
 			elseif j == 2 then
 				slotEl:SetClass("wing_two", true)
+				self.slots[slotNum].Callsign = ui.ShipWepSelect.Loadout_Wings[i].Name .. " 2"
 				--Get the current ship in this slot
 				shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
 				if shipIndex > 0 then
@@ -154,6 +161,7 @@ function ShipSelectController:BuildWings()
 				end
 			elseif j == 3 then
 				slotEl:SetClass("wing_three", true)
+				self.slots[slotNum].Callsign = ui.ShipWepSelect.Loadout_Wings[i].Name .. " 3"
 				--Get the current ship in this slot
 				shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
 				if shipIndex > 0 then
@@ -162,6 +170,7 @@ function ShipSelectController:BuildWings()
 				end
 			else
 				slotEl:SetClass("wing_four", true)
+				self.slots[slotNum].Callsign = ui.ShipWepSelect.Loadout_Wings[i].Name .. " 4"
 				--Get the current ship in this slot
 				shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
 				if shipIndex > 0 then
@@ -184,25 +193,13 @@ function ShipSelectController:BuildWings()
 					if thisEntry == nil then
 						thisEntry = self:AppendToPool(self.slots[slotNum].Name)
 					end
+					local callsign = self.slots[slotNum].Callsign
 					self.slots[slotNum].entry = thisEntry
-					
-					if not self.slots[slotNum].isLocked then
-						--Add dragover detection
-						slotEl:AddEventListener("dragdrop", function(_, _, _)
-							self:DragOver(slotEl, index)
-						end)
-						
-						--Add drag detection
-						slotEl:SetClass("drag", true)
-						slotEl:AddEventListener("dragend", function(_, _, _)
-							self:DragSlotEnd(slotEl, thisEntry, thisEntry.Index, index)
-						end)
-					end
 					
 					--Add click detection
 					slotEl:SetClass("button_3", true)
 					slotEl:AddEventListener("click", function(_, _, _)
-						self:SelectEntry(thisEntry)
+						self:SelectShip(shipIndex, callsign, slotNum)
 					end)
 				else
 					--ba.warning("got here")
@@ -216,7 +213,7 @@ function ShipSelectController:BuildWings()
 
 end
 
-function ShipSelectController:GetShipEntry(className)
+function WeaponSelectController:GetShipEntry(className)
 
 	for i, v in ipairs(self.list) do
 		if v.Name == className then
@@ -226,7 +223,7 @@ function ShipSelectController:GetShipEntry(className)
 
 end
 
-function ShipSelectController:AppendToPool(className)
+function WeaponSelectController:AppendToPool(className)
 
 	i = #self.list + 1
 	self.list[i] = {
@@ -248,20 +245,26 @@ function ShipSelectController:AppendToPool(className)
 	return self.list[i]
 end
 
-function ShipSelectController:ReloadList()
+function WeaponSelectController:ReloadList()
 
 	modelDraw.class = nil
-	local list_items_el = self.document:GetElementById("ship_icon_list_ul")
+	local list_items_el = self.document:GetElementById("primary_icon_list_ul")
+	self:ClearEntries(list_items_el)
+	local list_items_el = self.document:GetElementById("secondary_icon_list_ul")
 	self:ClearEntries(list_items_el)
 	self.SelectedEntry = nil
+	self.SelectedShip = nil
+	self.visibleList = {}
+	self.Counter = 0
 	self:CreateEntries(self.list)
+	self:SelectEntry(self.visibleList[1])
 	self:BuildWings()
-	if self.list[1] then
-		self:SelectEntry(self.list[1])
-	end
+	self:SelectShip(self:GetShipEntry(self.slots[1].Name))
 end
 
-function ShipSelectController:CreateEntryItem(entry, idx)
+function WeaponSelectController:CreateEntryItem(entry, idx)
+
+	self.Counter = self.Counter + 1
 
 	local li_el = self.document:CreateElement("li")
 	local iconWrapper = self.document:CreateElement("div")
@@ -293,12 +296,15 @@ function ShipSelectController:CreateEntryItem(entry, idx)
 	iconEl:AddEventListener("dragend", function(_, _, _)
 		self:DragPoolEnd(iconEl, entry, entry.Index)
 	end)
+	self.visibleList[self.Counter] = entry
 	entry.key = li_el.id
+	
+	self.visibleList[self.Counter].idx = self.Counter
 
 	return li_el
 end
 
-function ShipSelectController:CreateEntries(list)
+function WeaponSelectController:CreateEntries(list)
 
 	local list_names_el = self.document:GetElementById("ship_icon_list_ul")
 	
@@ -309,7 +315,7 @@ function ShipSelectController:CreateEntries(list)
 	end
 end
 
-function ShipSelectController:SelectEntry(entry)
+function WeaponSelectController:SelectEntry(entry)
 
 	if entry.key ~= self.SelectedEntry then
 		
@@ -331,7 +337,33 @@ function ShipSelectController:SelectEntry(entry)
 
 end
 
-function ShipSelectController:ClearEntries(parent)
+function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
+
+	if callsign ~= self.SelectedShip then
+		
+		self.SelectedShip = callsign
+		self.currentShipSlot = slot
+		
+		self.document:GetElementById("ship_name").inner_rml = callsign
+		
+		local overhead = tb.ShipClasses[shipIndex].SelectOverheadFilename
+		
+		if self.select3d or overhead == nil then
+			--This is where the 3D overhead view will be drawn
+			--modelDraw.class = ship.Index
+			--modelDraw.element = self.document:GetElementById("ship_view_wrapper")
+			--modelDraw.start = true
+		else
+			--the anim is already created so we only need to remove and reset the src
+			self.aniEl:RemoveAttribute("src")
+			self.aniEl:SetAttribute("src", overhead)
+		end
+		
+	end
+
+end
+
+function WeaponSelectController:ClearEntries(parent)
 
 	while parent:HasChildNodes() do
 		parent:RemoveChild(parent.first_child)
@@ -339,7 +371,7 @@ function ShipSelectController:ClearEntries(parent)
 
 end
 
-function ShipSelectController:BuildInfo(entry)
+function WeaponSelectController:BuildInfo(entry)
 
 	local infoEl = self.document:GetElementById("ship_stats_info")
 	
@@ -361,26 +393,26 @@ function ShipSelectController:BuildInfo(entry)
 
 end
 
-function ShipSelectController:ChangeBriefState(state)
+function WeaponSelectController:ChangeBriefState(state)
 	if state == 1 then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
 	elseif state == 2 then
-		--Do nothing because we're this is the current state!
-	elseif state == 3 then
 		if mn.isScramble() then
 			ad.playInterfaceSound(10)
 		else
-			ba.postGameEvent(ba.GameEvents["GS_EVENT_WEAPON_SELECTION"])
+			ba.postGameEvent(ba.GameEvents["GS_EVENT_SHIP_SELECTION"])
 		end
+	elseif state == 3 then
+		--Do nothing because we're this is the current state!
 	end
 end
 
-function ShipSelectController:DragOver(element, slot)
+function WeaponSelectController:DragOver(element, slot)
 	self.replace = element
 	self.activeSlot = slot
 end
 
-function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
+function WeaponSelectController:DragPoolEnd(element, entry, shipIndex)
 	if (self.replace ~= nil) and (self.activeSlot > 0) then
 		--Get the amount of the ship we're dragging
 		local countEl = self.document:GetElementById(entry.Name).first_child
@@ -424,7 +456,7 @@ function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
 	end
 end
 
-function ShipSelectController:DragSlotEnd(element, entry, shipIndex, currentSlot)
+function WeaponSelectController:DragSlotEnd(element, entry, shipIndex, currentSlot)
 	if (self.replace ~= nil) and (self.activeSlot > 0) then
 		if self.slots[self.activeSlot].Name ~= nil then
 			--Get the amount of the ship we're sending back
@@ -477,7 +509,7 @@ function ShipSelectController:DragSlotEnd(element, entry, shipIndex, currentSlot
 	end
 end
 
-function ShipSelectController:SetFilled(thisSlot, status)
+function WeaponSelectController:SetFilled(thisSlot, status)
 
 	local curWing = 0
 	local curSlot = 0
@@ -495,7 +527,7 @@ function ShipSelectController:SetFilled(thisSlot, status)
 			
 end
 
-function ShipSelectController:ReturnShip(slot)
+function WeaponSelectController:ReturnShip(slot)
 
 	--Return all the weapons to the pool
 	for i = 1, #ui.ShipWepSelect.Loadout_Ships[slot].Weapons, 1 do
@@ -512,7 +544,7 @@ function ShipSelectController:ReturnShip(slot)
 
 end
 
-function ShipSelectController:SetDefaultWeapons(slot, shipIndex)
+function WeaponSelectController:SetDefaultWeapons(slot, shipIndex)
 
 	--Primaries
 	for i = 1, #tb.ShipClasses[shipIndex].defaultPrimaries, 1 do
@@ -550,7 +582,7 @@ function ShipSelectController:SetDefaultWeapons(slot, shipIndex)
 
 end
 
-function ShipSelectController:GetWeaponAmount(shipIndex, weaponIndex, bank)
+function WeaponSelectController:GetWeaponAmount(shipIndex, weaponIndex, bank)
 	
 	--Primaries always get set to 1, even ballistics
 	if tb.WeaponClasses[weaponIndex]:isPrimary() then
@@ -563,7 +595,7 @@ function ShipSelectController:GetWeaponAmount(shipIndex, weaponIndex, bank)
 
 end
 
-function ShipSelectController:GetFirstAllowedWeapon(shipIndex, bank, category)
+function WeaponSelectController:GetFirstAllowedWeapon(shipIndex, bank, category)
 
 	i = 1
 	while (i < #tb.WeaponClasses) do
@@ -581,12 +613,10 @@ function ShipSelectController:GetFirstAllowedWeapon(shipIndex, bank, category)
 
 end
 
-function ShipSelectController:Show(text, title, buttons)
+function WeaponSelectController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
 	currentDialog = true
-	modelDraw.save = modelDraw.class
-	modelDraw.class = nil
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -596,20 +626,19 @@ function ShipSelectController:Show(text, title, buttons)
 		end
 		dialog:show(self.document.context)
 		:continueWith(function(response)
-			modelDraw.class = modelDraw.save
-			modelDraw.save = nil
+        --do nothing
     end)
 	-- Route input to our context until the user dismisses the dialog box.
 	ui.enableInput(self.document.context)
 end
 
-function ShipSelectController:reset_pressed(element)
+function WeaponSelectController:reset_pressed(element)
     ui.playElementSound(element, "click", "success")
     ui.ShipWepSelect:resetSelect()
 	self:ReloadList()
 end
 
-function ShipSelectController:accept_pressed()
+function WeaponSelectController:accept_pressed()
     
 	local errorValue = ui.Briefing.commitToMission()
 	local text = ""
@@ -657,17 +686,17 @@ function ShipSelectController:accept_pressed()
 
 end
 
-function ShipSelectController:options_button_clicked(element)
+function WeaponSelectController:options_button_clicked(element)
     ui.playElementSound(element, "click", "success")
     ba.postGameEvent(ba.GameEvents["GS_EVENT_OPTIONS_MENU"])
 end
 
-function ShipSelectController:help_clicked(element)
+function WeaponSelectController:help_clicked(element)
     ui.playElementSound(element, "click", "success")
     --TODO
 end
 
-function ShipSelectController:global_keydown(element, event)
+function WeaponSelectController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
 
@@ -679,14 +708,14 @@ function ShipSelectController:global_keydown(element, event)
 	end
 end
 
-function ShipSelectController:unload()
+function WeaponSelectController:unload()
 
 	modelDraw.class = nil
 	ui.ShipWepSelect:saveLoadout()
 	
 end
 
-function ShipSelectController:drawSelectModel()
+function WeaponSelectController:drawSelectModel()
 
 	if modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_SHIP_SELECT" then  --Haaaaaaacks
 
@@ -721,10 +750,10 @@ end
 
 engine.addHook("On Frame", function()
 	if ba.getCurrentGameState().Name == "GS_STATE_SHIP_SELECT" then
-		ShipSelectController:drawSelectModel()
+		WeaponSelectController:drawSelectModel()
 	end
 end, {}, function()
     return false
 end)
 
-return ShipSelectController
+return WeaponSelectController
