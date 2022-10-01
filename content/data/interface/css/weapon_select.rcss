@@ -32,11 +32,6 @@ div#ship_view_window img
 	height: auto;
 }
 
-div#ship_view_wrapper
-{
-	
-}
-
 div#ship_name
 {
 	width: 100%;
@@ -46,19 +41,19 @@ div#ship_name
 
 div#weapon_view_window
 {
-	margin-right: 10%;
-	width: 30%;
-	height: auto;
+	width: 35%;
+	height: 50%;
 	overflow: hidden;
-	position: relative;
-	float: right;
+	position: absolute;
+	right: 3%;
+	top: 15%;
 }
 
 div#weapon_view_window img
 {
 	display: block;
 	width: 100%;
-	height: auto;
+	height: 100%;
 }
 
 div#weapon_wrapper
@@ -71,8 +66,27 @@ div#weapon_wrapper
 
 div#weapon_view
 {
-	width: 100%;
-	height: 60%;
+	width: 98%;
+	height: 87%;
+}
+
+div#weapon_view ani
+{
+	height: 100%;
+}
+
+div#weapon_name
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+div#weapon_stats
+{
+	position: absolute;
+	bottom: 0;
+	left: 0;
 }
 
 div#weapon_left_column
@@ -143,24 +157,43 @@ div#ship_scroll
 	margin-left: 20%;
 }
 
+div#primary_icon_list
+{
+	width: 140%;
+	height: 80%;
+	overflow: scroll;
+	margin-top: 10%;
+}
+
+div#secondary_icon_list
+{
+	width: 140%;
+	height: 80%;
+	overflow: scroll;
+	margin-top: 10%;
+}
+
 .select_item
 {
-	width: 150%;
+	width: 80%;
 }
 
 .amount
 {
-	width: 25%;
+	width: 30%;
 	float: left;
-	padding-top: 20%;
+	padding-top: 8%;
 	padding-right: 5%;
+	text-align: center;
+	margin-right: 3%;
 }
 
 .icon
 {
-	width: 70%;
-	float: right;
+	width: 60%;
+	float: left;
 	z-index: 7;
+	margin-top: 3%;
 }
 
 .shiplist_element
@@ -175,12 +208,6 @@ div#ship_scroll
 .shiplist_element:checked
 {
 	color: #6f92f5;
-}
-
-.info
-{
-	color: green;
-	padding-left: 5;
 }
 
 div#wings_wrapper
@@ -645,62 +672,144 @@ div#scroll_button_wrapper
 	height: 100%;
 }
 
-div#scroll_button_cont_top
+#primary_icon_list scrollbarvertical
 {
-	width: 35%;
-	height: auto;
-	margin: auto;
-}
-
-div#scroll_button_cont_bottom
-{
-	width: 35%;
-	height: auto;
-	margin: auto;
+	scrollchange-sound: 9;
+	width: 20%;
 	position: absolute;
-	bottom: 0;
+	left:27%;
+	z-index: 5;
 }
 
-.text_scroll_btns
+#primary_icon_list scrollbarvertical slidertrack
 {
-	display: block;
+	visibility: hidden;
+}
+
+#primary_icon_list scrollbarvertical sliderbar
+{
+	visibility: hidden;
+}
+
+#primary_icon_list scrollbarvertical sliderbar:hover
+{
+	
+}
+
+#primary_icon_list scrollbarvertical sliderbar:active
+{
+	
+}
+
+#primary_icon_list scrollbarvertical sliderarrowdec
+{
 	width: 100%;
-	height: auto;
-
+	height: 10%;
+	margin-top: -11%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-wide-up.png;
 }
 
-#scroll_up_img
+#primary_icon_list scrollbarvertical sliderarrowinc
 {
-	background-decorator: image;
-	background-image: arrow-wide-up.png;
+	width: 100%;
+	height: 10%;
+	margin-bottom: -11%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-wide-down.png;
 }
 
-#scroll_down_img
+#primary_icon_list scrollbarvertical sliderarrowdec:hover
 {
-	background-decorator: image;
-	background-image: arrow-wide-down.png;
+	icon-image: arrow-wide-up-h.png;
 }
 
-button#scroll_up_btn:hover #scroll_up_img
+#primary_icon_list scrollbarvertical sliderarrowinc:hover
 {
-	background-decorator: image;
-	background-image: arrow-wide-up-h.png;
+	icon-image: arrow-wide-down-h.png;
 }
 
-button#scroll_down_btn:hover #scroll_down_img
+#primary_icon_list scrollbarvertical sliderarrowdec:active
 {
-	background-decorator: image;
-	background-image: arrow-wide-down-h.png;
+	icon-image: arrow-wide-up-o.png;
 }
 
-button#scroll_up_btn:active #scroll_up_img
+#primary_icon_list scrollbarvertical sliderarrowinc:active
 {
-	background-decorator: image;
-	background-image: arrow-wide-up-o.png;
+	icon-image: arrow-wide-down-o.png;
 }
 
-button#scroll_down_btn:active #scroll_down_img
+#secondary_icon_list scrollbarvertical
 {
-	background-decorator: image;
-	background-image: arrow-wide-down-o.png;
+	scrollchange-sound: 9;
+	width: 20%;
+	position: absolute;
+	left:27%;
+	z-index: 5;
+}
+
+#secondary_icon_list scrollbarvertical slidertrack
+{
+	visibility: hidden;
+}
+
+#secondary_icon_list scrollbarvertical sliderbar
+{
+	visibility: hidden;
+}
+
+#secondary_icon_list scrollbarvertical sliderbar:hover
+{
+	
+}
+
+#secondary_icon_list scrollbarvertical sliderbar:active
+{
+	
+}
+
+#secondary_icon_list scrollbarvertical sliderarrowdec
+{
+	width: 100%;
+	height: 10%;
+	margin-top: -11%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-wide-up.png;
+}
+
+#secondary_icon_list scrollbarvertical sliderarrowinc
+{
+	width: 100%;
+	height: 10%;
+	margin-bottom: -11%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-wide-down.png;
+}
+
+#secondary_icon_list scrollbarvertical sliderarrowdec:hover
+{
+	icon-image: arrow-wide-up-h.png;
+}
+
+#secondary_icon_list scrollbarvertical sliderarrowinc:hover
+{
+	icon-image: arrow-wide-down-h.png;
+}
+
+#secondary_icon_list scrollbarvertical sliderarrowdec:active
+{
+	icon-image: arrow-wide-up-o.png;
+}
+
+#secondary_icon_list scrollbarvertical sliderarrowinc:active
+{
+	icon-image: arrow-wide-down-o.png;
 }

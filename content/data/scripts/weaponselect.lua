@@ -11,7 +11,6 @@ local WeaponSelectController = class()
 local modelDraw = nil
 
 function WeaponSelectController:init()
-	self.Counter = 0
 	ui.ShipWepSelect.initSelect()
 	modelDraw = {}
 end
@@ -22,6 +21,7 @@ function WeaponSelectController:initialize(document)
 	self.elements = {}
 	self.slots = {}
 	self.aniEl = self.document:CreateElement("img")
+	self.aniWepEl = self.document:CreateElement("ani")
 	self.requiredWeps = {}
 	self.select3d = false
 	
@@ -37,6 +37,10 @@ function WeaponSelectController:initialize(document)
 	--Create the anim here so that it can be restarted with each new selection
 	local aniWrapper = self.document:GetElementById("ship_view")
 	aniWrapper:ReplaceChild(self.aniEl, aniWrapper.first_child)
+
+	local aniWrapper = self.document:GetElementById("weapon_view")
+	aniWrapper:ReplaceChild(self.aniWepEl, aniWrapper.first_child)
+	
 
 	---Load the desired font size from the save file
 	if modOptionValues.Font_Multiplier then
@@ -54,46 +58,96 @@ function WeaponSelectController:initialize(document)
 	
 	self.SelectedEntry = nil
 	self.SelectedShip = nil
-	self.list = {}
+	self.shipList = {}
+	self.primaryList = {}
+	self.secondaryList = {}
 	
 	local shipList = tb.ShipClasses
 	local i = 1
+	local j = 1
 	while (i ~= #shipList) do
 		if ui.ShipWepSelect.Ship_Pool[i] > 0 then
-			self.list[i] = {
+			self.shipList[j] = {
 				Index = i,
 				Amount = ui.ShipWepSelect.Ship_Pool[i],
 				Icon = shipList[i].SelectIconFilename,
 				Anim = shipList[i].SelectAnimFilename,
 				Overhead = shipList[i].SelectOverheadFilename,
-				Name = shipList[i].Name,
-				Type = shipList[i].TypeString,
-				Length = shipList[i].LengthString,
-				Velocity = shipList[i].VelocityString,
-				Maneuverability = shipList[i].ManeuverabilityString,
-				Armor = shipList[i].ArmorString,
-				GunMounts = shipList[i].GunMountsString,
-				MissileBanks = shipList[i].MissileBanksString,
-				Manufacturer = shipList[i].ManufacturerString
+				Name = shipList[i].Name
 			}
+			j = j + 1
+		end
+		i = i + 1
+	end
+	
+	local weaponList = tb.WeaponClasses
+	local i = 1
+	local j = 1
+	local k = 1
+	while (i ~= #weaponList) do
+		if ui.ShipWepSelect.Weapon_Pool[i] > 0 then
+			if tb.WeaponClasses[i]:isPrimary() then
+				self.primaryList[j] = {
+					Index = i,
+					Amount = ui.ShipWepSelect.Weapon_Pool[i],
+					Icon = weaponList[i].SelectIconFilename,
+					Anim = weaponList[i].SelectAnimFilename,
+					Name = weaponList[i].Name,
+					Title = weaponList[i].TechTitle,
+					Description = string.gsub(weaponList[i].Description, "Level", "<br></br>Level"),
+					Velocity = math.floor(weaponList[i].Speed*10)/10,
+					Range = weaponList[i].Range/100,
+					Damage = math.floor(weaponList[i].Damage*10)/10,
+					ArmorFactor = math.floor(weaponList[i].ArmorFactor*10)/10,
+					ShieldFactor = math.floor(weaponList[i].ShieldFactor*10)/10,
+					SubsystemFactor = math.floor(weaponList[i].SubsystemFactor*10)/10,
+					FireWait = math.floor(weaponList[i].FireWait*10)/10,
+					Power = "???"
+				}
+				j = j + 1
+			elseif tb.WeaponClasses[i]:isSecondary() then
+				self.secondaryList[k] = {
+					Index = i,
+					Amount = ui.ShipWepSelect.Weapon_Pool[i],
+					Icon = weaponList[i].SelectIconFilename,
+					Anim = weaponList[i].SelectAnimFilename,
+					Name = weaponList[i].Name,
+					Title = weaponList[i].TechTitle,
+					Description = string.gsub(weaponList[i].Description, "Level", "<br></br>Level"),
+					Velocity = math.floor(weaponList[i].Speed*10)/10,
+					Range = weaponList[i].Range/100,
+					Damage = math.floor(weaponList[i].Damage*10)/10,
+					ArmorFactor = math.floor(weaponList[i].ArmorFactor*10)/10,
+					ShieldFactor = math.floor(weaponList[i].ShieldFactor*10)/10,
+					SubsystemFactor = math.floor(weaponList[i].SubsystemFactor*10)/10,
+					FireWait = math.floor(weaponList[i].FireWait*10)/10,
+					Power = "???"
+				}
+				k = k + 1
+			end
 		end
 		i = i + 1
 	end
 	
 	--Only create entries if there are any to create
-	--if self.list[1] then
-	--	self.visibleList = {}
-	--	self:CreateEntries(self.list)
-	--end
+	if self.primaryList[1] then
+		self:CreateEntries(self.primaryList)
+	end
+	
+	if self.secondaryList[1] then
+		self:CreateEntries(self.secondaryList)
+	end
 	
 	--self:InitSlots()
 	self:BuildWings()
 	local callsign = ui.ShipWepSelect.Loadout_Wings[1].Name .. " 1"
 	self:SelectShip(ui.ShipWepSelect.Loadout_Ships[1].ShipClassIndex, callsign, 1)
 	
-	--if self.list[1] then
-	--	self:SelectEntry(self.list[1])
-	--end
+	if self.primaryList[1] then
+		self:SelectEntry(self.primaryList[1])
+	elseif self.secondaryList[1] then
+		self:SelectEntry(self.secondaryList[1])		
+	end
 
 end
 
@@ -215,7 +269,7 @@ end
 
 function WeaponSelectController:GetShipEntry(className)
 
-	for i, v in ipairs(self.list) do
+	for i, v in ipairs(self.shipList) do
 		if v.Name == className then
 			return v
 		end
@@ -225,24 +279,16 @@ end
 
 function WeaponSelectController:AppendToPool(className)
 
-	i = #self.list + 1
-	self.list[i] = {
+	i = #self.shipList + 1
+	self.shipList[i] = {
 		Index = tb.ShipClasses[className]:getShipClassIndex(),
 		Amount = 0,
 		Icon = tb.ShipClasses[className].SelectIconFilename,
 		Anim = tb.ShipClasses[className].SelectAnimFilename,
 		Name = tb.ShipClasses[className].Name,
-		Type = tb.ShipClasses[className].TypeString,
-		Length = tb.ShipClasses[className].LengthString,
-		Velocity = tb.ShipClasses[className].VelocityString,
-		Maneuverability = tb.ShipClasses[className].ManeuverabilityString,
-		Armor = tb.ShipClasses[className].ArmorString,
-		GunMounts = tb.ShipClasses[className].GunMountsString,
-		MissileBanks = tb.ShipClasses[className].MissileBanksString,
-		Manufacturer = tb.ShipClasses[className].ManufacturerString,
 		key = tb.ShipClasses[className].Name
 	}
-	return self.list[i]
+	return self.shipList[i]
 end
 
 function WeaponSelectController:ReloadList()
@@ -254,17 +300,13 @@ function WeaponSelectController:ReloadList()
 	self:ClearEntries(list_items_el)
 	self.SelectedEntry = nil
 	self.SelectedShip = nil
-	self.visibleList = {}
-	self.Counter = 0
-	self:CreateEntries(self.list)
-	self:SelectEntry(self.visibleList[1])
+	self:CreateEntries(self.primaryList)
+	self:SelectEntry(self.primaryList[1])
 	self:BuildWings()
 	self:SelectShip(self:GetShipEntry(self.slots[1].Name))
 end
 
 function WeaponSelectController:CreateEntryItem(entry, idx)
-
-	self.Counter = self.Counter + 1
 
 	local li_el = self.document:CreateElement("li")
 	local iconWrapper = self.document:CreateElement("div")
@@ -296,22 +338,27 @@ function WeaponSelectController:CreateEntryItem(entry, idx)
 	iconEl:AddEventListener("dragend", function(_, _, _)
 		self:DragPoolEnd(iconEl, entry, entry.Index)
 	end)
-	self.visibleList[self.Counter] = entry
 	entry.key = li_el.id
-	
-	self.visibleList[self.Counter].idx = self.Counter
 
 	return li_el
 end
 
 function WeaponSelectController:CreateEntries(list)
 
-	local list_names_el = self.document:GetElementById("ship_icon_list_ul")
+	local list_names_el = nil
 	
-	self:ClearEntries(list_names_el)
+	if tb.WeaponClasses[list[1].Index]:isPrimary() then
+		list_names_el = self.document:GetElementById("primary_icon_list_ul")
+	elseif tb.WeaponClasses[list[1].Index]:isSecondary() then
+		list_names_el = self.document:GetElementById("secondary_icon_list_ul")
+	end
+	
+	if list_names_el ~= nil then
+		self:ClearEntries(list_names_el)
 
-	for i, v in pairs(list) do
-		list_names_el:AppendChild(self:CreateEntryItem(v, i))
+		for i, v in pairs(list) do
+			list_names_el:AppendChild(self:CreateEntryItem(v, i))
+		end
 	end
 end
 
@@ -325,12 +372,12 @@ function WeaponSelectController:SelectEntry(entry)
 		
 		if self.select3d or entry.Anim == nil then
 			modelDraw.class = entry.Index
-			modelDraw.element = self.document:GetElementById("ship_view_wrapper")
+			modelDraw.element = self.document:GetElementById("weapon_view_window")
 			modelDraw.start = true
 		else
 			--the anim is already created so we only need to remove and reset the src
-			self.aniEl:RemoveAttribute("src")
-			self.aniEl:SetAttribute("src", entry.Anim)
+			self.aniWepEl:RemoveAttribute("src")
+			self.aniWepEl:SetAttribute("src", entry.Anim)
 		end
 		
 	end
@@ -373,21 +420,16 @@ end
 
 function WeaponSelectController:BuildInfo(entry)
 
-	local infoEl = self.document:GetElementById("ship_stats_info")
+	self.document:GetElementById("weapon_name").inner_rml = entry.Title
 	
-	local midString = "</p><p class=\"info\">"
+	local infoEl = self.document:GetElementById("weapon_stats")
 	
-	local shipClass    = "<p>" .. ba.XSTR("Class", 739) .. midString .. entry.Name .. "</p>"
-	local shipType     = "<p>" .. ba.XSTR("Type", 740) .. midString .. entry.Type .. "</p>"
-	local shipLength   = "<p>" .. ba.XSTR("Length", 741) .. midString .. entry.Length .. "</p>"
-	local shipVelocity = "<p>" .. ba.XSTR("Max Velocity", 742) .. midString .. entry.Velocity .. "</p>"
-	local shipManeuv   = "<p>" .. ba.XSTR("Maneuverability", 744) .. midString .. entry.Maneuverability .. "</p>"
-	local shipArmor    = "<p>" .. ba.XSTR("Armor", 745) .. midString .. entry.Armor .. "</p>"
-	local shipGuns     = "<p>" .. ba.XSTR("Gun Mounts", 746) .. midString .. entry.GunMounts .. "</p>"
-	local shipMissiles = "<p>" .. ba.XSTR("Missile Banks", 747) .. midString .. entry.MissileBanks .. "</p>"
-	local shipManufac  = "<p>" .. ba.XSTR("Manufacturer", 748) .. midString .. entry.Manufacturer .. "</p>"
+	local weaponDescription    = "<p>" .. entry.Description .. "</p>"
+	local WeaponLine2 = "<p>" .. ba.XSTR("Velocity", -1) .. ": " .. entry.Velocity .. " " .. ba.XSTR("Range", -1) .. ": " .. entry.Range .. "</p>"
+	local WeaponLine3 = "<p class=\"info\">" .. ba.XSTR("DPS", -1) .. ": " .. entry.ArmorFactor .. " " .. ba.XSTR("Hull", -1) .. ", " .. entry.ShieldFactor .. " " .. ba.XSTR("Shield", -1) .. ", " .. entry.SubsystemFactor .. " " .. ba.XSTR("Subsystem", -1) .. "</p>"
+	local WeaponLine4 = "<p class=\"info\">" .. ba.XSTR("Power Use", -1) .. ": " .. entry.Power .. ba.XSTR("W", -1) .. " " .. ba.XSTR("ROF", -1) .. ": " .. entry.FireWait .. "</p>"
 
-	local completeRML = shipClass .. shipType .. shipLength .. shipVelocity .. shipManeuv .. shipArmor .. shipGuns .. shipMissiles .. shipManufac
+	local completeRML = weaponDescription .. WeaponLine2 .. WeaponLine3 .. WeaponLine4
 	
 	infoEl.inner_rml = completeRML
 

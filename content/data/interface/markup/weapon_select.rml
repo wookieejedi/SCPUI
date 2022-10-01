@@ -59,15 +59,10 @@
 		<div id=weapon_view_window>
 			<div id=weapon_wrapper>
 				<div id=weapon_name>
-					<p>GTW Subach HL-7</p>
 				</div>
 				<div id=weapon_view>
 				</div>
 				<div id=weapon_stats>
-					<p>Standard Terran Issue</p>
-					<p>  Velocity: 450		Range: 900</p>
-					<p>  OPS: 68 Hull, 53 Sheild, 23 Subsystem</p>
-					<p>  Power Use: 1W		ROF: 5/s</p>
 				</div>
 			</div>
 			<img src="select-window-right.png"></img>
@@ -86,16 +81,20 @@
 				<img src="ops-panel-vert-l.png"></img>
 			</div>
 			<div id=weapon_scroll_panel>
-				<div id=scroll_button_wrapper>
-					<ul id=primary_icon_list_ul>
-					</ul>
+				<div id=scroll_button_wrapper ondragdrop="controller:DragOver(element, 0)">
+					<div id=primary_icon_list>
+						<ul id=primary_icon_list_ul>
+						</ul>
+					</div>
 				</div>
 				<img src="select-scroll-panel.png"></img>
 			</div>
 			<div id=weapon_scroll_panel>
-				<div id=scroll_button_wrapper>
-					<ul id=secondary_icon_list_ul>
-					</ul>
+				<div id=scroll_button_wrapper ondragdrop="controller:DragOver(element, 0)">
+					<div id=secondary_icon_list>
+						<ul id=secondary_icon_list_ul>
+						</ul>
+					</div>
 				</div>
 				<img src="select-scroll-panel.png"></img>
 			</div>

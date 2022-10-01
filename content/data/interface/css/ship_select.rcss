@@ -120,11 +120,6 @@ div#ship_icon_list
 	overflow: scroll;
 }
 
-#ship_icon_list_ul
-{
-	
-}
-
 .select_item
 {
 	width: 150%;
