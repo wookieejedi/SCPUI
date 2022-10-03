@@ -56,9 +56,10 @@ function ShipSelectController:initialize(document)
 	
 	local shipList = tb.ShipClasses
 	local i = 1
+	local j = 1
 	while (i ~= #shipList) do
 		if ui.ShipWepSelect.Ship_Pool[i] > 0 then
-			self.list[i] = {
+			self.list[j] = {
 				Index = i,
 				Amount = ui.ShipWepSelect.Ship_Pool[i],
 				Icon = shipList[i].SelectIconFilename,
@@ -74,6 +75,7 @@ function ShipSelectController:initialize(document)
 				MissileBanks = shipList[i].MissileBanksString,
 				Manufacturer = shipList[i].ManufacturerString
 			}
+			j = j + 1
 		end
 		i = i + 1
 	end
@@ -182,6 +184,7 @@ function ShipSelectController:BuildWings()
 				if shipIndex > 0 then
 					local thisEntry = self:GetShipEntry(self.slots[slotNum].Name)
 					if thisEntry == nil then
+						ba.warning("got nil, appending to pool!")
 						thisEntry = self:AppendToPool(self.slots[slotNum].Name)
 					end
 					self.slots[slotNum].entry = thisEntry

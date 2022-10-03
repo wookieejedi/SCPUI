@@ -53,6 +53,24 @@
 				<div id=ship_name>
 				</div>
 				<div id=ship_view>
+					<div id=primary_slots>
+						<div id=primary_one class="weapon_slot" ondragdrop="controller:DragOver(element, 1)">
+						</div>
+						<div id=primary_two class="weapon_slot" ondragdrop="controller:DragOver(element, 2)">
+						</div>
+						<div id=primary_three class="weapon_slot" ondragdrop="controller:DragOver(element, 3)">
+						</div>
+					</div>
+					<div id=secondary_slots>
+						<div id=secondary_one class="weapon_slot" ondragdrop="controller:DragOver(element, 4)">
+						</div>
+						<div id=secondary_two class="weapon_slot" ondragdrop="controller:DragOver(element, 5)">
+						</div>
+						<div id=secondary_three class="weapon_slot" ondragdrop="controller:DragOver(element, 6)">
+						</div>
+						<div id=secondary_four class="weapon_slot" ondragdrop="controller:DragOver(element, 7)">
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

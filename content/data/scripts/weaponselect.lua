@@ -23,7 +23,7 @@ function WeaponSelectController:initialize(document)
 	self.aniEl = self.document:CreateElement("img")
 	self.aniWepEl = self.document:CreateElement("ani")
 	self.requiredWeps = {}
-	self.select3d = false
+	self.select3d = true
 	
 	--Get all the required weapons
 	j = 1
@@ -36,7 +36,7 @@ function WeaponSelectController:initialize(document)
 	
 	--Create the anim here so that it can be restarted with each new selection
 	local aniWrapper = self.document:GetElementById("ship_view")
-	aniWrapper:ReplaceChild(self.aniEl, aniWrapper.first_child)
+	aniWrapper:AppendChild(self.aniEl)
 
 	local aniWrapper = self.document:GetElementById("weapon_view")
 	aniWrapper:ReplaceChild(self.aniWepEl, aniWrapper.first_child)
@@ -245,15 +245,17 @@ function WeaponSelectController:BuildWings()
 				if shipIndex > 0 then
 					local thisEntry = self:GetShipEntry(self.slots[slotNum].Name)
 					if thisEntry == nil then
+						ba.warning("got nil, appending to pool!")
 						thisEntry = self:AppendToPool(self.slots[slotNum].Name)
 					end
 					local callsign = self.slots[slotNum].Callsign
 					self.slots[slotNum].entry = thisEntry
+					local thisSlot = slotNum
 					
 					--Add click detection
 					slotEl:SetClass("button_3", true)
 					slotEl:AddEventListener("click", function(_, _, _)
-						self:SelectShip(shipIndex, callsign, slotNum)
+						self:SelectShip(shipIndex, callsign, thisSlot)
 					end)
 				else
 					--ba.warning("got here")
@@ -396,10 +398,11 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 		local overhead = tb.ShipClasses[shipIndex].SelectOverheadFilename
 		
 		if self.select3d or overhead == nil then
-			--This is where the 3D overhead view will be drawn
-			--modelDraw.class = ship.Index
-			--modelDraw.element = self.document:GetElementById("ship_view_wrapper")
-			--modelDraw.start = true
+			modelDraw.OverheadClass = shipIndex
+			modelDraw.OverheadElement = self.document:GetElementById("ship_view_wrapper")
+			modelDraw.Slot = slot
+			--STILL GOTTA HANDLE THIS!
+			modelDraw.Hover = -1
 		else
 			--the anim is already created so we only need to remove and reset the src
 			self.aniEl:RemoveAttribute("src")
@@ -426,7 +429,7 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	local weaponDescription    = "<p>" .. entry.Description .. "</p>"
 	local WeaponLine2 = "<p>" .. ba.XSTR("Velocity", -1) .. ": " .. entry.Velocity .. " " .. ba.XSTR("Range", -1) .. ": " .. entry.Range .. "</p>"
-	local WeaponLine3 = "<p class=\"info\">" .. ba.XSTR("DPS", -1) .. ": " .. entry.ArmorFactor .. " " .. ba.XSTR("Hull", -1) .. ", " .. entry.ShieldFactor .. " " .. ba.XSTR("Shield", -1) .. ", " .. entry.SubsystemFactor .. " " .. ba.XSTR("Subsystem", -1) .. "</p>"
+	local WeaponLine3 = "<p class=\"info\">" .. ba.XSTR("Damage", -1) .. ": " .. entry.ArmorFactor .. " " .. ba.XSTR("Hull", -1) .. ", " .. entry.ShieldFactor .. " " .. ba.XSTR("Shield", -1) .. ", " .. entry.SubsystemFactor .. " " .. ba.XSTR("Subsystem", -1) .. "</p>"
 	local WeaponLine4 = "<p class=\"info\">" .. ba.XSTR("Power Use", -1) .. ": " .. entry.Power .. ba.XSTR("W", -1) .. " " .. ba.XSTR("ROF", -1) .. ": " .. entry.FireWait .. "</p>"
 
 	local completeRML = weaponDescription .. WeaponLine2 .. WeaponLine3 .. WeaponLine4
@@ -759,10 +762,9 @@ end
 
 function WeaponSelectController:drawSelectModel()
 
-	if modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_SHIP_SELECT" then  --Haaaaaaacks
-
-		--local thisItem = tb.ShipClasses(modelDraw.class)
+	if modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT" then  --Haaaaaaacks
 		
+		--local thisItem = tb.ShipClasses(modelDraw.class)
 		modelView = modelDraw.element	
 		local modelLeft = modelView.parent_node.offset_left + modelView.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + modelView.offset_top
@@ -773,7 +775,7 @@ function WeaponSelectController:drawSelectModel()
 		--renderSelectModel() has forced centering, so we need to calculate
 		--the screen size so we can move it slightly left and up while it
 		--multiple it's size
-		local val = 0.3
+		local val = -0.3
 		local ratio = (gr.getScreenWidth() / gr.getScreenHeight()) * 2
 		
 		--Increase by percentage and move slightly left and up.
@@ -782,7 +784,39 @@ function WeaponSelectController:drawSelectModel()
 		modelWidth = modelWidth * (1 + val)
 		modelHeight = modelHeight * (1 + val)
 		
-		local test = tb.ShipClasses[modelDraw.class]:renderSelectModel(modelDraw.start, modelLeft, modelTop, modelWidth, modelHeight)
+		local test = tb.WeaponClasses[modelDraw.class]:renderSelectModel(modelDraw.start, modelLeft, modelTop, modelWidth, modelHeight)
+		
+		modelDraw.start = false
+		
+	end
+
+end
+
+function WeaponSelectController:drawOverheadModel()
+
+	if modelDraw.OverheadClass and ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT" then  --Haaaaaaacks
+		
+		--local thisItem = tb.ShipClasses(modelDraw.class)
+		modelView = modelDraw.OverheadElement	
+		local modelLeft = modelView.parent_node.offset_left + modelView.offset_left --This is pretty messy, but it's functional
+		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + modelView.offset_top
+		local modelWidth = modelView.offset_width
+		local modelHeight = modelView.offset_height
+		
+		--This is just a multipler to make the rendered model a little bigger
+		--renderSelectModel() has forced centering, so we need to calculate
+		--the screen size so we can move it slightly left and up while it
+		--multiple it's size
+		local val = 0.0
+		local ratio = (gr.getScreenWidth() / gr.getScreenHeight()) * 2
+		
+		--Increase by percentage and move slightly left and up.
+		modelLeft = modelLeft * (1 - (val/ratio))
+		modelTop = modelTop * (1 - val)
+		modelWidth = modelWidth * (1 + val)
+		modelHeight = modelHeight * (1 + val)
+		
+		local test = tb.ShipClasses[modelDraw.OverheadClass]:renderOverheadModel(modelLeft, modelTop, modelWidth, modelHeight, modelDraw.Slot, modelDraw.class, modelDraw.Hover, modelLeft, modelTop + 30, modelLeft, modelTop + 60, modelLeft, modelTop + 90, modelLeft + modelWidth, modelTop + 30, modelLeft + modelWidth, modelTop + 60, modelLeft + modelWidth, modelTop + 90, modelLeft + modelWidth, modelTop + 120)
 		
 		modelDraw.start = false
 		
@@ -791,8 +825,9 @@ function WeaponSelectController:drawSelectModel()
 end
 
 engine.addHook("On Frame", function()
-	if ba.getCurrentGameState().Name == "GS_STATE_SHIP_SELECT" then
+	if ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT" then
 		WeaponSelectController:drawSelectModel()
+		WeaponSelectController:drawOverheadModel()
 	end
 end, {}, function()
     return false

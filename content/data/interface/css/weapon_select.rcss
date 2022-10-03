@@ -31,6 +31,41 @@ div#ship_view_window img
 	width: 100%;
 	height: auto;
 }
+div#ship_view_wrapper
+{
+	width: 100%;
+	height: 100%;
+}
+
+div#ship_view
+{
+	width: 100%;
+	height: 100%;
+}
+
+div#primary_slots
+{
+	width: 20%;
+	height: 60%;
+	position: absolute;
+	top: 7%;
+	left: 5%;
+}
+div#secondary_slots
+{
+	width: 20%;
+	height: 60%;
+	position: absolute;
+	top: 7%;
+	right: 1%;
+}
+
+.weapon_slot
+{
+	width: 100%;
+	height: 23%;
+	margin-bottom: 1%;
+}
 
 div#ship_name
 {
@@ -91,7 +126,7 @@ div#weapon_stats
 
 div#weapon_left_column
 {
-	margin-left: 10%;
+	margin-left: 5%;
 	position: absolute;
 	bottom: 0;
 	width: 10.5%;
