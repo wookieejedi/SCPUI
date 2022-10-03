@@ -54,21 +54,31 @@
 				</div>
 				<div id=ship_view>
 					<div id=primary_slots>
-						<div id=primary_one class="weapon_slot" ondragdrop="controller:DragOver(element, 1)">
+						<div id=primary_one class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 1)" ondragdrop="controller:DragOver(element, 1)" ondragend="controller:DragSlotEnd(element, 1)">
 						</div>
-						<div id=primary_two class="weapon_slot" ondragdrop="controller:DragOver(element, 2)">
+						<div id=primary_two class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 2)" ondragdrop="controller:DragOver(element, 2)" ondragend="controller:DragSlotEnd(element, 2)">
 						</div>
-						<div id=primary_three class="weapon_slot" ondragdrop="controller:DragOver(element, 3)">
+						<div id=primary_three class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 3)" ondragdrop="controller:DragOver(element, 3)" ondragend="controller:DragSlotEnd(element, 3)">
 						</div>
 					</div>
 					<div id=secondary_slots>
-						<div id=secondary_one class="weapon_slot" ondragdrop="controller:DragOver(element, 4)">
+						<div id=secondary_one class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 4)" ondragdrop="controller:DragOver(element, 4)" ondragend="controller:DragSlotEnd(element, 4)">
 						</div>
-						<div id=secondary_two class="weapon_slot" ondragdrop="controller:DragOver(element, 5)">
+						<div id=secondary_two class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 5)" ondragdrop="controller:DragOver(element, 5)" ondragend="controller:DragSlotEnd(element, 5)">
 						</div>
-						<div id=secondary_three class="weapon_slot" ondragdrop="controller:DragOver(element, 6)">
+						<div id=secondary_three class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 6)" ondragdrop="controller:DragOver(element, 6)" ondragend="controller:DragSlotEnd(element, 6)">
 						</div>
-						<div id=secondary_four class="weapon_slot" ondragdrop="controller:DragOver(element, 7)">
+						<div id=secondary_four class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 7)" ondragdrop="controller:DragOver(element, 7)" ondragend="controller:DragSlotEnd(element, 7)">
+						</div>
+					</div>
+					<div id=secondary_slot_amounts>
+						<div id=secondary_amount_one class="weapon_slot_amount">
+						</div>
+						<div id=secondary_amount_two class="weapon_slot_amount">
+						</div>
+						<div id=secondary_amount_three class="weapon_slot_amount">
+						</div>
+						<div id=secondary_amount_four class="weapon_slot_amount">
 						</div>
 					</div>
 				</div>

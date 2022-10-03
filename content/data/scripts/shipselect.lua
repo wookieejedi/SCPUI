@@ -391,7 +391,7 @@ function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
 		if count > 0 then
 			if self.slots[self.activeSlot].Name == nil then
 				self.slots[self.activeSlot].Name = entry.Name
-				local count = count - 1
+				count = count - 1
 				countEl.first_child.inner_rml = count
 			else
 				--Get the amount of the ship we're sending back
@@ -399,7 +399,7 @@ function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
 				local countBack = tonumber(countBackEl.first_child.inner_rml) + 1
 				countBackEl.first_child.inner_rml = countBack
 				self.slots[self.activeSlot].Name = entry.Name
-				local count = count - 1
+				count = count - 1
 				countEl.first_child.inner_rml = count
 			end
 			local replace_el = self.document:GetElementById(self.replace.id)
