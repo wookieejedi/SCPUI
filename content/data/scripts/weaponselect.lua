@@ -95,6 +95,11 @@ function WeaponSelectController:initialize(document)
 		i = i + 1
 	end
 	
+	--Add any ships that exist in wings but have 0 in the pool
+	self:CheckShipSlots()
+	--Now sort the lists by the ship index
+	table.sort(self.shipList, function(a,b) return a.Index < b.Index end)
+	
 	local weaponList = tb.WeaponClasses
 	local i = 1
 	local j = 1
@@ -264,10 +269,10 @@ function WeaponSelectController:BuildWings()
 			local index = slotNum
 			if not self.slots[slotNum].isDisabled then
 				if shipIndex > 0 then
-					local thisEntry = self:GetShipEntry(self.slots[slotNum].Name)
+					local thisEntry = self:GetShipEntry(shipIndex)
 					if thisEntry == nil then
 						ba.warning("got nil, appending to pool!")
-						thisEntry = self:AppendToPool(self.slots[slotNum].Name)
+						thisEntry = self:AppendToPool(shipIndex)
 					end
 					local callsign = self.slots[slotNum].Callsign
 					self.slots[slotNum].entry = thisEntry
@@ -290,10 +295,10 @@ function WeaponSelectController:BuildWings()
 
 end
 
-function WeaponSelectController:GetShipEntry(className)
+function WeaponSelectController:GetShipEntry(shipIndex)
 
 	for i, v in ipairs(self.shipList) do
-		if v.Name == className then
+		if v.Index == shipIndex then
 			return v
 		end
 	end
@@ -320,16 +325,16 @@ function WeaponSelectController:GetSecondaryEntry(classIndex)
 
 end
 
-function WeaponSelectController:AppendToPool(className)
+function WeaponSelectController:AppendToPool(ship)
 
 	i = #self.shipList + 1
 	self.shipList[i] = {
-		Index = tb.ShipClasses[className]:getShipClassIndex(),
+		Index = tb.ShipClasses[ship]:getShipClassIndex(),
 		Amount = 0,
-		Icon = tb.ShipClasses[className].SelectIconFilename,
-		Anim = tb.ShipClasses[className].SelectAnimFilename,
-		Name = tb.ShipClasses[className].Name,
-		key = tb.ShipClasses[className].Name
+		Icon = tb.ShipClasses[ship].SelectIconFilename,
+		Anim = tb.ShipClasses[ship].SelectAnimFilename,
+		Name = tb.ShipClasses[ship].Name,
+		key = tb.ShipClasses[ship].Name
 	}
 	return self.shipList[i]
 end
@@ -346,6 +351,20 @@ function WeaponSelectController:IsSlotDisabled(slot)
 		return ui.ShipWepSelect.Loadout_Wings[2][t_slot].isDisabled
 	else
 		return false
+	end
+
+end
+
+function WeaponSelectController:CheckShipSlots()
+
+	for i = 1, #ui.ShipWepSelect.Loadout_Ships, 1 do
+		if not self:IsSlotDisabled(i) then
+			local ship = ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex
+			ship = self:GetShipEntry(ship)	
+			if ship == nil then
+				self:AppendToPool(ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex)
+			end
+		end
 	end
 
 end
@@ -814,11 +833,13 @@ function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 		local slotAmount = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[self.activeSlot]
 	
 		--Get the amount of the weapon we're dragging
-		--local countEl = self.document:GetElementById(entry.Name).first_child
 		local count = tonumber(entry.countEl.inner_rml)
-		
-		--ba.warning("carrying " .. tb.WeaponClasses[weaponIndex].Name .. ": " .. count)
-		--ba.warning("replacing " .. tb.WeaponClasses[slotWeapon].Name .. ": " .. slotAmount) 
+
+		--If the pool count is 0 then abort!
+		if count < 1 then
+			self.replace = nil
+			return
+		end
 		
 		--If the slot can't accept the weapon then abort!
 		if not self:IsWeaponAllowed(slotShip, weaponIndex) then

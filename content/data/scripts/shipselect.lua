@@ -80,6 +80,11 @@ function ShipSelectController:initialize(document)
 		i = i + 1
 	end
 	
+	--Add any ships that exist in wings but have 0 in the pool
+	self:CheckSlots()
+	--Now sort the lists by the ship index
+	table.sort(self.list, function(a,b) return a.Index < b.Index end)
+	
 	--Only create entries if there are any to create
 	if self.list[1] then
 		self:CreateEntries(self.list)
@@ -182,7 +187,7 @@ function ShipSelectController:BuildWings()
 			local index = slotNum
 			if not self.slots[slotNum].isDisabled then
 				if shipIndex > 0 then
-					local thisEntry = self:GetShipEntry(self.slots[slotNum].Name)
+					local thisEntry = self:GetShipEntry(shipIndex)
 					if thisEntry == nil then
 						ba.warning("got nil, appending to pool!")
 						thisEntry = self:AppendToPool(self.slots[slotNum].Name)
@@ -219,34 +224,64 @@ function ShipSelectController:BuildWings()
 
 end
 
-function ShipSelectController:GetShipEntry(className)
+function ShipSelectController:CheckSlots()
+
+	for i = 1, #ui.ShipWepSelect.Loadout_Ships, 1 do
+		if not self:IsSlotDisabled(i) then
+			local ship = ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex
+			ship = self:GetShipEntry(ship)	
+			if ship == nil then
+				self:AppendToPool(ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex)
+			end
+		end
+	end
+
+end
+
+function ShipSelectController:IsSlotDisabled(slot)
+
+	if slot < 5 then
+		return ui.ShipWepSelect.Loadout_Wings[1][slot].isDisabled
+	elseif slot < 9 then
+		local t_slot = slot - 4
+		return ui.ShipWepSelect.Loadout_Wings[2][t_slot].isDisabled
+	elseif slot < 13 then
+		local t_slot = slot - 8
+		return ui.ShipWepSelect.Loadout_Wings[2][t_slot].isDisabled
+	else
+		return false
+	end
+
+end
+
+function ShipSelectController:GetShipEntry(shipIndex)
 
 	for i, v in ipairs(self.list) do
-		if v.Name == className then
+		if v.Index == shipIndex then
 			return v
 		end
 	end
 
 end
 
-function ShipSelectController:AppendToPool(className)
+function ShipSelectController:AppendToPool(ship)
 
 	i = #self.list + 1
 	self.list[i] = {
-		Index = tb.ShipClasses[className]:getShipClassIndex(),
+		Index = tb.ShipClasses[ship]:getShipClassIndex(),
 		Amount = 0,
-		Icon = tb.ShipClasses[className].SelectIconFilename,
-		Anim = tb.ShipClasses[className].SelectAnimFilename,
-		Name = tb.ShipClasses[className].Name,
-		Type = tb.ShipClasses[className].TypeString,
-		Length = tb.ShipClasses[className].LengthString,
-		Velocity = tb.ShipClasses[className].VelocityString,
-		Maneuverability = tb.ShipClasses[className].ManeuverabilityString,
-		Armor = tb.ShipClasses[className].ArmorString,
-		GunMounts = tb.ShipClasses[className].GunMountsString,
-		MissileBanks = tb.ShipClasses[className].MissileBanksString,
-		Manufacturer = tb.ShipClasses[className].ManufacturerString,
-		key = tb.ShipClasses[className].Name
+		Icon = tb.ShipClasses[ship].SelectIconFilename,
+		Anim = tb.ShipClasses[ship].SelectAnimFilename,
+		Name = tb.ShipClasses[ship].Name,
+		Type = tb.ShipClasses[ship].TypeString,
+		Length = tb.ShipClasses[ship].LengthString,
+		Velocity = tb.ShipClasses[ship].VelocityString,
+		Maneuverability = tb.ShipClasses[ship].ManeuverabilityString,
+		Armor = tb.ShipClasses[ship].ArmorString,
+		GunMounts = tb.ShipClasses[ship].GunMountsString,
+		MissileBanks = tb.ShipClasses[ship].MissileBanksString,
+		Manufacturer = tb.ShipClasses[ship].ManufacturerString,
+		key = tb.ShipClasses[ship].Name
 	}
 	return self.list[i]
 end
@@ -388,6 +423,13 @@ function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
 		--Get the amount of the ship we're dragging
 		local countEl = self.document:GetElementById(entry.Name).first_child
 		local count = tonumber(countEl.first_child.inner_rml)
+		
+		--If the pool count is 0 then abort!
+		if count < 1 then
+			self.replace = nil
+			return
+		end
+		
 		if count > 0 then
 			if self.slots[self.activeSlot].Name == nil then
 				self.slots[self.activeSlot].Name = entry.Name
@@ -412,11 +454,12 @@ function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
 			self:SetFilled(self.activeSlot, true)
 			
 			--This is where we return the previous ship and its weapons to the pool
-			self:ReturnShip(self.activeSlot)
+			if ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex > 1 then
+				self:ReturnShip(self.activeSlot)
+			end
 			--Now set the new ship and weapons
 			ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex = shipIndex
 			self:SetDefaultWeapons(self.activeSlot, shipIndex)
-			
 			replace_el:SetClass("button_3", true)
 			replace_el:AddEventListener("click", function(_, _, _)
 				self:SelectEntry(entry)
@@ -454,7 +497,9 @@ function ShipSelectController:DragSlotEnd(element, entry, shipIndex, currentSlot
 		self:SetFilled(self.activeSlot, true)
 		
 		--This is where we return the previous ship and its weapons to the pool
-		self:ReturnShip(self.activeSlot)
+		if ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex > 1 then
+			self:ReturnShip(self.activeSlot)
+		end
 		--Now set the new ship and weapons
 		ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex = shipIndex
 		self:SetDefaultWeapons(self.activeSlot, shipIndex)
@@ -523,7 +568,7 @@ function ShipSelectController:SetDefaultWeapons(slot, shipIndex)
 		--Check the weapon pool
 		if ui.ShipWepSelect.Weapon_Pool[weapon] <= 0 then
 			--Find a new weapon
-			weapon = self:GetFirstAllowedWeapon(shipIndex, i, 2)
+			weapon = self:GetFirstAllowedWeapon(shipIndex, i, 1)
 		end
 		--Get an appropriate amount for the weapon and bank
 			amount = self:GetWeaponAmount(shipIndex, weapon, i)
