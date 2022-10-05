@@ -22,7 +22,8 @@ function ShipSelectController:initialize(document)
 	self.slots = {}
 	self.aniEl = self.document:CreateElement("ani")
 	self.requiredWeps = {}
-	self.select3d = true
+	self.select3d = false
+	self.emptyWingSlot = {}
 	
 	--Get all the required weapons
 	j = 1
@@ -63,6 +64,7 @@ function ShipSelectController:initialize(document)
 				Index = i,
 				Amount = ui.ShipWepSelect.Ship_Pool[i],
 				Icon = shipList[i].SelectIconFilename,
+				GeneratedIcon = {},
 				Anim = shipList[i].SelectAnimFilename,
 				Overhead = shipList[i].SelectOverheadFilename,
 				Name = shipList[i].Name,
@@ -85,6 +87,10 @@ function ShipSelectController:initialize(document)
 	--Now sort the lists by the ship index
 	table.sort(self.list, function(a,b) return a.Index < b.Index end)
 	
+	--generate usable icons
+	self:getIconFrames(self.list)
+	self:getEmptySlotFrames()
+	
 	--Only create entries if there are any to create
 	if self.list[1] then
 		self:CreateEntries(self.list)
@@ -95,6 +101,82 @@ function ShipSelectController:initialize(document)
 	
 	if self.list[1] then
 		self:SelectEntry(self.list[1])
+	end
+
+end
+
+function ShipSelectController:getEmptySlotFrames()
+
+	--Create a texture and then draw to it, save the output
+	local imag_h = gr.loadTexture("iconwing01", true, true)
+	local width = imag_h:getWidth()
+	local height = imag_h:getHeight()
+	local tex_h = gr.createTexture(width, height)
+	gr.setTarget(tex_h)
+	for j = 1, 2, 1 do
+		gr.clearScreen(0,0,0,0)
+		gr.drawImage(imag_h[j], 0, 0, width, height, 0, 1, 1, 0, 1)
+		self.emptyWingSlot[j] = gr.screenToBlob()
+	end
+	self.emptyWingSlot.GeneratedWidth = width
+	self.emptyWingSlot.GeneratedHeight = height
+	
+	--clean up
+	gr.setTarget()
+	imag_h:unload()
+	tex_h:unload()
+
+end
+
+function ShipSelectController:getIconFrames(list)
+	
+	for i, v in pairs(list) do
+		if self.select3d then
+			--Create a texture and then draw to it, save the output
+			--local imag_h = gr.loadTexture(v.Icon, true, true)
+			local model_h = nil
+			local modelDetails = {
+				width = 32,
+				height = 28,
+				heading = 50,
+				pitch = 15,
+				bank = 0,
+				zoom = 1.1
+			}
+			model_h = tb.ShipClasses[v.Index]
+			local tex_h = gr.createTexture(modelDetails.width, modelDetails.height)
+			gr.setTarget(tex_h)
+			for j = 1, 6, 1 do
+				gr.clearScreen(0,0,0,0)
+				model_h:renderTechModel(0, 0, modelDetails.width, modelDetails.height, modelDetails.heading, modelDetails.pitch, modelDetails.bank, modelDetails.zoom)
+				v.GeneratedIcon[j] = gr.screenToBlob()
+			end
+			v.GeneratedWidth = width
+			v.GeneratedHeight = height
+			
+			--clean up
+			gr.setTarget()
+			tex_h:unload()
+		else
+			--Create a texture and then draw to it, save the output
+			local imag_h = gr.loadTexture(v.Icon, true, true)
+			local width = imag_h:getWidth() --56 for retail weapon icons
+			local height = imag_h:getHeight() -- 24 for retail weapon icons
+			local tex_h = gr.createTexture(width, height)
+			gr.setTarget(tex_h)
+			for j = 1, 6, 1 do
+				gr.clearScreen(0,0,0,0)
+				gr.drawImage(imag_h[j], 0, 0, width, height, 0, 1, 1, 0, 1)
+				v.GeneratedIcon[j] = gr.screenToBlob()
+			end
+			v.GeneratedWidth = width
+			v.GeneratedHeight = height
+			
+			--clean up
+			gr.setTarget()
+			imag_h:unload()
+			tex_h:unload()
+		end
 	end
 
 end
@@ -127,8 +209,10 @@ function ShipSelectController:BuildWings()
 		for j = 1, #ui.ShipWepSelect.Loadout_Wings[i], 1 do
 			self.slots[slotNum] = {}
 			
+			self.slots[slotNum].isPlayer = ui.ShipWepSelect.Loadout_Wings[i][j].isPlayer
 			self.slots[slotNum].isDisabled = ui.ShipWepSelect.Loadout_Wings[i][j].isDisabled
 			self.slots[slotNum].isFilled = ui.ShipWepSelect.Loadout_Wings[i][j].isFilled
+			self.slots[slotNum].isWeaponLocked = ui.ShipWepSelect.Loadout_Wings[i][j].isWeaponLocked
 			if ui.ShipWepSelect.Loadout_Wings[i][j].isShipLocked or ui.ShipWepSelect.Loadout_Wings[i][j].isWeaponLocked then
 				self.slots[slotNum].isLocked = true
 			end
@@ -138,48 +222,78 @@ function ShipSelectController:BuildWings()
 			slotsEl:AppendChild(slotEl)
 			
 			--default to empty slot image for now, but don't show disabled slots
-			local slotIcon = "iconwing01.ani"
+			local slotIcon = self.emptyWingSlot[1]
 			self.slots[slotNum].Name = nil
 			local shipIndex = 0
 			
 			--This is messy, but we have to check which exact slot we are in the wing
 			if j == 1 then
 				slotEl:SetClass("wing_one", true)
+				self.slots[slotNum].Callsign = ui.ShipWepSelect.Loadout_Wings[i].Name .. " 1"
 				--Get the current ship in this slot
 				shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
 				if shipIndex > 0 then
-					slotIcon = tb.ShipClasses[shipIndex].SelectIconFilename
+					local entry = self:GetShipEntry(shipIndex)
+					if self.slots[slotNum].isPlayer then
+						slotIcon = entry.GeneratedIcon[4]
+					elseif self.slots[slotNum].isLocked then
+						slotIcon = entry.GeneratedIcon[6]
+					else
+						slotIcon = entry.GeneratedIcon[1]
+					end
 					self.slots[slotNum].Name = tb.ShipClasses[shipIndex].Name
 				end
 			elseif j == 2 then
 				slotEl:SetClass("wing_two", true)
+				self.slots[slotNum].Callsign = ui.ShipWepSelect.Loadout_Wings[i].Name .. " 2"
 				--Get the current ship in this slot
 				shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
 				if shipIndex > 0 then
-					slotIcon = tb.ShipClasses[shipIndex].SelectIconFilename
+					local entry = self:GetShipEntry(shipIndex)
+					if self.slots[slotNum].isPlayer then
+						slotIcon = entry.GeneratedIcon[4]
+					elseif self.slots[slotNum].isLocked then
+						slotIcon = entry.GeneratedIcon[6]
+					else
+						slotIcon = entry.GeneratedIcon[1]
+					end
 					self.slots[slotNum].Name = tb.ShipClasses[shipIndex].Name
 				end
 			elseif j == 3 then
 				slotEl:SetClass("wing_three", true)
+				self.slots[slotNum].Callsign = ui.ShipWepSelect.Loadout_Wings[i].Name .. " 3"
 				--Get the current ship in this slot
 				shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
 				if shipIndex > 0 then
-					slotIcon = tb.ShipClasses[shipIndex].SelectIconFilename
+					local entry = self:GetShipEntry(shipIndex)
+					if self.slots[slotNum].isPlayer then
+						slotIcon = entry.GeneratedIcon[4]
+					elseif self.slots[slotNum].isLocked then
+						slotIcon = entry.GeneratedIcon[6]
+					else
+						slotIcon = entry.GeneratedIcon[1]
+					end
 					self.slots[slotNum].Name = tb.ShipClasses[shipIndex].Name
 				end
 			else
 				slotEl:SetClass("wing_four", true)
+				self.slots[slotNum].Callsign = ui.ShipWepSelect.Loadout_Wings[i].Name .. " 4"
 				--Get the current ship in this slot
 				shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
 				if shipIndex > 0 then
-					slotIcon = tb.ShipClasses[shipIndex].SelectIconFilename
+					local entry = self:GetShipEntry(shipIndex)
+					if self.slots[slotNum].isPlayer then
+						slotIcon = entry.GeneratedIcon[4]
+					elseif self.slots[slotNum].isLocked then
+						slotIcon = entry.GeneratedIcon[6]
+					else
+						slotIcon = entry.GeneratedIcon[1]
+					end
 					self.slots[slotNum].Name = tb.ShipClasses[shipIndex].Name
 				end
 			end
-			--ba.warning(slotNum)
-			--ba.warning(self.slots[slotNum].Name)
 			
-			local slotImg = self.document:CreateElement("ani")
+			local slotImg = self.document:CreateElement("img")
 			slotImg:SetAttribute("src", slotIcon)
 			slotEl:AppendChild(slotImg)
 			
@@ -205,6 +319,14 @@ function ShipSelectController:BuildWings()
 						slotEl:AddEventListener("dragend", function(_, _, _)
 							self:DragSlotEnd(slotEl, thisEntry, thisEntry.Index, index)
 						end)
+						
+						if self.select3d then
+							slotEl:SetClass("available", true)
+						end
+					else
+						if self.select3d then
+							slotEl:SetClass("locked", true)
+						end
 					end
 					
 					--Add click detection
@@ -213,8 +335,7 @@ function ShipSelectController:BuildWings()
 						self:SelectEntry(thisEntry)
 					end)
 				else
-					--ba.warning("got here")
-					--ba.warning(ui.ShipWepSelect.Loadout_Ships[slotNum].Weapons[1] .. " " .. ui.ShipWepSelect.Loadout_Ships[slotNum].Amounts[1])
+					--do nothing
 				end
 			end
 			
@@ -315,8 +436,8 @@ function ShipSelectController:CreateEntryItem(entry, idx)
 	iconWrapper:AppendChild(countEl)
 	
 	--local aniWrapper = self.document:GetElementById(entry.Icon)
-	local iconEl = self.document:CreateElement("ani")
-	iconEl:SetAttribute("src", entry.Icon)
+	local iconEl = self.document:CreateElement("img")
+	iconEl:SetAttribute("src", entry.GeneratedIcon[1])
 	iconWrapper:AppendChild(iconEl)
 	--iconWrapper:ReplaceChild(iconEl, iconWrapper.first_child)
 	li_el.id = entry.Name
@@ -347,11 +468,57 @@ function ShipSelectController:CreateEntries(list)
 	end
 end
 
+function ShipSelectController:HighlightShip(entry)
+
+	for i, v in pairs(self.list) do
+		local iconEl = self.document:GetElementById(v.key).first_child.first_child.next_sibling
+		if v.key == entry.key then
+			if self.select3d then
+				iconEl:SetClass("highlighted", true)
+			end
+			iconEl:SetAttribute("src", v.GeneratedIcon[3])
+		else
+			if self.select3d then
+				iconEl:SetClass("highlighted", false)
+			end
+			iconEl:SetAttribute("src", v.GeneratedIcon[1])
+		end
+	end
+	
+	for i = 1, 12, 1 do
+		local element = self.document:GetElementById("slot_" .. i)
+		local shipIndex = ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex
+		if shipIndex > 0 then
+			local thisEntry = self:GetShipEntry(shipIndex)
+			if self.slots[i].Name == entry.Name then
+				if not self.slots[i].isPlayer then
+					if self.slots[i].isLocked then
+						element.first_child:SetAttribute("src", thisEntry.GeneratedIcon[5])
+					else
+						element.first_child:SetAttribute("src", thisEntry.GeneratedIcon[3])
+					end
+				end
+			else
+				if not self.slots[i].isPlayer then
+					if self.slots[i].isLocked then
+						element.first_child:SetAttribute("src", thisEntry.GeneratedIcon[6])
+					else
+						element.first_child:SetAttribute("src", thisEntry.GeneratedIcon[1])
+					end
+				end
+			end
+		end
+	end
+				
+end
+
 function ShipSelectController:SelectEntry(entry)
 
 	if entry.key ~= self.SelectedEntry then
 		
 		self.SelectedEntry = entry.key
+		
+		self:HighlightShip(entry)
 		
 		self:BuildInfo(entry)
 		
@@ -488,7 +655,7 @@ function ShipSelectController:DragSlotEnd(element, entry, shipIndex, currentSlot
 		self.document:GetElementById(replace_el.id):AppendChild(imgEl)
 		replace_el:SetClass("drag", true)
 		
-		element.first_child:SetAttribute("src", "iconwing01.ani")
+		element.first_child:SetAttribute("src", self.emptyWingSlot[2])
 		ui.ShipWepSelect.Loadout_Ships[currentSlot].ShipClassIndex = -1
 		self.slots[currentSlot].Name = nil
 		element:SetClass("drag", false)
@@ -517,7 +684,7 @@ function ShipSelectController:DragSlotEnd(element, entry, shipIndex, currentSlot
 		countBackEl.first_child.inner_rml = countBack
 		element:SetClass("drag", false)
 		
-		element.first_child:SetAttribute("src", "iconwing01.ani")
+		element.first_child:SetAttribute("src", self.emptyWingSlot[2])
 		ui.ShipWepSelect.Loadout_Ships[currentSlot].ShipClassIndex = -1
 		self.slots[currentSlot].Name = nil
 		

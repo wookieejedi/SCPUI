@@ -54,21 +54,27 @@
 				</div>
 				<div id=ship_view>
 					<div id=primary_slots>
-						<div id=primary_one class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 1)" ondragdrop="controller:DragOver(element, 1)" ondragend="controller:DragSlotEnd(element, 1)">
+						<div id=primary_one class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 1)" ondragdrop="controller:DragDrop(element, 1)" ondragend="controller:DragSlotEnd(element, 1)" ondragover="controller:DragOver(element, 1)" ondragout="controller:DragOut(element, 1)">
 						</div>
-						<div id=primary_two class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 2)" ondragdrop="controller:DragOver(element, 2)" ondragend="controller:DragSlotEnd(element, 2)">
+						<div id=primary_two class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 2)" ondragdrop="controller:DragDrop(element, 2)" ondragend="controller:DragSlotEnd(element, 2)" ondragover="controller:DragOver(element, 2)"
+						 ondragout="controller:DragOut(element, 2)">
 						</div>
-						<div id=primary_three class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 3)" ondragdrop="controller:DragOver(element, 3)" ondragend="controller:DragSlotEnd(element, 3)">
+						<div id=primary_three class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 3)" ondragdrop="controller:DragDrop(element, 3)" ondragend="controller:DragSlotEnd(element, 3)" ondragover="controller:DragOver(element, 3)"
+						 ondragout="controller:DragOut(element, 3)">
 						</div>
 					</div>
 					<div id=secondary_slots>
-						<div id=secondary_one class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 4)" ondragdrop="controller:DragOver(element, 4)" ondragend="controller:DragSlotEnd(element, 4)">
+						<div id=secondary_one class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 4)" ondragdrop="controller:DragDrop(element, 4)" ondragend="controller:DragSlotEnd(element, 4)" ondragover="controller:DragOver(element, 4)"
+						 ondragout="controller:DragOut(element, 4)">
 						</div>
-						<div id=secondary_two class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 5)" ondragdrop="controller:DragOver(element, 5)" ondragend="controller:DragSlotEnd(element, 5)">
+						<div id=secondary_two class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 5)" ondragdrop="controller:DragDrop(element, 5)" ondragend="controller:DragSlotEnd(element, 5)" ondragover="controller:DragOver(element, 5)"
+						 ondragout="controller:DragOut(element, 5)">
 						</div>
-						<div id=secondary_three class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 6)" ondragdrop="controller:DragOver(element, 6)" ondragend="controller:DragSlotEnd(element, 6)">
+						<div id=secondary_three class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 6)" ondragdrop="controller:DragDrop(element, 6)" ondragend="controller:DragSlotEnd(element, 6)" ondragover="controller:DragOver(element, 6)"
+						 ondragout="controller:DragOut(element, 6)">
 						</div>
-						<div id=secondary_four class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 7)" ondragdrop="controller:DragOver(element, 7)" ondragend="controller:DragSlotEnd(element, 7)">
+						<div id=secondary_four class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 7)" ondragdrop="controller:DragDrop(element, 7)" ondragend="controller:DragSlotEnd(element, 7)" ondragover="controller:DragOver(element, 7)"
+						 ondragout="controller:DragOut(element, 7)">
 						</div>
 					</div>
 					<div id=secondary_slot_amounts>
@@ -109,7 +115,7 @@
 				<img src="ops-panel-vert-l.png"></img>
 			</div>
 			<div id=weapon_scroll_panel>
-				<div id=scroll_button_wrapper ondragdrop="controller:DragOver(element, 0)">
+				<div id=scroll_button_wrapper ondragdrop="controller:DragDrop(element, 0)">
 					<div id=primary_icon_list>
 						<ul id=primary_icon_list_ul>
 						</ul>
@@ -118,7 +124,7 @@
 				<img src="select-scroll-panel.png"></img>
 			</div>
 			<div id=weapon_scroll_panel>
-				<div id=scroll_button_wrapper ondragdrop="controller:DragOver(element, 0)">
+				<div id=scroll_button_wrapper ondragdrop="controller:DragDrop(element, 0)">
 					<div id=secondary_icon_list>
 						<ul id=secondary_icon_list_ul>
 						</ul>

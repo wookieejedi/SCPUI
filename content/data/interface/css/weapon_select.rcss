@@ -31,6 +31,7 @@ div#ship_view_window img
 	width: 100%;
 	height: auto;
 }
+
 div#ship_view_wrapper
 {
 	width: 100%;
@@ -51,6 +52,12 @@ div#primary_slots
 	top: 7%;
 	left: 5%;
 }
+
+div#primary_slots .weapon_slot img
+{
+	width: 80%;
+}
+
 div#secondary_slots
 {
 	width: 20%;
@@ -58,6 +65,11 @@ div#secondary_slots
 	position: absolute;
 	top: 7%;
 	right: 1%;
+}
+
+div#secondary_slots .weapon_slot img
+{
+	width: 80%;
 }
 
 div#secondary_slot_amounts
@@ -89,10 +101,10 @@ div#secondary_slot_amounts
 	margin-bottom: 1%;
 }
 
-.weapon_slot ani
+.weapon_slot img
 {
-	width: 88%;
-	margin: 6%;
+	margin-top: 20%;
+	margin-left: 12%;
 }
 
 div#ship_name
@@ -251,7 +263,15 @@ div#secondary_icon_list
 	margin-right: 3%;
 }
 
-.icon
+div#primary_icon_list .icon
+{
+	width: 60%;
+	float: left;
+	z-index: 7;
+	margin-top: 3%;
+}
+
+div#secondary_icon_list .icon
 {
 	width: 60%;
 	float: left;
@@ -302,8 +322,8 @@ div#wings_wrapper
 
 .wing_slot
 {
-	width:33%;
-	height:33%;
+	width:31%;
+	height:31%;
 }
 
 .wing_slot img
@@ -326,7 +346,6 @@ div#wings_wrapper
 
 .wing_two
 {
-	margin-right: 33%;
 	float: left;
 }
 
@@ -337,9 +356,33 @@ div#wings_wrapper
 
 .wing_four
 {
-	margin-top: 33%;
+	margin-top: 32.5%;
 	margin-left: 33.5%;
 	margin-right: 33.5%;
+}
+
+.highlighted
+{
+	border-width: 0.9%;
+	border-color: green;
+}
+
+.available
+{
+	border-width: 0.9%;
+	border-color: teal;
+}
+
+.locked
+{
+	border-width: 0.9%;
+	border-color: grey;
+}
+
+.weapon_locked
+{
+	border-width: 0.9%;
+	border-color: orange;
 }
 
 /*Top Panel Elements*/
