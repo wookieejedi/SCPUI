@@ -8,6 +8,7 @@ RocketUiSystem = {
 	substate = "none",
 	cutscene = "none",
 	debriefInit = false,
+	selectInit = false,
 	music_handle = nil,
 	current_played = nil
 }

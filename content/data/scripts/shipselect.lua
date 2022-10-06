@@ -11,7 +11,10 @@ local ShipSelectController = class()
 local modelDraw = nil
 
 function ShipSelectController:init()
-	ui.ShipWepSelect.initSelect()
+	if not RocketUiSystem.selectInit then
+		ui.ShipWepSelect.initSelect()
+		RocketUiSystem.selectInit = true
+	end
 	modelDraw = {}
 end
 
@@ -213,7 +216,10 @@ function ShipSelectController:BuildWings()
 			
 			self.slots[slotNum].isPlayer = ui.ShipWepSelect.Loadout_Wings[i][j].isPlayer
 			self.slots[slotNum].isDisabled = ui.ShipWepSelect.Loadout_Wings[i][j].isDisabled
-			self.slots[slotNum].isFilled = ui.ShipWepSelect.Loadout_Wings[i][j].isFilled
+			self.slots[slotNum].isFilled = true
+			if ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex < 1 then
+				self.slots[slotNum].isFilled = false
+			end
 			self.slots[slotNum].isWeaponLocked = ui.ShipWepSelect.Loadout_Wings[i][j].isWeaponLocked
 			if ui.ShipWepSelect.Loadout_Wings[i][j].isShipLocked or ui.ShipWepSelect.Loadout_Wings[i][j].isWeaponLocked then
 				self.slots[slotNum].isLocked = true
@@ -224,7 +230,10 @@ function ShipSelectController:BuildWings()
 			slotsEl:AppendChild(slotEl)
 			
 			--default to empty slot image for now, but don't show disabled slots
-			local slotIcon = self.emptyWingSlot[1]
+			local slotIcon = self.emptyWingSlot[2]
+			if self.slots[slotNum].isDisabled then
+				slotIcon = self.emptyWingSlot[1]
+			end
 			self.slots[slotNum].Name = nil
 			local shipIndex = 0
 			
@@ -337,7 +346,10 @@ function ShipSelectController:BuildWings()
 						self:SelectEntry(thisEntry)
 					end)
 				else
-					--do nothing
+					--Add dragover detection
+					slotEl:AddEventListener("dragdrop", function(_, _, _)
+						self:DragOver(slotEl, index)
+					end)
 				end
 			end
 			
@@ -352,9 +364,11 @@ function ShipSelectController:CheckSlots()
 	for i = 1, #ui.ShipWepSelect.Loadout_Ships, 1 do
 		if not self:IsSlotDisabled(i) then
 			local ship = ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex
-			ship = self:GetShipEntry(ship)	
-			if ship == nil then
-				self:AppendToPool(ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex)
+			if ship > 0 then
+				ship = self:GetShipEntry(ship)	
+				if ship == nil then
+					self:AppendToPool(ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex)
+				end
 			end
 		end
 	end
@@ -710,6 +724,7 @@ function ShipSelectController:SetFilled(thisSlot, status)
 		curSlot = thisSlot - 8
 	end
 	ui.ShipWepSelect.Loadout_Wings[curWing][curSlot].isFilled = status
+	ui.ShipWepSelect.Loadout_Ships[thisSlot].ShipClassIndex = -1
 			
 end
 
@@ -858,6 +873,7 @@ function ShipSelectController:accept_pressed()
 	--Success!
 	else
 		text = nil
+		RocketUiSystem.selectInit = false
 		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
 			RocketUiSystem.music_handle:close(true)
 		end

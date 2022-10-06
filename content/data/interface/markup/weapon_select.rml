@@ -105,7 +105,7 @@
 			<div id=copy_to_wing_panel>
 				<div id=copy_to_wing_wrapper>
 					<div id=copy_to_wing_cont>
-						<button id="copy_btn" class="copy button_1"  onclick="controller:copyToWing(element)">
+						<button id="copy_btn" class="copy button_1"  onclick="controller:CopyToWing(element)">
 							<span id="copy_img" class="copy">
 								<img src="multiplayer.png" class="psuedo_img"></img>
 							</span>

@@ -1,3 +1,4 @@
+local dialogs = require("dialogs")
 local class = require("class")
 local async_util = require("async_util")
 
@@ -51,6 +52,7 @@ function BriefingController:initialize(document)
 	--ui.Briefing.startBriefingMap(drawMap.x1, drawMap.y1, drawMap.x2, drawMap.y2)
 	
 	if mn.hasNoBriefing() then
+		RocketUiSystem.selectInit = false
 		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
 			RocketUiSystem.music_handle:close(true)
 		end
@@ -221,16 +223,78 @@ function BriefingController:drawMap()
 
 end
 
+function BriefingController:Show(text, title, buttons)
+	--Create a simple dialog box with the text and title
+
+	currentDialog = true
+	drawMap.draw = false
+	
+	local dialog = dialogs.new()
+		dialog:title(title)
+		dialog:text(text)
+		for i = 1, #buttons do
+			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value)
+		end
+		dialog:show(self.document.context)
+		:continueWith(function(response)
+			drawMap.draw = true
+    end)
+	-- Route input to our context until the user dismisses the dialog box.
+	ui.enableInput(self.document.context)
+end
+
 function BriefingController:acceptPressed()
     
-	drawMap = nil
-	if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
-		RocketUiSystem.music_handle:close(true)
+	local errorValue = ui.Briefing.commitToMission()
+	local text = ""
+	
+	--General Fail
+	if errorValue == 1 then
+		text = ba.XSTR("An error has occured", -1)
+	--A player ship has no weapons
+	elseif errorValue == 2 then
+		text = ba.XSTR("Player ship has no weapons", 461)
+	--The required weapon was not loaded on a ship
+	elseif errorValue == 3 then
+		text = ba.XSTR("The " .. self.requiredWeps[1] .. " is required for this mission, but it has not been added to any ship loadout.", 1624)
+	--Two or more required weapons were not loaded on a ship
+	elseif errorValue == 4 then
+		local WepsString = ""
+		for i = 1, #self.requiredWeps, 1 do
+			WepsString = WepsString .. self.requiredWeps[i] .. "\n"
+		end
+		text = ba.XSTR("The following weapons are required for this mission, but at least one of them has not been added to any ship loadout:\n\n" .. WepsString, 1625)
+	--There is a gap in a ship's weapon banks
+	elseif errorValue == 5 then
+		text = ba.XSTR("At least one ship has an empty weapon bank before a full weapon bank.\n\nAll weapon banks must have weapons assigned, or if there are any gaps, they must be at the bottom of the set of banks.", 1642)
+	--A player has no weapons
+	elseif errorValue == 6 then
+		local player = ba.getCurrentPlayer():getName()
+		text = ba.XSTR("Player " .. player .. " must select a place in player wing", 462)
+	--Success!
+	else
+		text = nil
+		drawMap = nil
+		RocketUiSystem.selectInit = false
+		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+			RocketUiSystem.music_handle:close(true)
+		end
+		RocketUiSystem.music_handle = nil
+		RocketUiSystem.current_played = nil
 	end
-	RocketUiSystem.music_handle = nil
-	RocketUiSystem.current_played = nil
-	--ba.postGameEvent(ba.GameEvents["GS_EVENT_ENTER_GAME"])
-	ui.Briefing.commitToMission()
+
+	if text ~= nil then
+		text = string.gsub(text,"\n","<br></br>")
+		local title = ""
+		local buttons = {}
+		buttons[1] = {
+			b_type = dialogs.BUTTON_TYPE_POSITIVE,
+			b_text = ba.XSTR("Okay", -1),
+			b_value = ""
+		}
+		
+		self:Show(text, title, buttons)
+	end
 
 end
 
