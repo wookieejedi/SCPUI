@@ -11,6 +11,8 @@ function AbstractBriefingController:init()
 
     self.current_stage = 0
     self.stage_instance_id = 0
+	
+	self.filename = nil
 
     self.loaded = true
 	
@@ -48,7 +50,9 @@ function AbstractBriefingController:initialize(document)
 		self.briefState = "command"
 	end
     
-	self:startMusic()
+	if RocketUiSystem.current_played == nil then
+		self:startMusic()
+	end
 
 	if self.briefState ~= "fiction" then
 		self:registerEventHandlers()
@@ -64,6 +68,12 @@ end
 
 function AbstractBriefingController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+			RocketUiSystem.music_handle:close(true)
+		end
+		RocketUiSystem.music_handle = nil
+		RocketUiSystem.current_played = nil
+		RocketUiSystem.music_started = nil
         event:StopPropagation()
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
@@ -149,9 +159,6 @@ function AbstractBriefingController:registerEventHandlers()
 end
 
 function AbstractBriefingController:unload()
-    if self.music_handle ~= nil and self.music_handle:isValid() then
-        self.music_handle:close(true)
-    end
     if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
         self.current_voice_handle:close(false)
     end
@@ -166,7 +173,7 @@ function AbstractBriefingController:unload()
 end
 
 function AbstractBriefingController:startMusic()
-    local filename = ui.Briefing.getBriefingMusicName()
+	local filename = ui.Briefing.getBriefingMusicName()
 	
 	if self.briefState == "fiction" then
 		filename = ui.FictionViewer.getFictionMusicName()
@@ -175,12 +182,22 @@ function AbstractBriefingController:startMusic()
     if #filename <= 0 then
         return
     end
+	
+	if filename ~= RocketUiSystem.current_played then
+	
+		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+			RocketUiSystem.music_handle:close(true)
+		end
+	
+		--RocketUiSystem.current_played = filename
 
-    self.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
-    async.run(function()
-        async.await(async_util.wait_for(2.5))
-        self.music_handle:play(ad.MasterEventMusicVolume, true)
-    end, async.OnFrameExecutor, self.uiActiveContext)
+		RocketUiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+		async.run(function()
+			async.await(async_util.wait_for(2.5))
+			RocketUiSystem.music_handle:play(ad.MasterEventMusicVolume, true)
+			RocketUiSystem.current_played = filename
+		end, async.OnFrameExecutor, self.uiActiveContext)
+	end
 end
 
 function AbstractBriefingController:waitForStageFinishAsync(num_stage_lines)

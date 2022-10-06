@@ -189,6 +189,8 @@ function WeaponSelectController:initialize(document)
 	elseif self.secondaryList[1] then
 		self:SelectEntry(self.secondaryList[1])		
 	end
+	
+	self:startMusic()
 
 end
 
@@ -233,8 +235,8 @@ function WeaponSelectController:getIconFrames(list)
 			if v.Type == "ship" then
 				--model_h = gr.loadModel(tb.ShipClasses[v.Index].Model.Filename)
 				model_h = tb.ShipClasses[v.Index]
-				modelDetails.width = 32
-				modelDetails.height = 28
+				modelDetails.width = 128
+				modelDetails.height = 112
 				modelDetails.heading = 50
 				modelDetails.pitch = 15
 				modelDetails.bank = 0
@@ -242,8 +244,8 @@ function WeaponSelectController:getIconFrames(list)
 			else
 				--model_h = gr.loadModel(tb.WeaponClasses[v.Index].Model.Filename)
 				model_h = tb.WeaponClasses[v.Index]
-				modelDetails.width = 56
-				modelDetails.height = 24
+				modelDetails.width = 112
+				modelDetails.height = 48
 				modelDetails.heading = 75
 				modelDetails.pitch = 0
 				modelDetails.bank = 40
@@ -490,6 +492,7 @@ function WeaponSelectController:AppendToPool(ship)
 		Icon = tb.ShipClasses[ship].SelectIconFilename,
 		GeneratedIcon = {},
 		Anim = tb.ShipClasses[ship].SelectAnimFilename,
+		Overhead = tb.ShipClasses[ship].SelectOverheadFilename,
 		Name = tb.ShipClasses[ship].Name,
 		Type = "ship",
 		key = tb.ShipClasses[ship].Name
@@ -1406,6 +1409,11 @@ function WeaponSelectController:accept_pressed()
 	--Success!
 	else
 		text = nil
+		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+			RocketUiSystem.music_handle:close(true)
+		end
+		RocketUiSystem.music_handle = nil
+		RocketUiSystem.current_played = nil
 	end
 
 	if text ~= nil then
@@ -1435,6 +1443,11 @@ end
 
 function WeaponSelectController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+			RocketUiSystem.music_handle:close(true)
+		end
+		RocketUiSystem.music_handle = nil
+		RocketUiSystem.current_played = nil
         event:StopPropagation()
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
@@ -1452,9 +1465,28 @@ function WeaponSelectController:unload()
 	
 end
 
+function WeaponSelectController:startMusic()
+	local filename = ui.Briefing.getBriefingMusicName()
+
+    if #filename <= 0 then
+        return
+    end
+	
+	if filename ~= RocketUiSystem.current_played then
+	
+		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+			RocketUiSystem.music_handle:close(true)
+		end
+
+		RocketUiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+		RocketUiSystem.music_handle:play(ad.MasterEventMusicVolume, true)
+		RocketUiSystem.current_played = filename
+	end
+end
+
 function WeaponSelectController:drawSelectModel()
 
-	if modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT" then  --Haaaaaaacks
+	if modelDraw.class and (ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT") and (modelDraw.element ~= nil) then  --Haaaaaaacks
 		
 		--local thisItem = tb.ShipClasses(modelDraw.class)
 		modelView = modelDraw.element	

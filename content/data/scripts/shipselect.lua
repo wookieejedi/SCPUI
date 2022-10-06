@@ -102,6 +102,8 @@ function ShipSelectController:initialize(document)
 	if self.list[1] then
 		self:SelectEntry(self.list[1])
 	end
+	
+	self:startMusic()
 
 end
 
@@ -136,8 +138,8 @@ function ShipSelectController:getIconFrames(list)
 			--local imag_h = gr.loadTexture(v.Icon, true, true)
 			local model_h = nil
 			local modelDetails = {
-				width = 32,
-				height = 28,
+				width = 128,
+				height = 112,
 				heading = 50,
 				pitch = 15,
 				bank = 0,
@@ -392,6 +394,7 @@ function ShipSelectController:AppendToPool(ship)
 		Index = tb.ShipClasses[ship]:getShipClassIndex(),
 		Amount = 0,
 		Icon = tb.ShipClasses[ship].SelectIconFilename,
+		GeneratedIcon = {},
 		Anim = tb.ShipClasses[ship].SelectAnimFilename,
 		Name = tb.ShipClasses[ship].Name,
 		Type = tb.ShipClasses[ship].TypeString,
@@ -855,6 +858,11 @@ function ShipSelectController:accept_pressed()
 	--Success!
 	else
 		text = nil
+		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+			RocketUiSystem.music_handle:close(true)
+		end
+		RocketUiSystem.music_handle = nil
+		RocketUiSystem.current_played = nil
 	end
 
 	if text ~= nil then
@@ -884,6 +892,11 @@ end
 
 function ShipSelectController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+			RocketUiSystem.music_handle:close(true)
+		end
+		RocketUiSystem.music_handle = nil
+		RocketUiSystem.current_played = nil
         event:StopPropagation()
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
@@ -899,6 +912,25 @@ function ShipSelectController:unload()
 	modelDraw.class = nil
 	ui.ShipWepSelect:saveLoadout()
 	
+end
+
+function ShipSelectController:startMusic()
+	local filename = ui.Briefing.getBriefingMusicName()
+
+    if #filename <= 0 then
+        return
+    end
+
+	if filename ~= RocketUiSystem.current_played then
+	
+		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+			RocketUiSystem.music_handle:close(true)
+		end
+
+		RocketUiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+		RocketUiSystem.music_handle:play(ad.MasterEventMusicVolume, true)
+		RocketUiSystem.current_played = filename
+	end
 end
 
 function ShipSelectController:drawSelectModel()

@@ -7,7 +7,9 @@ RocketUiSystem = {
     replacements = {},
 	substate = "none",
 	cutscene = "none",
-	debriefInit = false
+	debriefInit = false,
+	music_handle = nil,
+	current_played = nil
 }
 
 modOptionValues = {}

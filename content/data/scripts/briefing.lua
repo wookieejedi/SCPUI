@@ -51,6 +51,11 @@ function BriefingController:initialize(document)
 	--ui.Briefing.startBriefingMap(drawMap.x1, drawMap.y1, drawMap.x2, drawMap.y2)
 	
 	if mn.hasNoBriefing() then
+		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+			RocketUiSystem.music_handle:close(true)
+		end
+		RocketUiSystem.music_handle = nil
+		RocketUiSystem.current_played = nil
 		ui.Briefing.commitToMission()
 	end
 		
@@ -219,6 +224,11 @@ end
 function BriefingController:acceptPressed()
     
 	drawMap = nil
+	if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+		RocketUiSystem.music_handle:close(true)
+	end
+	RocketUiSystem.music_handle = nil
+	RocketUiSystem.current_played = nil
 	--ba.postGameEvent(ba.GameEvents["GS_EVENT_ENTER_GAME"])
 	ui.Briefing.commitToMission()
 

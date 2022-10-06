@@ -42,7 +42,6 @@ function FictionViewerController:initialize(document)
 end
 
 function FictionViewerController:accept_pressed()
-	self.music_handle:stop()
 	if mn.hasCommandBriefing() then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_CMD_BRIEF"])
 	else
@@ -56,6 +55,11 @@ end
 
 function FictionViewerController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+			RocketUiSystem.music_handle:close(true)
+		end
+		RocketUiSystem.music_handle = nil
+		RocketUiSystem.current_played = nil
 		event:StopPropagation()
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
