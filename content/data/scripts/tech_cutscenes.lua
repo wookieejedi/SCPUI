@@ -98,7 +98,7 @@ function TechCutscenesController:CreateEntries(list)
 	for i, v in pairs(list) do
 		if self.show_all then
 			list_names_el:AppendChild(self:CreateEntryItem(v, i))
-		elseif v.isVisible ~= true then
+		elseif v.isVisible == true then
 			list_names_el:AppendChild(self:CreateEntryItem(v, i))
 		end
 	end
@@ -198,27 +198,33 @@ function TechCutscenesController:ScrollList(element, direction)
 end
 
 function TechCutscenesController:prev_pressed(element)
-	if self.SelectedIndex == 1 then
-		ui.playElementSound(element, "click", "error")
-	else
-		self:SelectEntry(self.visibleList[self.SelectedIndex - 1])
+	if self.SelectedEntry ~= nil then
+		if self.SelectedIndex == 1 then
+			ui.playElementSound(element, "click", "error")
+		else
+			self:SelectEntry(self.visibleList[self.SelectedIndex - 1])
+		end
 	end
 end
 
 function TechCutscenesController:next_pressed(element)
-	local num = #self.visibleList
-	
-	if self.SelectedIndex == num then
-		ui.playElementSound(element, "click", "error")
-	else
-		self:SelectEntry(self.visibleList[self.SelectedIndex + 1])
+	if self.SelectedEntry ~= nil then
+		local num = #self.visibleList
+		
+		if self.SelectedIndex == num then
+			ui.playElementSound(element, "click", "error")
+		else
+			self:SelectEntry(self.visibleList[self.SelectedIndex + 1])
+		end
 	end
 end
 
 function TechCutscenesController:play_pressed(element)
-	RocketUiSystem.cutscene = self.SelectedEntry
-	RocketUiSystem:beginSubstate("Cutscene")
-	self.document:Close()
+	if self.SelectedEntry ~= nil then
+		RocketUiSystem.cutscene = self.SelectedEntry
+		RocketUiSystem:beginSubstate("Cutscene")
+		self.document:Close()
+	end
 end
 
 function TechCutscenesController:exit_pressed(element)
