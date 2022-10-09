@@ -60,6 +60,14 @@ function BriefingController:initialize(document)
 		RocketUiSystem.current_played = nil
 		ui.Briefing.commitToMission()
 	end
+	
+	if mn.isScramble() or mn.isTraining() then
+		local ss_btn = self.document:GetElementById("s_select_btn")
+		local ws_btn = self.document:GetElementById("w_select_btn")
+		
+		ss_btn:SetClass("button_1", false)
+		ws_btn:SetClass("button_1", false)
+	end
 		
 
 	---Load the desired font size from the save file
