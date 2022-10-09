@@ -124,19 +124,19 @@ function TechCutscenesController:SelectEntry(entry)
 
 end
 
-function TechCutscenesController:ChangeTechState(section)
+function TechCutscenesController:ChangeTechState(state)
 
-	if section == 1 then
+	if state == 1 then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_TECH_MENU"])
 	end
-	if section == 2 then
+	if state == 2 then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_SIMULATOR_ROOM"])
 	end
-	if section == 3 then
+	if state == 3 then
 		--This is where we are already, so don't do anything
 		--ba.postGameEvent(ba.GameEvents["GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"])
 	end
-	if section == 4 then
+	if state == 4 then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_CREDITS"])
 	end
 	
@@ -158,6 +158,42 @@ function TechCutscenesController:global_keydown(element, event)
     elseif event.parameters.key_identifier == rocket.key_identifier.S and event.parameters.ctrl_key == 1 and event.parameters.shift_key == 1 then
 		self.show_all  = not self.show_all
 		self:ReloadList()
+	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.ctrl_key == 1 then
+		self:ChangeTechState(2)
+	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then
+		self:ChangeTechState(4)
+	elseif event.parameters.key_identifier == rocket.key_identifier.TAB then
+		--do nothing
+	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.shift_key == 1 then
+		self:ScrollList(self.document:GetElementById("cutscene_list"), 0)
+	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.shift_key == 1 then
+		self:ScrollList(self.document:GetElementById("cutscene_list"), 1)
+	elseif event.parameters.key_identifier == rocket.key_identifier.UP then
+		self:prev_pressed()
+	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
+		self:next_pressed()
+	elseif event.parameters.key_identifier == rocket.key_identifier.LEFT then
+		--self:select_prev()
+	elseif event.parameters.key_identifier == rocket.key_identifier.RIGHT then
+		--self:select_next()
+	elseif event.parameters.key_identifier == rocket.key_identifier.F1 then
+		--self:help_clicked(element)
+	elseif event.parameters.key_identifier == rocket.key_identifier.F2 then
+		--self:options_button_clicked(element)
+	end
+end
+
+function TechCutscenesController:global_keyup(element, event)
+	if event.parameters.key_identifier == rocket.key_identifier.RETURN then
+		self:play_pressed(element)
+	end
+end
+
+function TechCutscenesController:ScrollList(element, direction)
+	if direction == 0 then
+		element.scroll_top = element.scroll_top - 15
+	else
+		element.scroll_top = element.scroll_top + 15
 	end
 end
 

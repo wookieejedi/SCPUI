@@ -7,8 +7,8 @@ local modelDraw = nil
 
 function TechDatabaseController:init()
 	self.show_all = false
-	self.Counter = 0
 	modelDraw = {}
+	self.Counter = 0
 end
 
 --Iterate over all the ships, weapons, and intel but only grab the necessary data
@@ -101,19 +101,19 @@ function TechDatabaseController:ReloadList()
 
 end
 
-function TechDatabaseController:ChangeTechState(section)
+function TechDatabaseController:ChangeTechState(state)
 
-	if section == 1 then
+	if state == 1 then
 		--This is where we are already, so don't do anything
 		--ba.postGameEvent(ba.GameEvents["GS_EVENT_TECH_MENU"])
 	end
-	if section == 2 then
+	if state == 2 then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_SIMULATOR_ROOM"])
 	end
-	if section == 3 then
+	if state == 3 then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"])
 	end
-	if section == 4 then
+	if state == 4 then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_CREDITS"])
 	end
 	
@@ -121,6 +121,8 @@ end
 
 function TechDatabaseController:ChangeSection(section)
 
+	self.sectionIndex = section
+	
 	if section == 1 then section = "ships" end
 	if section == 2 then section = "weapons" end
 	if section == 3 then section = "intel" end
@@ -250,7 +252,7 @@ function TechDatabaseController:SelectEntry(entry)
 				aniEl:SetAttribute("src", entry.Anim)
 				aniEl:SetClass("anim", true)
 				aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
-			else --If we don't have an anim, then draw the tech model WAITING ON MERGE
+			else --If we don't have an anim, then draw the tech model
 				modelDraw.class = entry.Name
 				modelDraw.element = self.document:GetElementById("tech_view")
 			end
@@ -274,31 +276,7 @@ function TechDatabaseController:SelectEntry(entry)
 
 end
 
-function TechDatabaseController:ClearEntry()
-
-	self.document:GetElementById(self.SelectedEntry):SetPseudoClass("checked", false)
-	self.SelectedEntry = nil
-
-end
-
-function TechDatabaseController:ClearData()
-
-	modelDraw.class = nil
-	local aniWrapper = self.document:GetElementById("tech_view")
-	aniWrapper:RemoveChild(aniWrapper.first_child)
-	self.document:GetElementById("tech_desc").inner_rml = "<p></p>"
-	
-end
-
-function TechDatabaseController:ClearEntries(parent)
-
-	while parent:HasChildNodes() do
-		parent:RemoveChild(parent.first_child)
-	end
-
-end
-
-function TechDatabaseController:drawModel()
+function TechDatabaseController:DrawModel()
 
 	if modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU" then  --Haaaaaaacks
 
@@ -328,6 +306,30 @@ function TechDatabaseController:drawModel()
 
 end
 
+function TechDatabaseController:ClearEntry()
+
+	self.document:GetElementById(self.SelectedEntry):SetPseudoClass("checked", false)
+	self.SelectedEntry = nil
+
+end
+
+function TechDatabaseController:ClearData()
+
+	modelDraw.class = nil
+	local aniWrapper = self.document:GetElementById("tech_view")
+	aniWrapper:RemoveChild(aniWrapper.first_child)
+	self.document:GetElementById("tech_desc").inner_rml = "<p></p>"
+	
+end
+
+function TechDatabaseController:ClearEntries(parent)
+
+	while parent:HasChildNodes() do
+		parent:RemoveChild(parent.first_child)
+	end
+
+end
+
 function TechDatabaseController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
@@ -336,6 +338,50 @@ function TechDatabaseController:global_keydown(element, event)
     elseif event.parameters.key_identifier == rocket.key_identifier.S and event.parameters.ctrl_key == 1 and event.parameters.shift_key == 1 then
 		self.show_all  = not self.show_all
 		self:ReloadList()
+	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.ctrl_key == 1 then
+		self:ChangeTechState(4)
+	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then
+		self:ChangeTechState(2)
+	elseif event.parameters.key_identifier == rocket.key_identifier.TAB then
+		local newSection = self.sectionIndex + 1
+		if newSection == 4 then
+			newSection = 1
+		end
+		self:ChangeSection(newSection)
+	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.shift_key == 1 then
+		self:ScrollList(self.document:GetElementById("tech_list"), 0)
+	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.shift_key == 1 then
+		self:ScrollList(self.document:GetElementById("tech_list"), 1)
+	elseif event.parameters.key_identifier == rocket.key_identifier.UP then
+		self:ScrollText(self.document:GetElementById("tech_desc"), 0)
+	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
+		self:ScrollText(self.document:GetElementById("tech_desc"), 1)
+	elseif event.parameters.key_identifier == rocket.key_identifier.LEFT then
+		self:select_prev()
+	elseif event.parameters.key_identifier == rocket.key_identifier.RIGHT then
+		self:select_next()
+	elseif event.parameters.key_identifier == rocket.key_identifier.RETURN then
+		--self:commit_pressed(element)
+	elseif event.parameters.key_identifier == rocket.key_identifier.F1 then
+		self:help_clicked(element)
+	elseif event.parameters.key_identifier == rocket.key_identifier.F2 then
+		self:options_button_clicked(element)
+	end
+end
+
+function TechDatabaseController:ScrollList(element, direction)
+	if direction == 0 then
+		element.scroll_top = element.scroll_top - 15
+	else
+		element.scroll_top = element.scroll_top + 15
+	end
+end
+
+function TechDatabaseController:ScrollText(element, direction)
+	if direction == 0 then
+		element.scroll_top = (element.scroll_top - 5)
+	else
+		element.scroll_top = (element.scroll_top + 5)
 	end
 end
 
@@ -374,10 +420,10 @@ end
 
 engine.addHook("On Frame", function()
 	if ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU" then
-		TechDatabaseController:drawModel()
+		TechDatabaseController:DrawModel()
 	end
 end, {}, function()
-    return false
+	return false
 end)
 
 return TechDatabaseController

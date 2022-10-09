@@ -85,18 +85,18 @@ function TechCreditsController:initialize(document)
 	
 end
 
-function TechCreditsController:ChangeSection(section)
+function TechCreditsController:ChangeTechState(state)
 
-	if section == 1 then
+	if state == 1 then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_TECH_MENU"])
 	end
-	if section == 2 then
+	if state == 2 then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_SIMULATOR_ROOM"])
 	end
-	if section == 3 then
+	if state == 3 then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"])
 	end
-	if section == 4 then
+	if state == 4 then
 		--This is where we are already, so don't do anything
 		--ba.postGameEvent(ba.GameEvents["GS_EVENT_CREDITS"])
 	end
@@ -184,6 +184,10 @@ function TechCreditsController:global_keydown(element, event)
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
     elseif event.parameters.key_identifier == rocket.key_identifier.TAB then
 		self.rate = ui.TechRoom.Credits.ScrollRate * 10
+	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.ctrl_key == 1 then
+		self:ChangeTechState(3)
+	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then
+		self:ChangeTechState(1)
 	end
 end
 
