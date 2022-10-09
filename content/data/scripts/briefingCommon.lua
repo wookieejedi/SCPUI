@@ -50,9 +50,7 @@ function AbstractBriefingController:initialize(document)
 		self.briefState = "command"
 	end
     
-	if RocketUiSystem.current_played == nil then
-		self:startMusic()
-	end
+	self:startMusic()
 
 	if self.briefState ~= "fiction" then
 		self:registerEventHandlers()
@@ -224,6 +222,7 @@ end
 function AbstractBriefingController:initializeStage(stageIdx, briefingText, audioFileName)
     self.current_stage = stageIdx
     self.stage_instance_id = self.stage_instance_id + 1
+	ad.playInterfaceSound(20)
 
     local text_el = self.document:GetElementById(self.element_names.text_el)
     local num_stage_lines = rocket_utils.set_briefing_text(text_el, briefingText)

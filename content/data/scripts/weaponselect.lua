@@ -1191,8 +1191,10 @@ function WeaponSelectController:ApplyWeaponToSlot(parentEl, slot, bank, weapon)
 	else
 		slotIcon = entry.GeneratedIcon[1]
 	end
-	parentEl.inner_rml = "<img width=\"" .. entry.GeneratedWidth .. "\" height=\"" .. entry.GeneratedHeight .. "\" src=\"" .. slotIcon .. "\"/>"
+	parentEl.first_child:SetAttribute("src", slotIcon)
+	--parentEl.inner_rml = "<img width=\"" .. entry.GeneratedWidth .. "\" height=\"" .. entry.GeneratedHeight .. "\" src=\"" .. slotIcon .. "\"/>"
 	parentEl.first_child:SetClass("drag", true)
+
 	
 	--Apply to the actual loadout
 	ui.ShipWepSelect.Loadout_Ships[slot].Weapons[bank] = weapon
@@ -1541,14 +1543,15 @@ end
 
 function WeaponSelectController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+		--[[if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
 			RocketUiSystem.music_handle:close(true)
 		end
 		RocketUiSystem.music_handle = nil
 		RocketUiSystem.current_played = nil
-        event:StopPropagation()
+        event:StopPropagation()]]--
 
-        ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
+        --ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 	--elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.ctrl_key == 1 then
 	--	self:ChangeTechState(3)
 	--elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then
