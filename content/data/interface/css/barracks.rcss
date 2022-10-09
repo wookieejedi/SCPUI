@@ -123,6 +123,7 @@ div#pilotlist
 {
 	display: block;
 	color: #7b7b7b;
+	z-index: 5;
 }
 .pilotlist_element:hover
 {
