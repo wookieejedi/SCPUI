@@ -702,6 +702,7 @@ function ShipSelectController:DragSlotEnd(element, entry, shipIndex, currentSlot
 		element:SetClass("drag", false)
 		
 		element.first_child:SetAttribute("src", self.emptyWingSlot[2])
+		self:ReturnShip(currentSlot)
 		ui.ShipWepSelect.Loadout_Ships[currentSlot].ShipClassIndex = -1
 		self.slots[currentSlot].Name = nil
 		
@@ -755,8 +756,8 @@ function ShipSelectController:SetDefaultWeapons(slot, shipIndex)
 			--Find a new weapon
 			weapon = self:GetFirstAllowedWeapon(shipIndex, i, 1)
 		end
-		--Get an appropriate amount for the weapon and bank
-			amount = self:GetWeaponAmount(shipIndex, weapon, i)
+		--Primaries always get amount of 1
+		local amount = 1
 		--Set the weapon
 		ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i] = weapon
 		ui.ShipWepSelect.Loadout_Ships[slot].Amounts[i] = amount
@@ -767,12 +768,16 @@ function ShipSelectController:SetDefaultWeapons(slot, shipIndex)
 	--Secondaries
 	for i = 1, #tb.ShipClasses[shipIndex].defaultSecondaries, 1 do
 		local weapon = tb.ShipClasses[shipIndex].defaultSecondaries[i]:getWeaponClassIndex()
+		ba.warning("Default is " .. tb.WeaponClasses[weapon].Name)
 		--Check the weapon pool
 		if ui.ShipWepSelect.Weapon_Pool[weapon] <= 0 then
 			--Find a new weapon
 			weapon = self:GetFirstAllowedWeapon(shipIndex, i, 2)
-			--Get an appropriate amount for the weapon and bank
-			amount = self:GetWeaponAmount(shipIndex, weapon, i)
+		end
+		--Get an appropriate amount for the weapon and bank
+		local amount = self:GetWeaponAmount(shipIndex, weapon, i)
+		if amount > ui.ShipWepSelect.Weapon_Pool[weapon] then
+			amount = ui.ShipWepSelect.Weapon_Pool[weapon]
 		end
 		--Set the weapon
 		ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i + 3] = weapon
