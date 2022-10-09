@@ -31,8 +31,8 @@ function RedAlertController:initialize(document)
 	local color_text = rocket_utils.set_briefing_text(text_el, alert_info.Text)
 	
 	if alert_info.AudioFilename then
-		voice_handle = ad.openAudioStream(alert_info.AudioFilename, AUDIOSTREAM_VOICE)
-		voice_handle:play(ad.MasterVoiceVolume)
+		self.current_voice_handle = ad.openAudioStream(alert_info.AudioFilename, AUDIOSTREAM_VOICE)
+		self.current_voice_handle:play(ad.MasterVoiceVolume)
 	end
 	
 	alert_el = self.document:GetElementById("incoming_transmission")
