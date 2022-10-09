@@ -184,13 +184,24 @@ function WeaponSelectController:initialize(document)
 	
 	--self:InitSlots()
 	self:BuildWings()
-	local callsign = ui.ShipWepSelect.Loadout_Wings[1].Name .. " 1"
-	self:SelectShip(ui.ShipWepSelect.Loadout_Ships[1].ShipClassIndex, callsign, 1)
+	local selectSlot = 0
+	for i = 1, #ui.ShipWepSelect.Loadout_Ships, 1 do
+		if ui.ShipWepSelect.Loadout_Ships[1].ShipClassIndex > 0 then
+			selectSlot = i
+			break
+		end
+	end
 	
-	if self.primaryList[1] then
-		self:SelectEntry(self.primaryList[1])
-	elseif self.secondaryList[1] then
-		self:SelectEntry(self.secondaryList[1])		
+	if selectSlot > 0 then
+		local wing = self:GetWingSlot(selectSlot)
+		local callsign = ui.ShipWepSelect.Loadout_Wings[wing].Name .. " 1"
+		self:SelectShip(ui.ShipWepSelect.Loadout_Ships[selectSlot].ShipClassIndex, callsign, 1)
+		
+		if self.primaryList[1] then
+			self:SelectEntry(self.primaryList[1])
+		elseif self.secondaryList[1] then
+			self:SelectEntry(self.secondaryList[1])		
+		end
 	end
 	
 	self:startMusic()
@@ -1191,8 +1202,11 @@ function WeaponSelectController:ApplyWeaponToSlot(parentEl, slot, bank, weapon)
 	else
 		slotIcon = entry.GeneratedIcon[1]
 	end
+	if parentEl.first_child == nil then
+		local slotEl = self.document:CreateElement("img")
+		parentEl:AppendChild(slotEl)
+	end
 	parentEl.first_child:SetAttribute("src", slotIcon)
-	--parentEl.inner_rml = "<img width=\"" .. entry.GeneratedWidth .. "\" height=\"" .. entry.GeneratedHeight .. "\" src=\"" .. slotIcon .. "\"/>"
 	parentEl.first_child:SetClass("drag", true)
 
 	
@@ -1218,6 +1232,10 @@ function WeaponSelectController:EmptySlot(element, slot)
 	ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[slot] = -1
 	ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[slot] = -1
 	element:RemoveChild(element.first_child)
+	if slot > 3 then
+		local amountEl = self.secondaryAmountEls[slot-3]
+		amountEl.inner_rml = ""
+	end
 end
 
 function WeaponSelectController:SubtractWeaponFromPool(weapon, amount)
