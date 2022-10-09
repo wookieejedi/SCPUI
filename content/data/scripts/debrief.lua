@@ -341,10 +341,10 @@ end
 function DebriefingController:startMusic()
 	local filename = ui.Debriefing.getDebriefingMusicName()
 	
-	self.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+	RocketUiSystem.debrief_music = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
 	async.run(function()
 		async.await(async_util.wait_for(2.5))
-		self.music_handle:play(ad.MasterEventMusicVolume, true, 0)
+		RocketUiSystem.debrief_music:play(ad.MasterEventMusicVolume, true, 0)
 	end, async.OnFrameExecutor)
 end
 
@@ -631,8 +631,9 @@ function DebriefingController:global_keydown(_, event)
 end
 
 function DebriefingController:close()
-	if self.music_handle ~= nil and self.music_handle:isValid() then
-        self.music_handle:close(false)
+	if RocketUiSystem.debrief_music ~= nil and RocketUiSystem.debrief_music:isValid() then
+        RocketUiSystem.debrief_music:close(false)
+		RocketUiSystem.debrief_music = nil
     end
 	RocketUiSystem.debriefInit = false
 end

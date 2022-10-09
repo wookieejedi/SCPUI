@@ -10,7 +10,8 @@ RocketUiSystem = {
 	debriefInit = false,
 	selectInit = false,
 	music_handle = nil,
-	current_played = nil
+	current_played = nil,
+	debrief_music = nil
 }
 
 modOptionValues = {}
