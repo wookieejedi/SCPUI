@@ -184,25 +184,8 @@ function WeaponSelectController:initialize(document)
 	
 	--self:InitSlots()
 	self:BuildWings()
-	local selectSlot = 0
-	for i = 1, #ui.ShipWepSelect.Loadout_Ships, 1 do
-		if ui.ShipWepSelect.Loadout_Ships[1].ShipClassIndex > 0 then
-			selectSlot = i
-			break
-		end
-	end
 	
-	if selectSlot > 0 then
-		local wing = self:GetWingSlot(selectSlot)
-		local callsign = ui.ShipWepSelect.Loadout_Wings[wing].Name .. " 1"
-		self:SelectShip(ui.ShipWepSelect.Loadout_Ships[selectSlot].ShipClassIndex, callsign, 1)
-		
-		if self.primaryList[1] then
-			self:SelectEntry(self.primaryList[1])
-		elseif self.secondaryList[1] then
-			self:SelectEntry(self.secondaryList[1])		
-		end
-	end
+	self:SelectInitialItems()
 	
 	self:startMusic()
 
@@ -617,6 +600,30 @@ function WeaponSelectController:ResetAmounts()
 	end
 end
 
+function WeaponSelectController:SelectInitialItems()
+
+	local selectSlot = 0
+	for i = 1, #ui.ShipWepSelect.Loadout_Ships, 1 do
+		if ui.ShipWepSelect.Loadout_Ships[1].ShipClassIndex > 0 then
+			selectSlot = i
+			break
+		end
+	end
+	
+	if selectSlot > 0 then
+		local wing = self:GetWingSlot(selectSlot)
+		local callsign = ui.ShipWepSelect.Loadout_Wings[wing].Name .. " 1"
+		self:SelectShip(ui.ShipWepSelect.Loadout_Ships[selectSlot].ShipClassIndex, callsign, 1)
+		
+		if self.primaryList[1] then
+			self:SelectEntry(self.primaryList[1])
+		elseif self.secondaryList[1] then
+			self:SelectEntry(self.secondaryList[1])		
+		end
+	end
+	
+end
+
 function WeaponSelectController:ReloadList()
 
 	modelDraw.class = nil
@@ -635,13 +642,8 @@ function WeaponSelectController:ReloadList()
 	if self.secondaryList[1] then
 		self:CreateEntries(self.secondaryList)
 	end
-	if self.primaryList[1] then
-		self:SelectEntry(self.primaryList[1])
-	elseif self.secondaryList[1] then
-		self:SelectEntry(self.secondaryList[1])		
-	end
 	self:BuildWings()
-	self:SelectShip(self:GetShipEntry(self.slots[1].Name))
+	self:SelectInitialItems()
 end
 
 function WeaponSelectController:ChangeIconAvailability(shipIndex)
@@ -826,10 +828,12 @@ function WeaponSelectController:HighlightWeapon()
 		local weapon = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[index]
 		if weapon > 0 then
 			local thisEntry = self:GetWeaponEntry(weapon)
-			if tb.WeaponClasses[weapon].Name == self.SelectedEntry then
-				v.first_child:SetAttribute("src", thisEntry.GeneratedIcon[3])
-			else
-				v.first_child:SetAttribute("src", thisEntry.GeneratedIcon[1])
+			if v.first_child ~= nil then
+				if tb.WeaponClasses[weapon].Name == self.SelectedEntry then
+					v.first_child:SetAttribute("src", thisEntry.GeneratedIcon[3])
+				else
+					v.first_child:SetAttribute("src", thisEntry.GeneratedIcon[1])
+				end
 			end
 		end
 	end
@@ -1230,7 +1234,7 @@ end
 
 function WeaponSelectController:EmptySlot(element, slot)
 	ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[slot] = -1
-	ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[slot] = -1
+	--ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[slot] = -1
 	element:RemoveChild(element.first_child)
 	if slot > 3 then
 		local amountEl = self.secondaryAmountEls[slot-3]
