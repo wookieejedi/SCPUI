@@ -21,7 +21,7 @@ end
 
 function CommandBriefingController:initialize(document)
     AbstractBriefingController.initialize(self, document)
-	
+
 	ui.maybePlayCutscene(MOVIE_PRE_CMD_BRIEF, true, 0)
 	---Load the desired font size from the save file
 	if modOptionValues.Font_Multiplier then

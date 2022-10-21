@@ -27,7 +27,7 @@ function WeaponSelectController:initialize(document)
 	self.aniWepEl = self.document:CreateElement("ani")
 	self.requiredWeps = {}
 	self.emptyWingSlot = {}
-	self.select3d = false
+	self.select3d = true
 	modelDraw.banks = {
 		bank1 = self.document:GetElementById("primary_one"),
 		bank2 = self.document:GetElementById("primary_two"),
@@ -133,7 +133,7 @@ function WeaponSelectController:initialize(document)
 					ShieldFactor = math.floor(weaponList[i].ShieldFactor*10)/10,
 					SubsystemFactor = math.floor(weaponList[i].SubsystemFactor*10)/10,
 					FireWait = math.floor(weaponList[i].FireWait*10)/10,
-					Power = "???",
+					Power = weaponList[i].EnergyConsumed,
 					Type = "primary"
 				}
 				j = j + 1
@@ -154,7 +154,7 @@ function WeaponSelectController:initialize(document)
 					ShieldFactor = math.floor(weaponList[i].ShieldFactor*10)/10,
 					SubsystemFactor = math.floor(weaponList[i].SubsystemFactor*10)/10,
 					FireWait = math.floor(weaponList[i].FireWait*10)/10,
-					Power = "???",
+					Power = weaponList[i].EnergyConsumed,
 					Type = "secondary"
 				}
 				k = k + 1
@@ -252,7 +252,7 @@ function WeaponSelectController:getIconFrames(list)
 			gr.setTarget(tex_h)
 			for j = 1, 6, 1 do
 				gr.clearScreen(0,0,0,0)
-				model_h:renderTechModel(0, 0, modelDetails.width, modelDetails.height, modelDetails.heading, modelDetails.pitch, modelDetails.bank, modelDetails.zoom)
+				model_h:renderTechModel(0, 0, modelDetails.width, modelDetails.height, modelDetails.heading, modelDetails.pitch, modelDetails.bank, modelDetails.zoom, false)
 				v.GeneratedIcon[j] = gr.screenToBlob()
 			end
 			v.GeneratedWidth = width
@@ -585,7 +585,7 @@ function WeaponSelectController:AppendWeaponToPool(classIndex)
 		ShieldFactor = math.floor(tb.WeaponClasses[classIndex].ShieldFactor*10)/10,
 		SubsystemFactor = math.floor(tb.WeaponClasses[classIndex].SubsystemFactor*10)/10,
 		FireWait = math.floor(tb.WeaponClasses[classIndex].FireWait*10)/10,
-		Power = "???",
+		Power = tb.WeaponClasses[classIndex].EnergyConsumed,
 		Type = type_v,
 		key = tb.WeaponClasses[classIndex].Name
 	}

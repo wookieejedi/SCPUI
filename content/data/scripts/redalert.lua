@@ -6,7 +6,10 @@ local class = require("class")
 local RedAlertController = class()
 
 function RedAlertController:init()
-
+	if not RocketUiSystem.selectInit then
+		ui.ShipWepSelect.initSelect()
+		RocketUiSystem.selectInit = true
+	end
 end
 
 local alert_el = nil
@@ -58,6 +61,7 @@ function RedAlertController:blink()
 end
 
 function RedAlertController:commit_pressed()
+	RocketUiSystem.selectInit = false
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_ENTER_GAME"])
 end
 
@@ -77,7 +81,7 @@ function RedAlertController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         --self.music_handle:stop()
 		event:StopPropagation()
-
+		RocketUiSystem.selectInit = false
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
     end
 end

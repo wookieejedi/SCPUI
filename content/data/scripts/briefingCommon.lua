@@ -72,6 +72,7 @@ function AbstractBriefingController:global_keydown(_, event)
 		RocketUiSystem.music_handle = nil
 		RocketUiSystem.current_played = nil
 		RocketUiSystem.music_started = nil
+		RocketUiSystem.selectInit = false
         event:StopPropagation()
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])

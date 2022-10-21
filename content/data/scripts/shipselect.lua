@@ -25,7 +25,7 @@ function ShipSelectController:initialize(document)
 	self.slots = {}
 	self.aniEl = self.document:CreateElement("ani")
 	self.requiredWeps = {}
-	self.select3d = false
+	self.select3d = true
 	self.emptyWingSlot = {}
 	
 	--Get all the required weapons
@@ -153,7 +153,7 @@ function ShipSelectController:getIconFrames(list)
 			gr.setTarget(tex_h)
 			for j = 1, 6, 1 do
 				gr.clearScreen(0,0,0,0)
-				model_h:renderTechModel(0, 0, modelDetails.width, modelDetails.height, modelDetails.heading, modelDetails.pitch, modelDetails.bank, modelDetails.zoom)
+				model_h:renderTechModel(0, 0, modelDetails.width, modelDetails.height, modelDetails.heading, modelDetails.pitch, modelDetails.bank, modelDetails.zoom, false)
 				v.GeneratedIcon[j] = gr.screenToBlob()
 			end
 			v.GeneratedWidth = width
@@ -768,7 +768,6 @@ function ShipSelectController:SetDefaultWeapons(slot, shipIndex)
 	--Secondaries
 	for i = 1, #tb.ShipClasses[shipIndex].defaultSecondaries, 1 do
 		local weapon = tb.ShipClasses[shipIndex].defaultSecondaries[i]:getWeaponClassIndex()
-		ba.warning("Default is " .. tb.WeaponClasses[weapon].Name)
 		--Check the weapon pool
 		if ui.ShipWepSelect.Weapon_Pool[weapon] <= 0 then
 			--Find a new weapon

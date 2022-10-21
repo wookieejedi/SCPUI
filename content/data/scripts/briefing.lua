@@ -24,6 +24,11 @@ function BriefingController:init()
 	
 	drawMap = {}
 	
+	if not RocketUiSystem.selectInit then
+		ui.ShipWepSelect.initSelect()
+		RocketUiSystem.selectInit = true
+	end
+	
 end
 
 function BriefingController:initialize(document)

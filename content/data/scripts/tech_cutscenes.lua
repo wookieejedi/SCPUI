@@ -47,10 +47,9 @@ function TechCutscenesController:initialize(document)
 	if self.list[1] then
 		self.visibleList = {}
 		self:CreateEntries(self.list)
-	end
-	
-	if self.list[1].Name then
-		self:SelectEntry(self.list[1])
+		if self.list[1].Name then
+			self:SelectEntry(self.list[1])
+		end
 	end
 	
 end
