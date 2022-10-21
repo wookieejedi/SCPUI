@@ -79,9 +79,6 @@
 					<ul id=list_item_names_ul>
 						<p></p>
 					</ul>
-					<ul id=list_item_filenames_ul>
-						<p></p>
-					</ul>
 				</div>
 				<img src="mission-sim-window.png"></img>
 			</div>

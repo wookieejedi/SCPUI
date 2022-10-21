@@ -106,7 +106,7 @@ function RocketUiSystem:stateEnd()
     ui.disableInput()
 	
 	if hv.OldState.Name == "GS_STATE_SCRIPTING" then
-		RocketUiSystem.substate = "None"
+		RocketUiSystem.substate = "none"
 	end
 end
 
@@ -159,19 +159,19 @@ end
 RocketUiSystem:init()
 
 engine.addHook("On State Start", function()
-	RocketUiSystem:stateStart()
+    RocketUiSystem:stateStart()
 end, {}, function()
     return RocketUiSystem:hasOverrideForState(getRocketUiHandle(hv.NewState))
 end)
 
 engine.addHook("On Frame", function()
-	RocketUiSystem:stateFrame()
+    RocketUiSystem:stateFrame()
 end, {}, function()
     return RocketUiSystem:hasOverrideForCurrentState()
 end)
 
 engine.addHook("On State End", function()
-	RocketUiSystem:stateEnd()
+    RocketUiSystem:stateEnd()
 end, {}, function()
     return RocketUiSystem:hasOverrideForState(getRocketUiHandle(hv.OldState))
 end)

@@ -10,7 +10,7 @@
 			controller = require("tech_cutscenes")()
 		</script>
 	</head>
-	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onkeyup="controller:global_keyup(element, event)" onunload="controller = nil">
 		<div id=top_panel_wrapper>
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>

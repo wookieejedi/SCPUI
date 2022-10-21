@@ -127,6 +127,7 @@ div#mission_list
 {
 	display: block;
 	color: #7b7b7b;
+	z-index: 3;
 }
 .missionlist_element:hover
 {
