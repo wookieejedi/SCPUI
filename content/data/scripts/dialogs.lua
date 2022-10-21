@@ -51,19 +51,40 @@ local function initialize_buttons(document, properties, finish_func)
     end
 end
 
-local function show_dialog(context, properties, finish_func)
+local function show_dialog(context, properties, finish_func, reject, abortCBTable)
     local dialog_doc                                       = context:LoadDocument("data/interface/markup/dialog.rml")
 
     dialog_doc:GetElementById("title_container").inner_rml = properties.title_string
     dialog_doc:GetElementById("text_container").inner_rml  = properties.text_string
-	if modOptionValues.Font_Multiplier then
-		dialog_doc:GetElementById("dialog_body"):SetClass(("p1-" .. modOptionValues.Font_Multiplier), true)
-	else
-		dialog_doc:GetElementById("dialog_body"):SetClass("p1-5", true)
+    if modOptionValues.Font_Multiplier then
+        dialog_doc:GetElementById("dialog_body"):SetClass(("p1-" .. modOptionValues.Font_Multiplier), true)
+    else
+        dialog_doc:GetElementById("dialog_body"):SetClass("p1-5", true)
+    end
+	
+	if properties.input_choice then
+		local input_el = dialog_doc:CreateElement("input")
+		dialog_doc:GetElementById("text_container"):AppendChild(input_el)
+		input_el.type = "text"
+		input_el.maxlength = 32
+		
+		input_el:AddEventListener("change", function(event, _, _)
+            if event.parameters.linebreak == 1 then
+                finish_func(event.parameters.value)
+				dialog_doc:Close()
+			end
+        end)
 	end
 
     if #properties.buttons > 0 then
         initialize_buttons(dialog_doc, properties, finish_func)
+    end
+    
+    if abortCBTable ~= nil then
+        abortCBTable.Abort = function()
+            dialog_doc:Close()
+            reject()
+        end
     end
 
     dialog_doc:Show(DocumentFocus.FOCUS) -- MODAL would be better than FOCUS but then the debugger cannot be used anymore
@@ -103,9 +124,14 @@ function factory_mt:button(type, text, value)
     return self
 end
 
-function factory_mt:show(context)
-    return async.promise(function(resolve)
-        show_dialog(context, self, resolve)
+function factory_mt:input(input)
+    self.input_choice = input
+    return self
+end
+
+function factory_mt:show(context, abortCBTable)
+    return async.promise(function(resolve, reject)
+        show_dialog(context, self, resolve, reject, abortCBTable)
     end)
 end
 
@@ -116,7 +142,8 @@ function module.new()
         type_val     = module.TYPE_SIMPLE,
         buttons      = {},
         title_string = "",
-        text_string  = ""
+        text_string  = "",
+		input_choice = false
     }
     setmetatable(factory, factory_mt)
     return factory

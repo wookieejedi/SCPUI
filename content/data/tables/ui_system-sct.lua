@@ -156,6 +156,58 @@ function RocketUiSystem:hasOverrideForCurrentState()
     return self:hasOverrideForState(getRocketUiHandle(ba.getCurrentGameState()))
 end
 
+function RocketUiSystem:dialogStart()
+    ui.enableInput(self.context)
+    
+    local dialogs = require('dialogs')
+    self.Dialog = { Abort = {}, Submit = nil }
+    local dialog = dialogs.new()
+        :title(hv.Title)
+        :text(hv.Text)
+		:input(hv.IsInputPopup)
+    
+    for i, button in ipairs(hv.Choices) do
+        local positivity = nil
+        if button.Positivity == 0 then
+            positivity = dialogs.BUTTON_TYPE_NEUTRAL
+        elseif button.Positivity == 1 then
+            positivity = dialogs.BUTTON_TYPE_POSITIVE
+        elseif button.Positivity == 2 then
+            positivity = dialogs.BUTTON_TYPE_NEGATIVE
+        end
+        dialog:button(positivity, button.Text, i - 1)
+    end
+
+    dialog:show(self.context, self.DialogAbort)
+        :continueWith(function(response)
+            self.Dialog.Submit = response
+        end)
+end
+
+function RocketUiSystem:dialogFrame()
+    -- Add some tracing scopes here to see how long this stuff takes
+    updateCategory:trace(function()
+        self.context:Update()
+    end)
+    renderCategory:trace(function()
+        self.context:Render()
+    end)
+    
+    if self.Dialog.Submit ~= nil then
+        local submit = self.Dialog.Submit
+        self.Dialog = nil
+        hv.Submit(submit)
+    end
+end
+
+function RocketUiSystem:dialogEnd()
+    ui.disableInput(self.context)
+
+    if self.Dialog ~= nil and self.Dialog.Abort ~= nil then
+        self.Dialog.Abort.Abort()
+    end
+end
+
 RocketUiSystem:init()
 
 engine.addHook("On State Start", function()
@@ -174,5 +226,23 @@ engine.addHook("On State End", function()
     RocketUiSystem:stateEnd()
 end, {}, function()
     return RocketUiSystem:hasOverrideForState(getRocketUiHandle(hv.OldState))
+end)
+
+engine.addHook("On Dialog Init", function()
+    RocketUiSystem:dialogStart()
+end, {}, function()
+    return true
+end)
+
+engine.addHook("On Dialog Frame", function()
+    RocketUiSystem:dialogFrame()
+end, {}, function()
+    return true
+end)
+
+engine.addHook("On Dialog Close", function()
+    RocketUiSystem:dialogEnd()
+end, {}, function()
+    return true
 end)
 
