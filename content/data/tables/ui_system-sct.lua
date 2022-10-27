@@ -172,7 +172,7 @@ function RocketUiSystem:dialogStart()
             positivity = dialogs.BUTTON_TYPE_NEUTRAL
         elseif button.Positivity == 1 then
             positivity = dialogs.BUTTON_TYPE_POSITIVE
-        elseif button.Positivity == 2 then
+        elseif button.Positivity == -1 then
             positivity = dialogs.BUTTON_TYPE_NEGATIVE
         end
         dialog:button(positivity, button.Text, i - 1)
