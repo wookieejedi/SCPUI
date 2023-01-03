@@ -8,6 +8,9 @@ local BriefingController = class(AbstractBriefingController)
 
 local drawMap = nil
 
+--Option to render briefing map to "texture" or directly to "screen"
+local renderMapTo = "screen"
+
 function BriefingController:init()
     --- @type briefing_stage[]
     self.stages = {}
@@ -23,7 +26,8 @@ function BriefingController:init()
     }
 	
 	drawMap = {
-		tex = nil
+		tex = nil,
+		target = renderMapTo
 	}
 	
 	if not RocketUiSystem.selectInit then
@@ -249,16 +253,18 @@ function BriefingController:drawMap()
 	gr.setTarget(drawMap.tex)
 	
 	
-	if drawMap.draw == true then	
-		gr.setTarget(drawMap.tex)
-		gr.clearScreen(0,0,0,0)
-		--ui.Briefing.drawBriefingMap(drawMap.x1, drawMap.y1, drawMap.x2, drawMap.y2)
-		ui.Briefing.drawBriefingMap(0, 0, drawMap.x2, drawMap.y2)
-		
-		
+	if drawMap.draw == true then
+		if drawMap.target == "texture" then
+			gr.setTarget(drawMap.tex)
+			gr.clearScreen(0,0,0,0)
+			ui.Briefing.drawBriefingMap(0, 0, drawMap.x2, drawMap.y2)
+		elseif drawMap.target == "screen" then
+			gr.clearScreen(0,0,0,0)
+			gr.setTarget()
+			ui.Briefing.drawBriefingMap(drawMap.x1, drawMap.y1, drawMap.x2, drawMap.y2)
+		end
 	else
-		gr.clearScreen(0,0,0,0)
-		
+		gr.clearScreen(0,0,0,0)	
 	end
 	
 	gr.setTarget()
