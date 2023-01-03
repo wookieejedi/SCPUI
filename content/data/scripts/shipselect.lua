@@ -25,8 +25,10 @@ function ShipSelectController:initialize(document)
 	self.slots = {}
 	self.aniEl = self.document:CreateElement("ani")
 	self.requiredWeps = {}
-	self.select3d = true
 	self.emptyWingSlot = {}
+	
+	
+	self.ship3d, self.shipEffect, self.icon3d = ui.ShipWepSelect.get3dShipChoices()
 	
 	--Get all the required weapons
 	j = 1
@@ -63,6 +65,10 @@ function ShipSelectController:initialize(document)
 	local j = 1
 	while (i ~= #shipList) do
 		if ui.ShipWepSelect.Ship_Pool[i] > 0 then
+			if rocketUiIcons[shipList[i].Name] == nil then
+				ba.warning("No generated icon was found for " .. shipList[i].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
+				RocketUiSystem:setIconFrames(shipList[i].Name)
+			end
 			self.list[j] = {
 				Index = i,
 				Amount = ui.ShipWepSelect.Ship_Pool[i],
@@ -78,7 +84,10 @@ function ShipSelectController:initialize(document)
 				Armor = shipList[i].ArmorString,
 				GunMounts = shipList[i].GunMountsString,
 				MissileBanks = shipList[i].MissileBanksString,
-				Manufacturer = shipList[i].ManufacturerString
+				Manufacturer = shipList[i].ManufacturerString,
+				GeneratedWidth = rocketUiIcons[shipList[i].Name].Width,
+				GeneratedHeight = rocketUiIcons[shipList[i].Name].Height,
+				GeneratedIcon = rocketUiIcons[shipList[i].Name].Icon
 			}
 			j = j + 1
 		end
@@ -91,7 +100,7 @@ function ShipSelectController:initialize(document)
 	table.sort(self.list, function(a,b) return a.Index < b.Index end)
 	
 	--generate usable icons
-	self:getIconFrames(self.list)
+	--self:getIconFrames(self.list)
 	self:getEmptySlotFrames()
 	
 	--Only create entries if there are any to create
@@ -130,59 +139,6 @@ function ShipSelectController:getEmptySlotFrames()
 	gr.setTarget()
 	imag_h:unload()
 	tex_h:unload()
-
-end
-
-function ShipSelectController:getIconFrames(list)
-	
-	for i, v in pairs(list) do
-		if self.select3d then
-			--Create a texture and then draw to it, save the output
-			--local imag_h = gr.loadTexture(v.Icon, true, true)
-			local model_h = nil
-			local modelDetails = {
-				width = 128,
-				height = 112,
-				heading = 50,
-				pitch = 15,
-				bank = 0,
-				zoom = 1.1
-			}
-			model_h = tb.ShipClasses[v.Index]
-			local tex_h = gr.createTexture(modelDetails.width, modelDetails.height)
-			gr.setTarget(tex_h)
-			for j = 1, 6, 1 do
-				gr.clearScreen(0,0,0,0)
-				model_h:renderTechModel(0, 0, modelDetails.width, modelDetails.height, modelDetails.heading, modelDetails.pitch, modelDetails.bank, modelDetails.zoom, false)
-				v.GeneratedIcon[j] = gr.screenToBlob()
-			end
-			v.GeneratedWidth = width
-			v.GeneratedHeight = height
-			
-			--clean up
-			gr.setTarget()
-			tex_h:unload()
-		else
-			--Create a texture and then draw to it, save the output
-			local imag_h = gr.loadTexture(v.Icon, true, true)
-			local width = imag_h:getWidth() --56 for retail weapon icons
-			local height = imag_h:getHeight() -- 24 for retail weapon icons
-			local tex_h = gr.createTexture(width, height)
-			gr.setTarget(tex_h)
-			for j = 1, 6, 1 do
-				gr.clearScreen(0,0,0,0)
-				gr.drawImage(imag_h[j], 0, 0, width, height, 0, 1, 1, 0, 1)
-				v.GeneratedIcon[j] = gr.screenToBlob()
-			end
-			v.GeneratedWidth = width
-			v.GeneratedHeight = height
-			
-			--clean up
-			gr.setTarget()
-			imag_h:unload()
-			tex_h:unload()
-		end
-	end
 
 end
 
@@ -331,11 +287,11 @@ function ShipSelectController:BuildWings()
 							self:DragSlotEnd(slotEl, thisEntry, thisEntry.Index, index)
 						end)
 						
-						if self.select3d then
+						if self.icon3d then
 							slotEl:SetClass("available", true)
 						end
 					else
-						if self.select3d then
+						if self.icon3d then
 							slotEl:SetClass("locked", true)
 						end
 					end
@@ -403,6 +359,11 @@ end
 
 function ShipSelectController:AppendToPool(ship)
 
+	if rocketUiIcons[tb.ShipClasses[ship].Name] == nil then
+		ba.warning("No generated icon was found for " .. tb.ShipClasses[ship].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
+		RocketUiSystem:setIconFrames(tb.ShipClasses[ship].Name, true)
+	end
+
 	i = #self.list + 1
 	self.list[i] = {
 		Index = tb.ShipClasses[ship]:getShipClassIndex(),
@@ -419,7 +380,10 @@ function ShipSelectController:AppendToPool(ship)
 		GunMounts = tb.ShipClasses[ship].GunMountsString,
 		MissileBanks = tb.ShipClasses[ship].MissileBanksString,
 		Manufacturer = tb.ShipClasses[ship].ManufacturerString,
-		key = tb.ShipClasses[ship].Name
+		key = tb.ShipClasses[ship].Name,
+		GeneratedWidth = rocketUiIcons[tb.ShipClasses[ship].Name].Width,
+		GeneratedHeight = rocketUiIcons[tb.ShipClasses[ship].Name].Height,
+		GeneratedIcon = rocketUiIcons[tb.ShipClasses[ship].Name].Icon
 	}
 	return self.list[i]
 end
@@ -490,12 +454,12 @@ function ShipSelectController:HighlightShip(entry)
 	for i, v in pairs(self.list) do
 		local iconEl = self.document:GetElementById(v.key).first_child.first_child.next_sibling
 		if v.key == entry.key then
-			if self.select3d then
+			if self.icon3d then
 				iconEl:SetClass("highlighted", true)
 			end
 			iconEl:SetAttribute("src", v.GeneratedIcon[3])
 		else
-			if self.select3d then
+			if self.icon3d then
 				iconEl:SetClass("highlighted", false)
 			end
 			iconEl:SetAttribute("src", v.GeneratedIcon[1])
@@ -539,7 +503,7 @@ function ShipSelectController:SelectEntry(entry)
 		
 		self:BuildInfo(entry)
 		
-		if self.select3d or entry.Anim == nil then
+		if self.ship3d or entry.Anim == nil then
 			modelDraw.class = entry.Index
 			modelDraw.element = self.document:GetElementById("ship_view_wrapper")
 			modelDraw.start = true
@@ -828,8 +792,9 @@ function ShipSelectController:Show(text, title, buttons)
 	local dialog = dialogs.new()
 		dialog:title(title)
 		dialog:text(text)
+		dialog:escape("")
 		for i = 1, #buttons do
-			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value)
+			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end
 		dialog:show(self.document.context)
 		:continueWith(function(response)
@@ -892,7 +857,8 @@ function ShipSelectController:accept_pressed()
 		buttons[1] = {
 			b_type = dialogs.BUTTON_TYPE_POSITIVE,
 			b_text = ba.XSTR("Okay", -1),
-			b_value = ""
+			b_value = "",
+			b_keypress = string.sub(ba.XSTR("Ok", -1), 1, 1)
 		}
 		
 		self:Show(text, title, buttons)
@@ -919,7 +885,8 @@ function ShipSelectController:global_keydown(element, event)
 		RocketUiSystem.current_played = nil
         event:StopPropagation()
 
-        ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
+        --ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 	--elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.ctrl_key == 1 then
 	--	self:ChangeTechState(3)
 	--elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then

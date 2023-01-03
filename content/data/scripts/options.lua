@@ -114,6 +114,7 @@ function OptionsController:init()
     self.category_options = {
         basic  = {},
         detail = {},
+		prefs  = {},
         other  = {},
         multi  = {}
     }
@@ -791,19 +792,31 @@ end
 function OptionsController:initialize_basic_options()
     for _, option in ipairs(self.category_options.basic) do
         local key = option.Key
-        if key == "Input.Joystick" then
-            self:createSelectionOptionElement(option, option:getValidValues(), "joystick_values_wrapper", {
-                no_title = true
+        if key == "Input.Joystick2" then
+            self:createSelectionOptionElement(option, option:getValidValues(), "joystick_column_1", {
+                --no_title = true
+            })
+		elseif key == "Input.Joystick" then
+            self:createSelectionOptionElement(option, option:getValidValues(), "joystick_column_1", {
+                --no_title = true
+            })
+		elseif key == "Input.Joystick1" then
+            self:createSelectionOptionElement(option, option:getValidValues(), "joystick_column_2", {
+                --no_title = true
+            })
+		elseif key == "Input.Joystick3" then
+            self:createSelectionOptionElement(option, option:getValidValues(), "joystick_column_2", {
+                --no_title = true
             })
         elseif key == "Input.JoystickDeadZone" then
             self:createTenPointRangeElement(option, "joystick_values_wrapper", {
                 text_alignment = "right",
-                no_background  = true
+                --no_background  = true
             })
         elseif key == "Input.JoystickSensitivity" then
             self:createTenPointRangeElement(option, "joystick_values_wrapper", {
                 text_alignment = "right",
-                no_background  = true
+                --no_background  = true
             })
         elseif key == "Input.UseMouse" then
             self:createOptionElement(option, "mouse_options_container")
@@ -910,6 +923,23 @@ function OptionsController:initialize_prefs_options()
 		modOptions = utils.loadConfig('mod-options.cfg')
 	end
 	
+	--Handle built-in preferences options
+	for _, option in ipairs(self.category_options.prefs) do
+		local el = self:createOptionElement(option, string.format("prefs_column_%d", current_column))
+
+		if current_column == 2 or current_column == 3 then
+			el:SetClass("horz_middle", true)
+		elseif current_column == 4 then
+			el:SetClass("horz_right", true)
+		end
+		
+		current_column = current_column + 1
+		if current_column > 4 then
+			current_column = 3
+		end
+	end
+	
+	--Handle mod custom preferences options
     for _, option in ipairs(modOptions) do
 		option.Category = "Custom"
 		option.Title = utils.xstr(option.Title)
@@ -975,6 +1005,8 @@ function OptionsController:initialize(document)
             table.insert(self.category_options.basic, v)
         elseif category == "Graphics" then
             table.insert(self.category_options.detail, v)
+		elseif category == "Other" then
+            table.insert(self.category_options.prefs, v)
         end
     end
     ba.print("Done.\n")
@@ -1025,8 +1057,9 @@ function OptionsController:accept_clicked(element)
     local builder      = dialogs.new()
     builder:title(ba.XSTR("Restart required", -1))
     builder:text(dialog_text)
-    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", -1), false)
-    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), true)
+	builder:escape(false)
+    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", -1), false, string.sub(ba.XSTR("Cancel", -1), 1, 1))
+    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), true, string.sub(ba.XSTR("Ok", -1), 1, 1))
     builder:show(self.document.context):continueWith(function(val)
         if val then
             ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])

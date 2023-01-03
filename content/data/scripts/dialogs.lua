@@ -30,8 +30,32 @@ local function initialize_buttons(document, properties, finish_func)
 
         actual_el.id = "" -- Reset the ID so that there are no duplicate IDs
         actual_el:SetClass(module.BUTTON_MAPPING[v.type], true)
+		
+		local str = v.text
+		
+		if v.keypress ~= nil then
+		
+			local s1 = ""
+			local s2 = ""
 
-        text_el.inner_rml = v.text
+			--find the uppercase letter if it exists
+			local s, e = string.find(str, string.upper(v.keypress))
+			if s then
+				str = string.sub(str, 1, s - 1) .. "<span class=\"underline\">" .. string.upper(v.keypress) .. "</span>" .. string.sub(str, e + 1)
+			else
+				--didn't find it so let's try lowercase			
+				local s, e = string.find(str, v.keypress)
+				if s then
+					str = string.sub(str, 1, s - 1) .. "<span class=\"underline\">" .. v.keypress .. "</span>" .. string.sub(str, e + 1)
+				else
+					--still didn't find it so no underlining!
+					str = v.text
+				end
+			end
+			
+		end
+
+        text_el.inner_rml = str
 
         local style       = image_container.style
         for i, v in pairs(style) do
@@ -52,7 +76,13 @@ local function initialize_buttons(document, properties, finish_func)
 end
 
 local function show_dialog(context, properties, finish_func, reject, abortCBTable)
-    local dialog_doc                                       = context:LoadDocument("data/interface/markup/dialog.rml")
+    local dialog_doc = nil
+	
+	if properties.style_value == 2 then
+		dialog_doc                                       = context:LoadDocument("data/interface/markup/deathdialog.rml")
+	else
+		dialog_doc                                       = context:LoadDocument("data/interface/markup/dialog.rml")
+	end
 
     dialog_doc:GetElementById("title_container").inner_rml = properties.title_string
     dialog_doc:GetElementById("text_container").inner_rml  = properties.text_string
@@ -77,8 +107,46 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
 	end
 
     if #properties.buttons > 0 then
+	
+		--verify that all key shortcuts are unique
+		local keys = {}
+		
+		for i = 1, #properties.buttons, 1 do
+			if properties.buttons[i].keypress ~= nil then
+				if #keys == 0 then
+					table.insert(keys, properties.buttons[i].keypress)
+				else
+					for j = 1, #keys, 1 do
+						if properties.buttons[i].keypress == keys[j] then
+							properties.buttons[i].keypress = nil
+						else
+							table.insert(keys, properties.buttons[i].keypress)
+						end
+					end
+				end
+			end
+		end
+	
         initialize_buttons(dialog_doc, properties, finish_func)
     end
+	
+	dialog_doc:AddEventListener("keydown", function(event, _, _)
+		if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+			if properties.escape_value ~= nil then
+				finish_func(properties.escape_value)
+				dialog_doc:Close()
+			end
+		end
+		for i = 1, #properties.buttons, 1 do
+			if properties.buttons[i].keypress ~= nil then
+				thisKey = string.upper(properties.buttons[i].keypress)
+				if event.parameters.key_identifier == rocket.key_identifier[thisKey] then
+					finish_func(properties.buttons[i].value)
+					dialog_doc:Close()
+				end
+			end
+		end
+	end)
     
     if abortCBTable ~= nil then
         abortCBTable.Abort = function()
@@ -102,16 +170,22 @@ function factory_mt:type(type)
 end
 
 function factory_mt:title(title)
-    self.title_string = title
+    self.title_string = ""
+	if title ~= nil then
+		self.title_string = title
+	end
     return self
 end
 
 function factory_mt:text(text)
-    self.text_string = text
+	self.text_string = ""
+	if text ~= nil then
+		self.text_string = text
+	end
     return self
 end
 
-function factory_mt:button(type, text, value)
+function factory_mt:button(type, text, value, keypress)
     if value == nil then
         value = #self.buttons + 1
     end
@@ -119,13 +193,24 @@ function factory_mt:button(type, text, value)
     table.insert(self.buttons, {
         type  = type,
         text  = text,
-        value = value
+        value = value,
+		keypress = keypress
     })
     return self
 end
 
 function factory_mt:input(input)
     self.input_choice = input
+    return self
+end
+
+function factory_mt:escape(escape)
+    self.escape_value = escape
+    return self
+end
+
+function factory_mt:style(style)
+    self.style_value = style
     return self
 end
 
@@ -143,7 +228,9 @@ function module.new()
         buttons      = {},
         title_string = "",
         text_string  = "",
-		input_choice = false
+		input_choice = false,
+		escape_value = nil,
+		style_value = 1
     }
     setmetatable(factory, factory_mt)
     return factory

@@ -11,10 +11,16 @@ RocketUiSystem = {
 	selectInit = false,
 	music_handle = nil,
 	current_played = nil,
-	debrief_music = nil
+	debrief_music = nil,
+	initIcons = false
 }
 
 modOptionValues = {}
+
+--RUN AWAY IT'S FRED!
+if ba.inMissionEditor() then
+	return
+end
 
 RocketUiSystem.context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
 
@@ -160,11 +166,22 @@ function RocketUiSystem:dialogStart()
     ui.enableInput(self.context)
     
     local dialogs = require('dialogs')
-    self.Dialog = { Abort = {}, Submit = nil }
+	if hv.IsDeathPopup then
+		self.DeathDialog = { Abort = {}, Submit = nil }
+	else
+		self.Dialog = { Abort = {}, Submit = nil }
+	end
     local dialog = dialogs.new()
-        :title(hv.Title)
-        :text(hv.Text)
-		:input(hv.IsInputPopup)
+        dialog:title(hv.Title)
+        dialog:text(hv.Text)
+		dialog:input(hv.IsInputPopup)
+
+		if hv.IsDeathPopup then
+			dialog:style(2)
+			--dialog:escape("deathpopup")
+		else
+			dialog:escape(-1) --Assuming that all non-death built-in popups can be cancelled safely with a negative response!
+		end
     
     for i, button in ipairs(hv.Choices) do
         local positivity = nil
@@ -175,37 +192,71 @@ function RocketUiSystem:dialogStart()
         elseif button.Positivity == -1 then
             positivity = dialogs.BUTTON_TYPE_NEGATIVE
         end
-        dialog:button(positivity, button.Text, i - 1)
+        dialog:button(positivity, button.Text, i - 1, button.Shortcut)
     end
-
-    dialog:show(self.context, self.DialogAbort)
-        :continueWith(function(response)
-            self.Dialog.Submit = response
-        end)
+	
+	if hv.IsDeathPopup then
+		dialog:show(self.context, self.DialogAbort)
+			:continueWith(function(response)
+				self.DeathDialog.Submit = response
+			end)
+	else
+		dialog:show(self.context, self.DialogAbort)
+			:continueWith(function(response)
+				self.Dialog.Submit = response
+			end)
+	end
 end
 
 function RocketUiSystem:dialogFrame()
     -- Add some tracing scopes here to see how long this stuff takes
     updateCategory:trace(function()
-        self.context:Update()
+		if hv.Freeze ~= nil and hv.Freeze ~= true then
+			self.context:Update()
+		end
     end)
     renderCategory:trace(function()
         self.context:Render()
     end)
+	
+	--So that the skip mission popup can re-enable the death popup on dialog end
+	if self.Reenable ~= nil and self.Reenable == true then
+		ui.enableInput(self.context)
+		self.Reenable = nil
+	end
+		
     
-    if self.Dialog.Submit ~= nil then
-        local submit = self.Dialog.Submit
-        self.Dialog = nil
-        hv.Submit(submit)
-    end
+	if hv.IsDeathPopup then
+		if self.DeathDialog.Submit ~= nil then
+			local submit = self.DeathDialog.Submit
+			self.DeathDialog = nil
+			hv.Submit(submit)
+		end
+	else
+		if self.Dialog.Submit ~= nil then
+			local submit = self.Dialog.Submit
+			self.Dialog = nil
+			hv.Submit(submit)
+		end
+	end
 end
 
 function RocketUiSystem:dialogEnd()
     ui.disableInput(self.context)
+	
+	if not hv.IsDeathPopup then
+		self.Reenable = true
+	end
 
-    if self.Dialog ~= nil and self.Dialog.Abort ~= nil then
-        self.Dialog.Abort.Abort()
-    end
+	if hv.IsDeathPopup then
+		if self.DeathDialog ~= nil and self.DeathDialog.Abort ~= nil then
+			self.DeathDialog.Abort.Abort()
+		end
+	else
+		if self.Dialog ~= nil and self.Dialog.Abort ~= nil then
+			self.Dialog.Abort.Abort()
+		end
+	end
 end
 
 RocketUiSystem:init()

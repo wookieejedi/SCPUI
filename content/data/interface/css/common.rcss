@@ -115,6 +115,11 @@ selectvalue
 	drag: clone;
 }
 
+.underline
+{
+	text-decoration: underline;
+}
+
 /*Button Highlight Colors*/
 
 button:hover .neg

@@ -56,14 +56,24 @@
         </div>
         <img src="ops-panel-gamma.png"></img>
     </div>
-    <div class="btn_panel_large panel_right joystick_settings">
-        <div id="large_panel_text" class="ops_right_header">
-            <p>XSTR("Joystick", -1)</p>
+	<div id="joystick_selection_wrapper">
+		<div id="joystick_category_text">
+            <p>XSTR("Joystick Selections", -1)</p>
+        </div>
+		<div id="joystick_column_1">
+			<!-- Lua will fill in the options UI elements here -->
+		</div>
+		<div id="joystick_column_2">
+			<!-- Lua will fill in the options UI elements here -->
+		</div>
+	</div>
+	<div id="joystick_settings" class="joystick_settings1">
+        <div id="joystick_category_text">
+            <p>XSTR("Global Joystick Settings", -1)</p>
         </div>
         <div id="joystick_values_wrapper" class=large_panel_wrapper>
             <!-- Lua will fill in the options UI elements here -->
         </div>
-        <img src="ops-panel-large-r.png"></img>
     </div>
 </div>
 </body>

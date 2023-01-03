@@ -27,7 +27,6 @@ function WeaponSelectController:initialize(document)
 	self.aniWepEl = self.document:CreateElement("ani")
 	self.requiredWeps = {}
 	self.emptyWingSlot = {}
-	self.select3d = true
 	modelDraw.banks = {
 		bank1 = self.document:GetElementById("primary_one"),
 		bank2 = self.document:GetElementById("primary_two"),
@@ -43,6 +42,11 @@ function WeaponSelectController:initialize(document)
 		self.document:GetElementById("secondary_amount_three"),
 		self.document:GetElementById("secondary_amount_four")
 	}
+	
+	
+	self.weapon3d, self.weaponEffect, self.icon3d = ui.ShipWepSelect.get3dWeaponChoices()
+	
+	self.overhead3d, self.overheadEffect = ui.ShipWepSelect.get3dOverheadChoices()
 	
 	--Get all the required weapons
 	j = 1
@@ -86,6 +90,10 @@ function WeaponSelectController:initialize(document)
 	local j = 1
 	while (i ~= #shipList) do
 		if ui.ShipWepSelect.Ship_Pool[i] > 0 then
+			if rocketUiIcons[shipList[i].Name] == nil then
+				ba.warning("No generated icon was found for " .. shipList[i].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
+				RocketUiSystem:setIconFrames(shipList[i].Name)
+			end
 			self.shipList[j] = {
 				Index = i,
 				Amount = ui.ShipWepSelect.Ship_Pool[i],
@@ -94,7 +102,10 @@ function WeaponSelectController:initialize(document)
 				Anim = shipList[i].SelectAnimFilename,
 				Overhead = shipList[i].SelectOverheadFilename,
 				Name = shipList[i].Name,
-				Type = "ship"
+				Type = "ship",
+				GeneratedWidth = rocketUiIcons[shipList[i].Name].Width,
+				GeneratedHeight = rocketUiIcons[shipList[i].Name].Height,
+				GeneratedIcon = rocketUiIcons[shipList[i].Name].Icon
 			}
 			j = j + 1
 		end
@@ -107,7 +118,7 @@ function WeaponSelectController:initialize(document)
 	table.sort(self.shipList, function(a,b) return a.Index < b.Index end)
 	
 	--generate usable icons
-	self:getIconFrames(self.shipList)
+	--self:getIconFrames(self.shipList)
 	self:getEmptySlotFrames()
 	
 	local weaponList = tb.WeaponClasses
@@ -116,6 +127,10 @@ function WeaponSelectController:initialize(document)
 	local k = 1
 	while (i ~= #weaponList) do
 		if ui.ShipWepSelect.Weapon_Pool[i] > 0 then
+			if rocketUiIcons[weaponList[i].Name] == nil then
+				ba.warning("No generated icon was found for " .. weaponList[i].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
+				RocketUiSystem:setIconFrames(weaponList[i].Name)
+			end
 			if tb.WeaponClasses[i]:isPrimary() then
 				self.primaryList[j] = {
 					Index = i,
@@ -134,7 +149,10 @@ function WeaponSelectController:initialize(document)
 					SubsystemFactor = math.floor(weaponList[i].SubsystemFactor*10)/10,
 					FireWait = math.floor(weaponList[i].FireWait*10)/10,
 					Power = weaponList[i].EnergyConsumed,
-					Type = "primary"
+					Type = "primary",
+					GeneratedWidth = rocketUiIcons[weaponList[i].Name].Width,
+					GeneratedHeight = rocketUiIcons[weaponList[i].Name].Height,
+					GeneratedIcon = rocketUiIcons[weaponList[i].Name].Icon
 				}
 				j = j + 1
 			elseif tb.WeaponClasses[i]:isSecondary() then
@@ -155,7 +173,10 @@ function WeaponSelectController:initialize(document)
 					SubsystemFactor = math.floor(weaponList[i].SubsystemFactor*10)/10,
 					FireWait = math.floor(weaponList[i].FireWait*10)/10,
 					Power = weaponList[i].EnergyConsumed,
-					Type = "secondary"
+					Type = "secondary",
+					GeneratedWidth = rocketUiIcons[weaponList[i].Name].Width,
+					GeneratedHeight = rocketUiIcons[weaponList[i].Name].Height,
+					GeneratedIcon = rocketUiIcons[weaponList[i].Name].Icon
 				}
 				k = k + 1
 			end
@@ -170,8 +191,8 @@ function WeaponSelectController:initialize(document)
 	table.sort(self.secondaryList, function(a,b) return a.Index < b.Index end)
 	
 	--generate usable icons
-	self:getIconFrames(self.primaryList)
-	self:getIconFrames(self.secondaryList)
+	--self:getIconFrames(self.primaryList)
+	--self:getIconFrames(self.secondaryList)
 	
 	--Only create entries if there are any to create
 	if self.primaryList[1] then
@@ -211,77 +232,6 @@ function WeaponSelectController:getEmptySlotFrames()
 	gr.setTarget()
 	imag_h:unload()
 	tex_h:unload()
-
-end
-
-function WeaponSelectController:getIconFrames(list)
-	
-	for i, v in pairs(list) do
-		if self.select3d then
-			--Create a texture and then draw to it, save the output
-			--local imag_h = gr.loadTexture(v.Icon, true, true)
-			local model_h = nil
-			local modelDetails = {
-				width = nil,
-				height = nil,
-				heading = nil,
-				pitch = nil,
-				bank = nil,
-				zoom = nil
-			}
-			if v.Type == "ship" then
-				--model_h = gr.loadModel(tb.ShipClasses[v.Index].Model.Filename)
-				model_h = tb.ShipClasses[v.Index]
-				modelDetails.width = 128
-				modelDetails.height = 112
-				modelDetails.heading = 50
-				modelDetails.pitch = 15
-				modelDetails.bank = 0
-				modelDetails.zoom = 1.1
-			else
-				--model_h = gr.loadModel(tb.WeaponClasses[v.Index].Model.Filename)
-				model_h = tb.WeaponClasses[v.Index]
-				modelDetails.width = 112
-				modelDetails.height = 48
-				modelDetails.heading = 75
-				modelDetails.pitch = 0
-				modelDetails.bank = 40
-				modelDetails.zoom = 0.4
-			end
-			local tex_h = gr.createTexture(modelDetails.width, modelDetails.height)
-			gr.setTarget(tex_h)
-			for j = 1, 6, 1 do
-				gr.clearScreen(0,0,0,0)
-				model_h:renderTechModel(0, 0, modelDetails.width, modelDetails.height, modelDetails.heading, modelDetails.pitch, modelDetails.bank, modelDetails.zoom, false)
-				v.GeneratedIcon[j] = gr.screenToBlob()
-			end
-			v.GeneratedWidth = width
-			v.GeneratedHeight = height
-			
-			--clean up
-			gr.setTarget()
-			tex_h:unload()
-		else
-			--Create a texture and then draw to it, save the output
-			local imag_h = gr.loadTexture(v.Icon, true, true)
-			local width = imag_h:getWidth()
-			local height = imag_h:getHeight()
-			local tex_h = gr.createTexture(width, height)
-			gr.setTarget(tex_h)
-			for j = 1, 6, 1 do
-				gr.clearScreen(0,0,0,0)
-				gr.drawImage(imag_h[j], 0, 0, width, height, 0, 1, 1, 0, 1)
-				v.GeneratedIcon[j] = gr.screenToBlob()
-			end
-			v.GeneratedWidth = width
-			v.GeneratedHeight = height
-			
-			--clean up
-			gr.setTarget()
-			imag_h:unload()
-			tex_h:unload()
-		end
-	end
 
 end
 
@@ -426,7 +376,7 @@ function WeaponSelectController:BuildWings()
 						self:SelectShip(shipIndex, callsign, thisSlot)
 					end)
 					
-					if self.select3d then
+					if self.icon3d then
 						if not self.slots[slotNum].isLocked then
 							slotEl:SetClass("available", true)
 						elseif self.slots[slotNum].isWeaponLocked then
@@ -488,6 +438,11 @@ end
 
 function WeaponSelectController:AppendToPool(ship)
 
+	if rocketUiIcons[tb.ShipClasses[ship].Name] == nil then
+		ba.warning("No generated icon was found for " .. tb.ShipClasses[ship].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
+		RocketUiSystem:setIconFrames(tb.ShipClasses[ship].Name)
+	end
+
 	i = #self.shipList + 1
 	self.shipList[i] = {
 		Index = tb.ShipClasses[ship]:getShipClassIndex(),
@@ -498,7 +453,10 @@ function WeaponSelectController:AppendToPool(ship)
 		Overhead = tb.ShipClasses[ship].SelectOverheadFilename,
 		Name = tb.ShipClasses[ship].Name,
 		Type = "ship",
-		key = tb.ShipClasses[ship].Name
+		key = tb.ShipClasses[ship].Name,
+		GeneratedWidth = rocketUiIcons[tb.ShipClasses[ship].Name].Width,
+		GeneratedHeight = rocketUiIcons[tb.ShipClasses[ship].Name].Height,
+		GeneratedIcon = rocketUiIcons[tb.ShipClasses[ship].Name].Icon
 	}
 	return self.shipList[i]
 end
@@ -558,6 +516,11 @@ end
 			
 
 function WeaponSelectController:AppendWeaponToPool(classIndex)
+
+	if rocketUiIcons[tb.WeaponClasses[classIndex].Name] == nil then
+		ba.warning("No generated icon was found for " .. tb.WeaponClasses[classIndex].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
+		RocketUiSystem:setIconFrames(tb.WeaponClasses[classIndex].Name)
+	end
 	
 	local list = {}
 	local type_v = nil
@@ -587,7 +550,10 @@ function WeaponSelectController:AppendWeaponToPool(classIndex)
 		FireWait = math.floor(tb.WeaponClasses[classIndex].FireWait*10)/10,
 		Power = tb.WeaponClasses[classIndex].EnergyConsumed,
 		Type = type_v,
-		key = tb.WeaponClasses[classIndex].Name
+		key = tb.WeaponClasses[classIndex].Name,
+		GeneratedWidth = rocketUiIcons[tb.WeaponClasses[classIndex].Name].Width,
+		GeneratedHeight = rocketUiIcons[tb.WeaponClasses[classIndex].Name].Height,
+		GeneratedIcon = rocketUiIcons[tb.WeaponClasses[classIndex].Name].Icon
 	}
 end
 
@@ -652,14 +618,14 @@ function WeaponSelectController:ChangeIconAvailability(shipIndex)
 		local iconEl = self.document:GetElementById(v.key).first_child.first_child.next_sibling
 		if tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(v.Index) then
 			iconEl:SetClass("drag", true)
-			if self.select3d then
+			if self.icon3d then
 				iconEl:SetClass("available", true)
 				iconEl:SetClass("locked", false)
 			end
 			iconEl:SetAttribute("src", v.GeneratedIcon[1])
 		else
 			iconEl:SetClass("drag", false)
-			if self.select3d then
+			if self.icon3d then
 				iconEl:SetClass("available", false)
 				iconEl:SetClass("locked", true)
 			end
@@ -671,14 +637,14 @@ function WeaponSelectController:ChangeIconAvailability(shipIndex)
 		local iconEl = self.document:GetElementById(v.key).first_child.first_child.next_sibling
 		if tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(v.Index) then
 			iconEl:SetClass("drag", true)
-			if self.select3d then
+			if self.icon3d then
 				iconEl:SetClass("available", true)
 				iconEl:SetClass("locked", false)
 			end
 			iconEl:SetAttribute("src", v.GeneratedIcon[1])
 		else
 			iconEl:SetClass("drag", false)
-			if self.select3d then
+			if self.icon3d then
 				iconEl:SetClass("available", false)
 				iconEl:SetClass("locked", true)
 			end
@@ -755,7 +721,7 @@ function WeaponSelectController:SelectEntry(entry)
 			
 			self:BuildInfo(entry)
 			
-			if self.select3d or entry.Anim == nil then
+			if self.weapon3d or entry.Anim == nil then
 				modelDraw.class = entry.Index
 				modelDraw.element = self.document:GetElementById("weapon_view_window")
 				modelDraw.start = true
@@ -793,12 +759,12 @@ function WeaponSelectController:HighlightWeapon()
 		local iconEl = self.document:GetElementById(v.key).first_child.first_child.next_sibling
 		if tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(v.Index) then
 			if v.key == self.SelectedEntry then
-				if self.select3d then
+				if self.icon3d then
 					iconEl:SetClass("highlighted", true)
 				end
 				iconEl:SetAttribute("src", v.GeneratedIcon[3])
 			else
-				if self.select3d then
+				if self.icon3d then
 					iconEl:SetClass("highlighted", false)
 				end
 				iconEl:SetAttribute("src", v.GeneratedIcon[1])
@@ -810,12 +776,12 @@ function WeaponSelectController:HighlightWeapon()
 		local iconEl = self.document:GetElementById(v.key).first_child.first_child.next_sibling
 		if tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(v.Index) then
 			if v.key == self.SelectedEntry then
-				if self.select3d then
+				if self.icon3d then
 					iconEl:SetClass("highlighted", true)
 				end
 				iconEl:SetAttribute("src", v.GeneratedIcon[3])
 			else
-				if self.select3d then
+				if self.icon3d then
 					iconEl:SetClass("highlighted", false)
 				end
 				iconEl:SetAttribute("src", v.GeneratedIcon[1])
@@ -894,12 +860,13 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 		
 		self:HighlightWeapon()
 		
-		if self.select3d or overhead == nil then
+		if self.overhead3d or overhead == nil then
 			modelDraw.OverheadClass = shipIndex
 			modelDraw.OverheadElement = self.document:GetElementById("ship_view_wrapper")
 			modelDraw.Slot = slot
 			--STILL GOTTA HANDLE THIS!
 			modelDraw.Hover = self.hoverSlot
+			modelDraw.overheadEffect = self.overheadEffect
 		else
 			--the anim is already created so we only need to remove and reset the src
 			self.aniEl:RemoveAttribute("src")
@@ -935,49 +902,49 @@ function WeaponSelectController:BuildWeaponSlots(ship)
 
 	if tb.ShipClasses[ship].numPrimaryBanks > 0 then
 		self:BuildSlot(modelDraw.banks.bank1, 1)
-		if self.select3d then
+		if self.overhead3d then
 			modelDraw.banks.bank1:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numPrimaryBanks > 1 then
 		self:BuildSlot(modelDraw.banks.bank2, 2)
-		if self.select3d then
+		if self.overhead3d then
 			modelDraw.banks.bank2:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numPrimaryBanks > 2 then
 		self:BuildSlot(modelDraw.banks.bank3, 3)
-		if self.select3d then
+		if self.overhead3d then
 			modelDraw.banks.bank3:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numSecondaryBanks > 0 then
 		self:BuildSlot(modelDraw.banks.bank4, 4)
-		if self.select3d then
+		if self.overhead3d then
 			modelDraw.banks.bank4:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numSecondaryBanks > 1 then
 		self:BuildSlot(modelDraw.banks.bank5, 5)
-		if self.select3d then
+		if self.overhead3d then
 			modelDraw.banks.bank5:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numSecondaryBanks > 2 then
 		self:BuildSlot(modelDraw.banks.bank6, 6)
-		if self.select3d then
+		if self.overhead3d then
 			modelDraw.banks.bank6:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numSecondaryBanks > 3 then
 		self:BuildSlot(modelDraw.banks.bank7, 7)
-		if self.select3d then
+		if self.overhead3d then
 			modelDraw.banks.bank7:SetClass("slot_3d", true)
 		end
 	end
@@ -1482,8 +1449,9 @@ function WeaponSelectController:Show(text, title, buttons)
 	local dialog = dialogs.new()
 		dialog:title(title)
 		dialog:text(text)
+		dialog:escape("")
 		for i = 1, #buttons do
-			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value)
+			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end
 		dialog:show(self.document.context)
 		:continueWith(function(response)
@@ -1545,7 +1513,8 @@ function WeaponSelectController:accept_pressed()
 		buttons[1] = {
 			b_type = dialogs.BUTTON_TYPE_POSITIVE,
 			b_text = ba.XSTR("Okay", -1),
-			b_value = ""
+			b_value = "",
+			b_keypress = string.sub(ba.XSTR("Ok", -1), 1, 1)
 		}
 		
 		self:Show(text, title, buttons)
@@ -1565,12 +1534,12 @@ end
 
 function WeaponSelectController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-		--[[if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
+		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
 			RocketUiSystem.music_handle:close(true)
 		end
 		RocketUiSystem.music_handle = nil
 		RocketUiSystem.current_played = nil
-        event:StopPropagation()]]--
+        event:StopPropagation()
 
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
         --ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
@@ -1692,7 +1661,7 @@ function WeaponSelectController:drawOverheadModel()
 		modelWidth = modelWidth * (1 + val)
 		modelHeight = modelHeight * (1 + val)
 		
-		local test = tb.ShipClasses[modelDraw.OverheadClass]:renderOverheadModel(modelLeft, modelTop, modelWidth, modelHeight, modelDraw.Slot, modelDraw.class, modelDraw.Hover, bank1_x, bank1_y, bank2_x, bank2_y, bank3_x, bank3_y, bank4_x, bank4_y, bank5_x, bank5_y, bank6_x, bank6_y, bank7_x, bank7_y)
+		local test = tb.ShipClasses[modelDraw.OverheadClass]:renderOverheadModel(modelLeft, modelTop, modelWidth, modelHeight, modelDraw.Slot, modelDraw.class, modelDraw.Hover, bank1_x, bank1_y, bank2_x, bank2_y, bank3_x, bank3_y, bank4_x, bank4_y, bank5_x, bank5_y, bank6_x, bank6_y, bank7_x, bank7_y, modelDraw.overheadEffect)
 		
 		modelDraw.start = false
 		

@@ -356,8 +356,9 @@ function DebriefingController:Show(text, title, buttons)
 	local dialog = dialogs.new()
 		dialog:title(title)
 		dialog:text(text)
+		dialog:escape("cancel")
 		for i = 1, #buttons do
-			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value)
+			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end
 		dialog:show(self.document.context)
 		:continueWith(function(response)
@@ -376,6 +377,7 @@ function DebriefingController:dialog_response(response)
 		acceptquit = function()
 			self:close()
 			ui.Debriefing.acceptMission(false)
+			--ui.stopMission()
 			ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 		end,
 		replay = function()
@@ -387,6 +389,7 @@ function DebriefingController:dialog_response(response)
 			self:close()
 			ui.Debriefing.clearMissionStats()
 			ui.Debriefing.replayMission(false)
+			--ui.stopMission()
 			ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 		end,
 		skip = function()
@@ -409,24 +412,42 @@ function DebriefingController:dialog_response(response)
 	end
 end
 
+function DebriefingController:GetCharacterAtWord(text, index)
+
+	local words = {}
+	for word in text:gmatch("%S+") do table.insert(words, word) end
+	
+	if index > #words then index = #words end
+	if index < 1 then index = 1 end
+	
+	return string.sub(words[index], 1, 1)
+
+end
+
 function DebriefingController:OfferSkip()
 	local text = ba.XSTR("You have failed this mission five times.  If you like, you may advance to the next mission.", 1472)
 	local title = ""
 	local buttons = {}
+	
+	
+	
 	buttons[1] = {
 		b_type = dialogs.BUTTON_TYPE_NEGATIVE,
 		b_text = ba.XSTR("Do Not Skip This Mission", 1473),
-		b_value = "cancel"
+		b_value = "cancel",
+		b_keypress = self:GetCharacterAtWord(ba.XSTR("Do Not Skip This Mission", 1473), 2)
 	}
 	buttons[2] = {
 		b_type = dialogs.BUTTON_TYPE_POSITIVE,
 		b_text = ba.XSTR("Advance To The Next Mission", 1474),
-		b_value = "skip"
+		b_value = "skip",
+		b_keypress = self:GetCharacterAtWord(ba.XSTR("Advance To The Next Mission", 1474), 1)
 	}
 	buttons[3] = {
 		b_type = dialogs.BUTTON_TYPE_NEUTRAL,
 		b_text = ba.XSTR("Don't Show Me This Again", 1475),
-		b_value = "optout"
+		b_value = "optout",
+		b_keypress = self:GetCharacterAtWord(ba.XSTR("Don't Show Me This Again", 1475), 1)
 	}
 		
 	self:Show(text, title, buttons)
@@ -523,12 +544,14 @@ function DebriefingController:replay_pressed(element)
 		buttons[1] = {
 			b_type = dialogs.BUTTON_TYPE_NEGATIVE,
 			b_text = ba.XSTR("Cancel", 504),
-			b_value = "cancel"
+			b_value = "cancel",
+			b_keypress = self:GetCharacterAtWord(ba.XSTR("Cancel", 504), 1)
 		}
 		buttons[2] = {
 			b_type = dialogs.BUTTON_TYPE_POSITIVE,
 			b_text = ba.XSTR("Replay", 451),
-			b_value = "replay"
+			b_value = "replay",
+			b_keypress = self:GetCharacterAtWord(ba.XSTR("Replay", 451), 1)
 		}
 			
 		self:Show(text, title, buttons)
@@ -548,17 +571,20 @@ function DebriefingController:accept_pressed()
 		buttons[1] = {
 			b_type = dialogs.BUTTON_TYPE_NEUTRAL,
 			b_text = ba.XSTR("Return to Debriefing", 442),
-			b_value = "cancel"
+			b_value = "cancel",
+			b_keypress = self:GetCharacterAtWord(ba.XSTR("Return to Debriefing", 442), 3)
 		}
 		buttons[2] = {
 			b_type = dialogs.BUTTON_TYPE_NEUTRAL,
 			b_text = ba.XSTR("Go to Flight Deck", 443),
-			b_value = "quit"
+			b_value = "quit",
+			b_keypress = self:GetCharacterAtWord(ba.XSTR("Go to Flight Deck", 443), 1)
 		}
 		buttons[3] = {
 			b_type = dialogs.BUTTON_TYPE_NEUTRAL,
 			b_text = ba.XSTR("Replay Mission", 444),
-			b_value = "replay"
+			b_value = "replay",
+			b_keypress = self:GetCharacterAtWord(ba.XSTR("Replay Mission", 444), 1)
 		}
 			
 		self:Show(text, title, buttons)
@@ -596,12 +622,14 @@ function DebriefingController:global_keydown(_, event)
 			buttons[1] = {
 				b_type = dialogs.BUTTON_TYPE_NEGATIVE,
 				b_text = ba.XSTR("No", 506),
-				b_value = "cancel"
+				b_value = "cancel",
+				b_keypress = self:GetCharacterAtWord(ba.XSTR("No", 506), 1)
 			}
 			buttons[2] = {
 				b_type = dialogs.BUTTON_TYPE_POSITIVE,
 				b_text = ba.XSTR("Yes", 505),
-				b_value = "quit"
+				b_value = "quit",
+				b_keypress = self:GetCharacterAtWord(ba.XSTR("Yes", 505), 1)
 			}
 				
 			self:Show(text, title, buttons)
@@ -612,17 +640,20 @@ function DebriefingController:global_keydown(_, event)
 			buttons[1] = {
 				b_type = dialogs.BUTTON_TYPE_NEGATIVE,
 				b_text = ba.XSTR("Cancel", 504),
-				b_value = "cancel"
+				b_value = "cancel",
+				b_keypress = self:GetCharacterAtWord(ba.XSTR("Cancel", 504), 1)
 			}
 			buttons[2] = {
 				b_type = dialogs.BUTTON_TYPE_POSITIVE,
 				b_text = ba.XSTR("Yes", 454),
-				b_value = "acceptquit"
+				b_value = "acceptquit",
+				b_keypress = self:GetCharacterAtWord(ba.XSTR("Yes", 454), 1)
 			}
 			buttons[3] = {
 				b_type = dialogs.BUTTON_TYPE_NEUTRAL,
 				b_text = ba.XSTR("No, retry later", 455),
-				b_value = "quit"
+				b_value = "quit",
+				b_keypress = self:GetCharacterAtWord(ba.XSTR("No, retry later", 455), 1)
 			}
 				
 			self:Show(text, title, buttons)

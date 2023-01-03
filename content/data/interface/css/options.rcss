@@ -948,11 +948,6 @@ div#round_mute_cont
 
 }
 
-.joystick_settings .ten_dot_slider
-{
-	margin-bottom: 10%;
-}
-
 .round
 {
 	display: block;
@@ -1278,7 +1273,7 @@ div#arrow_cont
 	height: auto;
 	float: right;
 	margin-right: 0%;
-	z-index: 5;
+	z-index: 0;
 }
 
 .fps_slider #arrow_cont
@@ -1555,12 +1550,52 @@ selectbox option:hover
 	margin-top: 20%;
 }
 
-#option_input_joystick_element
-{
-	margin-top: 80px;
-}
-
 #option_input_mousesensitivity_element
 {
 	margin-top: 25px;
+}
+
+#joystick_values_wrapper
+{
+	position:relative;
+	margin-top: 2%;
+}
+
+#joystick_selection_wrapper
+{
+	position:relative;
+	margin-top: 1%;
+}
+
+#joystick_column_1
+{
+	width: 46%;
+	float: left;
+}
+
+#joystick_column_2
+{
+	width: 46%;
+	float: right;
+}
+
+#option_input_joystick_element
+{
+	margin: 5px;
+	width: 100%;
+}
+#option_input_joystick1_element
+{
+	margin: 5px;
+	width: 100%;
+}
+#option_input_joystick2_element
+{
+	margin: 5px;
+	width: 100%;
+}
+#option_input_joystick3_element
+{
+	margin: 5px;
+	width: 100%;
 }

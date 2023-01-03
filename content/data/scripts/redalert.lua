@@ -82,6 +82,8 @@ function RedAlertController:global_keydown(_, event)
         --self.music_handle:stop()
 		event:StopPropagation()
 		RocketUiSystem.selectInit = false
+		
+		--ui.stopMission()
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
     end
 end

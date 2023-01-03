@@ -74,7 +74,8 @@ function AbstractBriefingController:global_keydown(_, event)
 		RocketUiSystem.music_started = nil
 		RocketUiSystem.selectInit = false
         event:StopPropagation()
-
+		
+		--ui.stopMission()
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
     end
 end
@@ -161,7 +162,11 @@ function AbstractBriefingController:unload()
     if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
         self.current_voice_handle:close(false)
     end
-	drawMap = nil
+	if drawMap then
+		drawMap.tex:unload()
+		drawMap.tex = nil
+		drawMap = nil
+	end
 	
 	if self.briefState == "briefing" then
 		ui.Briefing.closeBriefing()
@@ -223,7 +228,9 @@ end
 function AbstractBriefingController:initializeStage(stageIdx, briefingText, audioFileName)
     self.current_stage = stageIdx
     self.stage_instance_id = self.stage_instance_id + 1
-	ad.playInterfaceSound(20)
+	if not mn.hasNoBriefing() then
+		ad.playInterfaceSound(20)
+	end
 
     local text_el = self.document:GetElementById(self.element_names.text_el)
     local num_stage_lines = rocket_utils.set_briefing_text(text_el, briefingText)

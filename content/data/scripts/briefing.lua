@@ -22,7 +22,9 @@ function BriefingController:init()
         stage_text_el = "brief_stage_text_el",
     }
 	
-	drawMap = {}
+	drawMap = {
+		tex = nil
+	}
 	
 	if not RocketUiSystem.selectInit then
 		ui.ShipWepSelect.initSelect()
@@ -136,7 +138,12 @@ function BriefingController:initialize(document)
 	
 	self:buildGoals()
 	
+	drawMap.tex = gr.createTexture(drawMap.x2, drawMap.y2)
+	drawMap.url = ui.linkTexture(drawMap.tex)
 	drawMap.draw = true
+	local aniEl = self.document:CreateElement("img")
+    aniEl:SetAttribute("src", drawMap.url)
+	briefView:ReplaceChild(aniEl, briefView.first_child)
 end
 
 function BriefingController:calcPercent(value, percent)
@@ -156,7 +163,7 @@ function BriefingController:buildGoals()
 		local secondaryText = ""
 		local bonusWrapper = self.document:GetElementById("bonus_goal_list")
 		local bonusText = ""
-		for i = 0, #goals do
+		for i = 1, #goals do
 			goal = goals[i]
 			if goal.isGoalValid and goal.Message ~= "" then
 				if goal.Type == "primary" then
@@ -203,13 +210,22 @@ function BriefingController:go_to_stage(stage_idx)
 
     local stage = self.stages[stage_idx]
 
+	local brief_img = "brief-main-window.png"
+
 	if mn.hasGoalsStage() and stage_idx == #self.stages then
 		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
 		self.document:GetElementById("briefing_goals"):SetClass("hidden", false)
+		drawMap.goals = true
 	else
 		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
 		self.document:GetElementById("briefing_goals"):SetClass("hidden", true)
+		drawMap.goals = false
 	end
+	
+	local brief_bg_src = self.document:CreateElement("img")
+	brief_bg_src:SetAttribute("src", brief_img)
+	local brief_bg_el = self.document:GetElementById("brief_grid_window")
+	brief_bg_el:ReplaceChild(brief_bg_src, brief_bg_el.last_child)
 end
 
 function BriefingController:CutToStage()
@@ -230,9 +246,22 @@ end
 
 function BriefingController:drawMap()
 
-	if drawMap.draw == true then
-		ui.Briefing.drawBriefingMap(drawMap.x1, drawMap.y1, drawMap.x2, drawMap.y2)
+	gr.setTarget(drawMap.tex)
+	
+	
+	if drawMap.draw == true then	
+		gr.setTarget(drawMap.tex)
+		gr.clearScreen(0,0,0,0)
+		--ui.Briefing.drawBriefingMap(drawMap.x1, drawMap.y1, drawMap.x2, drawMap.y2)
+		ui.Briefing.drawBriefingMap(0, 0, drawMap.x2, drawMap.y2)
+		
+		
+	else
+		gr.clearScreen(0,0,0,0)
+		
 	end
+	
+	gr.setTarget()
 
 end
 
@@ -246,8 +275,9 @@ function BriefingController:Show(text, title, buttons)
 		dialog:title(title)
 		dialog:text(text)
 		for i = 1, #buttons do
-			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value)
+			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end
+		dialog:escape("")
 		dialog:show(self.document.context)
 		:continueWith(function(response)
 			drawMap.draw = true
@@ -287,7 +317,11 @@ function BriefingController:acceptPressed()
 	--Success!
 	else
 		text = nil
-		drawMap = nil
+		if drawMap then
+			drawMap.tex:unload()
+			drawMap.tex = nil
+			drawMap = nil
+		end
 		RocketUiSystem.selectInit = false
 		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
 			RocketUiSystem.music_handle:close(true)
@@ -303,7 +337,8 @@ function BriefingController:acceptPressed()
 		buttons[1] = {
 			b_type = dialogs.BUTTON_TYPE_POSITIVE,
 			b_text = ba.XSTR("Okay", -1),
-			b_value = ""
+			b_value = "",
+			b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
 		}
 		
 		self:Show(text, title, buttons)
@@ -326,6 +361,16 @@ end
 engine.addHook("On Frame", function()
 	if ba.getCurrentGameState().Name == "GS_STATE_BRIEFING" then
 		BriefingController:drawMap()
+	end
+end, {}, function()
+    return false
+end)
+
+--Prevent the briefing UI from being drawn if we're just going
+--to skip it in a frame or two
+engine.addHook("On Frame", function()
+	if ba.getCurrentGameState().Name == "GS_STATE_BRIEFING" and mn.hasNoBriefing() then
+		gr.clearScreen()
 	end
 end, {}, function()
     return false
