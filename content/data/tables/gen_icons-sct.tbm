@@ -5,11 +5,9 @@ $On Game Init:
 
 rocketUiIcons = {}
 
-local md = require("debugFunctions")
-
 function RocketUiSystem:setIconFrames(item, is_ship)
 
-	md.print("RocketUI is generating an icon for " .. item .. "\n")
+	ba.print("RocketUI is generating an icon for " .. item .. "\n")
 	
 	local ship3d, shipEffect, shipicon3d = ui.ShipWepSelect.get3dShipChoices()
 	local weapon3d, weaponEffect, weaponicon3d = ui.ShipWepSelect.get3dWeaponChoices()
