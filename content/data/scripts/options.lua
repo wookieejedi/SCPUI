@@ -58,7 +58,20 @@ function DataSourceWrapper:init(option)
 	if option.Category ~= "Custom" then
 		self.values   = option:getValidValues()
 	else
-		self.values   = option.ValidValues
+		if string.lower(option.Type) == "binary" then
+			--binary options don't need translation here
+			self.values   = option.ValidValues
+		elseif string.lower(option.Type) == "multi" then
+			--multi selector options get translated
+			self.values = {}
+			
+			for i = 1, #option.ValidValues do
+				local thisVal = utils.xstr(option.DisplayNames[option.ValidValues[i]])
+				table.insert(self.values, thisVal)
+			end
+		else
+			ba.error("Houston, how did we get here?! Get Mjn STAT!")
+		end
 	end
 	
 	if option.Category ~= "Custom" then
@@ -480,9 +493,18 @@ function OptionsController:init_selection_element(element, option, vals, change_
 	end
 	
 	if option.Category == "Custom" then
+		--Find the index of the translated value
+		local count = 1
+		for i = 1, #option.ValidValues do
+			if option.Value == utils.xstr(option.DisplayNames[option.ValidValues[i]]) then
+				count = i
+				break
+			end
+		end
+	
 		default = option.Value
-		option.Value = modOptionValues[Key] or option.Value
-		customValues[Key] = modOptionValues[Key] or option.Value
+		option.Value = modOptionValues[Key] or option.ValidValues[count]
+		customValues[Key] = modOptionValues[Key] or option.ValidValues[count]
 	end
 	
 	local value = option.Value
@@ -496,9 +518,20 @@ function OptionsController:init_selection_element(element, option, vals, change_
                 end
             end
 			if option.Category == "Custom" then
-				customValues[Key] = event.parameters.value
-				customOptions[Key].currentValue = event.parameters.value
-				customOptions[Key].savedValue = event.parameters.value
+				
+				--Find the index of the translated value
+				local count = 1
+				for i = 1, #option.ValidValues do
+					if event.parameters.value == utils.xstr(option.DisplayNames[option.ValidValues[i]]) then
+						count = i
+						break
+					end
+				end
+				
+				--Use the index to save the actual internal value
+				customValues[Key] = vals[count]
+				customOptions[Key].currentValue = vals[count]
+				customOptions[Key].savedValue = vals[count]
 			else
 				for k, v in pairs(detailPresets) do
 					if el_actual.id == v then
