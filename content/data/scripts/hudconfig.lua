@@ -498,6 +498,7 @@ function HudConfigController:select_all()
 	self:mouse_click()
 	self.document:GetElementById("select_all_btn"):SetPseudoClass("checked", self.selectAll)
 	ui.HudConfig.selectAllGauges(self.selectAll)
+	self:lockColorControls(not self.selectAll)
 end
 
 function HudConfigController:mouse_click()
@@ -588,7 +589,7 @@ function HudConfigController:dialog_response(response)
 end
 
 engine.addHook("On Frame", function()
-	if ba.getCurrentGameState().Name == "GS_STATE_HUD_CONFIG" then
+	if (ba.getCurrentGameState().Name == "GS_STATE_HUD_CONFIG") and (RocketUiSystem.render == true) then
 		HudConfigController:drawHUD()
 	end
 end, {}, function()

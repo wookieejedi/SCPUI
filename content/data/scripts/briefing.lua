@@ -477,7 +477,7 @@ function BriefingController:mouse_move(element, event)
 end
 
 engine.addHook("On Frame", function()
-	if ba.getCurrentGameState().Name == "GS_STATE_BRIEFING" then
+	if (ba.getCurrentGameState().Name == "GS_STATE_BRIEFING") and (RocketUiSystem.render == true) then
 		BriefingController:drawMap()
 	end
 end, {}, function()

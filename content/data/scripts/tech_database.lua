@@ -508,7 +508,7 @@ function TechDatabaseController:unload()
 end
 
 engine.addHook("On Frame", function()
-	if ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU" then
+	if (ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU") and (RocketUiSystem.render == true) then
 		TechDatabaseController:DrawModel()
 	end
 end, {}, function()
