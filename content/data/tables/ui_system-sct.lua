@@ -13,7 +13,8 @@ RocketUiSystem = {
 	current_played = nil,
 	debrief_music = nil,
 	initIcons = nil,
-	logSection = 1
+	logSection = 1,
+	render = true
 }
 
 modOptionValues = {}
@@ -65,10 +66,17 @@ function RocketUiSystem:init()
 end
 
 function RocketUiSystem:getDef(state)
+	if self.render == false then
+		return nil
+	end
     return self.replacements[state]
 end
 
 function RocketUiSystem:stateStart()
+
+	if not ba.MultiplayerMode then
+		self.render = true
+	end
 
 	--This allows for states to correctly return to the previous state even if has no rocket ui defined
 	RocketUiSystem.currentState = ba.getCurrentGameState()
@@ -126,6 +134,10 @@ function RocketUiSystem:stateEnd()
 	
 	if hv.OldState.Name == "GS_STATE_SCRIPTING" then
 		RocketUiSystem.substate = "none"
+	end
+	
+	if ba.MultiplayerMode then
+		self.render = false
 	end
 end
 
@@ -275,50 +287,44 @@ end
 RocketUiSystem:init()
 
 engine.addHook("On State Start", function()
-	if not ba.MultiplayerMode then
-		RocketUiSystem:stateStart()
-	end
+	RocketUiSystem:stateStart()
 end, {}, function()
     return RocketUiSystem:hasOverrideForState(getRocketUiHandle(hv.NewState))
 end)
 
 engine.addHook("On Frame", function()
-	if not ba.MultiplayerMode then
-		RocketUiSystem:stateFrame()
-	end
+	RocketUiSystem:stateFrame()
 end, {}, function()
     return RocketUiSystem:hasOverrideForCurrentState()
 end)
 
 engine.addHook("On State End", function()
-	if not ba.MultiplayerMode then
-		RocketUiSystem:stateEnd()
-	end
+	RocketUiSystem:stateEnd()
 end, {}, function()
     return RocketUiSystem:hasOverrideForState(getRocketUiHandle(hv.OldState))
 end)
 
 engine.addHook("On Dialog Init", function()
-	if not ba.MultiplayerMode then
+	if RocketUiSystem.render == true then
 		RocketUiSystem:dialogStart()
 	end
 end, {}, function()
-    return true
+    return RocketUiSystem.render
 end)
 
 engine.addHook("On Dialog Frame", function()
-	if not ba.MultiplayerMode then
+	if RocketUiSystem.render == true then
 		RocketUiSystem:dialogFrame()
 	end
 end, {}, function()
-    return true
+    return RocketUiSystem.render
 end)
 
 engine.addHook("On Dialog Close", function()
-	if not ba.MultiplayerMode then
+	if RocketUiSystem.render == true then
 		RocketUiSystem:dialogEnd()
 	end
 end, {}, function()
-    return true
+    return RocketUiSystem.render
 end)
 
