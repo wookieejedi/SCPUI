@@ -162,7 +162,7 @@ button:checked .pos
 
 .tooltip
 {
-	position: relative;
+	position: absolute;
 	display: inline-block;
 	visibility: hidden;
 }

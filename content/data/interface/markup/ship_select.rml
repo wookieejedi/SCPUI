@@ -47,6 +47,9 @@
 				</div>
 				<img src="ops-panel-vert-tall-l.png"></img>
 			</div>
+			<div class="tooltip">
+				<span class="tooltiptext">XSTR("Click here to return to the briefing or change weapon selection", -1)</span>
+			</div>
 		</div>
 		<div id=ship_stats_window>
 			<div id=ship_stats_wrapper>
@@ -69,6 +72,9 @@
 					</ul>
 				</div>
 			</div>
+			<div class="tooltip">
+				<span class="tooltiptext">XSTR("Choose a new ship type by dragging its icon over one of the available wing slots", -1)</span>
+			</div>
 			<img src="select-scroll-panel.png"></img>
 		</div>
 		<div id=wings_wrapper>
@@ -87,6 +93,9 @@
 						</button>
 					</div>
 				</div>
+				<div class="tooltip">
+					<span class="tooltiptext">XSTR("Revert to the original ship distribution", -1)</span>
+				</div>
 				<img src="bottom-panel-a.png"></img>
 			</div>
 			<div id=bottom_panel_a>
@@ -101,6 +110,9 @@
 							</span>
 						</button>
 					</div>
+				</div>
+				<div class="tooltip">
+					<span class="tooltiptext">XSTR("Click here to begin the mission", -1)</span>
 				</div>
 				<img src="bottom-panel-a.png"></img>
 			</div>

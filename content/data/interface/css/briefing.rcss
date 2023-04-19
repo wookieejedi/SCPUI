@@ -834,3 +834,25 @@ button#options_btn:active #options_img
 {
 	icon-image: arrow-dbl-down-o.png;
 }
+
+/*Tooltip placements*/
+
+div#top_panel_wrapper .tooltip
+{
+	width: 25%;
+	top: 5%;
+	left: 10%;
+}
+
+div#stage_select .tooltip
+{
+	width: 50%;
+	left: 0;
+}
+
+div#bottom_panel_a .tooltip
+{
+	width: 75%;
+	top: -5%;
+	left: -10%;
+}

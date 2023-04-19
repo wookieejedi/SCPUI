@@ -79,6 +79,9 @@
 					<ul id=list_item_names_ul>
 						<p></p>
 					</ul>
+					<div class="tooltip">
+						<span class="tooltiptext">XSTR("Select a mission", -1)</span>
+					</div>
 				</div>
 				<img src="mission-sim-window.png"></img>
 			</div>
@@ -105,6 +108,9 @@
 								<p>XSTR("Campaign Missions", -1)</p>
 							</span>
 						</button>
+					</div>
+					<div class="tooltip">
+						<span class="tooltiptext">XSTR("Filter standalone missions or missions that are in a campaign", -1)</span>
 					</div>
 				</div>
 				<img src="ops-panel-vert-tall-l.png"></img>

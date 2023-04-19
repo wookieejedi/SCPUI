@@ -38,6 +38,9 @@
 				</div>
 				<img src="ops-panel-vert-tall-l.png"></img>
 			</div>
+			<div class="tooltip">
+				<span class="tooltiptext">XSTR("Receive your mission debriefing or view your mission stats", -1)</span>
+			</div>
 		</div>
 		<div id=debrief_wrapper>
 			<div id=mission_name>
@@ -66,6 +69,9 @@
 								<p>XSTR("Recommendations", -1)</p>
 							</span>
 						</button>
+					</div>
+					<div class="tooltip">
+						<span class="tooltiptext">XSTR("See advice on improving your performance", -1)</span>
 					</div>
 				</div>
 				<div id=stage_select>

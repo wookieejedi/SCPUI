@@ -89,12 +89,15 @@
 						</button>
 					</div>
 				</div>
+				<div class="tooltip">
+					<span class="tooltiptext">XSTR("Proceed to the mission briefing", -1)</span>
+				</div>
 				<img src="bottom-panel-a.png"></img>
 			</div>
 			<div id=bottom_panel_b>
 				<div id=b_panel_wrapper>
 					<div id=help_cont>
-						<button id="help_btn" class="help button_1">
+						<button id="help_btn" class="help button_1" onclick="controller:help_clicked()">
 							<span id="help_img" class="help">
 								<img src="help.png" class="psuedo_img"></img>
 							</span>

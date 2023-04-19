@@ -919,3 +919,38 @@ div#scroll_button_wrapper
 {
 	icon-image: arrow-wide-down-o.png;
 }
+
+/*Tooltip placements*/
+
+div#top_panel_wrapper .tooltip
+{
+	width: 25%;
+	top: 5%;
+	left: 10%;
+}
+
+div#weapon_scroll_panel .tooltip
+{
+	width: 75%;
+	top: 50%;
+	left: 140%;
+}
+
+div#main_background .tooltip
+{
+	width: 50%;
+	bottom: -25%;
+}
+
+div#bottom_panel_a .tooltip
+{
+	width: 75%;
+	top: -10%;
+	left: -10%;
+}
+
+div#bottom_panel_c .tooltip
+{
+	width: 75%;
+	left: -50%;
+}

@@ -432,3 +432,12 @@ button#options_btn:active #options_img
     mouseover-sound: 17;
     click-sound: (success)14,(fail)10;
 }
+
+/*Tooltip placements*/
+
+div#bottom_panel_a .tooltip
+{
+	width: 75%;
+	top: -5%;
+	left: -10%;
+}

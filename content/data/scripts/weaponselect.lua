@@ -16,6 +16,7 @@ function WeaponSelectController:init()
 		RocketUiSystem.selectInit = true
 	end
 	modelDraw = {}
+	self.help_shown = false
 end
 
 function WeaponSelectController:initialize(document)
@@ -1589,7 +1590,13 @@ end
 
 function WeaponSelectController:help_clicked(element)
     ui.playElementSound(element, "click", "success")
-    --TODO
+    
+	self.help_shown  = not self.help_shown
+
+    local help_texts = self.document:GetElementsByClassName("tooltip")
+    for _, v in ipairs(help_texts) do
+        v:SetPseudoClass("shown", self.help_shown)
+    end
 end
 
 function WeaponSelectController:global_keydown(element, event)

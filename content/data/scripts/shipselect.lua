@@ -16,6 +16,7 @@ function ShipSelectController:init()
 		RocketUiSystem.selectInit = true
 	end
 	modelDraw = {}
+	self.help_shown = false
 end
 
 function ShipSelectController:initialize(document)
@@ -873,7 +874,13 @@ end
 
 function ShipSelectController:help_clicked(element)
     ui.playElementSound(element, "click", "success")
-    --TODO
+    
+	self.help_shown  = not self.help_shown
+
+    local help_texts = self.document:GetElementsByClassName("tooltip")
+    for _, v in ipairs(help_texts) do
+        v:SetPseudoClass("shown", self.help_shown)
+    end
 end
 
 function ShipSelectController:global_keydown(element, event)

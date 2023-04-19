@@ -787,3 +787,19 @@ button#options_btn:active #options_img
 {
 	icon-image: arrow-dbl-down-o.png;
 }
+
+/*Tooltip placements*/
+
+div#ship_select .tooltip
+{
+	width: 100%;
+	right: 0;
+	
+}
+
+div#tech_select .tooltip
+{
+	width: 500%;
+	top: 0%;
+	right: 100%;
+}

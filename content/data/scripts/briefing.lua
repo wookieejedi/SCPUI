@@ -35,6 +35,8 @@ function BriefingController:init()
 	--Whenever we start a new mission, we reset the log ui to goals
 	RocketUiSystem.logSection = 1
 	
+	self.help_shown = false
+	
 end
 
 function BriefingController:initialize(document)
@@ -474,6 +476,15 @@ function BriefingController:mouse_move(element, event)
 		end
 	end
 
+end
+
+function BriefingController:help_clicked()
+    self.help_shown  = not self.help_shown
+
+    local help_texts = self.document:GetElementsByClassName("tooltip")
+    for _, v in ipairs(help_texts) do
+        v:SetPseudoClass("shown", self.help_shown)
+    end
 end
 
 engine.addHook("On Frame", function()

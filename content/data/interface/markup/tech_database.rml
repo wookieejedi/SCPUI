@@ -90,6 +90,9 @@
 							</button>
 						</div>
 					</div>
+					<div class="tooltip">
+						<span class="tooltiptext">XSTR("View the next or previous data entry", -1)</span>
+					</div>
 				</div>
 				<img src="tech-room-view-window.png"></img>
 			</div>
@@ -131,6 +134,9 @@
 								</span>
 							</button>
 						</div>
+					</div>
+					<div class="tooltip">
+						<span class="tooltiptext">XSTR("Study technical data on all known ships and weapons, as well as historical and species information", -1)</span>
 					</div>
 				</div>
 				<img src="tech-room-text-window.png"></img>

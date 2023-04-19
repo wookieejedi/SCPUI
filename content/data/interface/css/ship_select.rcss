@@ -667,3 +667,31 @@ button#options_btn:active #options_img
 {
 	icon-image: arrow-wide-down-o.png;
 }
+
+/*Tooltip placements*/
+
+div#top_panel_wrapper .tooltip
+{
+	width: 25%;
+	top: 5%;
+	left: 10%;
+}
+
+div#ship_scroll_panel .tooltip
+{
+	width: 75%;
+	left: 100%;
+}
+
+div#bottom_panel_a .tooltip
+{
+	width: 75%;
+	top: -10%;
+	left: -10%;
+}
+
+div#bottom_panel_c .tooltip
+{
+	width: 75%;
+	left: -50%;
+}

@@ -63,6 +63,9 @@
 				</div>
 				<img src="ops-panel-vert-tall-l.png"></img>
 			</div>
+			<div class="tooltip">
+				<span class="tooltiptext">XSTR("Click here to change ship or weapon selection", -1)</span>
+			</div>
 		</div>
 		<div id=brief_wrapper>
 			<div id=brief_grid_window>
@@ -170,6 +173,9 @@
 							</button>
 						</div>
 					</div>
+					<div class="tooltip">
+						<span class="tooltiptext">XSTR("Click here to change briefing stages", -1)</span>
+					</div>
 				</div>
 				<img src="brief-main-window.png"></img>
 			</div>
@@ -197,12 +203,15 @@
 						</button>
 					</div>
 				</div>
+				<div class="tooltip">
+					<span class="tooltiptext">XSTR("Click here to begin the mission", -1)</span>
+				</div>
 				<img src="bottom-panel-a.png"></img>
 			</div>
 			<div id=bottom_panel_b>
 				<div id=b_panel_wrapper>
 					<div id=help_cont>
-						<button id="help_btn" class="help button_1">
+						<button id="help_btn" class="help button_1" onclick="controller:help_clicked()">
 							<span id="help_img" class="help">
 								<img src="help.png" class="psuedo_img"></img>
 							</span>

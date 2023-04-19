@@ -47,6 +47,9 @@
 				</div>
 				<img src="ops-panel-vert-tall-l.png"></img>
 			</div>
+			<div class="tooltip">
+				<span class="tooltiptext">XSTR("Click here to return to the briefing or change ship selection", -1)</span>
+			</div>
 		</div>
 		<div id=ship_view_window>
 			<div id=ship_view_wrapper>
@@ -122,6 +125,9 @@
 					</div>
 				</div>
 				<img src="select-scroll-panel.png"></img>
+				<div class="tooltip">
+					<span class="tooltiptext">XSTR("Choose a new weapon type by dragging its icon over one of the available weapon slots", -1)</span>
+				</div>
 			</div>
 			<div id=weapon_scroll_panel>
 				<div id=scroll_button_wrapper ondragdrop="controller:DragDrop(element, 0)">
@@ -131,6 +137,9 @@
 					</div>
 				</div>
 				<img src="select-scroll-panel.png"></img>
+				<div class="tooltip">
+					<span class="tooltiptext">XSTR("Choose a ship to modify the weapons loadout", -1)</span>
+				</div>
 			</div>
 		</div>
 		<div id=wings_wrapper>
@@ -149,6 +158,9 @@
 						</button>
 					</div>
 				</div>
+				<div class="tooltip">
+					<span class="tooltiptext">XSTR("Revert to the original weapon distribution", -1)</span>
+				</div>
 				<img src="bottom-panel-a.png"></img>
 			</div>
 			<div id=bottom_panel_a>
@@ -163,6 +175,9 @@
 							</span>
 						</button>
 					</div>
+				</div>
+				<div class="tooltip">
+					<span class="tooltiptext">XSTR("Click here to begin the mission", -1)</span>
 				</div>
 				<img src="bottom-panel-a.png"></img>
 			</div>

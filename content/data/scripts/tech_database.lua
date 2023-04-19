@@ -15,6 +15,7 @@ function TechDatabaseController:init()
 		sy = 0
 	}
 	self.Counter = 0
+	self.help_shown = false
 end
 
 --Iterate over all the ships, weapons, and intel but only grab the necessary data
@@ -500,7 +501,13 @@ end
 
 function TechDatabaseController:help_clicked(element)
     ui.playElementSound(element, "click", "success")
-    --TODO
+    
+	self.help_shown  = not self.help_shown
+
+    local help_texts = self.document:GetElementsByClassName("tooltip")
+    for _, v in ipairs(help_texts) do
+        v:SetPseudoClass("shown", self.help_shown)
+    end
 end
 
 function TechDatabaseController:unload()

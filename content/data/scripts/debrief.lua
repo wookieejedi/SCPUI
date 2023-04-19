@@ -15,6 +15,7 @@ function DebriefingController:init()
 	self.recommendVisible = false
 	self.player = nil
 	self.page = 1
+	self.help_shown = false
 end
 
 function DebriefingController:initialize(document)
@@ -608,7 +609,13 @@ end
 
 function DebriefingController:help_clicked(element)
     ui.playElementSound(element, "click", "success")
-    --TODO
+	
+    self.help_shown  = not self.help_shown
+
+    local help_texts = self.document:GetElementsByClassName("tooltip")
+    for _, v in ipairs(help_texts) do
+        v:SetPseudoClass("shown", self.help_shown)
+    end
 end
 
 function DebriefingController:global_keydown(_, event)

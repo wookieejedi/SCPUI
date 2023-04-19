@@ -8,6 +8,7 @@ function TechMissionsController:init()
 	self.help_shown = false
 	self.show_all = false
 	self.Counter = 0
+	self.help_shown = false
 end
 
 function TechMissionsController:initialize(document)

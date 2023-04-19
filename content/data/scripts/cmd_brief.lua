@@ -18,6 +18,7 @@ function CommandBriefingController:init()
         text_el = "cmd_text_el",
         stage_text_el = "cmd_stage_text_el",
     }
+	self.help_shown = false
 end
 
 function CommandBriefingController:initialize(document)
@@ -75,6 +76,15 @@ function CommandBriefingController:go_to_stage(stage_idx)
     end
 
     ui.Briefing.runBriefingStageHook(old_stage, stage_idx)
+end
+
+function CommandBriefingController:help_clicked()
+    self.help_shown  = not self.help_shown
+
+    local help_texts = self.document:GetElementsByClassName("tooltip")
+    for _, v in ipairs(help_texts) do
+        v:SetPseudoClass("shown", self.help_shown)
+    end
 end
 
 return CommandBriefingController
