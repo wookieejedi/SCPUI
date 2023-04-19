@@ -156,7 +156,7 @@ div#tab_buttons_wrapper
 {
 	position: absolute;
 	bottom: 0;
-	width: 30%;
+	width: 39%;
 	height: 12%;
 }
 
@@ -327,7 +327,7 @@ div#clear_buttons_wrapper
 	position: absolute;
 	bottom: 0;
 	right: 0;
-	width: 30%;
+	width: 39%;
 	height: 12%;
 }
 
