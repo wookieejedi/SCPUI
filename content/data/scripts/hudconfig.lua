@@ -99,6 +99,8 @@ function HudConfigController:initPresets()
 	
 	self:ClearEntries(parent_el)
 	
+	self.oldPreset = nil
+	
 	for i = 1, #self.presetColors do
 		local entry = self.presetColors[i]
 		
