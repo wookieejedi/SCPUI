@@ -31,8 +31,8 @@ function LoopBriefController:initialize(document)
 	local color_text = rocket_utils.set_briefing_text(text_el, loop.Text)
 	
 	if loop.AudioFilename then
-		voice_handle = ad.openAudioStream(loop.AudioFilename, AUDIOSTREAM_VOICE)
-		voice_handle:play(ad.MasterVoiceVolume)
+		self.voice_handle = ad.openAudioStream(loop.AudioFilename, AUDIOSTREAM_VOICE)
+		self.voice_handle:play(ad.MasterVoiceVolume)
 	end
 	
 	local aniWrapper = self.document:GetElementById("loop_anim")
@@ -47,11 +47,13 @@ end
 
 function LoopBriefController:accept_pressed()
     ui.LoopBrief.setLoopChoice(true)
+	self.voice_handle:close()
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_START_GAME"])
 end
 
 function LoopBriefController:deny_pressed()
     ui.LoopBrief.setLoopChoice(false)
+	self.voice_handle:close()
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_START_GAME"])
 end
 

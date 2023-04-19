@@ -57,10 +57,19 @@ div#cutscene_list
 {
 	position: absolute;
 	top: 0;
+	height: 84%;
 	margin-top: 2%;
 	margin-left: 6%;
 	color: white;
-	overflow: auto;
+	overflow: scroll;
+}
+
+div#scroll_bg
+{
+	position: absolute;
+	top: 5%;
+	left: -2.3%;
+	width: 5%;
 }
 
 .cutscenelist_element
@@ -424,4 +433,78 @@ button#accept_btn:active #accept_img
 {
 	background-decorator: image;
 	background-image: select-neg-o.png;
+}
+
+/*Scroll Buttons*/
+
+#cutscene_list scrollbarvertical
+{
+	scrollchange-sound: 9;
+	width: 5%;
+	position: absolute;
+	top: 3%;
+	left: -8.5%;
+	z-index: 5;
+}
+
+#cutscene_list scrollbarvertical slidertrack
+{
+	visibility: hidden;
+}
+
+#cutscene_list scrollbarvertical sliderbar
+{
+	visibility: hidden;
+}
+
+#cutscene_list scrollbarvertical sliderbar:hover
+{
+	
+}
+
+#cutscene_list scrollbarvertical sliderbar:active
+{
+	
+}
+
+#cutscene_list scrollbarvertical sliderarrowdec
+{
+	width: 100%;
+	height: 15%;
+	margin-top: 3%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
+}
+
+#cutscene_list scrollbarvertical sliderarrowinc
+{
+	width: 100%;
+	height: 15%;
+	margin-bottom: 64%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
+}
+
+#cutscene_list scrollbarvertical sliderarrowdec:hover
+{
+	icon-image: arrow-dbl-up-h.png;
+}
+
+#cutscene_list scrollbarvertical sliderarrowinc:hover
+{
+	icon-image: arrow-dbl-down-h.png;
+}
+
+#cutscene_list scrollbarvertical sliderarrowdec:active
+{
+	icon-image: arrow-dbl-up-o.png;
+}
+
+#cutscene_list scrollbarvertical sliderarrowinc:active
+{
+	icon-image: arrow-dbl-down-o.png;
 }

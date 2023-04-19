@@ -271,6 +271,11 @@ div#bottom_panel_c img
 	background-image: multiplayer-o.png;
 }
 
+#multi_btn
+{
+	visibility: hidden;
+}
+
 /*Accept Button*/
 
 div#a_panel_wrapper

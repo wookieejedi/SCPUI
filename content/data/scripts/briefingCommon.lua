@@ -75,7 +75,7 @@ function AbstractBriefingController:global_keydown(_, event)
 		RocketUiSystem.selectInit = false
         event:StopPropagation()
 		
-		--ui.stopMission()
+		mn.unloadMission(true)
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
     end
 end

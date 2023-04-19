@@ -134,6 +134,12 @@ function OptionsController:init()
     -- A list of mappings option->ValueDescription which contains backups of the original values for special options
     -- that apply their changes immediately
     self.option_backup    = {}
+	
+	if mn.isInMission() then
+		ad.pauseMusic(-1, true)
+		ad.pauseWeaponSounds(true)
+	end
+	
 end
 
 function OptionsController:init_point_slider_element(value_el, btn_left, btn_right, point_buttons, option,
@@ -751,7 +757,7 @@ function OptionsController:createCustomOptionElement(option, parent_id, onchange
             -- Special case for binary options
             return self:createBinaryOptionElement(option, vals, parent_id, onchange_func)
         else
-            return self:createSelectionOptionElement(option, vals, parent_id, nil, onchange_func)
+			return self:createSelectionOptionElement(option, vals, parent_id, nil, onchange_func)
         end
     elseif option.Type == "Range" then
         return self:createRangeOptionElement(option, parent_id, onchange_func)
@@ -858,8 +864,8 @@ function OptionsController:initialize_basic_options()
                 text_alignment = "left",
                 no_background  = false
             })
-        elseif key == "Audio.BriefingVoice" then
-            self:createOptionElement(option, "briefing_voice_container")
+        --elseif key == "Audio.BriefingVoice" then
+            --self:createOptionElement(option, "briefing_voice_container")
         elseif key == "Audio.Effects" then
             -- The audio options are applied immediately so the user hears the effects
             self.option_backup[option] = option.Value
@@ -1051,21 +1057,23 @@ function OptionsController:initialize(document)
 	self:initialize_prefs_options()
 end
 
-function OptionsController:accept_clicked(element)
+function OptionsController:acceptChanges(state)
 	
 	modOptionValues = customValues
 
 	--Save mod options to file
-	saveFilename = "mod_options_" .. ba.getCurrentPlayer():getName():sub(1,20) .. ".cfg"
+	--[[saveFilename = "mod_options_" .. ba.getCurrentPlayer():getName():sub(1,20) .. ".cfg"
 	local json = require('dkjson')
     local file = cf.openFile(saveFilename, 'w', 'data/config')
     file:write(json.encode(modOptionValues))
-    file:close()
+    file:close()]]--
+	local utils = require('utils')
+	utils.saveOptionsToFile("options", modOptionValues, true)
 	
 	--Save mod options to global file for recalling before a player is selected
 	saveFilename = "mod_options_global.cfg"
 	local json = require('dkjson')
-    local file = cf.openFile(saveFilename, 'w', 'data/config')
+    local file = cf.openFile(saveFilename, 'w', 'data/players')
     file:write(json.encode(modOptionValues))
     file:close()
 
@@ -1073,7 +1081,11 @@ function OptionsController:accept_clicked(element)
 
     if #unchanged <= 0 then
         -- All options were applied
-        ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
+		if mn.isInMission() then
+			ad.pauseMusic(-1, false)
+			ad.pauseWeaponSounds(false)
+		end
+        ba.postGameEvent(ba.GameEvents[state])
         return
     end
 
@@ -1095,7 +1107,13 @@ function OptionsController:accept_clicked(element)
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), true, string.sub(ba.XSTR("Ok", -1), 1, 1))
     builder:show(self.document.context):continueWith(function(val)
         if val then
-            ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
+			
+			if mn.isInMission() then
+				ad.pauseMusic(-1, false)
+				ad.pauseWeaponSounds(false)
+			end
+		
+            ba.postGameEvent(ba.GameEvents[state])
         end
     end)
 end
@@ -1433,7 +1451,7 @@ function OptionsController:ModDefault(element)
 				local parent = self.document:GetElementById(option.parentID.id)
 				customValues[option.key] = option.defaultValue
 				option.currentValue = option.defaultValue
-				local savedValue = option.savedValue
+				local savedValue = option.savedValue				
 				option.selectID.selection = tblUtil.ifind(option.validVals, option.defaultValue)
 				option.savedValue = savedValue
 			end
@@ -1595,17 +1613,26 @@ function OptionsController:global_keydown(element, event)
         event:StopPropagation()
 
         self:discardChanges()
+		
+		if mn.isInMission() then
+			ad.pauseMusic(-1, false)
+			ad.pauseWeaponSounds(false)
+		end
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
     end
 end
 
+function OptionsController:accept_clicked(element)
+	self:acceptChanges("GS_EVENT_PREVIOUS_STATE")
+end
+
 function OptionsController:control_config_clicked()
-    ba.postGameEvent(ba.GameEvents["GS_EVENT_CONTROL_CONFIG"])
+    self:acceptChanges("GS_EVENT_CONTROL_CONFIG")
 end
 
 function OptionsController:hud_config_clicked()
-    ba.postGameEvent(ba.GameEvents["GS_EVENT_HUD_CONFIG"])
+    self:acceptChanges("GS_EVENT_HUD_CONFIG")
 end
 
 function OptionsController:exit_game_clicked()

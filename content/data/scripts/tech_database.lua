@@ -1,5 +1,6 @@
 local dialogs = require("dialogs")
 local class = require("class")
+local utils = require("utils")
 
 local TechDatabaseController = class()
 
@@ -7,7 +8,12 @@ local modelDraw = nil
 
 function TechDatabaseController:init()
 	self.show_all = false
-	modelDraw = {}
+	modelDraw = {
+		mx = 0,
+		my = 0,
+		sx = 0,
+		sy = 0
+	}
 	self.Counter = 0
 end
 
@@ -245,7 +251,7 @@ function TechDatabaseController:SelectEntry(entry)
 		elseif self.SelectedSection == "weapons" then			
 			self.document:GetElementById("tech_desc").inner_rml = entry.Description
 			
-			if entry.Anim ~= "" then
+			if entry.Anim ~= "" and utils.animExists(entry.Anim) then
 				modelDraw.class = nil
 
 				local aniEl = self.document:CreateElement("ani")
@@ -263,7 +269,10 @@ function TechDatabaseController:SelectEntry(entry)
 				modelDraw.class = nil
 
 				local aniEl = self.document:CreateElement("ani")
-				aniEl:SetAttribute("src", entry.Anim)
+				
+				if utils.animExists(entry.Anim) then
+					aniEl:SetAttribute("src", entry.Anim)
+				end
 				aniEl:SetClass("anim", true)
 				aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
 			else
@@ -273,6 +282,33 @@ function TechDatabaseController:SelectEntry(entry)
 
 	end	
 
+
+end
+
+function TechDatabaseController:mouse_move(element, event)
+
+	if modelDraw ~= nil then
+		modelDraw.mx = event.parameters.mouse_x
+		modelDraw.my = event.parameters.mouse_y
+	end
+
+end
+
+function TechDatabaseController:mouse_up(element, event)
+
+	if modelDraw ~= nil then
+		modelDraw.click = false
+	end
+
+end
+
+function TechDatabaseController:mouse_down(element, event)
+
+	if modelDraw ~= nil then
+		modelDraw.click = true
+		modelDraw.sx = event.parameters.mouse_x
+		modelDraw.sy = event.parameters.mouse_y
+	end
 
 end
 
@@ -287,20 +323,69 @@ function TechDatabaseController:DrawModel()
 			thisItem = tb.WeaponClasses[modelDraw.class]
 		end
 		
-		modelDraw.Rot = modelDraw.Rot + (7 * ba.getRealFrametime())
+		if not modelDraw.click then
+			modelDraw.Rot = modelDraw.Rot + (1 * ba.getRealFrametime())
+		end
 
 		if modelDraw.Rot >= 100 then
 			modelDraw.Rot = modelDraw.Rot - 100
 		end
 		
-		modelView = modelDraw.element
+		local modelView = modelDraw.element
 						
 		local modelLeft = modelView.offset_left + modelView.parent_node.offset_left + modelView.parent_node.parent_node.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top - 7 --Does not include modelView.offset_top because that element's padding is set for anims also subtracts 7px for funsies
 		local modelWidth = modelView.offset_width
 		local modelHeight = modelView.offset_height
 		
-		local test = thisItem:renderTechModel(modelLeft, modelTop, modelLeft + modelWidth, modelTop + modelHeight, modelDraw.Rot, -15, 0, 1.1)
+		local calcX = (modelDraw.sx - modelDraw.mx) * -1
+		local calcY = (modelDraw.sy - modelDraw.my) * -1
+		
+		--Move model based on mouse coordinates
+		if modelDraw.click then
+			local dx = calcX * 1
+			local dy = calcY * 1
+			local radius = 100
+			
+			--reverse this one
+			dx = dx * -1
+			
+			local dr = dx*dx+dy+dy
+			
+			if dr < 0 then
+				dr = dr * -1
+			end
+			
+			if dr < 1 then
+				dr = 1
+			end
+			
+			dr = math.sqrt(dr)
+			
+			local denom = math.sqrt(radius*radius+dr*dr)
+			
+			local cos_theta = radius/denom
+			local sin_theta = dr/denom
+			
+			local cos_theta1 = 1 - cos_theta
+			
+			local dxdr = dx/dr
+			local dydr = dy/dr
+			
+			local fvec = ba.createVector((dxdr*sin_theta), (dydr*sin_theta), cos_theta)
+			local uvec = ba.createVector(((dxdr*dydr)*cos_theta1), (cos_theta + ((dxdr*dxdr)*cos_theta1)), 1)
+			local rvec = ba.createVector((cos_theta + (dydr*dydr)*cos_theta1), 1, 1)
+			
+			modelDraw.clickOrient = ba.createOrientationFromVectors(fvec, uvec, rvec)
+		end
+		
+		local orient = ba.createOrientation(-49.75, 0, modelDraw.Rot)
+		if modelDraw.click then
+			orient = modelDraw.clickOrient * orient
+		end
+		
+		--thisItem:renderTechModel(modelLeft, modelTop, modelLeft + modelWidth, modelTop + modelHeight, modelDraw.Rot, -15, 0, 1.1)
+		thisItem:renderTechModel2(modelLeft, modelTop, modelLeft + modelWidth, modelTop + modelHeight, orient, 1.1)
 		
 	end
 
@@ -416,6 +501,10 @@ end
 function TechDatabaseController:help_clicked(element)
     ui.playElementSound(element, "click", "success")
     --TODO
+end
+
+function TechDatabaseController:unload()
+    gr.freeAllModels()
 end
 
 engine.addHook("On Frame", function()

@@ -10,7 +10,7 @@
 			controller = require("briefing")()
 		</script>
 	</head>
-	<body id=main_background onkeydown="controller:global_keydown(element, event)" onload="controller:initialize(document)"
+	<body id=main_background onkeydown="controller:global_keydown(element, event)" onmousemove="controller:mouse_move(element, event)" onload="controller:initialize(document)"
 		  onunload="controller:unload(); controller = nil">
 		<div id=top_panel_wrapper>
 			<div id=top_panel_a>

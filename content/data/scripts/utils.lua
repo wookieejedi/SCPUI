@@ -2,6 +2,103 @@ local utils = {}
 
 utils.table = {}
 
+function utils.loadOptionsFromFile(source, toPlayers)
+
+	local json = require('dkjson')
+  
+	if toPlayers then
+		location = 'data/players'
+	else
+		location = 'data/config'
+	end
+  
+	local file = nil
+	local config = {}
+  
+	if cf.fileExists('mod_options.cfg') then
+		file = cf.openFile('mod_options.cfg', 'r', location)
+		config = json.decode(file:read('*a'))
+		file:close()
+		if not config then
+			config = {}
+		end
+	end
+  
+	if not config[ba.getCurrentPlayer():getName()] then
+		config[ba.getCurrentPlayer():getName()] = {}
+	end
+	
+	local mod = ba.getModTitle()
+	
+	if mod == "" then
+		ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
+	end
+	
+	if not config[ba.getCurrentPlayer():getName()][mod] then
+		config[ba.getCurrentPlayer():getName()][mod] = {}
+	end
+  
+	if not config[ba.getCurrentPlayer():getName()][mod][source] then
+		return nil
+	else
+		return config[ba.getCurrentPlayer():getName()][mod][source]
+	end
+end
+
+function utils.saveOptionsToFile(source, data, toPlayers)
+
+	local json = require('dkjson')
+  
+	if toPlayers then
+		location = 'data/players'
+	else
+		location = 'data/config'
+	end
+  
+	local file = nil
+	local config = {}
+  
+	if cf.fileExists('mod_options.cfg') then
+		file = cf.openFile('mod_options.cfg', 'r', location)
+		config = json.decode(file:read('*a'))
+		file:close()
+		if not config then
+			config = {}
+		end
+	end
+  
+	if not config[ba.getCurrentPlayer():getName()] then
+		config[ba.getCurrentPlayer():getName()] = {}
+	end
+	
+	local mod = ba.getModTitle()
+	
+	if mod == "" then
+		ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
+	end
+	
+	if not config[ba.getCurrentPlayer():getName()][mod] then
+		config[ba.getCurrentPlayer():getName()][mod] = {}
+	end
+  
+	config[ba.getCurrentPlayer():getName()][mod][source] = data
+  
+	file = cf.openFile('mod_options.cfg', 'w', location)
+	file:write(json.encode(config))
+	file:close()
+end
+
+function utils.animExists(name)
+	local theseExts = {".png", ".ani", ".eff"}
+	for i = 1, #theseExts do
+		local thisFile = name .. theseExts[i]
+		if cf.fileExists(thisFile, "", true) then
+			return true
+		end
+	end
+	return false
+end
+
 function utils.strip_extension(name)
     return string.gsub(name, "%..+$", "")
 end

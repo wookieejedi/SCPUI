@@ -8,9 +8,6 @@ local BriefingController = class(AbstractBriefingController)
 
 local drawMap = nil
 
---Option to render briefing map to "texture" or directly to "screen"
-local renderMapTo = "screen"
-
 function BriefingController:init()
     --- @type briefing_stage[]
     self.stages = {}
@@ -27,7 +24,7 @@ function BriefingController:init()
 	
 	drawMap = {
 		tex = nil,
-		target = renderMapTo
+		modelRot = 40
 	}
 	
 	if not RocketUiSystem.selectInit then
@@ -35,12 +32,17 @@ function BriefingController:init()
 		RocketUiSystem.selectInit = true
 	end
 	
+	--Whenever we start a new mission, we reset the log ui to goals
+	RocketUiSystem.logSection = 1
+	
 end
 
 function BriefingController:initialize(document)
     AbstractBriefingController.initialize(self, document)
 	
 	ui.maybePlayCutscene(MOVIE_PRE_BRIEF, true, 0)
+	
+	self.requiredWeps = {}
 	
 	--Default width is 888, default height is 371
 	
@@ -87,6 +89,15 @@ function BriefingController:initialize(document)
 		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
 	else
 		self.document:GetElementById("main_background"):SetClass("p1-5", true)
+	end
+	
+	--Get all the required weapons
+	j = 1
+	while (j < #tb.WeaponClasses) do
+		if tb.WeaponClasses[j]:isWeaponRequired() then
+			self.requiredWeps[#self.requiredWeps + 1] = tb.WeaponClasses[j].Name
+		end
+		j = j + 1
 	end
 	
 	self.document:GetElementById("mission_title").inner_rml = mn.getMissionTitle()
@@ -148,6 +159,7 @@ function BriefingController:initialize(document)
 	local aniEl = self.document:CreateElement("img")
     aniEl:SetAttribute("src", drawMap.url)
 	briefView:ReplaceChild(aniEl, briefView.first_child)
+
 end
 
 function BriefingController:calcPercent(value, percent)
@@ -249,25 +261,93 @@ function BriefingController:CutToStage()
 end
 
 function BriefingController:drawMap()
+	
+	--Testing icon ship rendering stuff
+	drawMap.modelRot = drawMap.modelRot + (7 * ba.getRealFrametime())
+
+	if drawMap.modelRot >= 100 then
+		drawMap.modelRot = drawMap.modelRot - 100
+	end
 
 	gr.setTarget(drawMap.tex)
 	
+	local r = 160
+	local g = 144
+	local b = 160
+	local a = 255
+	gr.setLineWidth(2.0)
 	
 	if drawMap.draw == true then
-		if drawMap.target == "texture" then
+		if string.lower(modOptionValues.Brief_Render_Option) == "texture" then
 			gr.setTarget(drawMap.tex)
 			gr.clearScreen(0,0,0,0)
 			ui.Briefing.drawBriefingMap(0, 0, drawMap.x2, drawMap.y2)
-		elseif drawMap.target == "screen" then
+			
+		elseif string.lower(modOptionValues.Brief_Render_Option) == "screen" then
 			gr.clearScreen(0,0,0,0)
 			gr.setTarget()
 			ui.Briefing.drawBriefingMap(drawMap.x1, drawMap.y1, drawMap.x2, drawMap.y2)
+			
 		end
+		
 	else
-		gr.clearScreen(0,0,0,0)	
+		gr.clearScreen(0,0,0,0)
 	end
 	
 	gr.setTarget()
+	
+	if drawMap.pof ~= nil then
+		
+		--get the current color and save it
+		local prev_c = {
+			r = 0,
+			g = 0,
+			b = 0,
+			a = 0
+		}
+		
+		prev_c.r, prev_c.g, prev_c.b, prev_c.a = gr.getColor()
+		
+		--set the box coords and size
+		local bx_size = math.floor(0.20 * gr.getScreenHeight()) --size of the box is 15% of screen height
+		local bx_dist = 5 --this is the distance the box is drawn from the mouse in pixels
+		local bx1 = drawMap.bx - bx_size - bx_dist
+		local by1 = drawMap.by - bx_size - bx_dist
+		local bx2 = drawMap.bx - bx_dist
+		local by2 = drawMap.by - bx_dist
+		
+		--set the current color to black
+		gr.setColor(0, 0, 0, 255)
+		
+		--draw a box at the mouse coords
+		gr.drawRectangle(bx1, by1, bx2, by2)
+		
+		--set the current color to grey
+		gr.setColor(50, 50, 50, 255)
+		gr.drawLine(bx1, by1, bx1, by2)
+		gr.drawLine(bx1, by1, bx2, by1)
+		gr.drawLine(bx2, by2, bx1, by2)
+		gr.drawLine(bx2, by2, bx2, by1)
+		
+		local ship = tb.ShipClasses[drawMap.pof]
+		if ship.Name == "" then
+			local jumpnode = false
+			if drawMap.pof == "subspacenode.pof" then
+				jumpnode = true
+			end
+			ui.Briefing.renderBriefingModel(drawMap.pof, drawMap.closeupZoom, drawMap.closeupPos, bx1+1, by1+1, bx2-1, by2-1, drawMap.modelRot, -15, 0, 1.1, true, jumpnode)
+		else
+			ship:renderTechModel(bx1+1, by1+1, bx2-1, by2-1, drawMap.modelRot, -15, 0, 1.1)
+		end
+		
+		--set the current color to light grey
+		gr.setColor(150, 150, 150, 255)
+		
+		gr.drawString(drawMap.label, bx1+1, by1+1, bx2-1, by2-1)
+		
+		--reset the color
+		gr.setColor(prev_c.r, prev_c.g, prev_c.b, prev_c.a)
+	end
 
 end
 
@@ -360,6 +440,38 @@ function BriefingController:skip_pressed()
 		ui.Briefing.exitLoop()
 	elseif mn.isMissionSkipAllowed() then
 		ui.Briefing.skipMission()
+	end
+
+end
+
+function BriefingController:mouse_move(element, event)
+
+	if drawMap ~= nil then
+		drawMap.mx = event.parameters.mouse_x
+		drawMap.my = event.parameters.mouse_y
+		
+		--for the ship box preview coords regardless of briefing render type
+		drawMap.bx = event.parameters.mouse_x
+		drawMap.by = event.parameters.mouse_y
+			
+		if string.lower(modOptionValues.Brief_Render_Option) == "texture" then
+		
+			local grid_el = self.document:GetElementById("briefing_grid")
+			local gx = grid_el.offset_left + grid_el.parent_node.offset_left + grid_el.parent_node.parent_node.offset_left
+			local gy = grid_el.offset_top + grid_el.parent_node.offset_top + grid_el.parent_node.parent_node.offset_top
+			
+			drawMap.mx = drawMap.mx - gx
+			drawMap.my = drawMap.my - gy
+
+		end
+		
+		if ((drawMap.mx ~= nil) and (drawMap.my ~= nil)) then
+			drawMap.pof, drawMap.closeupZoom, drawMap.closeupPos, drawMap.label, drawMap.iconID = ui.Briefing.checkStageIcons(drawMap.mx, drawMap.my)
+		end
+		
+		if drawMap.pof == nil then
+			drawMap.modelRot = 40
+		end
 	end
 
 end

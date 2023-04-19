@@ -1,8 +1,8 @@
 <body>
 <div class="options_column_40">
-    <div id="briefing_voice_container">
+    <!--<div id="briefing_voice_container">-->
         <!-- Filled in by Lua -->
-    </div>
+    <!--</div>-->
     <div class="btn_panel_large">
         <div id="large_panel_text" class="ops_left_header">
             <p>XSTR("Volume", -1)</p>

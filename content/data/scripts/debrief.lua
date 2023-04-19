@@ -377,7 +377,7 @@ function DebriefingController:dialog_response(response)
 		acceptquit = function()
 			self:close()
 			ui.Debriefing.acceptMission(false)
-			--ui.stopMission()
+			mn.unloadMission(true)
 			ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 		end,
 		replay = function()
@@ -389,7 +389,7 @@ function DebriefingController:dialog_response(response)
 			self:close()
 			ui.Debriefing.clearMissionStats()
 			ui.Debriefing.replayMission(false)
-			--ui.stopMission()
+			mn.unloadMission(true)
 			ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 		end,
 		skip = function()
@@ -674,5 +674,15 @@ function DebriefingController:unload()
         self.current_voice_handle:close(false)
     end
 end
+
+--Prevent the debriefing UI from being drawn if we're just going
+--to skip it in a frame or two
+engine.addHook("On Frame", function()
+	if ba.getCurrentGameState().Name == "GS_STATE_DEBRIEF" and not mn.hasDebriefing() then
+		gr.clearScreen()
+	end
+end, {}, function()
+    return false
+end)
 
 return DebriefingController

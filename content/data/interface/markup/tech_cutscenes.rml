@@ -99,6 +99,9 @@
 						</div>
 					</div>
 				</div>
+				<div id=scroll_bg>
+					<img src="ops-panel-vert-tall-r.png"></img>
+				</div>
 				<img src="cutscene-window-main.png"></img>
 			</div>
 			<div id=cutscene_desc_wrapper>

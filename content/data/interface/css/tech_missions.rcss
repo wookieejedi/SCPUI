@@ -34,7 +34,7 @@ div#simulator_panel_wrapper
 	width: 80%;
 	height: auto;
 	margin: auto;
-	margin-top: 5%;
+	margin-top: 1%;
 }
 
 div#simulator_window_wrapper
@@ -125,9 +125,11 @@ div#mission_list
 
 .missionlist_element
 {
-	display: block;
+	display: inline-block;
+	width: 100%;
 	color: #7b7b7b;
 	z-index: 3;
+	overflow: hidden;
 }
 .missionlist_element:hover
 {
@@ -140,30 +142,45 @@ div#mission_list
 
 .missionlist_name
 {
-	position: relative;
+	display: inline-block;
 	width: 20%;
-	float: left;
+
 }
 
 .missionlist_author
 {
-	position: relative;
-	width: 20%;
-	float: left;
+	display: inline-block;
+	width: 19%;
+	margin-left: 1%;
+	white-space: pre;
+	overflow: hidden;
 }
 
 .missionlist_filename
 {
-	position: relative;
-	width: 20%;
-	float: left;
+	display: inline-block;
+	width: 19%;
+	margin-left: 1%;
+	overflow: hidden;
 }
 
 .missionlist_description
 {
-	position: relative;
-	width: 39%;
-	float: right;
+	display: inline-block;
+	width: 38%;
+	margin-left: 1%;
+	white-space: pre;
+	overflow: scroll;
+}
+
+#mission_list .missionlist_description scrollbarhorizontal
+{
+	display: none;
+}
+
+#mission_list .missionlist_description scrollbarvertical
+{
+	display: none;
 }
 
 /*Bottom Left Panel Elements*/
@@ -197,12 +214,12 @@ div#bot_left_panel img
 div#bot_left_wrapper
 {
 	position: absolute;
-	margin-top: 30%;
+	margin-top: 20%;
 }
 
 span#simulator_type p
 {
-	margin-top: -40%;
+	margin-top: -27%;
 }
 
 /*Top Panel Elements*/

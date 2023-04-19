@@ -12,13 +12,19 @@ RocketUiSystem = {
 	music_handle = nil,
 	current_played = nil,
 	debrief_music = nil,
-	initIcons = false
+	initIcons = nil,
+	logSection = 1
 }
 
 modOptionValues = {}
 
 --RUN AWAY IT'S FRED!
 if ba.inMissionEditor() then
+	return
+end
+
+--setting this to true will completely disable SCPUI
+if false then
 	return
 end
 
@@ -105,6 +111,13 @@ function RocketUiSystem:stateEnd()
     end
 
     local def = self:getDef(getRocketUiHandle(hv.OldState).Name)
+	
+	--def.document:Close() seems to be bugged and can't reliably clean up all child elements.
+	--This is most noticeable on game exit when the issue cases a CTD.
+	--So let's just sweep the floor a little bit before we close the document to help it along.
+	while def.document:HasChildNodes() do
+		def.document:RemoveChild(def.document.first_child)
+	end
 
     def.document:Close()
     def.document = nil
@@ -262,37 +275,49 @@ end
 RocketUiSystem:init()
 
 engine.addHook("On State Start", function()
-    RocketUiSystem:stateStart()
+	if not ba.MultiplayerMode then
+		RocketUiSystem:stateStart()
+	end
 end, {}, function()
     return RocketUiSystem:hasOverrideForState(getRocketUiHandle(hv.NewState))
 end)
 
 engine.addHook("On Frame", function()
-    RocketUiSystem:stateFrame()
+	if not ba.MultiplayerMode then
+		RocketUiSystem:stateFrame()
+	end
 end, {}, function()
     return RocketUiSystem:hasOverrideForCurrentState()
 end)
 
 engine.addHook("On State End", function()
-    RocketUiSystem:stateEnd()
+	if not ba.MultiplayerMode then
+		RocketUiSystem:stateEnd()
+	end
 end, {}, function()
     return RocketUiSystem:hasOverrideForState(getRocketUiHandle(hv.OldState))
 end)
 
 engine.addHook("On Dialog Init", function()
-    RocketUiSystem:dialogStart()
+	if not ba.MultiplayerMode then
+		RocketUiSystem:dialogStart()
+	end
 end, {}, function()
     return true
 end)
 
 engine.addHook("On Dialog Frame", function()
-    RocketUiSystem:dialogFrame()
+	if not ba.MultiplayerMode then
+		RocketUiSystem:dialogFrame()
+	end
 end, {}, function()
     return true
 end)
 
 engine.addHook("On Dialog Close", function()
-    RocketUiSystem:dialogEnd()
+	if not ba.MultiplayerMode then
+		RocketUiSystem:dialogEnd()
+	end
 end, {}, function()
     return true
 end)

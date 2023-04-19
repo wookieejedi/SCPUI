@@ -77,7 +77,7 @@ function CampaignController:selectCampaign(campaign)
     end
 end
 
-function CampaignController:create_pilot_li(campaign)
+function CampaignController:create_campaign_li(campaign)
     local li_el = self.document:CreateElement("li")
 
     li_el.inner_rml = campaign
@@ -95,7 +95,7 @@ function CampaignController:init_campaign_list()
     local campaign_list_el = self.document:GetElementById("campaignlist_ul")
     for _, v in ipairs(self.names) do
         -- Add all the elements
-        campaign_list_el:AppendChild(self:create_pilot_li(v))
+        campaign_list_el:AppendChild(self:create_campaign_li(v))
     end
 end
 

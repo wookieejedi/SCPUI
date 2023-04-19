@@ -62,7 +62,7 @@ function FictionViewerController:global_keydown(_, event)
 		RocketUiSystem.current_played = nil
 		event:StopPropagation()
 
-		--ui.stopMission()
+		mn.unloadMission(true)
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
     end
 end

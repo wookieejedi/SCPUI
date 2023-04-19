@@ -303,6 +303,11 @@ button#multiplayer_btn:checked #multiplayer_img
 	background-image: multiplayer-o.png;
 }
 
+#multiplayer_btn
+{
+	visibility: hidden;
+}
+
 /*Create Player Button*/
 
 div#player_control_cont

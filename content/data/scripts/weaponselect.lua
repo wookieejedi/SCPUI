@@ -142,7 +142,7 @@ function WeaponSelectController:initialize(document)
 					Title = weaponList[i].TechTitle,
 					Description = string.gsub(weaponList[i].Description, "Level", "<br></br>Level"),
 					Velocity = math.floor(weaponList[i].Speed*10)/10,
-					Range = weaponList[i].Range/100,
+					Range = math.floor(weaponList[i].Speed*weaponList[i].LifeMax*10)/10,
 					Damage = math.floor(weaponList[i].Damage*10)/10,
 					ArmorFactor = math.floor(weaponList[i].ArmorFactor*10)/10,
 					ShieldFactor = math.floor(weaponList[i].ShieldFactor*10)/10,
@@ -166,7 +166,7 @@ function WeaponSelectController:initialize(document)
 					Title = weaponList[i].TechTitle,
 					Description = string.gsub(weaponList[i].Description, "Level", "<br></br>Level"),
 					Velocity = math.floor(weaponList[i].Speed*10)/10,
-					Range = weaponList[i].Range/100,
+					Range = math.floor(weaponList[i].Speed*weaponList[i].LifeMax*10)/10,
 					Damage = math.floor(weaponList[i].Damage*10)/10,
 					ArmorFactor = math.floor(weaponList[i].ArmorFactor*10)/10,
 					ShieldFactor = math.floor(weaponList[i].ShieldFactor*10)/10,
@@ -542,7 +542,7 @@ function WeaponSelectController:AppendWeaponToPool(classIndex)
 		Title = tb.WeaponClasses[classIndex].TechTitle,
 		Description = string.gsub(tb.WeaponClasses[classIndex].Description, "Level", "<br></br>Level"),
 		Velocity = math.floor(tb.WeaponClasses[classIndex].Speed*10)/10,
-		Range = tb.WeaponClasses[classIndex].Range/100,
+		Range = math.floor(tb.WeaponClasses[classIndex].Speed*tb.WeaponClasses[classIndex].LifeMax*10)/10,
 		Damage = math.floor(tb.WeaponClasses[classIndex].Damage*10)/10,
 		ArmorFactor = math.floor(tb.WeaponClasses[classIndex].ArmorFactor*10)/10,
 		ShieldFactor = math.floor(tb.WeaponClasses[classIndex].ShieldFactor*10)/10,
@@ -986,10 +986,16 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	local infoEl = self.document:GetElementById("weapon_stats")
 	
+	local hull = entry.ArmorFactor * entry.Damage
+	local shield = entry.ShieldFactor * entry.Damage
+	local subsystem = entry.SubsystemFactor * entry.Damage
+	local power = math.floor(entry.Power * 100)
+	local rof = math.floor(100 / entry.FireWait) / 100
+
 	local weaponDescription    = "<p>" .. entry.Description .. "</p>"
-	local WeaponLine2 = "<p>" .. ba.XSTR("Velocity", -1) .. ": " .. entry.Velocity .. " " .. ba.XSTR("Range", -1) .. ": " .. entry.Range .. "</p>"
-	local WeaponLine3 = "<p class=\"info\">" .. ba.XSTR("Damage", -1) .. ": " .. entry.ArmorFactor .. " " .. ba.XSTR("Hull", -1) .. ", " .. entry.ShieldFactor .. " " .. ba.XSTR("Shield", -1) .. ", " .. entry.SubsystemFactor .. " " .. ba.XSTR("Subsystem", -1) .. "</p>"
-	local WeaponLine4 = "<p class=\"info\">" .. ba.XSTR("Power Use", -1) .. ": " .. entry.Power .. ba.XSTR("W", -1) .. " " .. ba.XSTR("ROF", -1) .. ": " .. entry.FireWait .. "</p>"
+	local WeaponLine2 = "<p>" .. ba.XSTR("Velocity", -1) .. ": " .. entry.Velocity .. "m/s " .. ba.XSTR("Range", -1) .. ": " .. entry.Range .. "m</p>"
+	local WeaponLine3 = "<p class=\"info\">" .. ba.XSTR("Damage", -1) .. ": " .. hull .. " " .. ba.XSTR("Hull", -1) .. ", " .. shield .. " " .. ba.XSTR("Shield", -1) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", -1) .. "</p>"
+	local WeaponLine4 = "<p class=\"info\">" .. ba.XSTR("Power Use", -1) .. ": " .. power .. ba.XSTR("W", -1) .. " " .. ba.XSTR("ROF", -1) .. ": " .. rof .. "/s</p>"
 
 	local completeRML = weaponDescription .. WeaponLine2 .. WeaponLine3 .. WeaponLine4
 	
@@ -1038,6 +1044,7 @@ function WeaponSelectController:DragOut(element, slot)
 	modelDraw.Hover = -1
 end
 
+--This one converts the slot (1-7) to actual banks (1-3 for primaries, 1-4 for secondaries)
 function WeaponSelectController:ConvertBankSlotToBank(ship, bank, w_type)
 	local primaryBanks = tb.ShipClasses[ship].numPrimaryBanks
 	local secondaryBanks = tb.ShipClasses[ship].numSecondaryBanks
@@ -1059,6 +1066,28 @@ function WeaponSelectController:ConvertBankSlotToBank(ship, bank, w_type)
 	end
 end
 
+--This one converts the slot (1-7) to actual banks on the specific ship class (1-N where N is the last secondary)
+function WeaponSelectController:ConvertBankSlotToBankIndex(ship, bank, w_type)
+	local primaryBanks = tb.ShipClasses[ship].numPrimaryBanks
+	local secondaryBanks = tb.ShipClasses[ship].numSecondaryBanks
+
+	if (bank <= 3) and (w_type == 1) then
+		if bank > primaryBanks then
+			return -1
+		else
+			return bank
+		end
+	elseif (bank <= 7)  and (w_type == 2) then
+		if (bank - 3) > secondaryBanks then
+			return -1
+		else
+			return bank - 3 + primaryBanks
+		end
+	else
+		return -1
+	end
+end
+
 function WeaponSelectController:IsWeaponAllowed(shipIndex, weaponIndex)
 
 	local primaryBanks = tb.ShipClasses[shipIndex].numPrimaryBanks
@@ -1066,9 +1095,9 @@ function WeaponSelectController:IsWeaponAllowed(shipIndex, weaponIndex)
 	local actualBank = nil
 	
 	if tb.WeaponClasses[weaponIndex]:isPrimary() then
-		actualBank = self:ConvertBankSlotToBank(shipIndex, self.activeSlot, 1)
+		actualBank = self:ConvertBankSlotToBankIndex(shipIndex, self.activeSlot, 1)
 	else
-		actualBank = self:ConvertBankSlotToBank(shipIndex, self.activeSlot, 2)
+		actualBank = self:ConvertBankSlotToBankIndex(shipIndex, self.activeSlot, 2)
 	end
 
 	if actualBank == -1 then
@@ -1127,8 +1156,9 @@ function WeaponSelectController:CopyToWing(element)
 									w_type = 1
 								end
 								local actualBank = self:ConvertBankSlotToBank(targetShip, i, w_type)
+								local actualBankIdx = self:ConvertBankSlotToBankIndex(targetShip, i, w_type)
 								--Can that bank accept the weapon?
-								if tb.ShipClasses[targetShip]:isWeaponAllowedOnShip(weapon, actualBank) then
+								if tb.ShipClasses[targetShip]:isWeaponAllowedOnShip(weapon, actualBankIdx) then
 									--Get the capacity the bank can hold of the source weapon
 									local capacity = self:GetWeaponAmount(targetShip, weapon, actualBank)
 									--Do we have that much in the pool?
@@ -1267,6 +1297,17 @@ function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 		--If the slot can't accept the weapon then abort!
 		if not self:IsWeaponAllowed(slotShip, weaponIndex) then
 			self.replace = nil
+			text = ba.XSTR("That weapon slot can't accept that weapon type", -1)
+			local title = ""
+			local buttons = {}
+			buttons[1] = {
+				b_type = dialogs.BUTTON_TYPE_POSITIVE,
+				b_text = ba.XSTR("Okay", -1),
+				b_value = "",
+				b_keypress = string.sub(ba.XSTR("Ok", -1), 1, 1)
+			}
+			
+			self:Show(text, title, buttons)
 			return
 		end
 		
@@ -1344,6 +1385,17 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 		--If the slot can't accept the weapon then abort!
 		if not self:IsWeaponAllowed(slotShip, slotWeapon) then
 			self.replace = nil
+			text = ba.XSTR("That weapon slot can't accept that weapon type", -1)
+			local title = ""
+			local buttons = {}
+			buttons[1] = {
+				b_type = dialogs.BUTTON_TYPE_POSITIVE,
+				b_text = ba.XSTR("Okay", -1),
+				b_value = "",
+				b_keypress = string.sub(ba.XSTR("Ok", -1), 1, 1)
+			}
+			
+			self:Show(text, title, buttons)
 			return
 		end
 		
@@ -1445,6 +1497,10 @@ function WeaponSelectController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
 	currentDialog = true
+	modelDraw.save = modelDraw.class
+	modelDraw.class = nil
+	modelDraw.OverheadSave = modelDraw.OverheadClass
+	modelDraw.OverheadClass = nil
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -1455,6 +1511,10 @@ function WeaponSelectController:Show(text, title, buttons)
 		end
 		dialog:show(self.document.context)
 		:continueWith(function(response)
+			modelDraw.class = modelDraw.save
+			modelDraw.save = nil
+			modelDraw.OverheadClass = modelDraw.OverheadSave
+			modelDraw.OverheadSave = nil
         --do nothing
     end)
 	-- Route input to our context until the user dismisses the dialog box.

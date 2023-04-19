@@ -1,4 +1,5 @@
 local class = require("class")
+local utils = require("utils")
 
 local AbstractBriefingController = require("briefingCommon")
 
@@ -63,7 +64,10 @@ function CommandBriefingController:go_to_stage(stage_idx)
     local aniWrapper = self.document:GetElementById("cmd_anim")
     if #stage.AniFilename > 0 then
         local aniEl = self.document:CreateElement("ani")
-        aniEl:SetAttribute("src", stage.AniFilename)
+
+		if utils.animExists(stage.AniFilename) then
+			aniEl:SetAttribute("src", stage.AniFilename)
+		end
 
         aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
     else

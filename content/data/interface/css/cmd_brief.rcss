@@ -39,7 +39,7 @@ div#cmd_text
 	overflow: scroll;
 	height: 75%;
 	/*font-size: 15px;*/
-	line-height: 50%;
+	line-height: 90%;
 }
 
 div#cmd_wrapper

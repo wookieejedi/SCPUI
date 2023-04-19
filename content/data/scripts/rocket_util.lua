@@ -124,7 +124,7 @@ function M.set_briefing_text(parent, brief_text, recommendation)
             -- In HTML mode, we just use the text unescaped as the inner RML
             paragraph.inner_rml = line
         else
-            add_line_elements(document, paragraph, line, defaultColorTag, colorTags)
+            add_line_elements(document, paragraph, ba.replaceVariables(line), defaultColorTag, colorTags)
         end
 
         parent:AppendChild(paragraph)

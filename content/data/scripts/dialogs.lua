@@ -34,9 +34,6 @@ local function initialize_buttons(document, properties, finish_func)
 		local str = v.text
 		
 		if v.keypress ~= nil then
-		
-			local s1 = ""
-			local s2 = ""
 
 			--find the uppercase letter if it exists
 			local s, e = string.find(str, string.upper(v.keypress))

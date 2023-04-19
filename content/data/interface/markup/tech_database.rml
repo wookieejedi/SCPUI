@@ -10,7 +10,7 @@
 			controller = require("tech_database")()
 		</script>
 	</head>
-	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onmouseup="controller:mouse_up(element,event)" onunload="controller:unload(); controller = nil">
 		<div id=top_panel_wrapper>
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
@@ -71,7 +71,7 @@
 				<img src="tech-room-list-window.png"></img>
 			</div>
 			<div id=tech_view_wrapper>
-				<div id=tech_view>
+				<div id=tech_view onmousemove="controller:mouse_move(element, event)" onmousedown="controller:mouse_down(element, event)">
 				</div>
 				<div id=ship_select>
 					<div id=button_wrapper>

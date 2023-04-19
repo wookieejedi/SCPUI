@@ -5,9 +5,9 @@ $On Game Init:
 
 rocketUiIcons = {}
 
-function RocketUiSystem:setIconFrames(item, is_ship)
+local async_util = require("async_util")
 
-	ba.print("RocketUI is generating an icon for " .. item .. "\n")
+function RocketUiSystem:setIconFrames(item, is_ship)
 	
 	local ship3d, shipEffect, shipicon3d = ui.ShipWepSelect.get3dShipChoices()
 	local weapon3d, weaponEffect, weaponicon3d = ui.ShipWepSelect.get3dWeaponChoices()
@@ -98,60 +98,181 @@ function RocketUiSystem:setIconFrames(item, is_ship)
 
 end
 
-]
+function RocketUiSystem:genIcons()
 
-$On State About To End: [
+	ba.print("RocketUI is starting generation of ship and weapon loadout icons!\n")
+	
+	local yieldTS = time.getCurrentTime()
 
-if RocketUiSystem.initIcons then
-	return
-end
-
-local validStates = {
-	"GS_STATE_BRIEFING",
-	"GS_STATE_FICTION_VIEWER",
-	"GS_STATE_CMD_BRIEF",
-	"GS_STATE_RED_ALERT"
-}
-
-local continueLoad = false
-
-for i = 1, #validStates do
-	if validStates[i] == hv.NewState.Name then
-		continueLoad = true
+	if RocketUiSystem.initIcons == true then
+		return
 	end
-end
 
-if not continueLoad then
-	return
-end
+	for i = 1, #tb.WeaponClasses do
 
-for i = 1, #tb.ShipClasses do
+		v = tb.WeaponClasses[i]
 
-	v = tb.ShipClasses[i]
-
-	if v:hasCustomData() then
-		if v.CustomData["PlayerShip"] == "true" then
-			RocketUiSystem:setIconFrames(v.Name, true)
+		if v:hasCustomData() then
+			if v.CustomData["PlayerWeapon"] == "true" then
+				RocketUiSystem:setIconFrames(v.Name, false)
+				 if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
+                    yieldTS = time.getCurrentTime()
+                    async.await(async.yield())
+                    RocketUiSystem:drawSplash()
+                end
+			end
 		end
+
 	end
+	
+	--switch to the second splash image
+	RocketUiSystem.splash.i = 2
 
-end
+	for i = 1, #tb.ShipClasses do
 
-for i = 1, #tb.WeaponClasses do
+		v = tb.ShipClasses[i]
 
-	v = tb.WeaponClasses[i]
-
-	if v:hasCustomData() then
-		if v.CustomData["PlayerWeapon"] == "true" then
-			RocketUiSystem:setIconFrames(v.Name, false)
+		if v:hasCustomData() then
+			if v.CustomData["PlayerShip"] == "true" then
+				RocketUiSystem:setIconFrames(v.Name, true)
+				if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
+                    yieldTS = time.getCurrentTime()
+                    async.await(async.yield())
+                    RocketUiSystem:drawSplash()
+                end
+			end
 		end
+
 	end
+
+	ba.print("RocketUI successfully generated ship and weapon loadout icons!\n")
+
+	gr.freeAllModels()
+	
+	RocketUiSystem.initIcons = true
+	
+	io.setCursorHidden(false)
+end
+
+function RocketUiSystem:prepareSplash()
+
+	RocketUiSystem.splash = {}
+	RocketUiSystem.splash.img = {}
+	
+	--first splash image
+	local file = "fsolua.png"
+	
+	--screen center coords
+	local x = gr.getScreenWidth() / 2
+	local y = gr.getScreenHeight() / 2
+	
+	--scale the image
+	local scale = math.min((gr.getScreenWidth() * 0.5)/gr.getImageWidth(file), (gr.getScreenHeight() * 0.5)/gr.getImageHeight(file))
+	
+	local w = gr.getImageWidth(file) * scale
+	local h = gr.getImageHeight(file) * scale
+	
+	--save the first image
+	RocketUiSystem.splash.img[1] = {}
+	RocketUiSystem.splash.img[1].File = file
+	RocketUiSystem.splash.img[1].X = x
+	RocketUiSystem.splash.img[1].Y = y
+	RocketUiSystem.splash.img[1].W = w
+	RocketUiSystem.splash.img[1].H = h
+	
+	--second splash image
+	file = "SCPUI.png"
+	
+	--screen center coords
+	x = gr.getScreenWidth() / 2
+	y = gr.getScreenHeight() / 2
+	
+	--scale the image
+	scale = math.min((gr.getScreenWidth() * 0.8)/gr.getImageWidth(file), (gr.getScreenHeight() * 0.8)/gr.getImageHeight(file))
+	
+	w = gr.getImageWidth(file) * scale
+	h = gr.getImageHeight(file) * scale
+	
+	--save the second image
+	RocketUiSystem.splash.img[2] = {}
+	RocketUiSystem.splash.img[2].File = file
+	RocketUiSystem.splash.img[2].X = x
+	RocketUiSystem.splash.img[2].Y = y
+	RocketUiSystem.splash.img[2].W = w
+	RocketUiSystem.splash.img[2].H = h
+	
+	local text = "Loading"
+	local tw = gr.getStringWidth(text)
+	
+	--save the text data
+	RocketUiSystem.splash.Text = text
+	RocketUiSystem.splash.TX = x - (tw / 2)
+	RocketUiSystem.splash.TY = h + (h * 0.01)
+	RocketUiSystem.splash.TW = tw
+	RocketUiSystem.splash.F = 1
+	
+	--start with the first image
+	RocketUiSystem.splash.i = 1
 
 end
 
-ba.print("RocketUI successfully generated ship and weapon loadout icons!\n")
+function RocketUiSystem:drawSplash()
 
-RocketUiSystem.initIcons = true
+	io.setCursorHidden(true)
+
+	gr.clearScreen(0, 0, 0, 255)
+	
+	--save the current color and set to white
+	local r, g, b, a = gr.getColor()
+	gr.setColor(255, 255, 255, 255)
+	
+	--calculate the number of dots to append
+	local dots = "."
+	if RocketUiSystem.splash.F == 1 then
+		RocketUiSystem.splash.F = 2
+	elseif RocketUiSystem.splash.F == 2 then
+		dots = ".."
+		RocketUiSystem.splash.F = 3
+	else
+		dots = "..."
+		RocketUiSystem.splash.F = 1
+	end
+	
+	local img = RocketUiSystem.splash.i
+	
+	local file = RocketUiSystem.splash.img[img].File
+	local x = RocketUiSystem.splash.img[img].X
+	local y = RocketUiSystem.splash.img[img].Y
+	local w = RocketUiSystem.splash.img[img].W
+	local h = RocketUiSystem.splash.img[img].H
+	
+	local text = RocketUiSystem.splash.Text .. dots
+	
+	--draw!
+	gr.drawImageCentered(file, x, y, w, h)
+	gr.drawString(text, RocketUiSystem.splash.TX, RocketUiSystem.splash.TY)
+	
+	--reset the color back to what it was.
+	gr.setColor(r, g, b, a)
+
+end
+
+function RocketUiSystem:firstRun()
+	RocketUiSystem:prepareSplash()
+	
+	RocketUiSystem:drawSplash()
+	
+	RocketUiSystem.initIcons = false
+    async.awaitRunOnFrame(function()
+        async.await(async.yield())
+        RocketUiSystem:genIcons()
+    end)
+
+end
+
+if RocketUiSystem.initIcons == nil then
+        RocketUiSystem:firstRun()
+    end
 
 ]
 

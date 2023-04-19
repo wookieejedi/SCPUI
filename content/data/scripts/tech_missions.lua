@@ -1,5 +1,6 @@
 local dialogs = require("dialogs")
 local class = require("class")
+local async_util = require("async_util")
 
 local TechMissionsController = class()
 
@@ -161,6 +162,56 @@ function TechMissionsController:ChangeSection(section)
 	
 end
 
+function TechMissionsController:ScrollEntry(element)
+	if self.scrollingEl == element then
+		if self.scrollingEl.scroll_left < math.floor(self.scrollingEl.scroll_width -  self.scrollingEl.client_width) then
+			if self.scrollTimer == nil then
+				self.scrollTimer = 15
+			elseif self.scrollTimer > 0 then
+				self.scrollTimer = self.scrollTimer - 1
+			else
+				self.scrollingEl.scroll_left = self.scrollingEl.scroll_left + 0.5
+				self.scrollTimer = -1
+			end
+		else
+			if self.scrollTimer ~= nil then
+				if self.scrollTimer == -1 then
+					self.scrollTimer = 50
+				elseif self.scrollTimer > 0 then
+					self.scrollTimer = self.scrollTimer - 1
+				else
+					self.scrollingEl.scroll_left = 0
+					self.scrollTimer = nil
+				end
+			end
+		end
+		
+		async.run(function()
+			async.await(async_util.wait_for(0.05))
+			self:ScrollEntry(element)
+		end, async.OnFrameExecutor)
+	end
+end
+
+function TechMissionsController:StartScrollEntry(element)
+	if element ~= nil and element.inner_rml ~= self.scrollingEl then
+		if self.scrollingEl ~= nil then
+			self.scrollingEl.scroll_left = 0
+		end
+		self.scrollTimer = nil
+		self.scrollingEl = element
+		self:ScrollEntry(element)
+	end
+end
+
+function TechMissionsController:ResetEntry(element)
+	if element ~= nil then
+		self.scrollTimer = nil
+		self.scrollingEl = nil
+		element.scroll_left = 0
+	end
+end
+
 function TechMissionsController:CreateEntryItem(entry, index)
 
 	self.Counter = self.Counter + 1
@@ -174,6 +225,12 @@ function TechMissionsController:CreateEntryItem(entry, index)
 	li_el:SetClass("button_1", true)
 	li_el:AddEventListener("click", function(_, _, _)
 		self:SelectEntry(entry)
+	end)
+	li_el:AddEventListener("mouseover", function(_, _, _)
+		self:StartScrollEntry(li_el.first_child.next_sibling.next_sibling.next_sibling)
+	end)
+	li_el:AddEventListener("mouseout", function(_, _, _)
+		self:ResetEntry(li_el.first_child.next_sibling.next_sibling.next_sibling)
 	end)
 	self.visibleList[self.Counter] = entry
 	entry.key = li_el.id
