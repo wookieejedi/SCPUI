@@ -89,6 +89,10 @@ function utils.saveOptionsToFile(source, data, toPlayers)
 end
 
 function utils.animExists(name)
+	--remove extension if it's included
+	name = name:match("(.+)%..+")
+	
+	--now see if it exists
 	local theseExts = {".png", ".ani", ".eff"}
 	for i = 1, #theseExts do
 		local thisFile = name .. theseExts[i]
