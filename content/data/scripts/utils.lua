@@ -90,12 +90,16 @@ end
 
 function utils.animExists(name)
 	--remove extension if it's included
-	name = name:match("(.+)%..+")
+	local file = name:match("(.+)%..+")
+	
+	if file == nil then
+		file = name
+	end
 	
 	--now see if it exists
 	local theseExts = {".png", ".ani", ".eff"}
 	for i = 1, #theseExts do
-		local thisFile = name .. theseExts[i]
+		local thisFile = file .. theseExts[i]
 		if cf.fileExists(thisFile, "", true) then
 			return true
 		end
