@@ -32,19 +32,6 @@ function GamePausedController:initialize(document)
 		self.document:GetElementById("main_background"):SetClass("h2-5", true)
 	end
 	
-	---Load background based on campaign for BtA - Mjn
-	local campaignfilename = ba.getCurrentPlayer():getCampaignFilename()
-	
-	if campaignfilename == "bta1_m" then
-		bgclass = "main_bg_bta1"
-	elseif campaignfilename == "bta2_m" then
-		bgclass = "main_bg_bta2"
-	else
-		bgclass = "general_bg"
-	end
-	
-	self.document:GetElementById("main_background"):SetClass(bgclass, true)
-	
 	local main_bg = self.document:GetElementById("screenrender")
 	local imgEl = self.document:CreateElement("img")
 	main_bg:AppendChild(imgEl)
