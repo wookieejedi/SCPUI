@@ -103,6 +103,7 @@ function RocketUiSystem:genIcons()
 	ba.print("RocketUI is starting generation of ship and weapon loadout icons!\n")
 	
 	local yieldTS = time.getCurrentTime()
+	local splashTime = time.getCurrentTime()
 
 	if RocketUiSystem.initIcons == true then
 		return
@@ -124,9 +125,19 @@ function RocketUiSystem:genIcons()
 		end
 
 	end
+
+	--make sure the splash logo is shown for at least 2 seconds
+	while ((splashTime - yieldTS):getSeconds() * -1) < 2 do
+		if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
+			yieldTS = time.getCurrentTime()
+			async.await(async.yield())
+			RocketUiSystem:drawSplash()
+		end
+	end
 	
 	--switch to the second splash image
 	RocketUiSystem.splash.i = 2
+	splashTime = time.getCurrentTime()
 
 	for i = 1, #tb.ShipClasses do
 
@@ -143,6 +154,15 @@ function RocketUiSystem:genIcons()
 			end
 		end
 
+	end
+	
+	--make sure the splash logo is shown for at least 2 seconds
+	while ((splashTime - yieldTS):getSeconds() * -1) < 2 do
+		if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
+			yieldTS = time.getCurrentTime()
+			async.await(async.yield())
+			RocketUiSystem:drawSplash()
+		end
 	end
 
 	ba.print("RocketUI successfully generated ship and weapon loadout icons!\n")
