@@ -748,6 +748,8 @@ function ControlConfigController:global_keydown(_, event)
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
 		ui.ControlConfig.cancelBinding()
 		ui.ControlConfig.closeControlConfig()
+	elseif event.parameters.key_identifier == rocket.key_identifier.Z and event.parameters.ctrl_key == 1 then
+		self:undoChange()
 	end
 end
 
