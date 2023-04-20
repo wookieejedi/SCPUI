@@ -1,6 +1,7 @@
 local dialogs = require("dialogs")
 local class = require("class")
 local async_util = require("async_util")
+local utils = require("utils")
 
 local TechMissionsController = class()
 
@@ -43,7 +44,12 @@ function TechMissionsController:initialize(document)
 	if RocketUiSystem.missionSection ~= nil then
 		newSection = RocketUiSystem.missionSection
 	else
-		newSection = 1
+		local uidata = utils.loadOptionsFromFile("scpui_sim_room_choice", true)
+		if uidata == nil then
+			newSection = 1
+		else
+			newSection = uidata
+		end
 	end
 	
 	self.SelectedSection = nil
@@ -89,8 +95,18 @@ function TechMissionsController:ChangeSection(section)
 	self.sectionIndex = section
 	RocketUiSystem.missionSection = section
 
-	if section == 1 then section = "single" end
-	if section == 2 then section = "campaign" end
+	if section == 1 then 
+		section = "single"
+	elseif section == 2 then
+		section = "campaign"
+	else
+		section = "single"
+		self.sectionIndex = 1
+		RocketUiSystem.missionSection = 1
+	end
+	
+	--save the choice to the player file
+	utils.saveOptionsToFile("scpui_sim_room_choice", self.sectionIndex, true)
 	
 	self.show_all = false
 	self.Counter = 0
