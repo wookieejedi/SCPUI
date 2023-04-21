@@ -32,8 +32,8 @@ end
 RocketUiSystem.context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
 
 function RocketUiSystem:init()
-    for _, v in ipairs(cf.listFiles("data/config", "*-ui.cfg")) do
-        parse.readFileText(v, "data/config")
+    for _, v in ipairs(cf.listFiles("data/tables", "*-ui.tbm")) do
+        parse.readFileText(v, "data/tables")
 
         parse.requiredString("#State Replacement")
 
