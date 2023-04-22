@@ -55,6 +55,7 @@ if ((hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT") and (hv.NewState.Name
 	
 	--load defaults if we have bad data
 	if type(modOptionValues) ~= "table" then
+		ba.print("SCPUI: Got bad modOptionValues data! Loading defaults!")
 		modOptionValues = {}
 		for i, v in ipairs(RocketUiSystem.ModOptions) do
 			modOptionValues[v.Key] = v.Value
