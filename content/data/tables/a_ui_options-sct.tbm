@@ -52,7 +52,9 @@ if ((hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT") and (hv.NewState.Name
 	modOptionValues = {}
 	local utils = require('utils')
 	modOptionValues = utils.loadOptionsFromFile()
-	if modOptionValues == nil then
+	
+	--load defaults if we have bad data
+	if type(modOptionValues) ~= "table" then
 		modOptionValues = {}
 		for i, v in ipairs(RocketUiSystem.ModOptions) do
 			modOptionValues[v.Key] = v.Value
