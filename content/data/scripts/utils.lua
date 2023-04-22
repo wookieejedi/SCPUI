@@ -82,10 +82,29 @@ function utils.saveOptionsToFile(source, data, toPlayers)
 	end
   
 	config[ba.getCurrentPlayer():getName()][mod][source] = data
+	
+	config = utils.cleanPilotsFromSaveData(config)
   
 	file = cf.openFile('mod_options.cfg', 'w', location)
 	file:write(json.encode(config))
 	file:close()
+end
+
+function utils.cleanPilotsFromSaveData(data)
+	
+	--get the pilots list
+	local pilots = ui.PilotSelect.enumeratePilots()
+	
+	local cleanData = {}
+	
+	-- for each existing pilot, keep the data
+	for _, v in ipairs(pilots) do
+		if data[v] ~= nil then
+			cleanData[v] = data[v]
+		end
+    end
+
+	return cleanData
 end
 
 function utils.animExists(name)

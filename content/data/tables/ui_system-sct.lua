@@ -32,37 +32,44 @@ end
 RocketUiSystem.context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
 
 function RocketUiSystem:init()
-    for _, v in ipairs(cf.listFiles("data/config", "*-ui.cfg")) do
-        parse.readFileText(v, "data/config")
-
-        parse.requiredString("#State Replacement")
-
-        while parse.optionalString("$State:") do
-            local state = parse.getString()
-
-			if state == "GS_STATE_SCRIPTING" then
-				parse.requiredString("+Substate:")
-				local state = parse.getString()
-				parse.requiredString("+Markup:")
-				local markup = parse.getString()
-				ba.print("SCPUI found definition for script substate " .. state .. " : " .. markup .. "\n")
-				self.replacements[state] = {
-					markup = markup
-				}
-			else
-				parse.requiredString("+Markup:")
-				local markup = parse.getString()
-				ba.print("SCPUI found definition for game state " .. state .. " : " .. markup .. "\n")
-				self.replacements[state] = {
-					markup = markup
-				}
-			end
-        end
-
-        parse.requiredString("#End")
-
-        parse.stop()
+	if cf.fileExists("scpui.tbl") then
+        self:parseTable("scpui.tbl")
     end
+    for _, v in ipairs(cf.listFiles("data/tables", "*-ui.tbm")) do
+        self:parseTable(v)
+    end
+end
+
+function RocketUiSystem:parseTable(data)
+	parse.readFileText(data, "data/tables")
+
+	parse.requiredString("#State Replacement")
+
+	while parse.optionalString("$State:") do
+		local state = parse.getString()
+
+		if state == "GS_STATE_SCRIPTING" then
+			parse.requiredString("+Substate:")
+			local state = parse.getString()
+			parse.requiredString("+Markup:")
+			local markup = parse.getString()
+			ba.print("SCPUI found definition for script substate " .. state .. " : " .. markup .. "\n")
+			self.replacements[state] = {
+				markup = markup
+			}
+		else
+			parse.requiredString("+Markup:")
+			local markup = parse.getString()
+			ba.print("SCPUI found definition for game state " .. state .. " : " .. markup .. "\n")
+			self.replacements[state] = {
+				markup = markup
+			}
+		end
+	end
+
+	parse.requiredString("#End")
+
+	parse.stop()
 end
 
 function RocketUiSystem:getDef(state)
