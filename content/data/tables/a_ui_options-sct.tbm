@@ -48,15 +48,17 @@ end
 $On State End:
 [
 if ((hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT") and (hv.NewState.Name == "GS_STATE_MAIN_MENU")) or hv.OldState.Name == "GS_STATE_BARRACKS_MENU" then
-	--Here we load the mod options save data for the selected player	
+	--Here we load the mod options save data for the selected player
+	modOptionValues = {}
 	local utils = require('utils')
-	modOptionsValues = utils.loadOptionsFromFile("options", true)
-	if modOptionsValues == nil then
-		modOptionsValues = {}
+	modOptionValues = utils.loadOptionsFromFile()
+	if modOptionValues == nil then
+		ba.warning("got here")
+		modOptionValues = {}
 		for i, v in ipairs(RocketUiSystem.ModOptions) do
 			modOptionValues[v.Key] = v.Value
 		end
-		utils.saveOptionsToFile("options", modOptionValues, true)
+		utils.saveOptionsToFile(modOptionValues)
 	end
 end
 

@@ -2,15 +2,11 @@ local utils = {}
 
 utils.table = {}
 
-function utils.loadOptionsFromFile(source, toPlayers)
+function utils.loadOptionsFromFile()
 
 	local json = require('dkjson')
   
-	if toPlayers then
-		location = 'data/players'
-	else
-		location = 'data/config'
-	end
+	local location = 'data/players'
   
 	local file = nil
 	local config = {}
@@ -35,25 +31,17 @@ function utils.loadOptionsFromFile(source, toPlayers)
 	end
 	
 	if not config[ba.getCurrentPlayer():getName()][mod] then
-		config[ba.getCurrentPlayer():getName()][mod] = {}
-	end
-  
-	if not config[ba.getCurrentPlayer():getName()][mod][source] then
 		return nil
 	else
-		return config[ba.getCurrentPlayer():getName()][mod][source]
+		return config[ba.getCurrentPlayer():getName()][mod]
 	end
 end
 
-function utils.saveOptionsToFile(source, data, toPlayers)
+function utils.saveOptionsToFile(data)
 
 	local json = require('dkjson')
   
-	if toPlayers then
-		location = 'data/players'
-	else
-		location = 'data/config'
-	end
+	local location = 'data/players'
   
 	local file = nil
 	local config = {}
@@ -77,11 +65,7 @@ function utils.saveOptionsToFile(source, data, toPlayers)
 		ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
 	end
 	
-	if not config[ba.getCurrentPlayer():getName()][mod] then
-		config[ba.getCurrentPlayer():getName()][mod] = {}
-	end
-  
-	config[ba.getCurrentPlayer():getName()][mod][source] = data
+	config[ba.getCurrentPlayer():getName()][mod] = data
 	
 	config = utils.cleanPilotsFromSaveData(config)
   

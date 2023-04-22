@@ -1,4 +1,4 @@
-local utils    = require("utils")
+local utils = require('utils')
 local tblUtil  = utils.table
 
 local templates = require("rocket_templates")
@@ -1051,8 +1051,7 @@ function OptionsController:acceptChanges(state)
 	modOptionValues = customValues
 
 	--Save mod options to file
-	local utils = require('utils')
-	utils.saveOptionsToFile("options", modOptionValues, true)
+	utils.saveOptionsToFile(modOptionValues)
 	
 	--Save mod options to global file for recalling before a player is selected
 	saveFilename = "mod_options_global.cfg"
