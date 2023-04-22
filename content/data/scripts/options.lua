@@ -66,7 +66,7 @@ function DataSourceWrapper:init(option)
 			self.values = {}
 			
 			for i = 1, #option.ValidValues do
-				local thisVal = utils.xstr(option.DisplayNames[option.ValidValues[i]])
+				local thisVal = option.DisplayNames[option.ValidValues[i]]
 				table.insert(self.values, thisVal)
 			end
 		else
@@ -172,7 +172,7 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 				if index > 5 then index = 5 end
 				if index < 1 then index = 1 end
 				if option.DisplayNames then
-					value_el.inner_rml = utils.xstr(option.DisplayNames[index])
+					value_el.inner_rml = option.DisplayNames[index]
 				else
 					value_el.inner_rml = index
 				end
@@ -478,8 +478,8 @@ function OptionsController:createBinaryOptionElement(option, vals, parent_id, on
     title_el.inner_rml   = option.Title
 
 	--OR is for custom options built from the CFG file
-    text_left.inner_rml  = vals[1].Display or utils.xstr(option.DisplayNames[vals[1]])
-    text_right.inner_rml = vals[2].Display or utils.xstr(option.DisplayNames[vals[2]])
+    text_left.inner_rml  = vals[1].Display or option.DisplayNames[vals[1]]
+    text_right.inner_rml = vals[2].Display or option.DisplayNames[vals[2]]
 
     self:init_binary_element(btn_left, btn_right, option, vals, onchange_func, actual_el)
 
@@ -502,7 +502,7 @@ function OptionsController:init_selection_element(element, option, vals, change_
 		--Find the index of the translated value
 		local count = 1
 		for i = 1, #option.ValidValues do
-			if option.Value == utils.xstr(option.DisplayNames[option.ValidValues[i]]) then
+			if option.Value == option.DisplayNames[option.ValidValues[i]] then
 				count = i
 				break
 			end
@@ -528,7 +528,7 @@ function OptionsController:init_selection_element(element, option, vals, change_
 				--Find the index of the translated value
 				local count = 1
 				for i = 1, #option.ValidValues do
-					if event.parameters.value == utils.xstr(option.DisplayNames[option.ValidValues[i]]) then
+					if event.parameters.value == option.DisplayNames[option.ValidValues[i]] then
 						count = i
 						break
 					end
@@ -955,13 +955,6 @@ end
 function OptionsController:initialize_prefs_options()
     local current_column = 1
 	
-	local modOptions = {}
-	
-	--Load the custom options file
-	if cf.fileExists('mod-options.cfg', 'data/config', true) then
-		modOptions = utils.loadConfig('mod-options.cfg')
-	end
-	
 	--Handle built-in preferences options
 	for _, option in ipairs(self.category_options.prefs) do
 		local el = self:createOptionElement(option, string.format("prefs_column_%d", current_column))
@@ -979,9 +972,9 @@ function OptionsController:initialize_prefs_options()
 	end
 	
 	--Handle mod custom preferences options
-    for _, option in ipairs(modOptions) do
+    for _, option in ipairs(RocketUiSystem.ModOptions) do
 		option.Category = "Custom"
-		option.Title = utils.xstr(option.Title)
+		option.Title = option.Title
 		local el = self:createCustomOptionElement(option, string.format("prefs_column_%d", option.Column))
 
 		if option.Column == 2 or option.Column == 3 then
@@ -1025,14 +1018,10 @@ function OptionsController:initialize(document)
         end
 		
 		--Creates data sources for custom dropdowns
-		--Load the custom options file
-		if cf.fileExists('mod-options.cfg', 'data/config', true) then
-			local customOptions = utils.loadConfig('mod-options.cfg')
-			for i, v in ipairs(customOptions) do
-				v.Category = "Custom"
-				if (v.Type == "Multi") or (v.Type == "Binary") then
-					self.sources[v.Key] = createOptionSource(v)
-				end
+		for i, v in ipairs(RocketUiSystem.ModOptions) do
+			v.Category = "Custom"
+			if (v.Type == "Multi") or (v.Type == "Binary") then
+				self.sources[v.Key] = createOptionSource(v)
 			end
 		end
 
@@ -1062,11 +1051,6 @@ function OptionsController:acceptChanges(state)
 	modOptionValues = customValues
 
 	--Save mod options to file
-	--[[saveFilename = "mod_options_" .. ba.getCurrentPlayer():getName():sub(1,20) .. ".cfg"
-	local json = require('dkjson')
-    local file = cf.openFile(saveFilename, 'w', 'data/config')
-    file:write(json.encode(modOptionValues))
-    file:close()]]--
 	local utils = require('utils')
 	utils.saveOptionsToFile("options", modOptionValues, true)
 	
@@ -1477,7 +1461,7 @@ function OptionsController:ModDefault(element)
 					if option.strings then
 						if index > 5 then index = 5 end
 						if index < 1 then index = 1 end
-						parent.first_child.first_child.next_sibling.next_sibling.inner_rml = utils.xstr(option.strings[index])
+						parent.first_child.first_child.next_sibling.next_sibling.inner_rml = option.strings[index]
 					else
 						--value_el.inner_rml = index
 					end
@@ -1544,7 +1528,7 @@ function OptionsController:ModCustom(element)
 						if option.strings then
 							if index > 5 then index = 5 end
 							if index < 1 then index = 1 end
-							parent.first_child.first_child.next_sibling.next_sibling.inner_rml = utils.xstr(option.strings[index])
+							parent.first_child.first_child.next_sibling.next_sibling.inner_rml = option.strings[index]
 						else
 							--value_el.inner_rml = index
 						end

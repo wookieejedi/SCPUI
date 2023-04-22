@@ -107,6 +107,229 @@ function utils.cleanPilotsFromSaveData(data)
 	return cleanData
 end
 
+function utils.parseOptions(data)
+
+	parse.readFileText(data, "data/tables")
+
+	parse.requiredString("#Custom Options")
+	
+	while parse.optionalString("$Name:") do
+		local entry = {}
+		
+		entry.Title = parse.getString()
+		
+		if parse.optionalString("+Description:") then
+			entry.Description = parse.getString()
+		end
+		
+		parse.requiredString("+Key:")
+		entry.Key = parse.getString()
+		--Create warning if Key already exists for another option here
+		
+		parse.requiredString("+Type:")
+		entry.Type = utils.verifyParsedType(parse.getString())
+		
+		if parse.optionalString("+Column:") then
+			entry.Column = parse.getInt()
+			if entry.Column < 1 then
+				entry.Column = 1
+			end
+			if entry.Column > 4 then
+				entry.Column = 4
+			end
+		else
+			entry.Column = 1
+		end
+		
+		if entry.Type ~= "Header" then
+		
+			local valCount = 0
+			local nameCount = 0
+		
+			if entry.Type == "Binary" or entry.Type == "Multi" then
+				parse.requiredString("+Valid Values")
+				
+				entry.ValidValues = {}
+				
+				while parse.optionalString("+Val:") do
+					local val = parse.getString()
+					local save = true
+					
+					if val ~= nil then
+						valCount = valCount + 1
+						if entry.Type == "Binary" and valCount > 2 then
+							parse.displayMessage("Option " .. entry.Title .. " is Binary but has more than 2 values. The rest will be ignored!", false)
+							save = false
+						end
+						
+						if entry.Type == "FivePoint" and valCount > 5 then
+							parse.displayMessage("Option " .. entry.Title .. " is FivePoint but has more than 5 values. The rest will be ignored!", false)
+							save = false
+						end
+						
+						if save then
+							entry.ValidValues[valCount] = val
+						end
+					end
+				end
+				
+				if entry.Type == "Binary" and valCount < 2 then
+					parse.displayMessage("Option " .. entry.Title .. " is Binary but only has " .. valCount .. "values! Binary types must have exactly 2 values.", true)
+				end
+				
+				if entry.Type == "Multi" and valCount < 2 then
+					parse.displayMessage("Option " .. entry.Title .. " is Multi but only has " .. valCount .. "values! Multi types must have at least 2 values.", true)
+				end
+				
+				if entry.Type == "FivePoint" and valCount < 5 then
+					parse.displayMessage("Option " .. entry.Title .. " is FivePoint but only has " .. valCount .. "values! FivePoint types must have exactly 5 values.", true)
+				end
+				
+			end
+				
+			if entry.Type == "Binary" or entry.Type == "Multi" or entry.Type == "FivePoint" then
+			
+				parse.requiredString("+Display Names")
+				
+				entry.DisplayNames = {}
+				
+				while parse.optionalString("+Val:") do
+					local val = parse.getString()
+					local save = true
+					
+					if val ~= nil then
+						nameCount = nameCount + 1
+						if entry.Type == "Binary" and nameCount > 2 then
+							parse.displayMessage("Option " .. entry.Title .. " is Binary but has more than 2 display names. The rest will be ignored!", false)
+							save = false
+						end
+						
+						if entry.Type == "FivePoint" and nameCount > 5 then
+							parse.displayMessage("Option " .. entry.Title .. " is FivePoint but has more than 5 display names. The rest will be ignored!", false)
+							save = false
+						end
+						
+						if save then
+							if entry.Type == "FivePoint" then
+								entry.DisplayNames[nameCount] = val
+							else
+								entry.DisplayNames[entry.ValidValues[nameCount]] = val
+							end
+						end
+					end
+				end
+				
+				if entry.Type == "Binary" and nameCount < 2 then
+					parse.displayMessage("Option " .. entry.Title .. " is Binary but only has " .. nameCount .. "display names! Binary types must have exactly 2 display names.", true)
+				end
+				
+				if entry.Type == "Multi" and nameCount < 2 then
+					parse.displayMessage("Option " .. entry.Title .. " is Multi but only has " .. nameCount .. "display names! Multi types must have at least 2 display names.", true)
+				end
+				
+				if entry.Type == "FivePoint" and nameCount < 5 then
+					parse.displayMessage("Option " .. entry.Title .. " is FivePoint but only has " .. nameCount .. "display names! FivePoint types must have exactly 5 display names.", true)
+				end
+				
+				if entry.Type ~= "FivePoint" and valCount ~= nameCount then
+					parse.displayMessage("Option " .. entry.Title .. " has " .. valCount .. " values but only has " .. nameCount .. " display names. There must be one display name for each value!", true)
+				end
+			end
+			
+			if entry.Type == "Range" then
+				parse.requiredString("+Min:")
+				entry.Min = parse.getFloat()
+				
+				if entry.Min < 0 then
+					entry.Min = 0
+				end
+				
+				parse.requiredString("+Max:")
+				entry.Max = parse.getFloat()
+				
+				if entry.Max <= entry.Min then
+					parse.displayMessage("Option " .. entry.Title .. " has a Max value that is less than or equal to its Min value!", true)
+				end
+			end
+			
+			parse.requiredString("+Default Value:")
+			if entry.Type == "Binary" or entry.Type == "Multi" then
+				entry.Value = parse.getString()
+			elseif entry.Type == "Range" then
+				local val = parse.getFloat()
+				if val < entry.Min then
+					val = entry.Min
+				end
+				if val > entry.Max then
+					val = entry.Max
+				end
+				entry.Value = val
+			elseif entry.Type == "FivePoint" or entry.Type == "TenPoint" then
+				local val = parse.getInt()
+				if val < 1 then
+					val = 1
+				end
+				if entry.Type == "FivePoint" and val > 5 then
+					val = 5
+				end
+				if entry.Type == "TenPoint" and val > 10 then
+					val = 10
+				end
+				entry.Value = val
+			end
+			
+			if parse.optionalString("+Force Selector:") then
+				entry.ForceSelector = parse.getBoolean()
+			else
+				entry.ForceSelector = false
+			end
+			
+			if parse.optionalString("+No Default:") then --this needs a better name
+				entry.NoDefault = parse.getBoolean()
+			else
+				entry.NoDefault = false
+			end
+		end
+		
+		table.insert(RocketUiSystem.ModOptions, entry)
+	end
+	
+	parse.requiredString("#End")
+
+	parse.stop()
+
+end
+
+function utils.verifyParsedType(val)
+
+	if string.lower(val) == "header" then
+		return "Header"
+	end
+	
+	if string.lower(val) == "binary" then
+		return "Binary"
+	end
+	
+	if string.lower(val) == "multi" then
+		return "Multi"
+	end
+	
+	if string.lower(val) == "range" then
+		return "Range"
+	end
+	
+	if string.lower(val) == "fivepoint" then
+		return "FivePoint"
+	end
+	
+	if string.lower(val) == "tenpoint" then
+		return "TenPoint"
+	end
+	
+	parse.displayMessage("Option type " .. val .. " is not valid!", true)
+	
+end
+
 function utils.animExists(name)
 	--remove extension if it's included
 	local file = name:match("(.+)%..+")
