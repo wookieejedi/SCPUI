@@ -44,7 +44,7 @@ function TechMissionsController:initialize(document)
 	if RocketUiSystem.missionSection ~= nil then
 		newSection = RocketUiSystem.missionSection
 	else
-		local uidata = utils.loadOptionsFromFile("scpui_sim_room_choice", true)
+		local uidata = modOptionValues.simRoomChoice
 		if uidata == nil then
 			newSection = 1
 		else
@@ -106,7 +106,8 @@ function TechMissionsController:ChangeSection(section)
 	end
 	
 	--save the choice to the player file
-	utils.saveOptionsToFile("scpui_sim_room_choice", self.sectionIndex, true)
+	modOptionValues.simRoomChoice = self.sectionIndex
+	utils.saveOptionsToFile(modOptionValues)
 	
 	self.show_all = false
 	self.Counter = 0
