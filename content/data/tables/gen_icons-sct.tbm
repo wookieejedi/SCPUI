@@ -7,7 +7,7 @@ rocketUiIcons = {}
 
 local async_util = require("async_util")
 
-function RocketUiSystem:setIconFrames(item, is_ship)
+function ScpuiSystem:setIconFrames(item, is_ship)
 	
 	local ship3d, shipEffect, shipicon3d = ui.ShipWepSelect.get3dShipChoices()
 	local weapon3d, weaponEffect, weaponicon3d = ui.ShipWepSelect.get3dWeaponChoices()
@@ -98,14 +98,14 @@ function RocketUiSystem:setIconFrames(item, is_ship)
 
 end
 
-function RocketUiSystem:genIcons()
+function ScpuiSystem:genIcons()
 
 	ba.print("RocketUI is starting generation of ship and weapon loadout icons!\n")
 	
 	local yieldTS = time.getCurrentTime()
 	local splashTime = time.getCurrentTime()
 
-	if RocketUiSystem.initIcons == true then
+	if ScpuiSystem.initIcons == true then
 		return
 	end
 
@@ -115,11 +115,11 @@ function RocketUiSystem:genIcons()
 
 		if v:hasCustomData() then
 			if v.CustomData["PlayerWeapon"] == "true" then
-				RocketUiSystem:setIconFrames(v.Name, false)
+				ScpuiSystem:setIconFrames(v.Name, false)
 				 if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
                     yieldTS = time.getCurrentTime()
                     async.await(async.yield())
-                    RocketUiSystem:drawSplash()
+                    ScpuiSystem:drawSplash()
                 end
 			end
 		end
@@ -131,12 +131,12 @@ function RocketUiSystem:genIcons()
 		if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
 			yieldTS = time.getCurrentTime()
 			async.await(async.yield())
-			RocketUiSystem:drawSplash()
+			ScpuiSystem:drawSplash()
 		end
 	end
 	
 	--switch to the second splash image
-	RocketUiSystem.splash.i = 2
+	ScpuiSystem.splash.i = 2
 	splashTime = time.getCurrentTime()
 
 	for i = 1, #tb.ShipClasses do
@@ -145,11 +145,11 @@ function RocketUiSystem:genIcons()
 
 		if v:hasCustomData() then
 			if v.CustomData["PlayerShip"] == "true" then
-				RocketUiSystem:setIconFrames(v.Name, true)
+				ScpuiSystem:setIconFrames(v.Name, true)
 				if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
                     yieldTS = time.getCurrentTime()
                     async.await(async.yield())
-                    RocketUiSystem:drawSplash()
+                    ScpuiSystem:drawSplash()
                 end
 			end
 		end
@@ -161,7 +161,7 @@ function RocketUiSystem:genIcons()
 		if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
 			yieldTS = time.getCurrentTime()
 			async.await(async.yield())
-			RocketUiSystem:drawSplash()
+			ScpuiSystem:drawSplash()
 		end
 	end
 
@@ -169,15 +169,15 @@ function RocketUiSystem:genIcons()
 
 	gr.freeAllModels()
 	
-	RocketUiSystem.initIcons = true
+	ScpuiSystem.initIcons = true
 	
 	io.setCursorHidden(false)
 end
 
-function RocketUiSystem:prepareSplash()
+function ScpuiSystem:prepareSplash()
 
-	RocketUiSystem.splash = {}
-	RocketUiSystem.splash.img = {}
+	ScpuiSystem.splash = {}
+	ScpuiSystem.splash.img = {}
 	
 	--first splash image
 	local file = "fsolua.png"
@@ -193,12 +193,12 @@ function RocketUiSystem:prepareSplash()
 	local h = gr.getImageHeight(file) * scale
 	
 	--save the first image
-	RocketUiSystem.splash.img[1] = {}
-	RocketUiSystem.splash.img[1].File = file
-	RocketUiSystem.splash.img[1].X = x
-	RocketUiSystem.splash.img[1].Y = y
-	RocketUiSystem.splash.img[1].W = w
-	RocketUiSystem.splash.img[1].H = h
+	ScpuiSystem.splash.img[1] = {}
+	ScpuiSystem.splash.img[1].File = file
+	ScpuiSystem.splash.img[1].X = x
+	ScpuiSystem.splash.img[1].Y = y
+	ScpuiSystem.splash.img[1].W = w
+	ScpuiSystem.splash.img[1].H = h
 	
 	--second splash image
 	file = "SCPUI.png"
@@ -214,29 +214,29 @@ function RocketUiSystem:prepareSplash()
 	h = gr.getImageHeight(file) * scale
 	
 	--save the second image
-	RocketUiSystem.splash.img[2] = {}
-	RocketUiSystem.splash.img[2].File = file
-	RocketUiSystem.splash.img[2].X = x
-	RocketUiSystem.splash.img[2].Y = y
-	RocketUiSystem.splash.img[2].W = w
-	RocketUiSystem.splash.img[2].H = h
+	ScpuiSystem.splash.img[2] = {}
+	ScpuiSystem.splash.img[2].File = file
+	ScpuiSystem.splash.img[2].X = x
+	ScpuiSystem.splash.img[2].Y = y
+	ScpuiSystem.splash.img[2].W = w
+	ScpuiSystem.splash.img[2].H = h
 	
 	local text = "Loading"
 	local tw = gr.getStringWidth(text)
 	
 	--save the text data
-	RocketUiSystem.splash.Text = text
-	RocketUiSystem.splash.TX = x - (tw / 2)
-	RocketUiSystem.splash.TY = h + (h * 0.01)
-	RocketUiSystem.splash.TW = tw
-	RocketUiSystem.splash.F = 1
+	ScpuiSystem.splash.Text = text
+	ScpuiSystem.splash.TX = x - (tw / 2)
+	ScpuiSystem.splash.TY = h + (h * 0.01)
+	ScpuiSystem.splash.TW = tw
+	ScpuiSystem.splash.F = 1
 	
 	--start with the first image
-	RocketUiSystem.splash.i = 1
+	ScpuiSystem.splash.i = 1
 
 end
 
-function RocketUiSystem:drawSplash()
+function ScpuiSystem:drawSplash()
 
 	io.setCursorHidden(true)
 
@@ -248,50 +248,50 @@ function RocketUiSystem:drawSplash()
 	
 	--calculate the number of dots to append
 	local dots = "."
-	if RocketUiSystem.splash.F == 1 then
-		RocketUiSystem.splash.F = 2
-	elseif RocketUiSystem.splash.F == 2 then
+	if ScpuiSystem.splash.F == 1 then
+		ScpuiSystem.splash.F = 2
+	elseif ScpuiSystem.splash.F == 2 then
 		dots = ".."
-		RocketUiSystem.splash.F = 3
+		ScpuiSystem.splash.F = 3
 	else
 		dots = "..."
-		RocketUiSystem.splash.F = 1
+		ScpuiSystem.splash.F = 1
 	end
 	
-	local img = RocketUiSystem.splash.i
+	local img = ScpuiSystem.splash.i
 	
-	local file = RocketUiSystem.splash.img[img].File
-	local x = RocketUiSystem.splash.img[img].X
-	local y = RocketUiSystem.splash.img[img].Y
-	local w = RocketUiSystem.splash.img[img].W
-	local h = RocketUiSystem.splash.img[img].H
+	local file = ScpuiSystem.splash.img[img].File
+	local x = ScpuiSystem.splash.img[img].X
+	local y = ScpuiSystem.splash.img[img].Y
+	local w = ScpuiSystem.splash.img[img].W
+	local h = ScpuiSystem.splash.img[img].H
 	
-	local text = RocketUiSystem.splash.Text .. dots
+	local text = ScpuiSystem.splash.Text .. dots
 	
 	--draw!
 	gr.drawImageCentered(file, x, y, w, h)
-	gr.drawString(text, RocketUiSystem.splash.TX, RocketUiSystem.splash.TY)
+	gr.drawString(text, ScpuiSystem.splash.TX, ScpuiSystem.splash.TY)
 	
 	--reset the color back to what it was.
 	gr.setColor(r, g, b, a)
 
 end
 
-function RocketUiSystem:firstRun()
-	RocketUiSystem:prepareSplash()
+function ScpuiSystem:firstRun()
+	ScpuiSystem:prepareSplash()
 	
-	RocketUiSystem:drawSplash()
+	ScpuiSystem:drawSplash()
 	
-	RocketUiSystem.initIcons = false
+	ScpuiSystem.initIcons = false
     async.awaitRunOnFrame(function()
         async.await(async.yield())
-        RocketUiSystem:genIcons()
+        ScpuiSystem:genIcons()
     end)
 
 end
 
-if RocketUiSystem.initIcons == nil then
-        RocketUiSystem:firstRun()
+if ScpuiSystem.initIcons == nil then
+        ScpuiSystem:firstRun()
     end
 
 ]

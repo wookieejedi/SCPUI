@@ -24,14 +24,14 @@ function DebriefingController:initialize(document)
 	self.selectedSection = 1
 	self.audioPlaying = 0
 	
-	if not RocketUiSystem.debriefInit then
+	if not ScpuiSystem.debriefInit then
 		ui.maybePlayCutscene(MOVIE_PRE_DEBRIEF, true, 0)
 		ui.Debriefing.initDebriefing()
 		if not mn.hasDebriefing() then
 			ui.Debriefing.acceptMission()
 		end
 		self:startMusic()
-		RocketUiSystem.debriefInit = true
+		ScpuiSystem.debriefInit = true
 	end
 	
 	self.player = ba.getCurrentPlayer()	
@@ -342,10 +342,10 @@ end
 function DebriefingController:startMusic()
 	local filename = ui.Debriefing.getDebriefingMusicName()
 	
-	RocketUiSystem.debrief_music = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+	ScpuiSystem.debrief_music = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
 	async.run(function()
 		async.await(async_util.wait_for(2.5))
-		RocketUiSystem.debrief_music:play(ad.MasterEventMusicVolume, true, 0)
+		ScpuiSystem.debrief_music:play(ad.MasterEventMusicVolume, true, 0)
 	end, async.OnFrameExecutor)
 end
 
@@ -669,11 +669,11 @@ function DebriefingController:global_keydown(_, event)
 end
 
 function DebriefingController:close()
-	if RocketUiSystem.debrief_music ~= nil and RocketUiSystem.debrief_music:isValid() then
-        RocketUiSystem.debrief_music:close(false)
-		RocketUiSystem.debrief_music = nil
+	if ScpuiSystem.debrief_music ~= nil and ScpuiSystem.debrief_music:isValid() then
+        ScpuiSystem.debrief_music:close(false)
+		ScpuiSystem.debrief_music = nil
     end
-	RocketUiSystem.debriefInit = false
+	ScpuiSystem.debriefInit = false
 end
 
 function DebriefingController:unload()

@@ -4,10 +4,10 @@ local class = require("class")
 
 local MedalsController = class(AbstractBriefingController)
 
-RocketUiSystem.drawMedalText = nil
+ScpuiSystem.drawMedalText = nil
 
 function MedalsController:init()
-	RocketUiSystem.drawMedalText = {
+	ScpuiSystem.drawMedalText = {
 		name = nil,
 		x = 0,
 		y = 0
@@ -84,11 +84,11 @@ function MedalsController:showMedal(idx)
 	
 	--add mouseover listener
 	medal_el:AddEventListener("mouseover", function()
-		RocketUiSystem.drawMedalText.name = display
+		ScpuiSystem.drawMedalText.name = display
 	end)
 	
 	medal_el:AddEventListener("mouseout", function()
-		RocketUiSystem.drawMedalText.name = nil
+		ScpuiSystem.drawMedalText.name = nil
 	end)
 end
 
@@ -103,12 +103,12 @@ function MedalsController:global_keydown(_, event)
 end
 
 function MedalsController:mouse_move(element, event)
-	RocketUiSystem.drawMedalText.x = event.parameters.mouse_x
-	RocketUiSystem.drawMedalText.y = event.parameters.mouse_y
+	ScpuiSystem.drawMedalText.x = event.parameters.mouse_x
+	ScpuiSystem.drawMedalText.y = event.parameters.mouse_y
 end
 
 function MedalsController:drawText()
-	if RocketUiSystem.drawMedalText.name ~= nil then
+	if ScpuiSystem.drawMedalText.name ~= nil then
 		--save the current color
 		local r, g, b, a = gr.getColor()
 		
@@ -116,10 +116,10 @@ function MedalsController:drawText()
 		gr.setColor(255, 255, 255, 255)
 		
 		--get the string width
-		local w = gr.getStringWidth(RocketUiSystem.drawMedalText.name)
+		local w = gr.getStringWidth(ScpuiSystem.drawMedalText.name)
 		
 		--draw the string
-		gr.drawString(RocketUiSystem.drawMedalText.name, RocketUiSystem.drawMedalText.x - w, RocketUiSystem.drawMedalText.y - 15)
+		gr.drawString(ScpuiSystem.drawMedalText.name, ScpuiSystem.drawMedalText.x - w, ScpuiSystem.drawMedalText.y - 15)
 		
 		--reset the color
 		gr.setColor(r, g, b, a)

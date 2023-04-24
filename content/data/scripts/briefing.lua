@@ -6,7 +6,7 @@ local AbstractBriefingController = require("briefingCommon")
 
 local BriefingController = class(AbstractBriefingController)
 
-RocketUiSystem.drawBrMap = nil
+ScpuiSystem.drawBrMap = nil
 
 function BriefingController:init()
     --- @type briefing_stage[]
@@ -22,18 +22,18 @@ function BriefingController:init()
         stage_text_el = "brief_stage_text_el",
     }
 	
-	RocketUiSystem.drawBrMap = {
+	ScpuiSystem.drawBrMap = {
 		tex = nil,
 		modelRot = 40
 	}
 	
-	if not RocketUiSystem.selectInit then
+	if not ScpuiSystem.selectInit then
 		ui.ShipWepSelect.initSelect()
-		RocketUiSystem.selectInit = true
+		ScpuiSystem.selectInit = true
 	end
 	
 	--Whenever we start a new mission, we reset the log ui to goals
-	RocketUiSystem.logSection = 1
+	ScpuiSystem.logSection = 1
 	
 	self.help_shown = false
 	
@@ -57,22 +57,22 @@ function BriefingController:initialize(document)
 	--the percent change here and use that to calculate the height below.
 	local percentChange = ((briefView.offset_width - 888) / 888) * 100
 	
-	RocketUiSystem.drawBrMap.x1 = viewLeft
-	RocketUiSystem.drawBrMap.y1 = viewTop
-	RocketUiSystem.drawBrMap.x2 = briefView.offset_width
-	RocketUiSystem.drawBrMap.y2 = self:calcPercent(371, (100 + percentChange))
+	ScpuiSystem.drawBrMap.x1 = viewLeft
+	ScpuiSystem.drawBrMap.y1 = viewTop
+	ScpuiSystem.drawBrMap.x2 = briefView.offset_width
+	ScpuiSystem.drawBrMap.y2 = self:calcPercent(371, (100 + percentChange))
 	
 	ui.Briefing.initBriefing()
 
-	--ui.Briefing.startBriefingMap(RocketUiSystem.drawBrMap.x1, RocketUiSystem.drawBrMap.y1, RocketUiSystem.drawBrMap.x2, RocketUiSystem.drawBrMap.y2)
+	--ui.Briefing.startBriefingMap(ScpuiSystem.drawBrMap.x1, ScpuiSystem.drawBrMap.y1, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
 	
 	if mn.hasNoBriefing() then
-		RocketUiSystem.selectInit = false
-		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
-			RocketUiSystem.music_handle:close(true)
+		ScpuiSystem.selectInit = false
+		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+			ScpuiSystem.music_handle:close(true)
 		end
-		RocketUiSystem.music_handle = nil
-		RocketUiSystem.current_played = nil
+		ScpuiSystem.music_handle = nil
+		ScpuiSystem.current_played = nil
 		ui.Briefing.commitToMission()
 	end
 	
@@ -155,11 +155,11 @@ function BriefingController:initialize(document)
 	
 	self:buildGoals()
 	
-	RocketUiSystem.drawBrMap.tex = gr.createTexture(RocketUiSystem.drawBrMap.x2, RocketUiSystem.drawBrMap.y2)
-	RocketUiSystem.drawBrMap.url = ui.linkTexture(RocketUiSystem.drawBrMap.tex)
-	RocketUiSystem.drawBrMap.draw = true
+	ScpuiSystem.drawBrMap.tex = gr.createTexture(ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
+	ScpuiSystem.drawBrMap.url = ui.linkTexture(ScpuiSystem.drawBrMap.tex)
+	ScpuiSystem.drawBrMap.draw = true
 	local aniEl = self.document:CreateElement("img")
-    aniEl:SetAttribute("src", RocketUiSystem.drawBrMap.url)
+    aniEl:SetAttribute("src", ScpuiSystem.drawBrMap.url)
 	briefView:ReplaceChild(aniEl, briefView.first_child)
 
 end
@@ -233,11 +233,11 @@ function BriefingController:go_to_stage(stage_idx)
 	if mn.hasGoalsStage() and stage_idx == #self.stages then
 		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
 		self.document:GetElementById("briefing_goals"):SetClass("hidden", false)
-		RocketUiSystem.drawBrMap.goals = true
+		ScpuiSystem.drawBrMap.goals = true
 	else
 		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
 		self.document:GetElementById("briefing_goals"):SetClass("hidden", true)
-		RocketUiSystem.drawBrMap.goals = false
+		ScpuiSystem.drawBrMap.goals = false
 	end
 	
 	local brief_bg_src = self.document:CreateElement("img")
@@ -248,7 +248,7 @@ end
 
 function BriefingController:CutToStage()
 	ad.playInterfaceSound(42)
-	RocketUiSystem.drawBrMap.draw = false
+	ScpuiSystem.drawBrMap.draw = false
 	self.aniWrapper = self.document:GetElementById("brief_grid_cut")
 	ad.playInterfaceSound(42)
     local aniEl = self.document:CreateElement("ani")
@@ -257,7 +257,7 @@ function BriefingController:CutToStage()
 	
 	async.run(function()
         async.await(async_util.wait_for(0.7))
-        RocketUiSystem.drawBrMap.draw = true
+        ScpuiSystem.drawBrMap.draw = true
 		self.aniWrapper:RemoveChild(self.aniWrapper.first_child)
     end, async.OnFrameExecutor, self.uiActiveContext)
 end
@@ -265,13 +265,13 @@ end
 function BriefingController:drawMap()
 	
 	--Testing icon ship rendering stuff
-	RocketUiSystem.drawBrMap.modelRot = RocketUiSystem.drawBrMap.modelRot + (7 * ba.getRealFrametime())
+	ScpuiSystem.drawBrMap.modelRot = ScpuiSystem.drawBrMap.modelRot + (7 * ba.getRealFrametime())
 
-	if RocketUiSystem.drawBrMap.modelRot >= 100 then
-		RocketUiSystem.drawBrMap.modelRot = RocketUiSystem.drawBrMap.modelRot - 100
+	if ScpuiSystem.drawBrMap.modelRot >= 100 then
+		ScpuiSystem.drawBrMap.modelRot = ScpuiSystem.drawBrMap.modelRot - 100
 	end
 
-	gr.setTarget(RocketUiSystem.drawBrMap.tex)
+	gr.setTarget(ScpuiSystem.drawBrMap.tex)
 	
 	local r = 160
 	local g = 144
@@ -279,16 +279,16 @@ function BriefingController:drawMap()
 	local a = 255
 	gr.setLineWidth(2.0)
 	
-	if RocketUiSystem.drawBrMap.draw == true then
+	if ScpuiSystem.drawBrMap.draw == true then
 		if string.lower(modOptionValues.Brief_Render_Option) == "texture" then
-			gr.setTarget(RocketUiSystem.drawBrMap.tex)
+			gr.setTarget(ScpuiSystem.drawBrMap.tex)
 			gr.clearScreen(0,0,0,0)
-			ui.Briefing.drawBriefingMap(0, 0, RocketUiSystem.drawBrMap.x2, RocketUiSystem.drawBrMap.y2)
+			ui.Briefing.drawBriefingMap(0, 0, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
 			
 		elseif string.lower(modOptionValues.Brief_Render_Option) == "screen" then
 			gr.clearScreen(0,0,0,0)
 			gr.setTarget()
-			ui.Briefing.drawBriefingMap(RocketUiSystem.drawBrMap.x1, RocketUiSystem.drawBrMap.y1, RocketUiSystem.drawBrMap.x2, RocketUiSystem.drawBrMap.y2)
+			ui.Briefing.drawBriefingMap(ScpuiSystem.drawBrMap.x1, ScpuiSystem.drawBrMap.y1, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
 			
 		end
 		
@@ -298,7 +298,7 @@ function BriefingController:drawMap()
 	
 	gr.setTarget()
 	
-	if RocketUiSystem.drawBrMap.pof ~= nil then
+	if ScpuiSystem.drawBrMap.pof ~= nil then
 		
 		--get the current color and save it
 		local prev_c = {
@@ -313,10 +313,10 @@ function BriefingController:drawMap()
 		--set the box coords and size
 		local bx_size = math.floor(0.20 * gr.getScreenHeight()) --size of the box is 15% of screen height
 		local bx_dist = 5 --this is the distance the box is drawn from the mouse in pixels
-		local bx1 = RocketUiSystem.drawBrMap.bx - bx_size - bx_dist
-		local by1 = RocketUiSystem.drawBrMap.by - bx_size - bx_dist
-		local bx2 = RocketUiSystem.drawBrMap.bx - bx_dist
-		local by2 = RocketUiSystem.drawBrMap.by - bx_dist
+		local bx1 = ScpuiSystem.drawBrMap.bx - bx_size - bx_dist
+		local by1 = ScpuiSystem.drawBrMap.by - bx_size - bx_dist
+		local bx2 = ScpuiSystem.drawBrMap.bx - bx_dist
+		local by2 = ScpuiSystem.drawBrMap.by - bx_dist
 		
 		--set the current color to black
 		gr.setColor(0, 0, 0, 255)
@@ -331,21 +331,21 @@ function BriefingController:drawMap()
 		gr.drawLine(bx2, by2, bx1, by2)
 		gr.drawLine(bx2, by2, bx2, by1)
 		
-		local ship = tb.ShipClasses[RocketUiSystem.drawBrMap.pof]
+		local ship = tb.ShipClasses[ScpuiSystem.drawBrMap.pof]
 		if ship.Name == "" then
 			local jumpnode = false
-			if RocketUiSystem.drawBrMap.pof == "subspacenode.pof" then
+			if ScpuiSystem.drawBrMap.pof == "subspacenode.pof" then
 				jumpnode = true
 			end
-			ui.Briefing.renderBriefingModel(RocketUiSystem.drawBrMap.pof, RocketUiSystem.drawBrMap.closeupZoom, RocketUiSystem.drawBrMap.closeupPos, bx1+1, by1+1, bx2-1, by2-1, RocketUiSystem.drawBrMap.modelRot, -15, 0, 1.1, true, jumpnode)
+			ui.Briefing.renderBriefingModel(ScpuiSystem.drawBrMap.pof, ScpuiSystem.drawBrMap.closeupZoom, ScpuiSystem.drawBrMap.closeupPos, bx1+1, by1+1, bx2-1, by2-1, ScpuiSystem.drawBrMap.modelRot, -15, 0, 1.1, true, jumpnode)
 		else
-			ship:renderTechModel(bx1+1, by1+1, bx2-1, by2-1, RocketUiSystem.drawBrMap.modelRot, -15, 0, 1.1)
+			ship:renderTechModel(bx1+1, by1+1, bx2-1, by2-1, ScpuiSystem.drawBrMap.modelRot, -15, 0, 1.1)
 		end
 		
 		--set the current color to light grey
 		gr.setColor(150, 150, 150, 255)
 		
-		gr.drawString(RocketUiSystem.drawBrMap.label, bx1+1, by1+1, bx2-1, by2-1)
+		gr.drawString(ScpuiSystem.drawBrMap.label, bx1+1, by1+1, bx2-1, by2-1)
 		
 		--reset the color
 		gr.setColor(prev_c.r, prev_c.g, prev_c.b, prev_c.a)
@@ -357,7 +357,7 @@ function BriefingController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
 	currentDialog = true
-	RocketUiSystem.drawBrMap.draw = false
+	ScpuiSystem.drawBrMap.draw = false
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -368,7 +368,7 @@ function BriefingController:Show(text, title, buttons)
 		dialog:escape("")
 		dialog:show(self.document.context)
 		:continueWith(function(response)
-			RocketUiSystem.drawBrMap.draw = true
+			ScpuiSystem.drawBrMap.draw = true
     end)
 	-- Route input to our context until the user dismisses the dialog box.
 	ui.enableInput(self.document.context)
@@ -405,17 +405,17 @@ function BriefingController:acceptPressed()
 	--Success!
 	else
 		text = nil
-		if RocketUiSystem.drawBrMap then
-			RocketUiSystem.drawBrMap.tex:unload()
-			RocketUiSystem.drawBrMap.tex = nil
-			RocketUiSystem.drawBrMap = nil
+		if ScpuiSystem.drawBrMap then
+			ScpuiSystem.drawBrMap.tex:unload()
+			ScpuiSystem.drawBrMap.tex = nil
+			ScpuiSystem.drawBrMap = nil
 		end
-		RocketUiSystem.selectInit = false
-		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
-			RocketUiSystem.music_handle:close(true)
+		ScpuiSystem.selectInit = false
+		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+			ScpuiSystem.music_handle:close(true)
 		end
-		RocketUiSystem.music_handle = nil
-		RocketUiSystem.current_played = nil
+		ScpuiSystem.music_handle = nil
+		ScpuiSystem.current_played = nil
 	end
 
 	if text ~= nil then
@@ -448,13 +448,13 @@ end
 
 function BriefingController:mouse_move(element, event)
 
-	if RocketUiSystem.drawBrMap ~= nil then
-		RocketUiSystem.drawBrMap.mx = event.parameters.mouse_x
-		RocketUiSystem.drawBrMap.my = event.parameters.mouse_y
+	if ScpuiSystem.drawBrMap ~= nil then
+		ScpuiSystem.drawBrMap.mx = event.parameters.mouse_x
+		ScpuiSystem.drawBrMap.my = event.parameters.mouse_y
 		
 		--for the ship box preview coords regardless of briefing render type
-		RocketUiSystem.drawBrMap.bx = event.parameters.mouse_x
-		RocketUiSystem.drawBrMap.by = event.parameters.mouse_y
+		ScpuiSystem.drawBrMap.bx = event.parameters.mouse_x
+		ScpuiSystem.drawBrMap.by = event.parameters.mouse_y
 			
 		if string.lower(modOptionValues.Brief_Render_Option) == "texture" then
 		
@@ -462,17 +462,17 @@ function BriefingController:mouse_move(element, event)
 			local gx = grid_el.offset_left + grid_el.parent_node.offset_left + grid_el.parent_node.parent_node.offset_left
 			local gy = grid_el.offset_top + grid_el.parent_node.offset_top + grid_el.parent_node.parent_node.offset_top
 			
-			RocketUiSystem.drawBrMap.mx = RocketUiSystem.drawBrMap.mx - gx
-			RocketUiSystem.drawBrMap.my = RocketUiSystem.drawBrMap.my - gy
+			ScpuiSystem.drawBrMap.mx = ScpuiSystem.drawBrMap.mx - gx
+			ScpuiSystem.drawBrMap.my = ScpuiSystem.drawBrMap.my - gy
 
 		end
 		
-		if ((RocketUiSystem.drawBrMap.mx ~= nil) and (RocketUiSystem.drawBrMap.my ~= nil)) then
-			RocketUiSystem.drawBrMap.pof, RocketUiSystem.drawBrMap.closeupZoom, RocketUiSystem.drawBrMap.closeupPos, RocketUiSystem.drawBrMap.label, RocketUiSystem.drawBrMap.iconID = ui.Briefing.checkStageIcons(RocketUiSystem.drawBrMap.mx, RocketUiSystem.drawBrMap.my)
+		if ((ScpuiSystem.drawBrMap.mx ~= nil) and (ScpuiSystem.drawBrMap.my ~= nil)) then
+			ScpuiSystem.drawBrMap.pof, ScpuiSystem.drawBrMap.closeupZoom, ScpuiSystem.drawBrMap.closeupPos, ScpuiSystem.drawBrMap.label, ScpuiSystem.drawBrMap.iconID = ui.Briefing.checkStageIcons(ScpuiSystem.drawBrMap.mx, ScpuiSystem.drawBrMap.my)
 		end
 		
-		if RocketUiSystem.drawBrMap.pof == nil then
-			RocketUiSystem.drawBrMap.modelRot = 40
+		if ScpuiSystem.drawBrMap.pof == nil then
+			ScpuiSystem.drawBrMap.modelRot = 40
 		end
 	end
 
@@ -488,7 +488,7 @@ function BriefingController:help_clicked()
 end
 
 engine.addHook("On Frame", function()
-	if (ba.getCurrentGameState().Name == "GS_STATE_BRIEFING") and (RocketUiSystem.render == true) then
+	if (ba.getCurrentGameState().Name == "GS_STATE_BRIEFING") and (ScpuiSystem.render == true) then
 		BriefingController:drawMap()
 	end
 end, {}, function()

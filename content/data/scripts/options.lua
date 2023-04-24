@@ -972,7 +972,7 @@ function OptionsController:initialize_prefs_options()
 	end
 	
 	--Handle mod custom preferences options
-    for _, option in ipairs(RocketUiSystem.ModOptions) do
+    for _, option in ipairs(ScpuiSystem.ModOptions) do
 		option.Category = "Custom"
 		option.Title = option.Title
 		local el = self:createCustomOptionElement(option, string.format("prefs_column_%d", option.Column))
@@ -1018,7 +1018,7 @@ function OptionsController:initialize(document)
         end
 		
 		--Creates data sources for custom dropdowns
-		for i, v in ipairs(RocketUiSystem.ModOptions) do
+		for i, v in ipairs(ScpuiSystem.ModOptions) do
 			v.Category = "Custom"
 			if (v.Type == "Multi") or (v.Type == "Binary") then
 				self.sources[v.Key] = createOptionSource(v)

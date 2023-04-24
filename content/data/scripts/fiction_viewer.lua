@@ -55,11 +55,11 @@ end
 
 function FictionViewerController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
-			RocketUiSystem.music_handle:close(true)
+		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+			ScpuiSystem.music_handle:close(true)
 		end
-		RocketUiSystem.music_handle = nil
-		RocketUiSystem.current_played = nil
+		ScpuiSystem.music_handle = nil
+		ScpuiSystem.current_played = nil
 		event:StopPropagation()
 
 		mn.unloadMission(true)

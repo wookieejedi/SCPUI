@@ -773,11 +773,11 @@ function ControlConfigController:searchForBind()
 		
 			local bind = ui.ControlConfig.ControlConfigs[search]
 			
-			ui.enableInput(RocketUiSystem.context)
+			ui.enableInput(ScpuiSystem.context)
 			self:changeSection(bind.Tab)
 			self:SelectEntry(search)
 		else
-			ui.enableInput(RocketUiSystem.context)
+			ui.enableInput(ScpuiSystem.context)
 		end
     end, async.OnFrameExecutor)
 	
@@ -859,7 +859,7 @@ function ControlConfigController:BindKey(idx, item)
         
         --Do anything needed to unlock the UI after the binding phase
         
-		ui.enableInput(RocketUiSystem.context)
+		ui.enableInput(ScpuiSystem.context)
 		if status < 0 then
 			local text = "That key cannot be bound! Please try again."
 			local title = ""

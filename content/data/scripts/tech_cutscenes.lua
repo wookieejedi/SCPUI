@@ -220,8 +220,8 @@ end
 
 function TechCutscenesController:play_pressed(element)
 	if self.SelectedEntry ~= nil then
-		RocketUiSystem.cutscene = self.SelectedEntry
-		RocketUiSystem:beginSubstate("Cutscene")
+		ScpuiSystem.cutscene = self.SelectedEntry
+		ScpuiSystem:beginSubstate("Cutscene")
 		self.document:Close()
 	end
 end

@@ -3,7 +3,7 @@ local utils = require("utils")
 local updateCategory = engine.createTracingCategory("UpdateRocket", false)
 local renderCategory = engine.createTracingCategory("RenderRocket", true)
 
-RocketUiSystem = {
+ScpuiSystem = {
     replacements = {},
 	substate = "none",
 	cutscene = "none",
@@ -29,9 +29,9 @@ if false then
 	return
 end
 
-RocketUiSystem.context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
+ScpuiSystem.context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
 
-function RocketUiSystem:init()
+function ScpuiSystem:init()
 	if cf.fileExists("scpui.tbl") then
         self:parseTable("scpui.tbl")
     end
@@ -40,7 +40,7 @@ function RocketUiSystem:init()
     end
 end
 
-function RocketUiSystem:parseTable(data)
+function ScpuiSystem:parseTable(data)
 	parse.readFileText(data, "data/tables")
 
 	parse.requiredString("#State Replacement")
@@ -72,21 +72,21 @@ function RocketUiSystem:parseTable(data)
 	parse.stop()
 end
 
-function RocketUiSystem:getDef(state)
+function ScpuiSystem:getDef(state)
 	if self.render == false then
 		return nil
 	end
     return self.replacements[state]
 end
 
-function RocketUiSystem:stateStart()
+function ScpuiSystem:stateStart()
 
 	if not ba.MultiplayerMode then
 		self.render = true
 	end
 
 	--This allows for states to correctly return to the previous state even if has no rocket ui defined
-	RocketUiSystem.currentState = ba.getCurrentGameState()
+	ScpuiSystem.currentState = ba.getCurrentGameState()
 	
 	--If hv.NewState is nil then use the Current Game State; This allows for Script UIs to jump from substate to substate
 	local state = hv.NewState or ba.getCurrentGameState()
@@ -102,7 +102,7 @@ function RocketUiSystem:stateStart()
     ui.enableInput(self.context)
 end
 
-function RocketUiSystem:stateFrame()
+function ScpuiSystem:stateFrame()
     if not self:hasOverrideForCurrentState() then
         return
     end
@@ -116,10 +116,10 @@ function RocketUiSystem:stateFrame()
     end)
 end
 
-function RocketUiSystem:stateEnd()
+function ScpuiSystem:stateEnd()
 
 	--This allows for states to correctly return to the previous state even if has no rocket ui defined
-	RocketUiSystem.lastState = RocketUiSystem.currentState
+	ScpuiSystem.lastState = ScpuiSystem.currentState
 
     if not self:hasOverrideForState(getRocketUiHandle(hv.OldState)) then
         return
@@ -140,7 +140,7 @@ function RocketUiSystem:stateEnd()
     ui.disableInput()
 	
 	if hv.OldState.Name == "GS_STATE_SCRIPTING" then
-		RocketUiSystem.substate = "none"
+		ScpuiSystem.substate = "none"
 	end
 	
 	if ba.MultiplayerMode then
@@ -150,27 +150,27 @@ end
 
 function getRocketUiHandle(state)
     if state.Name == "GS_STATE_SCRIPTING" then
-        return {Name = RocketUiSystem.substate}
+        return {Name = ScpuiSystem.substate}
     else
         return state
     end
 end
 
-function RocketUiSystem:beginSubstate(state) 
-	local oldSubstate = RocketUiSystem.substate
-	RocketUiSystem.substate = state
+function ScpuiSystem:beginSubstate(state) 
+	local oldSubstate = ScpuiSystem.substate
+	ScpuiSystem.substate = state
 	--If we're already in GS_STATE_SCRIPTING then force loading the new scpui define
 	if ba.getCurrentGameState().Name == "GS_STATE_SCRIPTING" then
-		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. RocketUiSystem.substate .. " in SCPUI SCRIPTING SUBSTATE " .. oldSubstate .. "\n")
-		RocketUiSystem:stateStart()
+		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.substate .. " in SCPUI SCRIPTING SUBSTATE " .. oldSubstate .. "\n")
+		ScpuiSystem:stateStart()
 	else
-		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. RocketUiSystem.substate .. "\n")
+		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.substate .. "\n")
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_SCRIPTING"])
 	end
 end
 
 --This allows for states to correctly return to the previous state even if has no rocket ui defined
-function RocketUiSystem:ReturnToState(state)
+function ScpuiSystem:ReturnToState(state)
 
 	local event
 
@@ -186,15 +186,15 @@ function RocketUiSystem:ReturnToState(state)
 
 end
 
-function RocketUiSystem:hasOverrideForState(state)
+function ScpuiSystem:hasOverrideForState(state)
     return self:getDef(state.Name) ~= nil
 end
 
-function RocketUiSystem:hasOverrideForCurrentState()
+function ScpuiSystem:hasOverrideForCurrentState()
     return self:hasOverrideForState(getRocketUiHandle(ba.getCurrentGameState()))
 end
 
-function RocketUiSystem:dialogStart()
+function ScpuiSystem:dialogStart()
     ui.enableInput(self.context)
     
     local dialogs = require('dialogs')
@@ -240,7 +240,7 @@ function RocketUiSystem:dialogStart()
 	end
 end
 
-function RocketUiSystem:dialogFrame()
+function ScpuiSystem:dialogFrame()
     -- Add some tracing scopes here to see how long this stuff takes
     updateCategory:trace(function()
 		if hv.Freeze ~= nil and hv.Freeze ~= true then
@@ -273,7 +273,7 @@ function RocketUiSystem:dialogFrame()
 	end
 end
 
-function RocketUiSystem:dialogEnd()
+function ScpuiSystem:dialogEnd()
     ui.disableInput(self.context)
 	
 	if not hv.IsDeathPopup then
@@ -291,47 +291,47 @@ function RocketUiSystem:dialogEnd()
 	end
 end
 
-RocketUiSystem:init()
+ScpuiSystem:init()
 
 engine.addHook("On State Start", function()
-	RocketUiSystem:stateStart()
+	ScpuiSystem:stateStart()
 end, {}, function()
-    return RocketUiSystem:hasOverrideForState(getRocketUiHandle(hv.NewState))
+    return ScpuiSystem:hasOverrideForState(getRocketUiHandle(hv.NewState))
 end)
 
 engine.addHook("On Frame", function()
-	RocketUiSystem:stateFrame()
+	ScpuiSystem:stateFrame()
 end, {}, function()
-    return RocketUiSystem:hasOverrideForCurrentState()
+    return ScpuiSystem:hasOverrideForCurrentState()
 end)
 
 engine.addHook("On State End", function()
-	RocketUiSystem:stateEnd()
+	ScpuiSystem:stateEnd()
 end, {}, function()
-    return RocketUiSystem:hasOverrideForState(getRocketUiHandle(hv.OldState))
+    return ScpuiSystem:hasOverrideForState(getRocketUiHandle(hv.OldState))
 end)
 
 engine.addHook("On Dialog Init", function()
-	if RocketUiSystem.render == true then
-		RocketUiSystem:dialogStart()
+	if ScpuiSystem.render == true then
+		ScpuiSystem:dialogStart()
 	end
 end, {}, function()
-    return RocketUiSystem.render
+    return ScpuiSystem.render
 end)
 
 engine.addHook("On Dialog Frame", function()
-	if RocketUiSystem.render == true then
-		RocketUiSystem:dialogFrame()
+	if ScpuiSystem.render == true then
+		ScpuiSystem:dialogFrame()
 	end
 end, {}, function()
-    return RocketUiSystem.render
+    return ScpuiSystem.render
 end)
 
 engine.addHook("On Dialog Close", function()
-	if RocketUiSystem.render == true then
-		RocketUiSystem:dialogEnd()
+	if ScpuiSystem.render == true then
+		ScpuiSystem:dialogEnd()
 	end
 end, {}, function()
-    return RocketUiSystem.render
+    return ScpuiSystem.render
 end)
 

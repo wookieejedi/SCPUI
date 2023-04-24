@@ -5,11 +5,11 @@ local async_util = require("async_util")
 local HudConfigController = class()
 local fontMultiplier = nil
 
-RocketUiSystem.drawHUD = nil
+ScpuiSystem.drawHUD = nil
 
 function HudConfigController:init()
 
-	RocketUiSystem.drawHUD = {}
+	ScpuiSystem.drawHUD = {}
 	
 	self.default = "hud_3.hcf"
 	
@@ -70,9 +70,9 @@ function HudConfigController:initialize(document)
 	
 	ui.HudConfig.initHudConfig(hx, hy, hw)
 	
-	RocketUiSystem.drawHUD.mx = 0
-	RocketUiSystem.drawHUD.my = 0
-	RocketUiSystem.drawHUD.draw = true
+	ScpuiSystem.drawHUD.mx = 0
+	ScpuiSystem.drawHUD.my = 0
+	ScpuiSystem.drawHUD.draw = true
 	
 	self.r = 0
 	self.g = 0
@@ -305,11 +305,11 @@ function HudConfigController:global_keydown(_, event)
 end
 
 function HudConfigController:drawHUD()
-	if RocketUiSystem.drawHUD ~= nil then
-		if RocketUiSystem.drawHUD.draw == false then
+	if ScpuiSystem.drawHUD ~= nil then
+		if ScpuiSystem.drawHUD.draw == false then
 			return
 		end
-		RocketUiSystem.drawHUD.gauge = ui.HudConfig.drawHudConfig(RocketUiSystem.drawHUD.mx, RocketUiSystem.drawHUD.my)
+		ScpuiSystem.drawHUD.gauge = ui.HudConfig.drawHudConfig(ScpuiSystem.drawHUD.mx, ScpuiSystem.drawHUD.my)
 	end
 end
 
@@ -510,9 +510,9 @@ function HudConfigController:mouse_click()
 	
 	self.click = true
 
-	if RocketUiSystem.drawHUD.gauge then
+	if ScpuiSystem.drawHUD.gauge then
 		self.curGaugeName = nil
-		self.selectedGauge = RocketUiSystem.drawHUD.gauge
+		self.selectedGauge = ScpuiSystem.drawHUD.gauge
 		self.selectedGauge:setSelected(true)
 		
 		local color = self.selectedGauge.CurrentColor
@@ -533,9 +533,9 @@ end
 
 function HudConfigController:mouse_move(element, event)
 
-	if RocketUiSystem.drawHUD ~= nil then
-		RocketUiSystem.drawHUD.mx = event.parameters.mouse_x
-		RocketUiSystem.drawHUD.my = event.parameters.mouse_y
+	if ScpuiSystem.drawHUD ~= nil then
+		ScpuiSystem.drawHUD.mx = event.parameters.mouse_x
+		ScpuiSystem.drawHUD.my = event.parameters.mouse_y
 	end
 	
 end
@@ -544,7 +544,7 @@ function HudConfigController:Show(text, title, input, buttons)
 	--Create a simple dialog box with the text and title
 
 	currentDialog = true
-	RocketUiSystem.drawHUD.draw = false
+	ScpuiSystem.drawHUD.draw = false
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -582,14 +582,14 @@ end
 function HudConfigController:dialog_response(response)
 	local path = self.promptControl
 	self.promptControl = nil
-	RocketUiSystem.drawHUD.draw = true
+	ScpuiSystem.drawHUD.draw = true
 	if path == 1 then
 		self:savePreset(response)
 	end
 end
 
 engine.addHook("On Frame", function()
-	if (ba.getCurrentGameState().Name == "GS_STATE_HUD_CONFIG") and (RocketUiSystem.render == true) then
+	if (ba.getCurrentGameState().Name == "GS_STATE_HUD_CONFIG") and (ScpuiSystem.render == true) then
 		HudConfigController:drawHUD()
 	end
 end, {}, function()

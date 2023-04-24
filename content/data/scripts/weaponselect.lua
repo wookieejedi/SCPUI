@@ -8,14 +8,14 @@ local async_util = require("async_util")
 
 local WeaponSelectController = class()
 
-RocketUiSystem.modelDraw = nil
+ScpuiSystem.modelDraw = nil
 
 function WeaponSelectController:init()
-	if not RocketUiSystem.selectInit then
+	if not ScpuiSystem.selectInit then
 		ui.ShipWepSelect.initSelect()
-		RocketUiSystem.selectInit = true
+		ScpuiSystem.selectInit = true
 	end
-	RocketUiSystem.modelDraw = {}
+	ScpuiSystem.modelDraw = {}
 	self.help_shown = false
 end
 
@@ -28,7 +28,7 @@ function WeaponSelectController:initialize(document)
 	self.aniWepEl = self.document:CreateElement("ani")
 	self.requiredWeps = {}
 	self.emptyWingSlot = {}
-	RocketUiSystem.modelDraw.banks = {
+	ScpuiSystem.modelDraw.banks = {
 		bank1 = self.document:GetElementById("primary_one"),
 		bank2 = self.document:GetElementById("primary_two"),
 		bank3 = self.document:GetElementById("primary_three"),
@@ -93,7 +93,7 @@ function WeaponSelectController:initialize(document)
 		if ui.ShipWepSelect.Ship_Pool[i] > 0 then
 			if rocketUiIcons[shipList[i].Name] == nil then
 				ba.warning("No generated icon was found for " .. shipList[i].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
-				RocketUiSystem:setIconFrames(shipList[i].Name)
+				ScpuiSystem:setIconFrames(shipList[i].Name)
 			end
 			self.shipList[j] = {
 				Index = i,
@@ -130,7 +130,7 @@ function WeaponSelectController:initialize(document)
 		if ui.ShipWepSelect.Weapon_Pool[i] > 0 then
 			if rocketUiIcons[weaponList[i].Name] == nil then
 				ba.warning("No generated icon was found for " .. weaponList[i].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
-				RocketUiSystem:setIconFrames(weaponList[i].Name)
+				ScpuiSystem:setIconFrames(weaponList[i].Name)
 			end
 			if tb.WeaponClasses[i]:isPrimary() then
 				self.primaryList[j] = {
@@ -441,7 +441,7 @@ function WeaponSelectController:AppendToPool(ship)
 
 	if rocketUiIcons[tb.ShipClasses[ship].Name] == nil then
 		ba.warning("No generated icon was found for " .. tb.ShipClasses[ship].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
-		RocketUiSystem:setIconFrames(tb.ShipClasses[ship].Name)
+		ScpuiSystem:setIconFrames(tb.ShipClasses[ship].Name)
 	end
 
 	i = #self.shipList + 1
@@ -520,7 +520,7 @@ function WeaponSelectController:AppendWeaponToPool(classIndex)
 
 	if rocketUiIcons[tb.WeaponClasses[classIndex].Name] == nil then
 		ba.warning("No generated icon was found for " .. tb.WeaponClasses[classIndex].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
-		RocketUiSystem:setIconFrames(tb.WeaponClasses[classIndex].Name)
+		ScpuiSystem:setIconFrames(tb.WeaponClasses[classIndex].Name)
 	end
 	
 	local list = {}
@@ -593,8 +593,8 @@ end
 
 function WeaponSelectController:ReloadList()
 
-	RocketUiSystem.modelDraw.class = nil
-	RocketUiSystem.modelDraw.OverheadClass = nil
+	ScpuiSystem.modelDraw.class = nil
+	ScpuiSystem.modelDraw.OverheadClass = nil
 	local list_items_el = self.document:GetElementById("primary_icon_list_ul")
 	self:ClearEntries(list_items_el)
 	local list_items_el = self.document:GetElementById("secondary_icon_list_ul")
@@ -723,9 +723,9 @@ function WeaponSelectController:SelectEntry(entry)
 			self:BuildInfo(entry)
 			
 			if self.weapon3d or entry.Anim == nil then
-				RocketUiSystem.modelDraw.class = entry.Index
-				RocketUiSystem.modelDraw.element = self.document:GetElementById("weapon_view_window")
-				RocketUiSystem.modelDraw.start = true
+				ScpuiSystem.modelDraw.class = entry.Index
+				ScpuiSystem.modelDraw.element = self.document:GetElementById("weapon_view_window")
+				ScpuiSystem.modelDraw.start = true
 			else
 				--the anim is already created so we only need to remove and reset the src
 				self.aniWepEl:RemoveAttribute("src")
@@ -790,7 +790,7 @@ function WeaponSelectController:HighlightWeapon()
 		end
 	end
 	
-	for i, v in pairs(RocketUiSystem.modelDraw.banks) do
+	for i, v in pairs(ScpuiSystem.modelDraw.banks) do
 		local index = string.sub(i, -1)
 		local weapon = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[index]
 		if weapon > 0 then
@@ -862,12 +862,12 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 		self:HighlightWeapon()
 		
 		if self.overhead3d or overhead == nil then
-			RocketUiSystem.modelDraw.OverheadClass = shipIndex
-			RocketUiSystem.modelDraw.OverheadElement = self.document:GetElementById("ship_view_wrapper")
-			RocketUiSystem.modelDraw.Slot = slot
+			ScpuiSystem.modelDraw.OverheadClass = shipIndex
+			ScpuiSystem.modelDraw.OverheadElement = self.document:GetElementById("ship_view_wrapper")
+			ScpuiSystem.modelDraw.Slot = slot
 			--STILL GOTTA HANDLE THIS!
-			RocketUiSystem.modelDraw.Hover = self.hoverSlot
-			RocketUiSystem.modelDraw.overheadEffect = self.overheadEffect
+			ScpuiSystem.modelDraw.Hover = self.hoverSlot
+			ScpuiSystem.modelDraw.overheadEffect = self.overheadEffect
 		else
 			--the anim is already created so we only need to remove and reset the src
 			self.aniEl:RemoveAttribute("src")
@@ -879,15 +879,15 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 end
 
 function WeaponSelectController:ClearWeaponSlots()
-	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank1)
-	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank2)
-	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank3)
-	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank4)
-	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank5)
-	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank6)
-	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank7)
+	self:ClearEntries(ScpuiSystem.modelDraw.banks.bank1)
+	self:ClearEntries(ScpuiSystem.modelDraw.banks.bank2)
+	self:ClearEntries(ScpuiSystem.modelDraw.banks.bank3)
+	self:ClearEntries(ScpuiSystem.modelDraw.banks.bank4)
+	self:ClearEntries(ScpuiSystem.modelDraw.banks.bank5)
+	self:ClearEntries(ScpuiSystem.modelDraw.banks.bank6)
+	self:ClearEntries(ScpuiSystem.modelDraw.banks.bank7)
 	
-	for i, v in pairs(RocketUiSystem.modelDraw.banks) do
+	for i, v in pairs(ScpuiSystem.modelDraw.banks) do
 		v:SetClass("slot_3d", false)
 		v:SetClass("button_3", false)
 	end
@@ -902,51 +902,51 @@ function WeaponSelectController:BuildWeaponSlots(ship)
 	self:ClearWeaponSlots()
 
 	if tb.ShipClasses[ship].numPrimaryBanks > 0 then
-		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank1, 1)
+		self:BuildSlot(ScpuiSystem.modelDraw.banks.bank1, 1)
 		if self.overhead3d then
-			RocketUiSystem.modelDraw.banks.bank1:SetClass("slot_3d", true)
+			ScpuiSystem.modelDraw.banks.bank1:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numPrimaryBanks > 1 then
-		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank2, 2)
+		self:BuildSlot(ScpuiSystem.modelDraw.banks.bank2, 2)
 		if self.overhead3d then
-			RocketUiSystem.modelDraw.banks.bank2:SetClass("slot_3d", true)
+			ScpuiSystem.modelDraw.banks.bank2:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numPrimaryBanks > 2 then
-		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank3, 3)
+		self:BuildSlot(ScpuiSystem.modelDraw.banks.bank3, 3)
 		if self.overhead3d then
-			RocketUiSystem.modelDraw.banks.bank3:SetClass("slot_3d", true)
+			ScpuiSystem.modelDraw.banks.bank3:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numSecondaryBanks > 0 then
-		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank4, 4)
+		self:BuildSlot(ScpuiSystem.modelDraw.banks.bank4, 4)
 		if self.overhead3d then
-			RocketUiSystem.modelDraw.banks.bank4:SetClass("slot_3d", true)
+			ScpuiSystem.modelDraw.banks.bank4:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numSecondaryBanks > 1 then
-		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank5, 5)
+		self:BuildSlot(ScpuiSystem.modelDraw.banks.bank5, 5)
 		if self.overhead3d then
-			RocketUiSystem.modelDraw.banks.bank5:SetClass("slot_3d", true)
+			ScpuiSystem.modelDraw.banks.bank5:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numSecondaryBanks > 2 then
-		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank6, 6)
+		self:BuildSlot(ScpuiSystem.modelDraw.banks.bank6, 6)
 		if self.overhead3d then
-			RocketUiSystem.modelDraw.banks.bank6:SetClass("slot_3d", true)
+			ScpuiSystem.modelDraw.banks.bank6:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numSecondaryBanks > 3 then
-		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank7, 7)
+		self:BuildSlot(ScpuiSystem.modelDraw.banks.bank7, 7)
 		if self.overhead3d then
-			RocketUiSystem.modelDraw.banks.bank7:SetClass("slot_3d", true)
+			ScpuiSystem.modelDraw.banks.bank7:SetClass("slot_3d", true)
 		end
 	end
 
@@ -1037,12 +1037,12 @@ end
 
 function WeaponSelectController:DragOver(element, slot)
 	if ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[slot] > 0 then
-		RocketUiSystem.modelDraw.Hover = slot
+		ScpuiSystem.modelDraw.Hover = slot
 	end
 end
 
 function WeaponSelectController:DragOut(element, slot)
-	RocketUiSystem.modelDraw.Hover = -1
+	ScpuiSystem.modelDraw.Hover = -1
 end
 
 --This one converts the slot (1-7) to actual banks (1-3 for primaries, 1-4 for secondaries)
@@ -1498,10 +1498,10 @@ function WeaponSelectController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
 	currentDialog = true
-	RocketUiSystem.modelDraw.save = RocketUiSystem.modelDraw.class
-	RocketUiSystem.modelDraw.class = nil
-	RocketUiSystem.modelDraw.OverheadSave = RocketUiSystem.modelDraw.OverheadClass
-	RocketUiSystem.modelDraw.OverheadClass = nil
+	ScpuiSystem.modelDraw.save = ScpuiSystem.modelDraw.class
+	ScpuiSystem.modelDraw.class = nil
+	ScpuiSystem.modelDraw.OverheadSave = ScpuiSystem.modelDraw.OverheadClass
+	ScpuiSystem.modelDraw.OverheadClass = nil
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -1512,10 +1512,10 @@ function WeaponSelectController:Show(text, title, buttons)
 		end
 		dialog:show(self.document.context)
 		:continueWith(function(response)
-			RocketUiSystem.modelDraw.class = RocketUiSystem.modelDraw.save
-			RocketUiSystem.modelDraw.save = nil
-			RocketUiSystem.modelDraw.OverheadClass = RocketUiSystem.modelDraw.OverheadSave
-			RocketUiSystem.modelDraw.OverheadSave = nil
+			ScpuiSystem.modelDraw.class = ScpuiSystem.modelDraw.save
+			ScpuiSystem.modelDraw.save = nil
+			ScpuiSystem.modelDraw.OverheadClass = ScpuiSystem.modelDraw.OverheadSave
+			ScpuiSystem.modelDraw.OverheadSave = nil
         --do nothing
     end)
 	-- Route input to our context until the user dismisses the dialog box.
@@ -1559,12 +1559,12 @@ function WeaponSelectController:accept_pressed()
 	--Success!
 	else
 		text = nil
-		RocketUiSystem.selectInit = false
-		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
-			RocketUiSystem.music_handle:close(true)
+		ScpuiSystem.selectInit = false
+		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+			ScpuiSystem.music_handle:close(true)
 		end
-		RocketUiSystem.music_handle = nil
-		RocketUiSystem.current_played = nil
+		ScpuiSystem.music_handle = nil
+		ScpuiSystem.current_played = nil
 	end
 
 	if text ~= nil then
@@ -1601,11 +1601,11 @@ end
 
 function WeaponSelectController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
-			RocketUiSystem.music_handle:close(true)
+		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+			ScpuiSystem.music_handle:close(true)
 		end
-		RocketUiSystem.music_handle = nil
-		RocketUiSystem.current_played = nil
+		ScpuiSystem.music_handle = nil
+		ScpuiSystem.current_played = nil
         event:StopPropagation()
 
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
@@ -1619,7 +1619,7 @@ end
 
 function WeaponSelectController:unload()
 
-	RocketUiSystem.modelDraw.class = nil
+	ScpuiSystem.modelDraw.class = nil
 	ui.ShipWepSelect:saveLoadout()
 	
 end
@@ -1631,24 +1631,24 @@ function WeaponSelectController:startMusic()
         return
     end
 	
-	if filename ~= RocketUiSystem.current_played then
+	if filename ~= ScpuiSystem.current_played then
 	
-		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
-			RocketUiSystem.music_handle:close(true)
+		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+			ScpuiSystem.music_handle:close(true)
 		end
 
-		RocketUiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
-		RocketUiSystem.music_handle:play(ad.MasterEventMusicVolume, true)
-		RocketUiSystem.current_played = filename
+		ScpuiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+		ScpuiSystem.music_handle:play(ad.MasterEventMusicVolume, true)
+		ScpuiSystem.current_played = filename
 	end
 end
 
 function WeaponSelectController:drawSelectModel()
 
-	if RocketUiSystem.modelDraw.class and (ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT") and (RocketUiSystem.modelDraw.element ~= nil) then  --Haaaaaaacks
+	if ScpuiSystem.modelDraw.class and (ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT") and (ScpuiSystem.modelDraw.element ~= nil) then  --Haaaaaaacks
 		
 		--local thisItem = tb.ShipClasses(modelDraw.class)
-		modelView = RocketUiSystem.modelDraw.element	
+		modelView = ScpuiSystem.modelDraw.element	
 		local modelLeft = modelView.parent_node.offset_left + modelView.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + modelView.offset_top
 		local modelWidth = modelView.offset_width
@@ -1667,9 +1667,9 @@ function WeaponSelectController:drawSelectModel()
 		modelWidth = modelWidth * (1 + val)
 		modelHeight = modelHeight * (1 + val)
 		
-		local test = tb.WeaponClasses[RocketUiSystem.modelDraw.class]:renderSelectModel(RocketUiSystem.modelDraw.start, modelLeft, modelTop, modelWidth, modelHeight)
+		local test = tb.WeaponClasses[ScpuiSystem.modelDraw.class]:renderSelectModel(ScpuiSystem.modelDraw.start, modelLeft, modelTop, modelWidth, modelHeight)
 		
-		RocketUiSystem.modelDraw.start = false
+		ScpuiSystem.modelDraw.start = false
 		
 	end
 
@@ -1677,13 +1677,13 @@ end
 
 function WeaponSelectController:drawOverheadModel()
 
-	if RocketUiSystem.modelDraw.OverheadClass and ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT" then  --Haaaaaaacks
+	if ScpuiSystem.modelDraw.OverheadClass and ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT" then  --Haaaaaaacks
 	
-		if RocketUiSystem.modelDraw.class == nil then RocketUiSystem.modelDraw.class = -1 end
-		if RocketUiSystem.modelDraw.Hover == nil then RocketUiSystem.modelDraw.Hover = -1 end
+		if ScpuiSystem.modelDraw.class == nil then ScpuiSystem.modelDraw.class = -1 end
+		if ScpuiSystem.modelDraw.Hover == nil then ScpuiSystem.modelDraw.Hover = -1 end
 		
 		--local thisItem = tb.ShipClasses(modelDraw.class)
-		modelView = RocketUiSystem.modelDraw.OverheadElement	
+		modelView = ScpuiSystem.modelDraw.OverheadElement	
 		local modelLeft = modelView.parent_node.offset_left + modelView.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + modelView.offset_top
 		local modelWidth = modelView.offset_width
@@ -1694,26 +1694,26 @@ function WeaponSelectController:drawOverheadModel()
 		local primary_offset = 15
 		local secondary_offset = -15
 		
-		local bank1_x = RocketUiSystem.modelDraw.banks.bank1.offset_left + RocketUiSystem.modelDraw.banks.bank1.parent_node.offset_left + modelLeft + RocketUiSystem.modelDraw.banks.bank1.offset_width + primary_offset
-		local bank1_y = RocketUiSystem.modelDraw.banks.bank1.offset_top + RocketUiSystem.modelDraw.banks.bank1.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank1.offset_height / 2)
+		local bank1_x = ScpuiSystem.modelDraw.banks.bank1.offset_left + ScpuiSystem.modelDraw.banks.bank1.parent_node.offset_left + modelLeft + ScpuiSystem.modelDraw.banks.bank1.offset_width + primary_offset
+		local bank1_y = ScpuiSystem.modelDraw.banks.bank1.offset_top + ScpuiSystem.modelDraw.banks.bank1.parent_node.offset_top + modelTop + (ScpuiSystem.modelDraw.banks.bank1.offset_height / 2)
 		
-		local bank2_x = RocketUiSystem.modelDraw.banks.bank2.offset_left + RocketUiSystem.modelDraw.banks.bank2.parent_node.offset_left + modelLeft + RocketUiSystem.modelDraw.banks.bank2.offset_width + primary_offset
-		local bank2_y = RocketUiSystem.modelDraw.banks.bank2.offset_top + RocketUiSystem.modelDraw.banks.bank2.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank2.offset_height / 2)
+		local bank2_x = ScpuiSystem.modelDraw.banks.bank2.offset_left + ScpuiSystem.modelDraw.banks.bank2.parent_node.offset_left + modelLeft + ScpuiSystem.modelDraw.banks.bank2.offset_width + primary_offset
+		local bank2_y = ScpuiSystem.modelDraw.banks.bank2.offset_top + ScpuiSystem.modelDraw.banks.bank2.parent_node.offset_top + modelTop + (ScpuiSystem.modelDraw.banks.bank2.offset_height / 2)
 		
-		local bank3_x = RocketUiSystem.modelDraw.banks.bank3.offset_left + RocketUiSystem.modelDraw.banks.bank3.parent_node.offset_left + modelLeft + RocketUiSystem.modelDraw.banks.bank3.offset_width + primary_offset
-		local bank3_y = RocketUiSystem.modelDraw.banks.bank3.offset_top + RocketUiSystem.modelDraw.banks.bank3.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank3.offset_height / 2)
+		local bank3_x = ScpuiSystem.modelDraw.banks.bank3.offset_left + ScpuiSystem.modelDraw.banks.bank3.parent_node.offset_left + modelLeft + ScpuiSystem.modelDraw.banks.bank3.offset_width + primary_offset
+		local bank3_y = ScpuiSystem.modelDraw.banks.bank3.offset_top + ScpuiSystem.modelDraw.banks.bank3.parent_node.offset_top + modelTop + (ScpuiSystem.modelDraw.banks.bank3.offset_height / 2)
 		
-		local bank4_x = RocketUiSystem.modelDraw.banks.bank4.offset_left + RocketUiSystem.modelDraw.banks.bank4.parent_node.offset_left + modelLeft + secondary_offset
-		local bank4_y = RocketUiSystem.modelDraw.banks.bank4.offset_top + RocketUiSystem.modelDraw.banks.bank4.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank4.offset_height / 2)
+		local bank4_x = ScpuiSystem.modelDraw.banks.bank4.offset_left + ScpuiSystem.modelDraw.banks.bank4.parent_node.offset_left + modelLeft + secondary_offset
+		local bank4_y = ScpuiSystem.modelDraw.banks.bank4.offset_top + ScpuiSystem.modelDraw.banks.bank4.parent_node.offset_top + modelTop + (ScpuiSystem.modelDraw.banks.bank4.offset_height / 2)
 		
-		local bank5_x = RocketUiSystem.modelDraw.banks.bank4.offset_left + RocketUiSystem.modelDraw.banks.bank5.parent_node.offset_left + modelLeft + secondary_offset
-		local bank5_y = RocketUiSystem.modelDraw.banks.bank5.offset_top + RocketUiSystem.modelDraw.banks.bank5.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank5.offset_height / 2)
+		local bank5_x = ScpuiSystem.modelDraw.banks.bank4.offset_left + ScpuiSystem.modelDraw.banks.bank5.parent_node.offset_left + modelLeft + secondary_offset
+		local bank5_y = ScpuiSystem.modelDraw.banks.bank5.offset_top + ScpuiSystem.modelDraw.banks.bank5.parent_node.offset_top + modelTop + (ScpuiSystem.modelDraw.banks.bank5.offset_height / 2)
 		
-		local bank6_x = RocketUiSystem.modelDraw.banks.bank4.offset_left + RocketUiSystem.modelDraw.banks.bank6.parent_node.offset_left + modelLeft + secondary_offset
-		local bank6_y = RocketUiSystem.modelDraw.banks.bank6.offset_top + RocketUiSystem.modelDraw.banks.bank6.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank6.offset_height / 2)
+		local bank6_x = ScpuiSystem.modelDraw.banks.bank4.offset_left + ScpuiSystem.modelDraw.banks.bank6.parent_node.offset_left + modelLeft + secondary_offset
+		local bank6_y = ScpuiSystem.modelDraw.banks.bank6.offset_top + ScpuiSystem.modelDraw.banks.bank6.parent_node.offset_top + modelTop + (ScpuiSystem.modelDraw.banks.bank6.offset_height / 2)
 		
-		local bank7_x = RocketUiSystem.modelDraw.banks.bank4.offset_left + RocketUiSystem.modelDraw.banks.bank7.parent_node.offset_left + modelLeft + secondary_offset
-		local bank7_y = RocketUiSystem.modelDraw.banks.bank7.offset_top + RocketUiSystem.modelDraw.banks.bank7.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank7.offset_height / 2)
+		local bank7_x = ScpuiSystem.modelDraw.banks.bank4.offset_left + ScpuiSystem.modelDraw.banks.bank7.parent_node.offset_left + modelLeft + secondary_offset
+		local bank7_y = ScpuiSystem.modelDraw.banks.bank7.offset_top + ScpuiSystem.modelDraw.banks.bank7.parent_node.offset_top + modelTop + (ScpuiSystem.modelDraw.banks.bank7.offset_height / 2)
 		
 		--This is just a multipler to make the rendered model a little bigger
 		--renderSelectModel() has forced centering, so we need to calculate
@@ -1728,9 +1728,9 @@ function WeaponSelectController:drawOverheadModel()
 		modelWidth = modelWidth * (1 + val)
 		modelHeight = modelHeight * (1 + val)
 		
-		local test = tb.ShipClasses[RocketUiSystem.modelDraw.OverheadClass]:renderOverheadModel(modelLeft, modelTop, modelWidth, modelHeight, RocketUiSystem.modelDraw.Slot, RocketUiSystem.modelDraw.class, RocketUiSystem.modelDraw.Hover, bank1_x, bank1_y, bank2_x, bank2_y, bank3_x, bank3_y, bank4_x, bank4_y, bank5_x, bank5_y, bank6_x, bank6_y, bank7_x, bank7_y, RocketUiSystem.modelDraw.overheadEffect)
+		local test = tb.ShipClasses[ScpuiSystem.modelDraw.OverheadClass]:renderOverheadModel(modelLeft, modelTop, modelWidth, modelHeight, ScpuiSystem.modelDraw.Slot, ScpuiSystem.modelDraw.class, ScpuiSystem.modelDraw.Hover, bank1_x, bank1_y, bank2_x, bank2_y, bank3_x, bank3_y, bank4_x, bank4_y, bank5_x, bank5_y, bank6_x, bank6_y, bank7_x, bank7_y, ScpuiSystem.modelDraw.overheadEffect)
 		
-		RocketUiSystem.modelDraw.start = false
+		ScpuiSystem.modelDraw.start = false
 		
 	end
 

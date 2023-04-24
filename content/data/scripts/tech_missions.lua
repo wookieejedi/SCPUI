@@ -41,8 +41,8 @@ function TechMissionsController:initialize(document)
 	
 	--Check for last loaded section
 	local newSection = nil
-	if RocketUiSystem.missionSection ~= nil then
-		newSection = RocketUiSystem.missionSection
+	if ScpuiSystem.missionSection ~= nil then
+		newSection = ScpuiSystem.missionSection
 	else
 		local uidata = modOptionValues.simRoomChoice
 		if uidata == nil then
@@ -93,7 +93,7 @@ end
 function TechMissionsController:ChangeSection(section)
 
 	self.sectionIndex = section
-	RocketUiSystem.missionSection = section
+	ScpuiSystem.missionSection = section
 
 	if section == 1 then 
 		section = "single"
@@ -102,7 +102,7 @@ function TechMissionsController:ChangeSection(section)
 	else
 		section = "single"
 		self.sectionIndex = 1
-		RocketUiSystem.missionSection = 1
+		ScpuiSystem.missionSection = 1
 	end
 	
 	--save the choice to the player file

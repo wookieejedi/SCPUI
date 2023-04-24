@@ -40,7 +40,7 @@ function MissionlogController:initialize(document)
 	
 	ui.MissionLog.closeMissionLog()
 	
-	self:ChangeSection(RocketUiSystem.logSection)
+	self:ChangeSection(ScpuiSystem.logSection)
 	
 end
 
@@ -192,7 +192,7 @@ function MissionlogController:ChangeSection(section)
 
 		--set the section
 		self.currentSection = section
-		RocketUiSystem.logSection = section
+		ScpuiSystem.logSection = section
 
 		if section == 1 then
 			self:CreateGoalsLog()

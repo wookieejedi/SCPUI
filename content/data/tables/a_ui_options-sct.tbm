@@ -3,7 +3,7 @@ $Application: FS2_Open
 $On Game Init:
 [
 --Load up the options.tbl and tbms
-RocketUiSystem.ModOptions = {}
+ScpuiSystem.ModOptions = {}
 
 function initModOptions()
 	local utils = require('utils')
@@ -34,7 +34,7 @@ if cf.fileExists(saveFilename, 'data/players', true) then
 	modOptionValues = config
 else
 	modOptionValues = {}
-	for i, v in ipairs(RocketUiSystem.ModOptions) do
+	for i, v in ipairs(ScpuiSystem.ModOptions) do
 		modOptionValues[v.Key] = v.Value
 	end
 	local json = require('dkjson')
@@ -57,7 +57,7 @@ if ((hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT") and (hv.NewState.Name
 	if type(modOptionValues) ~= "table" then
 		ba.print("SCPUI: Got bad modOptionValues data! Loading defaults!")
 		modOptionValues = {}
-		for i, v in ipairs(RocketUiSystem.ModOptions) do
+		for i, v in ipairs(ScpuiSystem.ModOptions) do
 			modOptionValues[v.Key] = v.Value
 		end
 		utils.saveOptionsToFile(modOptionValues)

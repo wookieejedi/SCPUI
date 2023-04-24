@@ -275,7 +275,7 @@ function utils.parseOptions(data)
 			end
 		end
 		
-		table.insert(RocketUiSystem.ModOptions, entry)
+		table.insert(ScpuiSystem.ModOptions, entry)
 	end
 	
 	parse.requiredString("#End")

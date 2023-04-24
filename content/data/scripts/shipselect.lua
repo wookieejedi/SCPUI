@@ -8,14 +8,14 @@ local async_util = require("async_util")
 
 local ShipSelectController = class()
 
-RocketUiSystem.modelDraw = nil
+ScpuiSystem.modelDraw = nil
 
 function ShipSelectController:init()
-	if not RocketUiSystem.selectInit then
+	if not ScpuiSystem.selectInit then
 		ui.ShipWepSelect.initSelect()
-		RocketUiSystem.selectInit = true
+		ScpuiSystem.selectInit = true
 	end
-	RocketUiSystem.modelDraw = {}
+	ScpuiSystem.modelDraw = {}
 	self.help_shown = false
 end
 
@@ -68,7 +68,7 @@ function ShipSelectController:initialize(document)
 		if ui.ShipWepSelect.Ship_Pool[i] > 0 then
 			if rocketUiIcons[shipList[i].Name] == nil then
 				ba.warning("No generated icon was found for " .. shipList[i].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
-				RocketUiSystem:setIconFrames(shipList[i].Name)
+				ScpuiSystem:setIconFrames(shipList[i].Name)
 			end
 			self.list[j] = {
 				Index = i,
@@ -362,7 +362,7 @@ function ShipSelectController:AppendToPool(ship)
 
 	if rocketUiIcons[tb.ShipClasses[ship].Name] == nil then
 		ba.warning("No generated icon was found for " .. tb.ShipClasses[ship].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
-		RocketUiSystem:setIconFrames(tb.ShipClasses[ship].Name, true)
+		ScpuiSystem:setIconFrames(tb.ShipClasses[ship].Name, true)
 	end
 
 	i = #self.list + 1
@@ -391,7 +391,7 @@ end
 
 function ShipSelectController:ReloadList()
 
-	RocketUiSystem.modelDraw.class = nil
+	ScpuiSystem.modelDraw.class = nil
 	local list_items_el = self.document:GetElementById("ship_icon_list_ul")
 	self:ClearEntries(list_items_el)
 	self.SelectedEntry = nil
@@ -505,9 +505,9 @@ function ShipSelectController:SelectEntry(entry)
 		self:BuildInfo(entry)
 		
 		if self.ship3d or entry.Anim == nil then
-			RocketUiSystem.modelDraw.class = entry.Index
-			RocketUiSystem.modelDraw.element = self.document:GetElementById("ship_view_wrapper")
-			RocketUiSystem.modelDraw.start = true
+			ScpuiSystem.modelDraw.class = entry.Index
+			ScpuiSystem.modelDraw.element = self.document:GetElementById("ship_view_wrapper")
+			ScpuiSystem.modelDraw.start = true
 		else
 			--the anim is already created so we only need to remove and reset the src
 			self.aniEl:RemoveAttribute("src")
@@ -789,8 +789,8 @@ function ShipSelectController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
 	currentDialog = true
-	RocketUiSystem.modelDraw.save = RocketUiSystem.modelDraw.class
-	RocketUiSystem.modelDraw.class = nil
+	ScpuiSystem.modelDraw.save = ScpuiSystem.modelDraw.class
+	ScpuiSystem.modelDraw.class = nil
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -801,8 +801,8 @@ function ShipSelectController:Show(text, title, buttons)
 		end
 		dialog:show(self.document.context)
 		:continueWith(function(response)
-			RocketUiSystem.modelDraw.class = RocketUiSystem.modelDraw.save
-			RocketUiSystem.modelDraw.save = nil
+			ScpuiSystem.modelDraw.class = ScpuiSystem.modelDraw.save
+			ScpuiSystem.modelDraw.save = nil
     end)
 	-- Route input to our context until the user dismisses the dialog box.
 	ui.enableInput(self.document.context)
@@ -845,12 +845,12 @@ function ShipSelectController:accept_pressed()
 	--Success!
 	else
 		text = nil
-		RocketUiSystem.selectInit = false
-		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
-			RocketUiSystem.music_handle:close(true)
+		ScpuiSystem.selectInit = false
+		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+			ScpuiSystem.music_handle:close(true)
 		end
-		RocketUiSystem.music_handle = nil
-		RocketUiSystem.current_played = nil
+		ScpuiSystem.music_handle = nil
+		ScpuiSystem.current_played = nil
 	end
 
 	if text ~= nil then
@@ -887,11 +887,11 @@ end
 
 function ShipSelectController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
-			RocketUiSystem.music_handle:close(true)
+		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+			ScpuiSystem.music_handle:close(true)
 		end
-		RocketUiSystem.music_handle = nil
-		RocketUiSystem.current_played = nil
+		ScpuiSystem.music_handle = nil
+		ScpuiSystem.current_played = nil
         event:StopPropagation()
 
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
@@ -905,7 +905,7 @@ end
 
 function ShipSelectController:unload()
 
-	RocketUiSystem.modelDraw.class = nil
+	ScpuiSystem.modelDraw.class = nil
 	ui.ShipWepSelect:saveLoadout()
 	
 end
@@ -917,25 +917,25 @@ function ShipSelectController:startMusic()
         return
     end
 
-	if filename ~= RocketUiSystem.current_played then
+	if filename ~= ScpuiSystem.current_played then
 	
-		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
-			RocketUiSystem.music_handle:close(true)
+		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+			ScpuiSystem.music_handle:close(true)
 		end
 
-		RocketUiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
-		RocketUiSystem.music_handle:play(ad.MasterEventMusicVolume, true)
-		RocketUiSystem.current_played = filename
+		ScpuiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+		ScpuiSystem.music_handle:play(ad.MasterEventMusicVolume, true)
+		ScpuiSystem.current_played = filename
 	end
 end
 
 function ShipSelectController:drawSelectModel()
 
-	if RocketUiSystem.modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_SHIP_SELECT" then  --Haaaaaaacks
+	if ScpuiSystem.modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_SHIP_SELECT" then  --Haaaaaaacks
 
 		--local thisItem = tb.ShipClasses(modelDraw.class)
 		
-		local modelView = RocketUiSystem.modelDraw.element	
+		local modelView = ScpuiSystem.modelDraw.element	
 		local modelLeft = modelView.parent_node.offset_left + modelView.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + modelView.offset_top
 		local modelWidth = modelView.offset_width
@@ -954,9 +954,9 @@ function ShipSelectController:drawSelectModel()
 		modelWidth = modelWidth * (1 + val)
 		modelHeight = modelHeight * (1 + val)
 		
-		local test = tb.ShipClasses[RocketUiSystem.modelDraw.class]:renderSelectModel(RocketUiSystem.modelDraw.start, modelLeft, modelTop, modelWidth, modelHeight)
+		local test = tb.ShipClasses[ScpuiSystem.modelDraw.class]:renderSelectModel(ScpuiSystem.modelDraw.start, modelLeft, modelTop, modelWidth, modelHeight)
 		
-		RocketUiSystem.modelDraw.start = false
+		ScpuiSystem.modelDraw.start = false
 		
 	end
 

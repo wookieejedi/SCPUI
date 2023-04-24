@@ -66,13 +66,13 @@ end
 
 function AbstractBriefingController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
-			RocketUiSystem.music_handle:close(true)
+		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+			ScpuiSystem.music_handle:close(true)
 		end
-		RocketUiSystem.music_handle = nil
-		RocketUiSystem.current_played = nil
-		RocketUiSystem.music_started = nil
-		RocketUiSystem.selectInit = false
+		ScpuiSystem.music_handle = nil
+		ScpuiSystem.current_played = nil
+		ScpuiSystem.music_started = nil
+		ScpuiSystem.selectInit = false
         event:StopPropagation()
 		
 		mn.unloadMission(true)
@@ -187,19 +187,19 @@ function AbstractBriefingController:startMusic()
         return
     end
 	
-	if filename ~= RocketUiSystem.current_played then
+	if filename ~= ScpuiSystem.current_played then
 	
-		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
-			RocketUiSystem.music_handle:close(true)
+		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+			ScpuiSystem.music_handle:close(true)
 		end
 	
-		--RocketUiSystem.current_played = filename
+		--ScpuiSystem.current_played = filename
 
-		RocketUiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+		ScpuiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
 		async.run(function()
 			async.await(async_util.wait_for(2.5))
-			RocketUiSystem.music_handle:play(ad.MasterEventMusicVolume, true)
-			RocketUiSystem.current_played = filename
+			ScpuiSystem.music_handle:play(ad.MasterEventMusicVolume, true)
+			ScpuiSystem.current_played = filename
 		end, async.OnFrameExecutor, self.uiActiveContext)
 	end
 end
