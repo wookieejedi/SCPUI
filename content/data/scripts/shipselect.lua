@@ -600,12 +600,13 @@ function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
 			self.document:GetElementById(replace_el.id):AppendChild(imgEl)
 			replace_el:SetClass("drag", true)
 			
-			self:SetFilled(self.activeSlot, true)
-			
 			--This is where we return the previous ship and its weapons to the pool
 			if ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex > 1 then
 				self:ReturnShip(self.activeSlot)
 			end
+			
+			self:SetFilled(self.activeSlot, true)
+			
 			--Now set the new ship and weapons
 			ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex = shipIndex
 			self:SetDefaultWeapons(self.activeSlot, shipIndex)
@@ -642,13 +643,14 @@ function ShipSelectController:DragSlotEnd(element, entry, shipIndex, currentSlot
 		self.slots[currentSlot].Name = nil
 		element:SetClass("drag", false)
 		
-		self:SetFilled(currentSlot, false)
-		self:SetFilled(self.activeSlot, true)
-		
 		--This is where we return the previous ship and its weapons to the pool
 		if ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex > 1 then
 			self:ReturnShip(self.activeSlot)
 		end
+		
+		self:SetFilled(currentSlot, false)
+		self:SetFilled(self.activeSlot, true)
+
 		--Now set the new ship and weapons
 		ui.ShipWepSelect.Loadout_Ships[self.activeSlot].ShipClassIndex = shipIndex
 		self:SetDefaultWeapons(self.activeSlot, shipIndex)
