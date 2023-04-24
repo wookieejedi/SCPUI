@@ -16,8 +16,8 @@ function LoopBriefController:initialize(document)
     --AbstractLoopBriefController.initialize(self, document)
 
 	---Load the desired font size from the save file
-	if modOptionValues.Font_Multiplier then
-		fontChoice = modOptionValues.Font_Multiplier
+	if ScpuiOptionValues.Font_Multiplier then
+		fontChoice = ScpuiOptionValues.Font_Multiplier
 		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
 	else
 		ba.warning("default")

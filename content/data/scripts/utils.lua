@@ -11,8 +11,8 @@ function utils.loadOptionsFromFile()
 	local file = nil
 	local config = {}
   
-	if cf.fileExists('mod_options.cfg') then
-		file = cf.openFile('mod_options.cfg', 'r', location)
+	if cf.fileExists('scpui_options.cfg') then
+		file = cf.openFile('scpui_options.cfg', 'r', location)
 		config = json.decode(file:read('*a'))
 		file:close()
 		if not config then
@@ -46,8 +46,8 @@ function utils.saveOptionsToFile(data)
 	local file = nil
 	local config = {}
   
-	if cf.fileExists('mod_options.cfg') then
-		file = cf.openFile('mod_options.cfg', 'r', location)
+	if cf.fileExists('scpui_options.cfg') then
+		file = cf.openFile('scpui_options.cfg', 'r', location)
 		config = json.decode(file:read('*a'))
 		file:close()
 		if not config then
@@ -69,7 +69,7 @@ function utils.saveOptionsToFile(data)
 	
 	config = utils.cleanPilotsFromSaveData(config)
   
-	file = cf.openFile('mod_options.cfg', 'w', location)
+	file = cf.openFile('scpui_options.cfg', 'w', location)
 	file:write(json.encode(config))
 	file:close()
 end

@@ -86,8 +86,8 @@ function BriefingController:initialize(document)
 		
 
 	---Load the desired font size from the save file
-	if modOptionValues.Font_Multiplier then
-		fontChoice = modOptionValues.Font_Multiplier
+	if ScpuiOptionValues.Font_Multiplier then
+		fontChoice = ScpuiOptionValues.Font_Multiplier
 		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
 	else
 		self.document:GetElementById("main_background"):SetClass("p1-5", true)
@@ -280,12 +280,12 @@ function BriefingController:drawMap()
 	gr.setLineWidth(2.0)
 	
 	if ScpuiSystem.drawBrMap.draw == true then
-		if string.lower(modOptionValues.Brief_Render_Option) == "texture" then
+		if string.lower(ScpuiOptionValues.Brief_Render_Option) == "texture" then
 			gr.setTarget(ScpuiSystem.drawBrMap.tex)
 			gr.clearScreen(0,0,0,0)
 			ui.Briefing.drawBriefingMap(0, 0, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
 			
-		elseif string.lower(modOptionValues.Brief_Render_Option) == "screen" then
+		elseif string.lower(ScpuiOptionValues.Brief_Render_Option) == "screen" then
 			gr.clearScreen(0,0,0,0)
 			gr.setTarget()
 			ui.Briefing.drawBriefingMap(ScpuiSystem.drawBrMap.x1, ScpuiSystem.drawBrMap.y1, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
@@ -456,7 +456,7 @@ function BriefingController:mouse_move(element, event)
 		ScpuiSystem.drawBrMap.bx = event.parameters.mouse_x
 		ScpuiSystem.drawBrMap.by = event.parameters.mouse_y
 			
-		if string.lower(modOptionValues.Brief_Render_Option) == "texture" then
+		if string.lower(ScpuiOptionValues.Brief_Render_Option) == "texture" then
 		
 			local grid_el = self.document:GetElementById("briefing_grid")
 			local gx = grid_el.offset_left + grid_el.parent_node.offset_left + grid_el.parent_node.parent_node.offset_left

@@ -26,8 +26,8 @@ function CommandBriefingController:initialize(document)
 
 	ui.maybePlayCutscene(MOVIE_PRE_CMD_BRIEF, true, 0)
 	---Load the desired font size from the save file
-	if modOptionValues.Font_Multiplier then
-		local fontChoice = modOptionValues.Font_Multiplier
+	if ScpuiOptionValues.Font_Multiplier then
+		local fontChoice = ScpuiOptionValues.Font_Multiplier
 		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
 		self.document:GetElementById("cmd_text"):SetClass(("p2-" .. fontChoice), true)
 	else

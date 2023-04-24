@@ -18,8 +18,8 @@ function TechMissionsController:initialize(document)
     self.section = 1
 
 	---Load the desired font size from the save file
-	if modOptionValues.Font_Multiplier then
-		local fontChoice = modOptionValues.Font_Multiplier
+	if ScpuiOptionValues.Font_Multiplier then
+		local fontChoice = ScpuiOptionValues.Font_Multiplier
 		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
 	else
 		self.document:GetElementById("main_background"):SetClass("p1-5", true)
@@ -44,7 +44,7 @@ function TechMissionsController:initialize(document)
 	if ScpuiSystem.missionSection ~= nil then
 		newSection = ScpuiSystem.missionSection
 	else
-		local uidata = modOptionValues.simRoomChoice
+		local uidata = ScpuiOptionValues.simRoomChoice
 		if uidata == nil then
 			newSection = 1
 		else
@@ -106,8 +106,8 @@ function TechMissionsController:ChangeSection(section)
 	end
 	
 	--save the choice to the player file
-	modOptionValues.simRoomChoice = self.sectionIndex
-	utils.saveOptionsToFile(modOptionValues)
+	ScpuiOptionValues.simRoomChoice = self.sectionIndex
+	utils.saveOptionsToFile(ScpuiOptionValues)
 	
 	self.show_all = false
 	self.Counter = 0

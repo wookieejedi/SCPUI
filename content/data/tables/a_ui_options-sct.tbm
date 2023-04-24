@@ -19,10 +19,8 @@ end
 
 initModOptions()
 
-modOptionValues = {}
-
 --Here we load the global mod options or the defaults for use before a player is selected
-local saveFilename = 'mod_options_global.cfg'
+local saveFilename = 'scpui_options_global.cfg'
 if cf.fileExists(saveFilename, 'data/players', true) then
 	local file = cf.openFile(saveFilename, 'r', 'data/players')
 	local config = require('dkjson').decode(file:read('*a'))
@@ -31,15 +29,15 @@ if cf.fileExists(saveFilename, 'data/players', true) then
 		config = {}
 	end
 	
-	modOptionValues = config
+	ScpuiOptionValues = config
 else
-	modOptionValues = {}
+	ScpuiOptionValues = {}
 	for i, v in ipairs(ScpuiSystem.ModOptions) do
-		modOptionValues[v.Key] = v.Value
+		ScpuiOptionValues[v.Key] = v.Value
 	end
 	local json = require('dkjson')
 	local file = cf.openFile(saveFilename, 'w', 'data/players')
-	file:write(json.encode(modOptionValues))
+	file:write(json.encode(ScpuiOptionValues))
 	file:close()
 end
 
@@ -49,18 +47,18 @@ $On State End:
 [
 if ((hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT") and (hv.NewState.Name == "GS_STATE_MAIN_MENU")) or hv.OldState.Name == "GS_STATE_BARRACKS_MENU" then
 	--Here we load the mod options save data for the selected player
-	modOptionValues = {}
+	ScpuiOptionValues = {}
 	local utils = require('utils')
-	modOptionValues = utils.loadOptionsFromFile()
+	ScpuiOptionValues = utils.loadOptionsFromFile()
 	
 	--load defaults if we have bad data
-	if type(modOptionValues) ~= "table" then
-		ba.print("SCPUI: Got bad modOptionValues data! Loading defaults!")
-		modOptionValues = {}
+	if type(ScpuiOptionValues) ~= "table" then
+		ba.print("SCPUI: Got bad ScpuiOptionValues data! Loading defaults!")
+		ScpuiOptionValues = {}
 		for i, v in ipairs(ScpuiSystem.ModOptions) do
-			modOptionValues[v.Key] = v.Value
+			ScpuiOptionValues[v.Key] = v.Value
 		end
-		utils.saveOptionsToFile(modOptionValues)
+		utils.saveOptionsToFile(ScpuiOptionValues)
 	end
 end
 

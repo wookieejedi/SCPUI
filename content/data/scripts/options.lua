@@ -155,10 +155,10 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 		value = option.Value
 		range_val = option:getInterpolantFromValue(value)
 	else
-		local cur_val = (modOptionValues[Key]) or option.Value
+		local cur_val = (ScpuiOptionValues[Key]) or option.Value
 		value = (cur_val / #point_buttons) or 0
 		range_val = (cur_val / #point_buttons) or 0
-		customValues[Key] = modOptionValues[Key] or option.Value
+		customValues[Key] = ScpuiOptionValues[Key] or option.Value
 		default = option.Value
 	end
 	
@@ -420,8 +420,8 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
 	
 	if option.Category == "Custom" then
 		default = option.Value
-		option.Value = modOptionValues[Key] or option.Value
-		customValues[Key] = modOptionValues[Key] or option.Value
+		option.Value = ScpuiOptionValues[Key] or option.Value
+		customValues[Key] = ScpuiOptionValues[Key] or option.Value
 	end
 
     local value          = option.Value
@@ -509,8 +509,8 @@ function OptionsController:init_selection_element(element, option, vals, change_
 		end
 	
 		default = option.Value
-		option.Value = modOptionValues[Key] or option.ValidValues[count]
-		customValues[Key] = modOptionValues[Key] or option.ValidValues[count]
+		option.Value = ScpuiOptionValues[Key] or option.ValidValues[count]
+		customValues[Key] = ScpuiOptionValues[Key] or option.ValidValues[count]
 	end
 	
 	local value = option.Value
@@ -652,7 +652,7 @@ function OptionsController:init_range_element(element, value_el, option, change_
 	if option.Category ~= "Custom" then
 		range_el.value = option:getInterpolantFromValue(option.Value)
 	else
-		local thisValue = modOptionValues[Key] or option.Value
+		local thisValue = ScpuiOptionValues[Key] or option.Value
 		default = option.Value
 		option.Value = thisValue
 		range_el.value = thisValue / option.Max
@@ -703,10 +703,10 @@ function OptionsController:createHeaderOptionElement(option, parent_id)
     title_el.inner_rml = option.Title
 
 	---Load the desired font size from the save file
-	if modOptionValues.Font_Multiplier then
-		local fontSize = modOptionValues.Font_Multiplier + 1
+	if ScpuiOptionValues.Font_Multiplier then
+		local fontSize = ScpuiOptionValues.Font_Multiplier + 1
 		if fontSize > 10 then fontSize = 10 end
-		headerFontChoice = "p1-" .. modOptionValues.Font_Multiplier
+		headerFontChoice = "p1-" .. ScpuiOptionValues.Font_Multiplier
 		self.document:GetElementById(actual_el.id):SetClass(headerFontChoice, true)
 	else
 		self.document:GetElementById(actual_el.id):SetClass("p1-6", true)
@@ -997,8 +997,8 @@ function OptionsController:initialize(document)
     self.document = document
 	
 	---Load the desired font size from the save file
-	if modOptionValues.Font_Multiplier then
-		fontChoice = "p1-" .. modOptionValues.Font_Multiplier
+	if ScpuiOptionValues.Font_Multiplier then
+		fontChoice = "p1-" .. ScpuiOptionValues.Font_Multiplier
 		self.document:GetElementById("main_background"):SetClass(fontChoice, true)
 	else
 		self.document:GetElementById("main_background"):SetClass("p1-5", true)
@@ -1048,16 +1048,16 @@ end
 
 function OptionsController:acceptChanges(state)
 	
-	modOptionValues = customValues
+	ScpuiOptionValues = customValues
 
 	--Save mod options to file
-	utils.saveOptionsToFile(modOptionValues)
+	utils.saveOptionsToFile(ScpuiOptionValues)
 	
 	--Save mod options to global file for recalling before a player is selected
-	saveFilename = "mod_options_global.cfg"
+	saveFilename = "scpui_options_global.cfg"
 	local json = require('dkjson')
     local file = cf.openFile(saveFilename, 'w', 'data/players')
-    file:write(json.encode(modOptionValues))
+    file:write(json.encode(ScpuiOptionValues))
     file:close()
 
     local unchanged = opt.persistChanges()

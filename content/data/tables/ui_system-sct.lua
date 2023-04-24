@@ -17,7 +17,7 @@ ScpuiSystem = {
 	render = true
 }
 
-modOptionValues = {}
+ScpuiOptionValues = {}
 
 --RUN AWAY IT'S FRED!
 if ba.inMissionEditor() then
