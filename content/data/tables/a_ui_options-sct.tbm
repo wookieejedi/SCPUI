@@ -3,9 +3,9 @@ $Application: FS2_Open
 $On Game Init:
 [
 --Load up the options.tbl and tbms
-ScpuiSystem.ModOptions = {}
+ScpuiSystem.CustomOptions = {}
 
-function initModOptions()
+function ScpuiSystem:initCustomOptions()
 	local utils = require('utils')
 
 	if cf.fileExists('options.tbl') then
@@ -17,7 +17,7 @@ function initModOptions()
 	end
 end
 
-initModOptions()
+ScpuiSystem:initCustomOptions()
 
 --Here we load the global mod options or the defaults for use before a player is selected
 local saveFilename = 'scpui_options_global.cfg'
@@ -32,7 +32,7 @@ if cf.fileExists(saveFilename, 'data/players', true) then
 	ScpuiOptionValues = config
 else
 	ScpuiOptionValues = {}
-	for i, v in ipairs(ScpuiSystem.ModOptions) do
+	for i, v in ipairs(ScpuiSystem.CustomOptions) do
 		ScpuiOptionValues[v.Key] = v.Value
 	end
 	local json = require('dkjson')
@@ -55,7 +55,7 @@ if ((hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT") and (hv.NewState.Name
 	if type(ScpuiOptionValues) ~= "table" then
 		ba.print("SCPUI: Got bad ScpuiOptionValues data! Loading defaults!")
 		ScpuiOptionValues = {}
-		for i, v in ipairs(ScpuiSystem.ModOptions) do
+		for i, v in ipairs(ScpuiSystem.CustomOptions) do
 			ScpuiOptionValues[v.Key] = v.Value
 		end
 		utils.saveOptionsToFile(ScpuiOptionValues)

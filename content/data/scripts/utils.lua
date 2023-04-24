@@ -275,7 +275,7 @@ function utils.parseOptions(data)
 			end
 		end
 		
-		table.insert(ScpuiSystem.ModOptions, entry)
+		table.insert(ScpuiSystem.CustomOptions, entry)
 	end
 	
 	parse.requiredString("#End")
