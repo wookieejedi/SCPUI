@@ -280,6 +280,9 @@ function BriefingController:drawMap()
 	gr.setLineWidth(2.0)
 	
 	if ScpuiSystem.drawBrMap.draw == true then
+		if ScpuiOptionValues.Brief_Render_Option == nil then
+			ScpuiOptionValues.Brief_Render_Option = "screen"
+		end
 		if string.lower(ScpuiOptionValues.Brief_Render_Option) == "texture" then
 			gr.setTarget(ScpuiSystem.drawBrMap.tex)
 			gr.clearScreen(0,0,0,0)
