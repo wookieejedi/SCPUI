@@ -5,11 +5,11 @@ local async_util = require("async_util")
 local HudConfigController = class()
 local fontMultiplier = nil
 
-local drawHUD = nil
+RocketUiSystem.drawHUD = nil
 
 function HudConfigController:init()
 
-	drawHUD = {}
+	RocketUiSystem.drawHUD = {}
 	
 	self.default = "hud_3.hcf"
 	
@@ -70,9 +70,9 @@ function HudConfigController:initialize(document)
 	
 	ui.HudConfig.initHudConfig(hx, hy, hw)
 	
-	drawHUD.mx = 0
-	drawHUD.my = 0
-	drawHUD.draw = true
+	RocketUiSystem.drawHUD.mx = 0
+	RocketUiSystem.drawHUD.my = 0
+	RocketUiSystem.drawHUD.draw = true
 	
 	self.r = 0
 	self.g = 0
@@ -305,11 +305,11 @@ function HudConfigController:global_keydown(_, event)
 end
 
 function HudConfigController:drawHUD()
-	if drawHUD ~= nil then
-		if drawHUD.draw == false then
+	if RocketUiSystem.drawHUD ~= nil then
+		if RocketUiSystem.drawHUD.draw == false then
 			return
 		end
-		drawHUD.gauge = ui.HudConfig.drawHudConfig(drawHUD.mx, drawHUD.my)
+		RocketUiSystem.drawHUD.gauge = ui.HudConfig.drawHudConfig(RocketUiSystem.drawHUD.mx, RocketUiSystem.drawHUD.my)
 	end
 end
 
@@ -510,9 +510,9 @@ function HudConfigController:mouse_click()
 	
 	self.click = true
 
-	if drawHUD.gauge then
+	if RocketUiSystem.drawHUD.gauge then
 		self.curGaugeName = nil
-		self.selectedGauge = drawHUD.gauge
+		self.selectedGauge = RocketUiSystem.drawHUD.gauge
 		self.selectedGauge:setSelected(true)
 		
 		local color = self.selectedGauge.CurrentColor
@@ -533,9 +533,9 @@ end
 
 function HudConfigController:mouse_move(element, event)
 
-	if drawHUD ~= nil then
-		drawHUD.mx = event.parameters.mouse_x
-		drawHUD.my = event.parameters.mouse_y
+	if RocketUiSystem.drawHUD ~= nil then
+		RocketUiSystem.drawHUD.mx = event.parameters.mouse_x
+		RocketUiSystem.drawHUD.my = event.parameters.mouse_y
 	end
 	
 end
@@ -544,7 +544,7 @@ function HudConfigController:Show(text, title, input, buttons)
 	--Create a simple dialog box with the text and title
 
 	currentDialog = true
-	drawHUD.draw = false
+	RocketUiSystem.drawHUD.draw = false
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -582,7 +582,7 @@ end
 function HudConfigController:dialog_response(response)
 	local path = self.promptControl
 	self.promptControl = nil
-	drawHUD.draw = true
+	RocketUiSystem.drawHUD.draw = true
 	if path == 1 then
 		self:savePreset(response)
 	end

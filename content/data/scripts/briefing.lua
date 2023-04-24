@@ -6,7 +6,7 @@ local AbstractBriefingController = require("briefingCommon")
 
 local BriefingController = class(AbstractBriefingController)
 
-local drawMap = nil
+RocketUiSystem.drawBrMap = nil
 
 function BriefingController:init()
     --- @type briefing_stage[]
@@ -22,7 +22,7 @@ function BriefingController:init()
         stage_text_el = "brief_stage_text_el",
     }
 	
-	drawMap = {
+	RocketUiSystem.drawBrMap = {
 		tex = nil,
 		modelRot = 40
 	}
@@ -57,14 +57,14 @@ function BriefingController:initialize(document)
 	--the percent change here and use that to calculate the height below.
 	local percentChange = ((briefView.offset_width - 888) / 888) * 100
 	
-	drawMap.x1 = viewLeft
-	drawMap.y1 = viewTop
-	drawMap.x2 = briefView.offset_width
-	drawMap.y2 = self:calcPercent(371, (100 + percentChange))
+	RocketUiSystem.drawBrMap.x1 = viewLeft
+	RocketUiSystem.drawBrMap.y1 = viewTop
+	RocketUiSystem.drawBrMap.x2 = briefView.offset_width
+	RocketUiSystem.drawBrMap.y2 = self:calcPercent(371, (100 + percentChange))
 	
 	ui.Briefing.initBriefing()
 
-	--ui.Briefing.startBriefingMap(drawMap.x1, drawMap.y1, drawMap.x2, drawMap.y2)
+	--ui.Briefing.startBriefingMap(RocketUiSystem.drawBrMap.x1, RocketUiSystem.drawBrMap.y1, RocketUiSystem.drawBrMap.x2, RocketUiSystem.drawBrMap.y2)
 	
 	if mn.hasNoBriefing() then
 		RocketUiSystem.selectInit = false
@@ -155,11 +155,11 @@ function BriefingController:initialize(document)
 	
 	self:buildGoals()
 	
-	drawMap.tex = gr.createTexture(drawMap.x2, drawMap.y2)
-	drawMap.url = ui.linkTexture(drawMap.tex)
-	drawMap.draw = true
+	RocketUiSystem.drawBrMap.tex = gr.createTexture(RocketUiSystem.drawBrMap.x2, RocketUiSystem.drawBrMap.y2)
+	RocketUiSystem.drawBrMap.url = ui.linkTexture(RocketUiSystem.drawBrMap.tex)
+	RocketUiSystem.drawBrMap.draw = true
 	local aniEl = self.document:CreateElement("img")
-    aniEl:SetAttribute("src", drawMap.url)
+    aniEl:SetAttribute("src", RocketUiSystem.drawBrMap.url)
 	briefView:ReplaceChild(aniEl, briefView.first_child)
 
 end
@@ -233,11 +233,11 @@ function BriefingController:go_to_stage(stage_idx)
 	if mn.hasGoalsStage() and stage_idx == #self.stages then
 		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
 		self.document:GetElementById("briefing_goals"):SetClass("hidden", false)
-		drawMap.goals = true
+		RocketUiSystem.drawBrMap.goals = true
 	else
 		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
 		self.document:GetElementById("briefing_goals"):SetClass("hidden", true)
-		drawMap.goals = false
+		RocketUiSystem.drawBrMap.goals = false
 	end
 	
 	local brief_bg_src = self.document:CreateElement("img")
@@ -248,7 +248,7 @@ end
 
 function BriefingController:CutToStage()
 	ad.playInterfaceSound(42)
-	drawMap.draw = false
+	RocketUiSystem.drawBrMap.draw = false
 	self.aniWrapper = self.document:GetElementById("brief_grid_cut")
 	ad.playInterfaceSound(42)
     local aniEl = self.document:CreateElement("ani")
@@ -257,7 +257,7 @@ function BriefingController:CutToStage()
 	
 	async.run(function()
         async.await(async_util.wait_for(0.7))
-        drawMap.draw = true
+        RocketUiSystem.drawBrMap.draw = true
 		self.aniWrapper:RemoveChild(self.aniWrapper.first_child)
     end, async.OnFrameExecutor, self.uiActiveContext)
 end
@@ -265,13 +265,13 @@ end
 function BriefingController:drawMap()
 	
 	--Testing icon ship rendering stuff
-	drawMap.modelRot = drawMap.modelRot + (7 * ba.getRealFrametime())
+	RocketUiSystem.drawBrMap.modelRot = RocketUiSystem.drawBrMap.modelRot + (7 * ba.getRealFrametime())
 
-	if drawMap.modelRot >= 100 then
-		drawMap.modelRot = drawMap.modelRot - 100
+	if RocketUiSystem.drawBrMap.modelRot >= 100 then
+		RocketUiSystem.drawBrMap.modelRot = RocketUiSystem.drawBrMap.modelRot - 100
 	end
 
-	gr.setTarget(drawMap.tex)
+	gr.setTarget(RocketUiSystem.drawBrMap.tex)
 	
 	local r = 160
 	local g = 144
@@ -279,16 +279,16 @@ function BriefingController:drawMap()
 	local a = 255
 	gr.setLineWidth(2.0)
 	
-	if drawMap.draw == true then
+	if RocketUiSystem.drawBrMap.draw == true then
 		if string.lower(modOptionValues.Brief_Render_Option) == "texture" then
-			gr.setTarget(drawMap.tex)
+			gr.setTarget(RocketUiSystem.drawBrMap.tex)
 			gr.clearScreen(0,0,0,0)
-			ui.Briefing.drawBriefingMap(0, 0, drawMap.x2, drawMap.y2)
+			ui.Briefing.drawBriefingMap(0, 0, RocketUiSystem.drawBrMap.x2, RocketUiSystem.drawBrMap.y2)
 			
 		elseif string.lower(modOptionValues.Brief_Render_Option) == "screen" then
 			gr.clearScreen(0,0,0,0)
 			gr.setTarget()
-			ui.Briefing.drawBriefingMap(drawMap.x1, drawMap.y1, drawMap.x2, drawMap.y2)
+			ui.Briefing.drawBriefingMap(RocketUiSystem.drawBrMap.x1, RocketUiSystem.drawBrMap.y1, RocketUiSystem.drawBrMap.x2, RocketUiSystem.drawBrMap.y2)
 			
 		end
 		
@@ -298,7 +298,7 @@ function BriefingController:drawMap()
 	
 	gr.setTarget()
 	
-	if drawMap.pof ~= nil then
+	if RocketUiSystem.drawBrMap.pof ~= nil then
 		
 		--get the current color and save it
 		local prev_c = {
@@ -313,10 +313,10 @@ function BriefingController:drawMap()
 		--set the box coords and size
 		local bx_size = math.floor(0.20 * gr.getScreenHeight()) --size of the box is 15% of screen height
 		local bx_dist = 5 --this is the distance the box is drawn from the mouse in pixels
-		local bx1 = drawMap.bx - bx_size - bx_dist
-		local by1 = drawMap.by - bx_size - bx_dist
-		local bx2 = drawMap.bx - bx_dist
-		local by2 = drawMap.by - bx_dist
+		local bx1 = RocketUiSystem.drawBrMap.bx - bx_size - bx_dist
+		local by1 = RocketUiSystem.drawBrMap.by - bx_size - bx_dist
+		local bx2 = RocketUiSystem.drawBrMap.bx - bx_dist
+		local by2 = RocketUiSystem.drawBrMap.by - bx_dist
 		
 		--set the current color to black
 		gr.setColor(0, 0, 0, 255)
@@ -331,21 +331,21 @@ function BriefingController:drawMap()
 		gr.drawLine(bx2, by2, bx1, by2)
 		gr.drawLine(bx2, by2, bx2, by1)
 		
-		local ship = tb.ShipClasses[drawMap.pof]
+		local ship = tb.ShipClasses[RocketUiSystem.drawBrMap.pof]
 		if ship.Name == "" then
 			local jumpnode = false
-			if drawMap.pof == "subspacenode.pof" then
+			if RocketUiSystem.drawBrMap.pof == "subspacenode.pof" then
 				jumpnode = true
 			end
-			ui.Briefing.renderBriefingModel(drawMap.pof, drawMap.closeupZoom, drawMap.closeupPos, bx1+1, by1+1, bx2-1, by2-1, drawMap.modelRot, -15, 0, 1.1, true, jumpnode)
+			ui.Briefing.renderBriefingModel(RocketUiSystem.drawBrMap.pof, RocketUiSystem.drawBrMap.closeupZoom, RocketUiSystem.drawBrMap.closeupPos, bx1+1, by1+1, bx2-1, by2-1, RocketUiSystem.drawBrMap.modelRot, -15, 0, 1.1, true, jumpnode)
 		else
-			ship:renderTechModel(bx1+1, by1+1, bx2-1, by2-1, drawMap.modelRot, -15, 0, 1.1)
+			ship:renderTechModel(bx1+1, by1+1, bx2-1, by2-1, RocketUiSystem.drawBrMap.modelRot, -15, 0, 1.1)
 		end
 		
 		--set the current color to light grey
 		gr.setColor(150, 150, 150, 255)
 		
-		gr.drawString(drawMap.label, bx1+1, by1+1, bx2-1, by2-1)
+		gr.drawString(RocketUiSystem.drawBrMap.label, bx1+1, by1+1, bx2-1, by2-1)
 		
 		--reset the color
 		gr.setColor(prev_c.r, prev_c.g, prev_c.b, prev_c.a)
@@ -357,7 +357,7 @@ function BriefingController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
 	currentDialog = true
-	drawMap.draw = false
+	RocketUiSystem.drawBrMap.draw = false
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -368,7 +368,7 @@ function BriefingController:Show(text, title, buttons)
 		dialog:escape("")
 		dialog:show(self.document.context)
 		:continueWith(function(response)
-			drawMap.draw = true
+			RocketUiSystem.drawBrMap.draw = true
     end)
 	-- Route input to our context until the user dismisses the dialog box.
 	ui.enableInput(self.document.context)
@@ -405,10 +405,10 @@ function BriefingController:acceptPressed()
 	--Success!
 	else
 		text = nil
-		if drawMap then
-			drawMap.tex:unload()
-			drawMap.tex = nil
-			drawMap = nil
+		if RocketUiSystem.drawBrMap then
+			RocketUiSystem.drawBrMap.tex:unload()
+			RocketUiSystem.drawBrMap.tex = nil
+			RocketUiSystem.drawBrMap = nil
 		end
 		RocketUiSystem.selectInit = false
 		if RocketUiSystem.music_handle ~= nil and RocketUiSystem.music_handle:isValid() then
@@ -448,13 +448,13 @@ end
 
 function BriefingController:mouse_move(element, event)
 
-	if drawMap ~= nil then
-		drawMap.mx = event.parameters.mouse_x
-		drawMap.my = event.parameters.mouse_y
+	if RocketUiSystem.drawBrMap ~= nil then
+		RocketUiSystem.drawBrMap.mx = event.parameters.mouse_x
+		RocketUiSystem.drawBrMap.my = event.parameters.mouse_y
 		
 		--for the ship box preview coords regardless of briefing render type
-		drawMap.bx = event.parameters.mouse_x
-		drawMap.by = event.parameters.mouse_y
+		RocketUiSystem.drawBrMap.bx = event.parameters.mouse_x
+		RocketUiSystem.drawBrMap.by = event.parameters.mouse_y
 			
 		if string.lower(modOptionValues.Brief_Render_Option) == "texture" then
 		
@@ -462,17 +462,17 @@ function BriefingController:mouse_move(element, event)
 			local gx = grid_el.offset_left + grid_el.parent_node.offset_left + grid_el.parent_node.parent_node.offset_left
 			local gy = grid_el.offset_top + grid_el.parent_node.offset_top + grid_el.parent_node.parent_node.offset_top
 			
-			drawMap.mx = drawMap.mx - gx
-			drawMap.my = drawMap.my - gy
+			RocketUiSystem.drawBrMap.mx = RocketUiSystem.drawBrMap.mx - gx
+			RocketUiSystem.drawBrMap.my = RocketUiSystem.drawBrMap.my - gy
 
 		end
 		
-		if ((drawMap.mx ~= nil) and (drawMap.my ~= nil)) then
-			drawMap.pof, drawMap.closeupZoom, drawMap.closeupPos, drawMap.label, drawMap.iconID = ui.Briefing.checkStageIcons(drawMap.mx, drawMap.my)
+		if ((RocketUiSystem.drawBrMap.mx ~= nil) and (RocketUiSystem.drawBrMap.my ~= nil)) then
+			RocketUiSystem.drawBrMap.pof, RocketUiSystem.drawBrMap.closeupZoom, RocketUiSystem.drawBrMap.closeupPos, RocketUiSystem.drawBrMap.label, RocketUiSystem.drawBrMap.iconID = ui.Briefing.checkStageIcons(RocketUiSystem.drawBrMap.mx, RocketUiSystem.drawBrMap.my)
 		end
 		
-		if drawMap.pof == nil then
-			drawMap.modelRot = 40
+		if RocketUiSystem.drawBrMap.pof == nil then
+			RocketUiSystem.drawBrMap.modelRot = 40
 		end
 	end
 

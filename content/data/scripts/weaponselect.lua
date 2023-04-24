@@ -8,14 +8,14 @@ local async_util = require("async_util")
 
 local WeaponSelectController = class()
 
-local modelDraw = nil
+RocketUiSystem.modelDraw = nil
 
 function WeaponSelectController:init()
 	if not RocketUiSystem.selectInit then
 		ui.ShipWepSelect.initSelect()
 		RocketUiSystem.selectInit = true
 	end
-	modelDraw = {}
+	RocketUiSystem.modelDraw = {}
 	self.help_shown = false
 end
 
@@ -28,7 +28,7 @@ function WeaponSelectController:initialize(document)
 	self.aniWepEl = self.document:CreateElement("ani")
 	self.requiredWeps = {}
 	self.emptyWingSlot = {}
-	modelDraw.banks = {
+	RocketUiSystem.modelDraw.banks = {
 		bank1 = self.document:GetElementById("primary_one"),
 		bank2 = self.document:GetElementById("primary_two"),
 		bank3 = self.document:GetElementById("primary_three"),
@@ -593,8 +593,8 @@ end
 
 function WeaponSelectController:ReloadList()
 
-	modelDraw.class = nil
-	modelDraw.OverheadClass = nil
+	RocketUiSystem.modelDraw.class = nil
+	RocketUiSystem.modelDraw.OverheadClass = nil
 	local list_items_el = self.document:GetElementById("primary_icon_list_ul")
 	self:ClearEntries(list_items_el)
 	local list_items_el = self.document:GetElementById("secondary_icon_list_ul")
@@ -723,9 +723,9 @@ function WeaponSelectController:SelectEntry(entry)
 			self:BuildInfo(entry)
 			
 			if self.weapon3d or entry.Anim == nil then
-				modelDraw.class = entry.Index
-				modelDraw.element = self.document:GetElementById("weapon_view_window")
-				modelDraw.start = true
+				RocketUiSystem.modelDraw.class = entry.Index
+				RocketUiSystem.modelDraw.element = self.document:GetElementById("weapon_view_window")
+				RocketUiSystem.modelDraw.start = true
 			else
 				--the anim is already created so we only need to remove and reset the src
 				self.aniWepEl:RemoveAttribute("src")
@@ -790,7 +790,7 @@ function WeaponSelectController:HighlightWeapon()
 		end
 	end
 	
-	for i, v in pairs(modelDraw.banks) do
+	for i, v in pairs(RocketUiSystem.modelDraw.banks) do
 		local index = string.sub(i, -1)
 		local weapon = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[index]
 		if weapon > 0 then
@@ -862,12 +862,12 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 		self:HighlightWeapon()
 		
 		if self.overhead3d or overhead == nil then
-			modelDraw.OverheadClass = shipIndex
-			modelDraw.OverheadElement = self.document:GetElementById("ship_view_wrapper")
-			modelDraw.Slot = slot
+			RocketUiSystem.modelDraw.OverheadClass = shipIndex
+			RocketUiSystem.modelDraw.OverheadElement = self.document:GetElementById("ship_view_wrapper")
+			RocketUiSystem.modelDraw.Slot = slot
 			--STILL GOTTA HANDLE THIS!
-			modelDraw.Hover = self.hoverSlot
-			modelDraw.overheadEffect = self.overheadEffect
+			RocketUiSystem.modelDraw.Hover = self.hoverSlot
+			RocketUiSystem.modelDraw.overheadEffect = self.overheadEffect
 		else
 			--the anim is already created so we only need to remove and reset the src
 			self.aniEl:RemoveAttribute("src")
@@ -879,15 +879,15 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 end
 
 function WeaponSelectController:ClearWeaponSlots()
-	self:ClearEntries(modelDraw.banks.bank1)
-	self:ClearEntries(modelDraw.banks.bank2)
-	self:ClearEntries(modelDraw.banks.bank3)
-	self:ClearEntries(modelDraw.banks.bank4)
-	self:ClearEntries(modelDraw.banks.bank5)
-	self:ClearEntries(modelDraw.banks.bank6)
-	self:ClearEntries(modelDraw.banks.bank7)
+	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank1)
+	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank2)
+	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank3)
+	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank4)
+	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank5)
+	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank6)
+	self:ClearEntries(RocketUiSystem.modelDraw.banks.bank7)
 	
-	for i, v in pairs(modelDraw.banks) do
+	for i, v in pairs(RocketUiSystem.modelDraw.banks) do
 		v:SetClass("slot_3d", false)
 		v:SetClass("button_3", false)
 	end
@@ -902,51 +902,51 @@ function WeaponSelectController:BuildWeaponSlots(ship)
 	self:ClearWeaponSlots()
 
 	if tb.ShipClasses[ship].numPrimaryBanks > 0 then
-		self:BuildSlot(modelDraw.banks.bank1, 1)
+		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank1, 1)
 		if self.overhead3d then
-			modelDraw.banks.bank1:SetClass("slot_3d", true)
+			RocketUiSystem.modelDraw.banks.bank1:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numPrimaryBanks > 1 then
-		self:BuildSlot(modelDraw.banks.bank2, 2)
+		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank2, 2)
 		if self.overhead3d then
-			modelDraw.banks.bank2:SetClass("slot_3d", true)
+			RocketUiSystem.modelDraw.banks.bank2:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numPrimaryBanks > 2 then
-		self:BuildSlot(modelDraw.banks.bank3, 3)
+		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank3, 3)
 		if self.overhead3d then
-			modelDraw.banks.bank3:SetClass("slot_3d", true)
+			RocketUiSystem.modelDraw.banks.bank3:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numSecondaryBanks > 0 then
-		self:BuildSlot(modelDraw.banks.bank4, 4)
+		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank4, 4)
 		if self.overhead3d then
-			modelDraw.banks.bank4:SetClass("slot_3d", true)
+			RocketUiSystem.modelDraw.banks.bank4:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numSecondaryBanks > 1 then
-		self:BuildSlot(modelDraw.banks.bank5, 5)
+		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank5, 5)
 		if self.overhead3d then
-			modelDraw.banks.bank5:SetClass("slot_3d", true)
+			RocketUiSystem.modelDraw.banks.bank5:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numSecondaryBanks > 2 then
-		self:BuildSlot(modelDraw.banks.bank6, 6)
+		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank6, 6)
 		if self.overhead3d then
-			modelDraw.banks.bank6:SetClass("slot_3d", true)
+			RocketUiSystem.modelDraw.banks.bank6:SetClass("slot_3d", true)
 		end
 	end
 	
 	if tb.ShipClasses[ship].numSecondaryBanks > 3 then
-		self:BuildSlot(modelDraw.banks.bank7, 7)
+		self:BuildSlot(RocketUiSystem.modelDraw.banks.bank7, 7)
 		if self.overhead3d then
-			modelDraw.banks.bank7:SetClass("slot_3d", true)
+			RocketUiSystem.modelDraw.banks.bank7:SetClass("slot_3d", true)
 		end
 	end
 
@@ -1037,12 +1037,12 @@ end
 
 function WeaponSelectController:DragOver(element, slot)
 	if ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[slot] > 0 then
-		modelDraw.Hover = slot
+		RocketUiSystem.modelDraw.Hover = slot
 	end
 end
 
 function WeaponSelectController:DragOut(element, slot)
-	modelDraw.Hover = -1
+	RocketUiSystem.modelDraw.Hover = -1
 end
 
 --This one converts the slot (1-7) to actual banks (1-3 for primaries, 1-4 for secondaries)
@@ -1498,10 +1498,10 @@ function WeaponSelectController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
 	currentDialog = true
-	modelDraw.save = modelDraw.class
-	modelDraw.class = nil
-	modelDraw.OverheadSave = modelDraw.OverheadClass
-	modelDraw.OverheadClass = nil
+	RocketUiSystem.modelDraw.save = RocketUiSystem.modelDraw.class
+	RocketUiSystem.modelDraw.class = nil
+	RocketUiSystem.modelDraw.OverheadSave = RocketUiSystem.modelDraw.OverheadClass
+	RocketUiSystem.modelDraw.OverheadClass = nil
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -1512,10 +1512,10 @@ function WeaponSelectController:Show(text, title, buttons)
 		end
 		dialog:show(self.document.context)
 		:continueWith(function(response)
-			modelDraw.class = modelDraw.save
-			modelDraw.save = nil
-			modelDraw.OverheadClass = modelDraw.OverheadSave
-			modelDraw.OverheadSave = nil
+			RocketUiSystem.modelDraw.class = RocketUiSystem.modelDraw.save
+			RocketUiSystem.modelDraw.save = nil
+			RocketUiSystem.modelDraw.OverheadClass = RocketUiSystem.modelDraw.OverheadSave
+			RocketUiSystem.modelDraw.OverheadSave = nil
         --do nothing
     end)
 	-- Route input to our context until the user dismisses the dialog box.
@@ -1619,7 +1619,7 @@ end
 
 function WeaponSelectController:unload()
 
-	modelDraw.class = nil
+	RocketUiSystem.modelDraw.class = nil
 	ui.ShipWepSelect:saveLoadout()
 	
 end
@@ -1645,10 +1645,10 @@ end
 
 function WeaponSelectController:drawSelectModel()
 
-	if modelDraw.class and (ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT") and (modelDraw.element ~= nil) then  --Haaaaaaacks
+	if RocketUiSystem.modelDraw.class and (ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT") and (RocketUiSystem.modelDraw.element ~= nil) then  --Haaaaaaacks
 		
 		--local thisItem = tb.ShipClasses(modelDraw.class)
-		modelView = modelDraw.element	
+		modelView = RocketUiSystem.modelDraw.element	
 		local modelLeft = modelView.parent_node.offset_left + modelView.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + modelView.offset_top
 		local modelWidth = modelView.offset_width
@@ -1667,9 +1667,9 @@ function WeaponSelectController:drawSelectModel()
 		modelWidth = modelWidth * (1 + val)
 		modelHeight = modelHeight * (1 + val)
 		
-		local test = tb.WeaponClasses[modelDraw.class]:renderSelectModel(modelDraw.start, modelLeft, modelTop, modelWidth, modelHeight)
+		local test = tb.WeaponClasses[RocketUiSystem.modelDraw.class]:renderSelectModel(RocketUiSystem.modelDraw.start, modelLeft, modelTop, modelWidth, modelHeight)
 		
-		modelDraw.start = false
+		RocketUiSystem.modelDraw.start = false
 		
 	end
 
@@ -1677,13 +1677,13 @@ end
 
 function WeaponSelectController:drawOverheadModel()
 
-	if modelDraw.OverheadClass and ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT" then  --Haaaaaaacks
+	if RocketUiSystem.modelDraw.OverheadClass and ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT" then  --Haaaaaaacks
 	
-		if modelDraw.class == nil then modelDraw.class = -1 end
-		if modelDraw.Hover == nil then modelDraw.Hover = -1 end
+		if RocketUiSystem.modelDraw.class == nil then RocketUiSystem.modelDraw.class = -1 end
+		if RocketUiSystem.modelDraw.Hover == nil then RocketUiSystem.modelDraw.Hover = -1 end
 		
 		--local thisItem = tb.ShipClasses(modelDraw.class)
-		modelView = modelDraw.OverheadElement	
+		modelView = RocketUiSystem.modelDraw.OverheadElement	
 		local modelLeft = modelView.parent_node.offset_left + modelView.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + modelView.offset_top
 		local modelWidth = modelView.offset_width
@@ -1694,26 +1694,26 @@ function WeaponSelectController:drawOverheadModel()
 		local primary_offset = 15
 		local secondary_offset = -15
 		
-		local bank1_x = modelDraw.banks.bank1.offset_left + modelDraw.banks.bank1.parent_node.offset_left + modelLeft + modelDraw.banks.bank1.offset_width + primary_offset
-		local bank1_y = modelDraw.banks.bank1.offset_top + modelDraw.banks.bank1.parent_node.offset_top + modelTop + (modelDraw.banks.bank1.offset_height / 2)
+		local bank1_x = RocketUiSystem.modelDraw.banks.bank1.offset_left + RocketUiSystem.modelDraw.banks.bank1.parent_node.offset_left + modelLeft + RocketUiSystem.modelDraw.banks.bank1.offset_width + primary_offset
+		local bank1_y = RocketUiSystem.modelDraw.banks.bank1.offset_top + RocketUiSystem.modelDraw.banks.bank1.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank1.offset_height / 2)
 		
-		local bank2_x = modelDraw.banks.bank2.offset_left + modelDraw.banks.bank2.parent_node.offset_left + modelLeft + modelDraw.banks.bank2.offset_width + primary_offset
-		local bank2_y = modelDraw.banks.bank2.offset_top + modelDraw.banks.bank2.parent_node.offset_top + modelTop + (modelDraw.banks.bank2.offset_height / 2)
+		local bank2_x = RocketUiSystem.modelDraw.banks.bank2.offset_left + RocketUiSystem.modelDraw.banks.bank2.parent_node.offset_left + modelLeft + RocketUiSystem.modelDraw.banks.bank2.offset_width + primary_offset
+		local bank2_y = RocketUiSystem.modelDraw.banks.bank2.offset_top + RocketUiSystem.modelDraw.banks.bank2.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank2.offset_height / 2)
 		
-		local bank3_x = modelDraw.banks.bank3.offset_left + modelDraw.banks.bank3.parent_node.offset_left + modelLeft + modelDraw.banks.bank3.offset_width + primary_offset
-		local bank3_y = modelDraw.banks.bank3.offset_top + modelDraw.banks.bank3.parent_node.offset_top + modelTop + (modelDraw.banks.bank3.offset_height / 2)
+		local bank3_x = RocketUiSystem.modelDraw.banks.bank3.offset_left + RocketUiSystem.modelDraw.banks.bank3.parent_node.offset_left + modelLeft + RocketUiSystem.modelDraw.banks.bank3.offset_width + primary_offset
+		local bank3_y = RocketUiSystem.modelDraw.banks.bank3.offset_top + RocketUiSystem.modelDraw.banks.bank3.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank3.offset_height / 2)
 		
-		local bank4_x = modelDraw.banks.bank4.offset_left + modelDraw.banks.bank4.parent_node.offset_left + modelLeft + secondary_offset
-		local bank4_y = modelDraw.banks.bank4.offset_top + modelDraw.banks.bank4.parent_node.offset_top + modelTop + (modelDraw.banks.bank4.offset_height / 2)
+		local bank4_x = RocketUiSystem.modelDraw.banks.bank4.offset_left + RocketUiSystem.modelDraw.banks.bank4.parent_node.offset_left + modelLeft + secondary_offset
+		local bank4_y = RocketUiSystem.modelDraw.banks.bank4.offset_top + RocketUiSystem.modelDraw.banks.bank4.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank4.offset_height / 2)
 		
-		local bank5_x = modelDraw.banks.bank4.offset_left + modelDraw.banks.bank5.parent_node.offset_left + modelLeft + secondary_offset
-		local bank5_y = modelDraw.banks.bank5.offset_top + modelDraw.banks.bank5.parent_node.offset_top + modelTop + (modelDraw.banks.bank5.offset_height / 2)
+		local bank5_x = RocketUiSystem.modelDraw.banks.bank4.offset_left + RocketUiSystem.modelDraw.banks.bank5.parent_node.offset_left + modelLeft + secondary_offset
+		local bank5_y = RocketUiSystem.modelDraw.banks.bank5.offset_top + RocketUiSystem.modelDraw.banks.bank5.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank5.offset_height / 2)
 		
-		local bank6_x = modelDraw.banks.bank4.offset_left + modelDraw.banks.bank6.parent_node.offset_left + modelLeft + secondary_offset
-		local bank6_y = modelDraw.banks.bank6.offset_top + modelDraw.banks.bank6.parent_node.offset_top + modelTop + (modelDraw.banks.bank6.offset_height / 2)
+		local bank6_x = RocketUiSystem.modelDraw.banks.bank4.offset_left + RocketUiSystem.modelDraw.banks.bank6.parent_node.offset_left + modelLeft + secondary_offset
+		local bank6_y = RocketUiSystem.modelDraw.banks.bank6.offset_top + RocketUiSystem.modelDraw.banks.bank6.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank6.offset_height / 2)
 		
-		local bank7_x = modelDraw.banks.bank4.offset_left + modelDraw.banks.bank7.parent_node.offset_left + modelLeft + secondary_offset
-		local bank7_y = modelDraw.banks.bank7.offset_top + modelDraw.banks.bank7.parent_node.offset_top + modelTop + (modelDraw.banks.bank7.offset_height / 2)
+		local bank7_x = RocketUiSystem.modelDraw.banks.bank4.offset_left + RocketUiSystem.modelDraw.banks.bank7.parent_node.offset_left + modelLeft + secondary_offset
+		local bank7_y = RocketUiSystem.modelDraw.banks.bank7.offset_top + RocketUiSystem.modelDraw.banks.bank7.parent_node.offset_top + modelTop + (RocketUiSystem.modelDraw.banks.bank7.offset_height / 2)
 		
 		--This is just a multipler to make the rendered model a little bigger
 		--renderSelectModel() has forced centering, so we need to calculate
@@ -1728,9 +1728,9 @@ function WeaponSelectController:drawOverheadModel()
 		modelWidth = modelWidth * (1 + val)
 		modelHeight = modelHeight * (1 + val)
 		
-		local test = tb.ShipClasses[modelDraw.OverheadClass]:renderOverheadModel(modelLeft, modelTop, modelWidth, modelHeight, modelDraw.Slot, modelDraw.class, modelDraw.Hover, bank1_x, bank1_y, bank2_x, bank2_y, bank3_x, bank3_y, bank4_x, bank4_y, bank5_x, bank5_y, bank6_x, bank6_y, bank7_x, bank7_y, modelDraw.overheadEffect)
+		local test = tb.ShipClasses[RocketUiSystem.modelDraw.OverheadClass]:renderOverheadModel(modelLeft, modelTop, modelWidth, modelHeight, RocketUiSystem.modelDraw.Slot, RocketUiSystem.modelDraw.class, RocketUiSystem.modelDraw.Hover, bank1_x, bank1_y, bank2_x, bank2_y, bank3_x, bank3_y, bank4_x, bank4_y, bank5_x, bank5_y, bank6_x, bank6_y, bank7_x, bank7_y, RocketUiSystem.modelDraw.overheadEffect)
 		
-		modelDraw.start = false
+		RocketUiSystem.modelDraw.start = false
 		
 	end
 

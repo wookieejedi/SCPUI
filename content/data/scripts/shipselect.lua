@@ -8,14 +8,14 @@ local async_util = require("async_util")
 
 local ShipSelectController = class()
 
-local modelDraw = nil
+RocketUiSystem.modelDraw = nil
 
 function ShipSelectController:init()
 	if not RocketUiSystem.selectInit then
 		ui.ShipWepSelect.initSelect()
 		RocketUiSystem.selectInit = true
 	end
-	modelDraw = {}
+	RocketUiSystem.modelDraw = {}
 	self.help_shown = false
 end
 
@@ -391,7 +391,7 @@ end
 
 function ShipSelectController:ReloadList()
 
-	modelDraw.class = nil
+	RocketUiSystem.modelDraw.class = nil
 	local list_items_el = self.document:GetElementById("ship_icon_list_ul")
 	self:ClearEntries(list_items_el)
 	self.SelectedEntry = nil
@@ -505,9 +505,9 @@ function ShipSelectController:SelectEntry(entry)
 		self:BuildInfo(entry)
 		
 		if self.ship3d or entry.Anim == nil then
-			modelDraw.class = entry.Index
-			modelDraw.element = self.document:GetElementById("ship_view_wrapper")
-			modelDraw.start = true
+			RocketUiSystem.modelDraw.class = entry.Index
+			RocketUiSystem.modelDraw.element = self.document:GetElementById("ship_view_wrapper")
+			RocketUiSystem.modelDraw.start = true
 		else
 			--the anim is already created so we only need to remove and reset the src
 			self.aniEl:RemoveAttribute("src")
@@ -789,8 +789,8 @@ function ShipSelectController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
 	currentDialog = true
-	modelDraw.save = modelDraw.class
-	modelDraw.class = nil
+	RocketUiSystem.modelDraw.save = RocketUiSystem.modelDraw.class
+	RocketUiSystem.modelDraw.class = nil
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -801,8 +801,8 @@ function ShipSelectController:Show(text, title, buttons)
 		end
 		dialog:show(self.document.context)
 		:continueWith(function(response)
-			modelDraw.class = modelDraw.save
-			modelDraw.save = nil
+			RocketUiSystem.modelDraw.class = RocketUiSystem.modelDraw.save
+			RocketUiSystem.modelDraw.save = nil
     end)
 	-- Route input to our context until the user dismisses the dialog box.
 	ui.enableInput(self.document.context)
@@ -905,7 +905,7 @@ end
 
 function ShipSelectController:unload()
 
-	modelDraw.class = nil
+	RocketUiSystem.modelDraw.class = nil
 	ui.ShipWepSelect:saveLoadout()
 	
 end
@@ -931,11 +931,11 @@ end
 
 function ShipSelectController:drawSelectModel()
 
-	if modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_SHIP_SELECT" then  --Haaaaaaacks
+	if RocketUiSystem.modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_SHIP_SELECT" then  --Haaaaaaacks
 
 		--local thisItem = tb.ShipClasses(modelDraw.class)
 		
-		modelView = modelDraw.element	
+		local modelView = RocketUiSystem.modelDraw.element	
 		local modelLeft = modelView.parent_node.offset_left + modelView.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + modelView.offset_top
 		local modelWidth = modelView.offset_width
@@ -954,9 +954,9 @@ function ShipSelectController:drawSelectModel()
 		modelWidth = modelWidth * (1 + val)
 		modelHeight = modelHeight * (1 + val)
 		
-		local test = tb.ShipClasses[modelDraw.class]:renderSelectModel(modelDraw.start, modelLeft, modelTop, modelWidth, modelHeight)
+		local test = tb.ShipClasses[RocketUiSystem.modelDraw.class]:renderSelectModel(RocketUiSystem.modelDraw.start, modelLeft, modelTop, modelWidth, modelHeight)
 		
-		modelDraw.start = false
+		RocketUiSystem.modelDraw.start = false
 		
 	end
 

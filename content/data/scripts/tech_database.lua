@@ -4,11 +4,11 @@ local utils = require("utils")
 
 local TechDatabaseController = class()
 
-local modelDraw = nil
+RocketUiSystem.modelDraw = nil
 
 function TechDatabaseController:init()
 	self.show_all = false
-	modelDraw = {
+	RocketUiSystem.modelDraw = {
 		mx = 0,
 		my = 0,
 		sx = 0,
@@ -160,7 +160,7 @@ function TechDatabaseController:ChangeSection(section)
 		end
 		
 		self.SelectedSection = section
-		modelDraw.section = section
+		RocketUiSystem.modelDraw.section = section
 		
 		--Only create entries if there are any to create
 		if self.currentList[1] then
@@ -228,7 +228,7 @@ function TechDatabaseController:SelectEntry(entry)
 
 		self.SelectedIndex = entry.Index
 
-		modelDraw.Rot = 40
+		RocketUiSystem.modelDraw.Rot = 40
 		
 		local aniWrapper = self.document:GetElementById("tech_view")
 		aniWrapper:RemoveChild(aniWrapper.first_child)
@@ -246,28 +246,28 @@ function TechDatabaseController:SelectEntry(entry)
 		if self.SelectedSection == "ships" then
 			self.document:GetElementById("tech_desc").inner_rml = entry.Description
 			
-			modelDraw.class = entry.Name
-			modelDraw.element = self.document:GetElementById("tech_view")
+			RocketUiSystem.modelDraw.class = entry.Name
+			RocketUiSystem.modelDraw.element = self.document:GetElementById("tech_view")
 
 		elseif self.SelectedSection == "weapons" then			
 			self.document:GetElementById("tech_desc").inner_rml = entry.Description
 			
 			if entry.Anim ~= "" and utils.animExists(entry.Anim) then
-				modelDraw.class = nil
+				RocketUiSystem.modelDraw.class = nil
 
 				local aniEl = self.document:CreateElement("ani")
 				aniEl:SetAttribute("src", entry.Anim)
 				aniEl:SetClass("anim", true)
 				aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
 			else --If we don't have an anim, then draw the tech model
-				modelDraw.class = entry.Name
-				modelDraw.element = self.document:GetElementById("tech_view")
+				RocketUiSystem.modelDraw.class = entry.Name
+				RocketUiSystem.modelDraw.element = self.document:GetElementById("tech_view")
 			end
 		elseif self.SelectedSection == "intel" then			
 			self.document:GetElementById("tech_desc").inner_rml = entry.Description
 			
 			if entry.Anim then
-				modelDraw.class = nil
+				RocketUiSystem.modelDraw.class = nil
 
 				local aniEl = self.document:CreateElement("ani")
 				
@@ -288,62 +288,62 @@ end
 
 function TechDatabaseController:mouse_move(element, event)
 
-	if modelDraw ~= nil then
-		modelDraw.mx = event.parameters.mouse_x
-		modelDraw.my = event.parameters.mouse_y
+	if RocketUiSystem.modelDraw ~= nil then
+		RocketUiSystem.modelDraw.mx = event.parameters.mouse_x
+		RocketUiSystem.modelDraw.my = event.parameters.mouse_y
 	end
 
 end
 
 function TechDatabaseController:mouse_up(element, event)
 
-	if modelDraw ~= nil then
-		modelDraw.click = false
+	if RocketUiSystem.modelDraw ~= nil then
+		RocketUiSystem.modelDraw.click = false
 	end
 
 end
 
 function TechDatabaseController:mouse_down(element, event)
 
-	if modelDraw ~= nil then
-		modelDraw.click = true
-		modelDraw.sx = event.parameters.mouse_x
-		modelDraw.sy = event.parameters.mouse_y
+	if RocketUiSystem.modelDraw ~= nil then
+		RocketUiSystem.modelDraw.click = true
+		RocketUiSystem.modelDraw.sx = event.parameters.mouse_x
+		RocketUiSystem.modelDraw.sy = event.parameters.mouse_y
 	end
 
 end
 
 function TechDatabaseController:DrawModel()
 
-	if modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU" then  --Haaaaaaacks
+	if RocketUiSystem.modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU" then  --Haaaaaaacks
 
 		local thisItem = nil
-		if modelDraw.section == "ships" then
-			thisItem = tb.ShipClasses[modelDraw.class]
-		elseif modelDraw.section == "weapons" then
-			thisItem = tb.WeaponClasses[modelDraw.class]
+		if RocketUiSystem.modelDraw.section == "ships" then
+			thisItem = tb.ShipClasses[RocketUiSystem.modelDraw.class]
+		elseif RocketUiSystem.modelDraw.section == "weapons" then
+			thisItem = tb.WeaponClasses[RocketUiSystem.modelDraw.class]
 		end
 		
-		if not modelDraw.click then
-			modelDraw.Rot = modelDraw.Rot + (1 * ba.getRealFrametime())
+		if not RocketUiSystem.modelDraw.click then
+			RocketUiSystem.modelDraw.Rot = RocketUiSystem.modelDraw.Rot + (1 * ba.getRealFrametime())
 		end
 
-		if modelDraw.Rot >= 100 then
-			modelDraw.Rot = modelDraw.Rot - 100
+		if RocketUiSystem.modelDraw.Rot >= 100 then
+			RocketUiSystem.modelDraw.Rot = RocketUiSystem.modelDraw.Rot - 100
 		end
 		
-		local modelView = modelDraw.element
+		local modelView = RocketUiSystem.modelDraw.element
 						
 		local modelLeft = modelView.offset_left + modelView.parent_node.offset_left + modelView.parent_node.parent_node.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top - 7 --Does not include modelView.offset_top because that element's padding is set for anims also subtracts 7px for funsies
 		local modelWidth = modelView.offset_width
 		local modelHeight = modelView.offset_height
 		
-		local calcX = (modelDraw.sx - modelDraw.mx) * -1
-		local calcY = (modelDraw.sy - modelDraw.my) * -1
+		local calcX = (RocketUiSystem.modelDraw.sx - RocketUiSystem.modelDraw.mx) * -1
+		local calcY = (RocketUiSystem.modelDraw.sy - RocketUiSystem.modelDraw.my) * -1
 		
 		--Move model based on mouse coordinates
-		if modelDraw.click then
+		if RocketUiSystem.modelDraw.click then
 			local dx = calcX * 1
 			local dy = calcY * 1
 			local radius = 100
@@ -377,12 +377,12 @@ function TechDatabaseController:DrawModel()
 			local uvec = ba.createVector(((dxdr*dydr)*cos_theta1), (cos_theta + ((dxdr*dxdr)*cos_theta1)), 1)
 			local rvec = ba.createVector((cos_theta + (dydr*dydr)*cos_theta1), 1, 1)
 			
-			modelDraw.clickOrient = ba.createOrientationFromVectors(fvec, uvec, rvec)
+			RocketUiSystem.modelDraw.clickOrient = ba.createOrientationFromVectors(fvec, uvec, rvec)
 		end
 		
-		local orient = ba.createOrientation(-49.75, 0, modelDraw.Rot)
-		if modelDraw.click then
-			orient = modelDraw.clickOrient * orient
+		local orient = ba.createOrientation(-49.75, 0, RocketUiSystem.modelDraw.Rot)
+		if RocketUiSystem.modelDraw.click then
+			orient = RocketUiSystem.modelDraw.clickOrient * orient
 		end
 		
 		--thisItem:renderTechModel(modelLeft, modelTop, modelLeft + modelWidth, modelTop + modelHeight, modelDraw.Rot, -15, 0, 1.1)
@@ -401,7 +401,7 @@ end
 
 function TechDatabaseController:ClearData()
 
-	modelDraw.class = nil
+	RocketUiSystem.modelDraw.class = nil
 	local aniWrapper = self.document:GetElementById("tech_view")
 	aniWrapper:RemoveChild(aniWrapper.first_child)
 	self.document:GetElementById("tech_desc").inner_rml = "<p></p>"
