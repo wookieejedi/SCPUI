@@ -111,7 +111,7 @@ function ScpuiSystem:genIcons()
 	
 	--fade in the splash screen
 	while ((splashTime - yieldTS):getSeconds() * -1) < ScpuiSystem.splash.fade do
-		if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
+		if (time.getCurrentTime() - yieldTS):getSeconds() > 0.01 then
 			yieldTS = time.getCurrentTime()
 			async.await(async.yield())
 			local i = ScpuiSystem.splash.i
@@ -151,7 +151,7 @@ function ScpuiSystem:genIcons()
 	--fade out the splash screen
 	splashTime = time.getCurrentTime()
 	while ((splashTime - yieldTS):getSeconds() * -1) < ScpuiSystem.splash.fade do
-		if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
+		if (time.getCurrentTime() - yieldTS):getSeconds() > 0.01 then
 			yieldTS = time.getCurrentTime()
 			async.await(async.yield())
 			local i = ScpuiSystem.splash.i
@@ -166,7 +166,7 @@ function ScpuiSystem:genIcons()
 	
 	--fade in the splash screen
 	while ((splashTime - yieldTS):getSeconds() * -1) < ScpuiSystem.splash.fade do
-		if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
+		if (time.getCurrentTime() - yieldTS):getSeconds() > 0.01 then
 			yieldTS = time.getCurrentTime()
 			async.await(async.yield())
 			local i = ScpuiSystem.splash.i
@@ -206,7 +206,7 @@ function ScpuiSystem:genIcons()
 	--fade out the splash screen
 	splashTime = time.getCurrentTime()
 	while ((splashTime - yieldTS):getSeconds() * -1) < ScpuiSystem.splash.fade do
-		if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
+		if (time.getCurrentTime() - yieldTS):getSeconds() > 0.01 then
 			yieldTS = time.getCurrentTime()
 			async.await(async.yield())
 			local i = ScpuiSystem.splash.i
