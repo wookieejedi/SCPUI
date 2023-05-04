@@ -13,7 +13,7 @@ function ScpuiSystem:initCustomOptions()
 	end
 
 	for _, v in ipairs(cf.listFiles("data/tables", "*-optn.tbm")) do
-		self:parseTable(v)
+		utils.parseOptions(v)
 	end
 end
 
