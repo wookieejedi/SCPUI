@@ -25,6 +25,7 @@ local detailPresets = {
 	"option_graphics_shadows_element",
 	"option_graphics_anisotropy_element",
 	"option_graphics_aamode_element",
+	"option_graphics_msaasamples_element",
 	"option_graphics_postprocessing_element",
 	"option_graphics_lightshafts_element",
 	"option_graphics_softparticles_element"
@@ -1131,6 +1132,9 @@ function OptionsController:DetailMinimum(element)
 					if option.parentID.id == "option_graphics_aamode_element" then
 						option.currentValue = 1
 						option.selectID.selection = 1
+					elseif option.parentID.id == "option_graphics_msaasamples_element" then
+						option.currentValue = 1
+						option.selectID.selection = 1
 					else
 						option.currentValue = 1
 						option.selectID.selection = 1
@@ -1169,6 +1173,9 @@ function OptionsController:DetailLow(element)
 					if option.parentID.id == "option_graphics_aamode_element" then
 						option.currentValue = 5
 						option.selectID.selection = 5
+					elseif option.parentID.id == "option_graphics_msaasamples_element" then
+						option.currentValue = 1
+						option.selectID.selection = 1
 					else
 						option.currentValue = 2
 						option.selectID.selection = 2
@@ -1207,6 +1214,9 @@ function OptionsController:DetailMedium(element)
 					if option.parentID.id == "option_graphics_aamode_element" then
 						option.currentValue = 6
 						option.selectID.selection = 6
+					elseif option.parentID.id == "option_graphics_msaasamples_element" then
+						option.currentValue = 2
+						option.selectID.selection = 2
 					else
 						option.currentValue = 3
 						option.selectID.selection = 3
@@ -1245,6 +1255,9 @@ function OptionsController:DetailHigh(element)
 					if option.parentID.id == "option_graphics_aamode_element" then
 						option.currentValue = 7
 						option.selectID.selection = 7
+					elseif option.parentID.id == "option_graphics_msaasamples_element" then
+						option.currentValue = 3
+						option.selectID.selection = 3
 					else
 						option.currentValue = 4
 						option.selectID.selection = 4
@@ -1283,6 +1296,9 @@ function OptionsController:DetailUltra(element)
 					if option.parentID.id == "option_graphics_aamode_element" then
 						option.currentValue = 8
 						option.selectID.selection = 8
+					elseif option.parentID.id == "option_graphics_msaasamples_element" then
+						option.currentValue = 4
+						option.selectID.selection = 4
 					else
 						option.currentValue = 5
 						option.selectID.selection = 5
