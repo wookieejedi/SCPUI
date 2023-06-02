@@ -65,6 +65,7 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 		
 		--clean up
 		gr.setTarget()
+		tex_h:destroyRenderTarget()
 		tex_h:unload()
 	else
 		--Create a texture and then draw to it, save the output
@@ -90,6 +91,8 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 		
 		--clean up
 		gr.setTarget()
+		tex_h:destroyRenderTarget()
+		imag_h:destroyRenderTarget()
 		imag_h:unload()
 		tex_h:unload()
 	end
@@ -100,7 +103,7 @@ end
 
 function ScpuiSystem:genIcons()
 
-	ba.print("RocketUI is starting generation of ship and weapon loadout icons!\n")
+	ba.print("SCPUI is starting generation of ship and weapon loadout icons!\n")
 	
 	local yieldTS = time.getCurrentTime()
 	local splashTime = time.getCurrentTime()
@@ -126,18 +129,20 @@ function ScpuiSystem:genIcons()
 
 		v = tb.WeaponClasses[i]
 
-		if v:hasCustomData() then
-			if v.CustomData["PlayerWeapon"] == "true" then
-				ScpuiSystem:setIconFrames(v.Name, false)
-				 if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
-                    yieldTS = time.getCurrentTime()
-                    async.await(async.yield())
-                    ScpuiSystem:drawSplash()
-                end
+		if v:isPlayerAllowed() then
+			ba.print("SCPUI: Generating icon for " .. v.Name .. "\n")
+			ScpuiSystem:setIconFrames(v.Name, false)
+			 if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
+				yieldTS = time.getCurrentTime()
+				async.await(async.yield())
+				ScpuiSystem.splash.debugString = "Generating " .. v.Name .. " icon"
+				ScpuiSystem:drawSplash()
 			end
 		end
 
 	end
+	
+	ScpuiSystem.splash.debugString = ""
 
 	--make sure the splash logo is shown for at least 2 seconds
 	while ((splashTime - yieldTS):getSeconds() * -1) < 2 do
@@ -179,18 +184,20 @@ function ScpuiSystem:genIcons()
 
 		v = tb.ShipClasses[i]
 
-		if v:hasCustomData() then
-			if v.CustomData["PlayerShip"] == "true" then
-				ScpuiSystem:setIconFrames(v.Name, true)
-				if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
-                    yieldTS = time.getCurrentTime()
-                    async.await(async.yield())
-                    ScpuiSystem:drawSplash()
-                end
+		if v:isPlayerAllowed() then
+			ba.print("SCPUI: Generating icon for " .. v.Name .. "\n")
+			ScpuiSystem:setIconFrames(v.Name, true)
+			if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
+				yieldTS = time.getCurrentTime()
+				async.await(async.yield())
+				ScpuiSystem.splash.debugString = "Generating " .. v.Name .. " icon"
+				ScpuiSystem:drawSplash()
 			end
 		end
 
 	end
+	
+	ScpuiSystem.splash.debugString = ""
 	
 	--make sure the splash logo is shown for at least 2 seconds
 	while ((splashTime - yieldTS):getSeconds() * -1) < 2 do
@@ -215,7 +222,7 @@ function ScpuiSystem:genIcons()
 		end
 	end
 
-	ba.print("RocketUI successfully generated ship and weapon loadout icons!\n")
+	ba.print("SCPUI successfully generated ship and weapon loadout icons!\n")
 
 	gr.freeAllModels()
 	
@@ -255,10 +262,6 @@ function ScpuiSystem:prepareSplash()
 	--second splash image
 	file = "SCPUI.png"
 	
-	--screen center coords
-	x = gr.getScreenWidth() / 2
-	y = gr.getScreenHeight() / 2
-	
 	--scale the image
 	scale = math.min((gr.getScreenWidth() * 0.8)/gr.getImageWidth(file), (gr.getScreenHeight() * 0.8)/gr.getImageHeight(file))
 	
@@ -287,7 +290,28 @@ function ScpuiSystem:prepareSplash()
 	
 	--start with the first image
 	ScpuiSystem.splash.i = 1
+	
+	--start timing the "dots" animation
+	ScpuiSystem:calcFrames()
 
+end
+
+function ScpuiSystem:calcFrames()
+
+	if ScpuiSystem.initIcons then
+		return
+	end
+
+	if ScpuiSystem.splash.F < 3 then
+		ScpuiSystem.splash.F = ScpuiSystem.splash.F + 1
+	else
+		ScpuiSystem.splash.F = 1
+	end
+	
+	async.run(function()
+        async.await(async_util.wait_for(0.1))
+        self:calcFrames()
+    end, async.OnFrameExecutor)
 end
 
 function ScpuiSystem:drawSplash()
@@ -301,15 +325,9 @@ function ScpuiSystem:drawSplash()
 	gr.setColor(255, 255, 255, 255)
 	
 	--calculate the number of dots to append
-	local dots = "."
-	if ScpuiSystem.splash.F == 1 then
-		ScpuiSystem.splash.F = 2
-	elseif ScpuiSystem.splash.F == 2 then
-		dots = ".."
-		ScpuiSystem.splash.F = 3
-	else
-		dots = "..."
-		ScpuiSystem.splash.F = 1
+	local dots = ""
+	for i = 1, ScpuiSystem.splash.F do
+		dots = dots .. "."
 	end
 	
 	local img = ScpuiSystem.splash.i
@@ -335,6 +353,13 @@ function ScpuiSystem:drawSplash()
 	gr.drawImageCentered(file, x, y, w, h, 0, 0, 1, 1, a)
 	if ScpuiSystem.splash.TD then
 		gr.drawString(text, ScpuiSystem.splash.TX, ScpuiSystem.splash.TY)
+		if ba.inDebug() and string.len(ScpuiSystem.splash.debugString) > 0 then
+			local ds = "(" .. ScpuiSystem.splash.debugString .. ")"
+			local tw = gr.getStringWidth(ds)
+			local x = (gr.getScreenWidth() / 2) - (tw / 2)
+			gr.setColor(255, 255, 255, 150)
+			gr.drawString(ds, x, ScpuiSystem.splash.TY + 15)
+		end
 	end
 	
 	--reset the color back to what it was.
