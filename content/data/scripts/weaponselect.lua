@@ -92,7 +92,7 @@ function WeaponSelectController:initialize(document)
 	while (i ~= #shipList) do
 		if ui.ShipWepSelect.Ship_Pool[i] > 0 then
 			if rocketUiIcons[shipList[i].Name] == nil then
-				ba.warning("No generated icon was found for " .. shipList[i].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
+				ba.warning("No generated icon was found for " .. shipList[i].Name .. "! Generating one now.")
 				ScpuiSystem:setIconFrames(shipList[i].Name)
 			end
 			self.shipList[j] = {
@@ -129,7 +129,7 @@ function WeaponSelectController:initialize(document)
 	while (i ~= #weaponList) do
 		if ui.ShipWepSelect.Weapon_Pool[i] > 0 then
 			if rocketUiIcons[weaponList[i].Name] == nil then
-				ba.warning("No generated icon was found for " .. weaponList[i].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
+				ba.warning("No generated icon was found for " .. weaponList[i].Name .. "! Generating one now.")
 				ScpuiSystem:setIconFrames(weaponList[i].Name)
 			end
 			if tb.WeaponClasses[i]:isPrimary() then
@@ -191,9 +191,6 @@ function WeaponSelectController:initialize(document)
 	table.sort(self.primaryList, function(a,b) return a.Index < b.Index end)
 	table.sort(self.secondaryList, function(a,b) return a.Index < b.Index end)
 	
-	--generate usable icons
-	--self:getIconFrames(self.primaryList)
-	--self:getIconFrames(self.secondaryList)
 	
 	--Only create entries if there are any to create
 	if self.primaryList[1] then
@@ -204,7 +201,6 @@ function WeaponSelectController:initialize(document)
 		self:CreateEntries(self.secondaryList)
 	end
 	
-	--self:InitSlots()
 	self:BuildWings()
 	
 	self:SelectInitialItems()
@@ -440,7 +436,7 @@ end
 function WeaponSelectController:AppendToPool(ship)
 
 	if rocketUiIcons[tb.ShipClasses[ship].Name] == nil then
-		ba.warning("No generated icon was found for " .. tb.ShipClasses[ship].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
+		ba.warning("No generated icon was found for " .. tb.ShipClasses[ship].Name .. "! Generating one now.")
 		ScpuiSystem:setIconFrames(tb.ShipClasses[ship].Name)
 	end
 
@@ -519,7 +515,7 @@ end
 function WeaponSelectController:AppendWeaponToPool(classIndex)
 
 	if rocketUiIcons[tb.WeaponClasses[classIndex].Name] == nil then
-		ba.warning("No generated icon was found for " .. tb.WeaponClasses[classIndex].Name .. "! This means it is missing custom data in the table to flag for pre-generation or it is not meant to be available in the loadout pool. Generating one now.")
+		ba.warning("No generated icon was found for " .. tb.WeaponClasses[classIndex].Name .. "! Generating one now.")
 		ScpuiSystem:setIconFrames(tb.WeaponClasses[classIndex].Name)
 	end
 	
@@ -1621,7 +1617,6 @@ function WeaponSelectController:unload()
 
 	ScpuiSystem.modelDraw.class = nil
 	ui.ShipWepSelect:saveLoadout()
-	
 end
 
 function WeaponSelectController:startMusic()

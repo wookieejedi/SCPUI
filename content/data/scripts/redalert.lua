@@ -39,6 +39,9 @@ function RedAlertController:initialize(document)
 		end
 	end
 	
+	--Whenever we start a new mission, we reset the log ui to goals
+	ScpuiSystem.logSection = 1
+	
 	alert_el = self.document:GetElementById("incoming_transmission")
 	RedAlertController:blink()
 

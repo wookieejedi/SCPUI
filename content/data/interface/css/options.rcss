@@ -1505,10 +1505,10 @@ selectvalue
 	border-color: rgba(127,127,127,200);
 	border-width: 1px;
 	width: 75%;
-	height: 70%;
+	height: 100%;
 	background-color: rgba(0,0,0,100);
 	text-align: center;
-	padding-bottom: 3%;
+	padding-bottom: 0%;
 }
 
 selectvalue:hover
