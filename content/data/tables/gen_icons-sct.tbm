@@ -112,6 +112,12 @@ function ScpuiSystem:genIcons()
 		return
 	end
 	
+	rocketUiIcons = ScpuiSystem:openCache()
+	
+	if rocketUiIcons == nil then
+		rocketUiIcons = {}
+	end
+	
 	--fade in the splash screen
 	while ((splashTime - yieldTS):getSeconds() * -1) < ScpuiSystem.splash.fade do
 		if (time.getCurrentTime() - yieldTS):getSeconds() > 0.01 then
@@ -130,13 +136,15 @@ function ScpuiSystem:genIcons()
 		v = tb.WeaponClasses[i]
 
 		if v:isPlayerAllowed() then
-			ba.print("SCPUI: Generating icon for " .. v.Name .. "\n")
-			ScpuiSystem:setIconFrames(v.Name, false)
-			 if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
-				yieldTS = time.getCurrentTime()
-				async.await(async.yield())
-				ScpuiSystem.splash.debugString = "Generating " .. v.Name .. " icon"
-				ScpuiSystem:drawSplash()
+			if rocketUiIcons[v.Name] == nil then
+				ba.print("SCPUI: Generating icon for " .. v.Name .. "\n")
+				ScpuiSystem:setIconFrames(v.Name, false)
+				 if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
+					yieldTS = time.getCurrentTime()
+					async.await(async.yield())
+					ScpuiSystem.splash.debugString = "Generating " .. v.Name .. " icon"
+					ScpuiSystem:drawSplash()
+				end
 			end
 		end
 
@@ -185,13 +193,15 @@ function ScpuiSystem:genIcons()
 		v = tb.ShipClasses[i]
 
 		if v:isPlayerAllowed() then
-			ba.print("SCPUI: Generating icon for " .. v.Name .. "\n")
-			ScpuiSystem:setIconFrames(v.Name, true)
-			if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
-				yieldTS = time.getCurrentTime()
-				async.await(async.yield())
-				ScpuiSystem.splash.debugString = "Generating " .. v.Name .. " icon"
-				ScpuiSystem:drawSplash()
+			if rocketUiIcons[v.Name] == nil then
+				ba.print("SCPUI: Generating icon for " .. v.Name .. "\n")
+				ScpuiSystem:setIconFrames(v.Name, true)
+				if (time.getCurrentTime() - yieldTS):getSeconds() > 0.1 then
+					yieldTS = time.getCurrentTime()
+					async.await(async.yield())
+					ScpuiSystem.splash.debugString = "Generating " .. v.Name .. " icon"
+					ScpuiSystem:drawSplash()
+				end
 			end
 		end
 
@@ -221,6 +231,8 @@ function ScpuiSystem:genIcons()
 			ScpuiSystem:drawSplash()
 		end
 	end
+	
+	ScpuiSystem:saveCache(rocketUiIcons)
 
 	ba.print("SCPUI successfully generated ship and weapon loadout icons!\n")
 
@@ -312,6 +324,54 @@ function ScpuiSystem:calcFrames()
         async.await(async_util.wait_for(0.1))
         self:calcFrames()
     end, async.OnFrameExecutor)
+end
+
+function ScpuiSystem:openCache()
+
+	local json = require('dkjson')
+	local location = 'data/config'
+	local file = nil
+	
+	local modname = string.sub(ba.getModTitle(), 1, 20)
+	
+	if modname == "" then
+		ba.print("SCPUI could not load the icon cache because no mod name was found!\n")
+		return {}
+	end
+	
+	local filename = "scpui_" .. modname:gsub(" ", "") .. ".cache"
+
+	if cf.fileExists(filename, location) then
+		file = cf.openFile(filename, 'r', location)
+		cache = json.decode(file:read('*a'))
+		file:close()
+		if not cache then
+			cache = {}
+		end
+	end
+	
+	return cache
+
+end
+
+function ScpuiSystem:saveCache(cache)
+
+	local json = require('dkjson')
+	local location = 'data/config'
+	
+	local modname = string.sub(ba.getModTitle(), 1, 20)
+	
+	if modname == "" then
+		ba.print("SCPUI could not get a valid mod name. Skipping icon caching!\n")
+		return {}
+	end
+	
+	local filename = "scpui_" .. modname:gsub(" ", "") .. ".cache"
+	
+	local file = cf.openFile(filename, 'w', location)
+	file:write(json.encode(cache))
+	file:close()
+
 end
 
 function ScpuiSystem:drawSplash()
