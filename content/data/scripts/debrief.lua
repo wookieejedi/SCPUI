@@ -28,7 +28,9 @@ function DebriefingController:initialize(document)
 		ui.maybePlayCutscene(MOVIE_PRE_DEBRIEF, true, 0)
 		ui.Debriefing.initDebriefing()
 		if not mn.hasDebriefing() then
+			self:close()
 			ui.Debriefing.acceptMission()
+			return
 		end
 		self:startMusic()
 		ScpuiSystem.debriefInit = true
