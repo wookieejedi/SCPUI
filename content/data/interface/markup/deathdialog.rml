@@ -7,28 +7,26 @@
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="deathdialog.rcss"/>
 	</head>
-	<body id=dialog_body>
-		<div class="hidden">
-			<!-- Container for templates used below -->
-			<button id="button_template" class="dialog_button button_1">
-				<div class="button_image_container">
-					<img class="button_image_id psuedo_img"></img>
-				</div>
-				<span class="button_text_dialog">
-					<p class="button_text_id"></p>
-				</span>
-			</button>
+	<body id="dialog_body">
+		<div id="content">
+			<div id="title_container"></div>
+			<div id="text_container"></div>
 		</div>
-		<div id=content>
-			<div id=title_wrapper>
-				<p id=title_container></p>
-			</div>
-			<div id=text_wrapper>
-				<p id=text_container></p>
-			</div>
-			<div id=button_container>
-			</div>
-			<img src="dialog-box.png"></img>
-		</div>
+	  <button class="button_1" id="button_4">
+		  <div id="button_4_text" class="button_text_dialog"></div>
+		  <div class="button_image_dialog"></div>
+	  </button>
+	  <button class="button_1" id="button_3">
+		  <div id="button_3_text" class="button_text_dialog"></div>
+		  <div class="button_image_dialog"></div>
+	  </button>
+	  <button class="button_1" id="button_2">
+		  <div id="button_2_text" class="button_text_dialog"></div>
+		  <div class="button_image_dialog"></div>
+	  </button>
+	  <button class="button_1" id="button_1">
+		  <div id="button_1_text" class="button_text_dialog"></div>
+		  <div class="button_image_dialog"></div>
+	  </button>
 	</body>
 </rml>

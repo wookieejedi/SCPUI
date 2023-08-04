@@ -13,73 +13,49 @@ module.BUTTON_TYPE_NEUTRAL  = 3
 module.BUTTON_MAPPING       = {
     [module.BUTTON_TYPE_POSITIVE] = "button_positive",
     [module.BUTTON_TYPE_NEGATIVE] = "button_negative",
-	[module.BUTTON_TYPE_NEUTRAL] = "button_neutral"
+    [module.BUTTON_TYPE_NEUTRAL] = "button_neutral"
 }
 
+local function underline(haystack, needle)
+    local s, e = string.find(haystack, needle)
+    if s then
+        return string.sub(haystack, 1, s - 1) .. "<span class=\"underline\">" .. string.upper(needle) .. "</span>" .. string.sub(haystack, e + 1)
+    else
+        return haystack
+    end
+end
+
+local function text_with_keypress(string, keypress)
+    if string and keypress then
+        return underline(string, string.upper(keypress)) or underline(string, keypress) or string
+    else
+        return string
+    end
+end
+
 local function initialize_buttons(document, properties, finish_func)
-    local button_container = document:GetElementById("button_container")
-
-    for _, v in ipairs(properties.buttons) do
-        local actual_el, text_el, image_container, image_el = templates.instantiate_template(document, "button_template",
-                                                                                            nil, {
-                                                                                                "button_text_id",
-                                                                                                "button_image_container",
-                                                                                                "button_image_id"
-                                                                                            })
-        button_container:AppendChild(actual_el)
-
-        actual_el.id = "" -- Reset the ID so that there are no duplicate IDs
-        actual_el:SetClass(module.BUTTON_MAPPING[v.type], true)
-		
-		local str = v.text
-		
-		if v.keypress ~= nil then
-
-			--find the uppercase letter if it exists
-			local s, e = string.find(str, string.upper(v.keypress))
-			if s then
-				str = string.sub(str, 1, s - 1) .. "<span class=\"underline\">" .. string.upper(v.keypress) .. "</span>" .. string.sub(str, e + 1)
-			else
-				--didn't find it so let's try lowercase			
-				local s, e = string.find(str, v.keypress)
-				if s then
-					str = string.sub(str, 1, s - 1) .. "<span class=\"underline\">" .. v.keypress .. "</span>" .. string.sub(str, e + 1)
-				else
-					--still didn't find it so no underlining!
-					str = v.text
-				end
-			end
-			
-		end
-
-        text_el.inner_rml = str
-
-        local style       = image_container.style
-        for i, v in pairs(style) do
-            -- This is pretty ugly but somehow the __index function is broken
-            if i == "background-image" then
-                image_el:SetAttribute("src", v)
-                break
-            end
-        end
-
-        actual_el:AddEventListener("click", function(_, _, _)
-            if finish_func then
-                finish_func(v.value)
-            end
+		for i, v in ipairs(properties.buttons) do
+		    local button_id = 'button_' .. tostring(i)
+				local button = document:GetElementById(button_id)
+        button:SetClass(module.BUTTON_MAPPING[v.type], true)
+        button:AddEventListener("click", function(_, _, _)
+            if finish_func then finish_func(v.value) end
             document:Close()
         end)
-    end
+		    local button_text_id = button_id .. '_text'
+				local button_text = document:GetElementById(button_text_id)
+				button_text.inner_rml = text_with_keypress(v.text, v.keypress)
+		end
 end
 
 local function show_dialog(context, properties, finish_func, reject, abortCBTable)
     local dialog_doc = nil
-	
-	if properties.style_value == 2 then
-		dialog_doc                                       = context:LoadDocument("data/interface/markup/deathdialog.rml")
-	else
-		dialog_doc                                       = context:LoadDocument("data/interface/markup/dialog.rml")
-	end
+    
+    if properties.style_value == 2 then
+        dialog_doc                                       = context:LoadDocument("data/interface/markup/deathdialog.rml")
+    else
+        dialog_doc                                       = context:LoadDocument("data/interface/markup/dialog.rml")
+    end
 
     dialog_doc:GetElementById("title_container").inner_rml = properties.title_string
     dialog_doc:GetElementById("text_container").inner_rml  = properties.text_string
@@ -88,62 +64,62 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
     else
         dialog_doc:GetElementById("dialog_body"):SetClass("p1-5", true)
     end
-	
-	if properties.input_choice then
-		local input_el = dialog_doc:CreateElement("input")
-		dialog_doc:GetElementById("text_container"):AppendChild(input_el)
-		input_el.type = "text"
-		input_el.maxlength = 32
-		
-		input_el:AddEventListener("change", function(event, _, _)
+    
+    if properties.input_choice then
+        local input_el = dialog_doc:CreateElement("input")
+        dialog_doc:GetElementById("text_container"):AppendChild(input_el)
+        input_el.type = "text"
+        input_el.maxlength = 32
+        
+        input_el:AddEventListener("change", function(event, _, _)
             if event.parameters.linebreak == 1 then
                 finish_func(event.parameters.value)
-				dialog_doc:Close()
-			end
+                dialog_doc:Close()
+            end
         end)
-	end
+    end
 
     if #properties.buttons > 0 then
-	
-		--verify that all key shortcuts are unique
-		local keys = {}
-		
-		for i = 1, #properties.buttons, 1 do
-			if properties.buttons[i].keypress ~= nil then
-				if #keys == 0 then
-					table.insert(keys, properties.buttons[i].keypress)
-				else
-					for j = 1, #keys, 1 do
-						if properties.buttons[i].keypress == keys[j] then
-							properties.buttons[i].keypress = nil
-						else
-							table.insert(keys, properties.buttons[i].keypress)
-						end
-					end
-				end
-			end
-		end
-	
+    
+        --verify that all key shortcuts are unique
+        local keys = {}
+        
+        for i = 1, #properties.buttons, 1 do
+            if properties.buttons[i].keypress ~= nil then
+                if #keys == 0 then
+                    table.insert(keys, properties.buttons[i].keypress)
+                else
+                    for j = 1, #keys, 1 do
+                        if properties.buttons[i].keypress == keys[j] then
+                            properties.buttons[i].keypress = nil
+                        else
+                            table.insert(keys, properties.buttons[i].keypress)
+                        end
+                    end
+                end
+            end
+        end
+    
         initialize_buttons(dialog_doc, properties, finish_func)
     end
-	
-	dialog_doc:AddEventListener("keydown", function(event, _, _)
-		if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-			if properties.escape_value ~= nil then
-				finish_func(properties.escape_value)
-				dialog_doc:Close()
-			end
-		end
-		for i = 1, #properties.buttons, 1 do
-			if properties.buttons[i].keypress ~= nil then
-				thisKey = string.upper(properties.buttons[i].keypress)
-				if event.parameters.key_identifier == rocket.key_identifier[thisKey] then
-					finish_func(properties.buttons[i].value)
-					dialog_doc:Close()
-				end
-			end
-		end
-	end)
+    
+    dialog_doc:AddEventListener("keydown", function(event, _, _)
+        if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+            if properties.escape_value ~= nil then
+                finish_func(properties.escape_value)
+                dialog_doc:Close()
+            end
+        end
+        for i = 1, #properties.buttons, 1 do
+            if properties.buttons[i].keypress ~= nil then
+                thisKey = string.upper(properties.buttons[i].keypress)
+                if event.parameters.key_identifier == rocket.key_identifier[thisKey] then
+                    finish_func(properties.buttons[i].value)
+                    dialog_doc:Close()
+                end
+            end
+        end
+    end)
     
     if abortCBTable ~= nil then
         abortCBTable.Abort = function()
@@ -168,17 +144,17 @@ end
 
 function factory_mt:title(title)
     self.title_string = ""
-	if title ~= nil then
-		self.title_string = title
-	end
+    if title ~= nil then
+        self.title_string = title
+    end
     return self
 end
 
 function factory_mt:text(text)
-	self.text_string = ""
-	if text ~= nil then
-		self.text_string = text
-	end
+    self.text_string = ""
+    if text ~= nil then
+        self.text_string = text
+    end
     return self
 end
 
@@ -191,7 +167,7 @@ function factory_mt:button(type, text, value, keypress)
         type  = type,
         text  = text,
         value = value,
-		keypress = keypress
+        keypress = keypress
     })
     return self
 end
@@ -225,9 +201,9 @@ function module.new()
         buttons      = {},
         title_string = "",
         text_string  = "",
-		input_choice = false,
-		escape_value = nil,
-		style_value = 1
+        input_choice = false,
+        escape_value = nil,
+        style_value = 1
     }
     setmetatable(factory, factory_mt)
     return factory
