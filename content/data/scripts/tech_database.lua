@@ -32,7 +32,8 @@ function TechDatabaseController:LoadData()
 	i = 1
 	while (i ~= #list + 1) do
 		self.ships[i] = {
-			Name = tostring(list[i]),
+			Name = tostring(list[i].Name),
+			DisplayName = tostring(list[i].AltName),
 			Description = list[i].TechDescription,
 			Visibility = list[i].InTechDatabase
 		}
@@ -44,7 +45,8 @@ function TechDatabaseController:LoadData()
 	i = 1
 	while (i ~= #list + 1) do
 		self.weapons[i] = {
-			Name = tostring(list[i]),
+			Name = tostring(list[i].Name),
+			DisplayName = tostring(list[i].AltName),
 			Description = list[i].TechDescription,
 			Anim = list[i].TechAnimationFilename,
 			Visibility = list[i].InTechDatabase
@@ -57,7 +59,8 @@ function TechDatabaseController:LoadData()
 	i = 1
 	while (i ~= #list + 1) do
 		self.intel[i] = {
-			Name = tostring(list[i]),
+			Name = tostring(list[i].Name),
+			DisplayName = tostring(list[i].Name),
 			Description = list[i].Description,
 			Anim = list[i].AnimFilename,
 			Visibility = list[i].InTechDatabase
@@ -190,7 +193,7 @@ function TechDatabaseController:CreateEntryItem(entry, index)
 
 	local li_el = self.document:CreateElement("li")
 
-	li_el.inner_rml = "<span>" .. entry.Name .. "</span>"
+	li_el.inner_rml = "<span>" .. entry.DisplayName .. "</span>"
 	li_el.id = entry.Name
 
 	li_el:SetClass("list_element", true)
