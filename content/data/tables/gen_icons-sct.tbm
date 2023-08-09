@@ -114,9 +114,13 @@ function ScpuiSystem:genIcons()
 	
 	rocketUiIcons = ScpuiSystem:openCache()
 	
-	if rocketUiIcons == nil then
+	if rocketUiIcons == nil or ScpuiSystemReset == true then
+		ba.print("SCPUI is resetting icon cache!\n")
 		rocketUiIcons = {}
 	end
+	
+	--prevent the keypress hook now
+	ScpuiSystem.reset = true
 	
 	--fade in the splash screen
 	while ((splashTime - yieldTS):getSeconds() * -1) < ScpuiSystem.splash.fade do
@@ -444,6 +448,13 @@ if ScpuiSystem.initIcons == nil then
 	ScpuiSystem:firstRun()
 end
 
+]
+
+$On Key Pressed: [
+	if ScpuiSystemReset == nil and hv.Key == "F12" then
+		ScpuiSystemReset = true
+		ba.print("SCPUI got manual command to reset the icon cache!\n")
+	end
 ]
 
 #End
