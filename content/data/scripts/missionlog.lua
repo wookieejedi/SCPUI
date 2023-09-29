@@ -8,6 +8,9 @@ end
 function MissionlogController:initialize(document)
 
     self.document = document
+
+	---Load background choice
+	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)

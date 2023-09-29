@@ -6,6 +6,12 @@ body
 	z-index: -1;
 }
 
+.main_bg
+{
+	background-decorator: image;
+	background-image: bg.png;
+}
+
 .below p
 {
 	padding-top:8%;

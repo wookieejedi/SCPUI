@@ -17,6 +17,10 @@ function RedAlertController:initialize(document)
 	self.document = document
 
 	ui.maybePlayCutscene(MOVIE_PRE_BRIEF, true, 0)
+	
+	---Load background choice
+	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 

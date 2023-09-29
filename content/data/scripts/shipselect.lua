@@ -24,6 +24,8 @@ function ShipSelectController:initialize(document)
 	self.aniEl = self.document:CreateElement("ani")
 	self.requiredWeps = {}
 	
+	---Load background choice
+	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	self.ship3d, self.shipEffect, self.icon3d = ui.ShipWepSelect.get3dShipChoices()
 	

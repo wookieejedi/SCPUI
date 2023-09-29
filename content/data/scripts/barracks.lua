@@ -20,6 +20,9 @@ function BarracksScreenController:initialize(document)
 
     PilotSelectController.initialize(self, document)
 	
+	---Load background choice
+	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	

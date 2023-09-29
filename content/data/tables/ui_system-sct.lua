@@ -5,6 +5,7 @@ local renderCategory = engine.createTracingCategory("RenderRocket", true)
 
 ScpuiSystem = {
     replacements = {},
+	backgrounds = {},
 	substate = "none",
 	cutscene = "none",
 	debriefInit = false,
@@ -68,6 +69,21 @@ function ScpuiSystem:parseTable(data)
 			}
 		end
 	end
+	
+	if parse.optionalString("#Background Replacement") then
+	
+		while parse.optionalString("$Campaign Background:") do
+			parse.requiredString("+Campaign Filename:")
+			local campaign = utils.strip_extension(parse.getString())
+			
+			parse.requiredString("+RCSS Class Name:")
+			local classname = parse.getString()
+			
+			self.backgrounds[campaign] = classname
+		end
+	
+	end
+		
 
 	parse.requiredString("#End")
 
@@ -333,6 +349,17 @@ function ScpuiSystem:getFontSize(val)
     -- Perform the conversion
     local convertedValue = 1 + (val * 19)
     return math.floor(convertedValue)
+end
+
+function ScpuiSystem:getBackgroundClass()
+	local campaignfilename = ba.getCurrentPlayer():getCampaignFilename()
+	local bgclass = self.backgrounds[campaignfilename]
+	
+	if not bgclass then
+		bgclass = "general_bg"
+	end
+	
+	return bgclass
 end
 
 function ScpuiSystem:CloseDialog()

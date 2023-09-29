@@ -44,6 +44,9 @@ function BriefingController:initialize(document)
 	self.Commit = false
 	self.requiredWeps = {}
 	
+	---Load background choice
+	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	
 	--Default width is 888, default height is 371
 	
 	briefView = self.document:GetElementById("briefing_grid")
@@ -220,6 +223,7 @@ function BriefingController:go_to_stage(stage_idx)
     self:leaveStage()
 
     local stage = self.stages[stage_idx]
+	ScpuiSystem.drawBrMap.bg = "br-black.png" -- default to just black bg if nothing is defined
 
 	local brief_img = "brief-main-window.png"
 

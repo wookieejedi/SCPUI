@@ -73,4 +73,10 @@ $State: GS_STATE_SCRIPTING
     +Substate: Cutscene
     +Markup: data/interface/markup/cutscene.rml
 
+#Background Replacement
+
+;$Campaign Background:
+;	+Campaign Filename: campaign filename here
+;	+RCSS Class Name: rcss class name here
+
 #End

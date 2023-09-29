@@ -18,6 +18,8 @@ function TechMissionsController:initialize(document)
     self.elements = {}
     self.section = 1
 	
+	---Load background choice
+	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	
 

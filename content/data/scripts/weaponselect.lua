@@ -41,6 +41,8 @@ function WeaponSelectController:initialize(document)
 		self.document:GetElementById("secondary_amount_four")
 	}
 	
+	---Load background choice
+	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	self.weapon3d, self.weaponEffect, self.icon3d = ui.ShipWepSelect.get3dWeaponChoices()
 	
