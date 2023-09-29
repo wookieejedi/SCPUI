@@ -1,6 +1,7 @@
 local dialogs = require("dialogs")
 local class = require("class")
 local async_util = require("async_util")
+local loadoutHandler = require("loadouthandler")
 
 local AbstractBriefingController = require("briefingCommon")
 
@@ -27,10 +28,7 @@ function BriefingController:init()
 		modelRot = 40
 	}
 	
-	if not ScpuiSystem.selectInit then
-		ui.ShipWepSelect.initSelect()
-		ScpuiSystem.selectInit = true
-	end
+	loadoutHandler:init()
 	
 	--Whenever we start a new mission, we reset the log ui to goals
 	ScpuiSystem.logSection = 1
@@ -43,7 +41,7 @@ function BriefingController:initialize(document)
     AbstractBriefingController.initialize(self, document)
 	
 	ui.maybePlayCutscene(MOVIE_PRE_BRIEF, true, 0)
-	
+	self.Commit = false
 	self.requiredWeps = {}
 	
 	--Default width is 888, default height is 371
@@ -67,7 +65,7 @@ function BriefingController:initialize(document)
 	--ui.Briefing.startBriefingMap(ScpuiSystem.drawBrMap.x1, ScpuiSystem.drawBrMap.y1, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
 	
 	if mn.hasNoBriefing() then
-		ScpuiSystem.selectInit = false
+		self.Commit = true
 		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
 			ScpuiSystem.music_handle:close(true)
 		end
@@ -399,6 +397,9 @@ function BriefingController:Show(text, title, buttons)
 end
 
 function BriefingController:acceptPressed()
+
+	--Apply the loadout
+	loadoutHandler:SendAllToFSO_API()
     
 	local errorValue = ui.Briefing.commitToMission()
 	local text = ""
@@ -428,13 +429,16 @@ function BriefingController:acceptPressed()
 		text = ba.XSTR("Player " .. player .. " must select a place in player wing", 462)
 	--Success!
 	else
+		--Save to the player file
+		self.Commit = true
+		loadoutHandler:SaveInFSO_API()
+		--Cleanup
 		text = nil
 		if ScpuiSystem.drawBrMap then
 			ScpuiSystem.drawBrMap.tex:unload()
 			ScpuiSystem.drawBrMap.tex = nil
 			ScpuiSystem.drawBrMap = nil
 		end
-		ScpuiSystem.selectInit = false
 		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
 			ScpuiSystem.music_handle:close(true)
 		end

@@ -1,15 +1,13 @@
 local rocket_utils = require("rocket_util")
 local async_util = require("async_util")
+local loadoutHandler = require("loadouthandler")
 
 local class = require("class")
 
 local RedAlertController = class()
 
 function RedAlertController:init()
-	if not ScpuiSystem.selectInit then
-		ui.ShipWepSelect.initSelect()
-		ScpuiSystem.selectInit = true
-	end
+	loadoutHandler:init()
 end
 
 local alert_el = nil
@@ -60,7 +58,7 @@ function RedAlertController:blink()
 end
 
 function RedAlertController:commit_pressed()
-	ScpuiSystem.selectInit = false
+	loadoutHandler:unloadAll()
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_ENTER_GAME"])
 end
 
@@ -80,7 +78,7 @@ function RedAlertController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         --self.music_handle:stop()
 		event:StopPropagation()
-		ScpuiSystem.selectInit = false
+		loadoutHandler:unloadAll()
 		
 		mn.unloadMission(true)
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])

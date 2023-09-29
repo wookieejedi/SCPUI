@@ -1,5 +1,7 @@
 local rocket_utils = require("rocket_util")
 local async_util = require("async_util")
+local utils = require("utils")
+local loadoutHandler = require("loadouthandler")
 
 local class = require("class")
 
@@ -72,7 +74,11 @@ function AbstractBriefingController:global_keydown(_, event)
 		ScpuiSystem.music_handle = nil
 		ScpuiSystem.current_played = nil
 		ScpuiSystem.music_started = nil
-		ScpuiSystem.selectInit = false
+		
+		if self.briefState == "briefing" then
+			loadoutHandler:saveCurrentLoadout()
+			loadoutHandler:unloadAll()
+		end
         event:StopPropagation()
 		
 		mn.unloadMission(true)
@@ -169,6 +175,10 @@ function AbstractBriefingController:unload()
 	end
 	
 	if self.briefState == "briefing" then
+		if self.Commit == true then
+			loadoutHandler:saveCurrentLoadout()
+			loadoutHandler:unloadAll()
+		end
 		ui.Briefing.closeBriefing()
 	end
 	

@@ -9,6 +9,7 @@ ScpuiSystem = {
 	cutscene = "none",
 	debriefInit = false,
 	selectInit = false,
+	shipSelectInit = false,
 	music_handle = nil,
 	current_played = nil,
 	debrief_music = nil,

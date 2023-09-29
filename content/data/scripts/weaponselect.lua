@@ -1,6 +1,7 @@
 local dialogs = require("dialogs")
 local class = require("class")
 local async_util = require("async_util")
+local loadoutHandler = require("loadouthandler")
 
 --local AbstractBriefingController = require("briefingCommon")
 
@@ -11,10 +12,7 @@ local WeaponSelectController = class()
 ScpuiSystem.modelDraw = nil
 
 function WeaponSelectController:init()
-	if not ScpuiSystem.selectInit then
-		ui.ShipWepSelect.initSelect()
-		ScpuiSystem.selectInit = true
-	end
+	loadoutHandler:init()
 	ScpuiSystem.modelDraw = {}
 	self.help_shown = false
 end
@@ -23,11 +21,10 @@ function WeaponSelectController:initialize(document)
     --AbstractBriefingController.initialize(self, document)
 	self.document = document
 	self.elements = {}
-	self.slots = {}
+	self.Commit = false
 	self.aniEl = self.document:CreateElement("img")
 	self.aniWepEl = self.document:CreateElement("ani")
 	self.requiredWeps = {}
-	self.emptyWingSlot = {}
 	ScpuiSystem.modelDraw.banks = {
 		bank1 = self.document:GetElementById("primary_one"),
 		bank2 = self.document:GetElementById("primary_two"),
@@ -73,157 +70,22 @@ function WeaponSelectController:initialize(document)
 	self.document:GetElementById("s_select_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("w_select_btn"):SetPseudoClass("checked", true)
 	
-	--ui.ShipWepSelect.initSelect()
-	
 	self.SelectedEntry = nil
 	self.SelectedShip = nil
-	self.shipList = {}
-	self.primaryList = {}
-	self.secondaryList = {}
-	
-	local shipList = tb.ShipClasses
-	local i = 1
-	local j = 1
-	while (i ~= #shipList) do
-		if ui.ShipWepSelect.Ship_Pool[i] > 0 then
-			if rocketUiIcons[shipList[i].Name] == nil then
-				ba.warning("No generated icon was found for " .. shipList[i].Name .. "! Generating one now.")
-				ScpuiSystem:setIconFrames(shipList[i].Name)
-			end
-			self.shipList[j] = {
-				Index = i,
-				Amount = ui.ShipWepSelect.Ship_Pool[i],
-				Icon = shipList[i].SelectIconFilename,
-				GeneratedIcon = {},
-				Anim = shipList[i].SelectAnimFilename,
-				Overhead = shipList[i].SelectOverheadFilename,
-				Name = shipList[i].Name,
-				Type = "ship",
-				GeneratedWidth = rocketUiIcons[shipList[i].Name].Width,
-				GeneratedHeight = rocketUiIcons[shipList[i].Name].Height,
-				GeneratedIcon = rocketUiIcons[shipList[i].Name].Icon
-			}
-			j = j + 1
-		end
-		i = i + 1
-	end
-	
-	--Add any ships that exist in wings but have 0 in the pool
-	self:CheckShipSlots()
-	--Now sort the lists by the ship index
-	table.sort(self.shipList, function(a,b) return a.Index < b.Index end)
-	
-	--generate usable icons
-	--self:getIconFrames(self.shipList)
-	self:getEmptySlotFrames()
-	
-	local weaponList = tb.WeaponClasses
-	local i = 1
-	local j = 1
-	local k = 1
-	while (i ~= #weaponList) do
-		if ui.ShipWepSelect.Weapon_Pool[i] > 0 then
-			if rocketUiIcons[weaponList[i].Name] == nil then
-				ba.warning("No generated icon was found for " .. weaponList[i].Name .. "! Generating one now.")
-				ScpuiSystem:setIconFrames(weaponList[i].Name)
-			end
-			if tb.WeaponClasses[i]:isPrimary() then
-				self.primaryList[j] = {
-					Index = i,
-					Amount = ui.ShipWepSelect.Weapon_Pool[i],
-					Icon = weaponList[i].SelectIconFilename,
-					GeneratedIcon = {},
-					Anim = weaponList[i].SelectAnimFilename,
-					Name = weaponList[i].Name,
-					Title = weaponList[i].TechTitle,
-					Description = string.gsub(weaponList[i].Description, "Level", "<br></br>Level"),
-					Velocity = math.floor(weaponList[i].Speed*10)/10,
-					Range = math.floor(weaponList[i].Speed*weaponList[i].LifeMax*10)/10,
-					Damage = math.floor(weaponList[i].Damage*10)/10,
-					ArmorFactor = math.floor(weaponList[i].ArmorFactor*10)/10,
-					ShieldFactor = math.floor(weaponList[i].ShieldFactor*10)/10,
-					SubsystemFactor = math.floor(weaponList[i].SubsystemFactor*10)/10,
-					FireWait = math.floor(weaponList[i].FireWait*10)/10,
-					Power = weaponList[i].EnergyConsumed,
-					Type = "primary",
-					GeneratedWidth = rocketUiIcons[weaponList[i].Name].Width,
-					GeneratedHeight = rocketUiIcons[weaponList[i].Name].Height,
-					GeneratedIcon = rocketUiIcons[weaponList[i].Name].Icon
-				}
-				j = j + 1
-			elseif tb.WeaponClasses[i]:isSecondary() then
-				self.secondaryList[k] = {
-					Index = i,
-					Amount = ui.ShipWepSelect.Weapon_Pool[i],
-					Icon = weaponList[i].SelectIconFilename,
-					GeneratedIcon = {},
-					Anim = weaponList[i].SelectAnimFilename,
-					Name = weaponList[i].Name,
-					Title = weaponList[i].TechTitle,
-					Description = string.gsub(weaponList[i].Description, "Level", "<br></br>Level"),
-					Velocity = math.floor(weaponList[i].Speed*10)/10,
-					Range = math.floor(weaponList[i].Speed*weaponList[i].LifeMax*10)/10,
-					Damage = math.floor(weaponList[i].Damage*10)/10,
-					ArmorFactor = math.floor(weaponList[i].ArmorFactor*10)/10,
-					ShieldFactor = math.floor(weaponList[i].ShieldFactor*10)/10,
-					SubsystemFactor = math.floor(weaponList[i].SubsystemFactor*10)/10,
-					FireWait = math.floor(weaponList[i].FireWait*10)/10,
-					Power = weaponList[i].EnergyConsumed,
-					Type = "secondary",
-					GeneratedWidth = rocketUiIcons[weaponList[i].Name].Width,
-					GeneratedHeight = rocketUiIcons[weaponList[i].Name].Height,
-					GeneratedIcon = rocketUiIcons[weaponList[i].Name].Icon
-				}
-				k = k + 1
-			end
-		end
-		i = i + 1
-	end
-	
-	--Add any weapons that exists on ships but have 0 in the pool
-	self:CheckSlots()
-	--Now sort the lists by the weapon index
-	table.sort(self.primaryList, function(a,b) return a.Index < b.Index end)
-	table.sort(self.secondaryList, function(a,b) return a.Index < b.Index end)
-	
-	
-	--Only create entries if there are any to create
-	if self.primaryList[1] then
-		self:CreateEntries(self.primaryList)
-	end
-	
-	if self.secondaryList[1] then
-		self:CreateEntries(self.secondaryList)
-	end
 	
 	self:BuildWings()
+	
+	--Only create entries if there are any to create
+	if loadoutHandler:GetNumPrimaryWeapons() > 0 then
+		self:CreateEntries(loadoutHandler:GetPrimaryWeaponList())
+	end
+	if loadoutHandler:GetNumSecondaryWeapons() > 0 then
+		self:CreateEntries(loadoutHandler:GetSecondaryWeaponList())
+	end
 	
 	self:SelectInitialItems()
 	
 	self:startMusic()
-
-end
-
-function WeaponSelectController:getEmptySlotFrames()
-
-	--Create a texture and then draw to it, save the output
-	local imag_h = gr.loadTexture("iconwing01", true, true)
-	local width = imag_h:getWidth()
-	local height = imag_h:getHeight()
-	local tex_h = gr.createTexture(width, height)
-	gr.setTarget(tex_h)
-	for j = 1, 2, 1 do
-		gr.clearScreen(0,0,0,0)
-		gr.drawImage(imag_h[j], 0, 0, width, height, 0, 1, 1, 0, 1)
-		self.emptyWingSlot[j] = gr.screenToBlob()
-	end
-	self.emptyWingSlot.GeneratedWidth = width
-	self.emptyWingSlot.GeneratedHeight = height
-	
-	--clean up
-	gr.setTarget()
-	imag_h:unload()
-	tex_h:unload()
 
 end
 
@@ -233,8 +95,7 @@ function WeaponSelectController:BuildWings()
 	local wrapperEl = self.document:GetElementById("wings_wrapper")
 	self:ClearEntries(wrapperEl)
 
-	--#ui.ShipWepSelect.Loadout_Wings
-	for i = 1, #ui.ShipWepSelect.Loadout_Wings, 1 do
+	for i = 1, loadoutHandler.GetNumWings(), 1 do
 		--First create a wrapper for the whole wing
 		local wingEl = self.document:CreateElement("div")
 		wingEl:SetClass("wing", true)
@@ -248,100 +109,50 @@ function WeaponSelectController:BuildWings()
 		--Add the wing name
 		local nameEl = self.document:CreateElement("div")
 		nameEl:SetClass("wing_name", true)
-		nameEl.inner_rml = ui.ShipWepSelect.Loadout_Wings[i].Name
+		nameEl.inner_rml = loadoutHandler:GetShipLoadout(slotNum).WingName
 		wingEl:AppendChild(nameEl)
 		
 		--Now we add the actual wing slots
-		for j = 1, #ui.ShipWepSelect.Loadout_Wings[i], 1 do
-			self.slots[slotNum] = {}
-			
-			self.slots[slotNum].isPlayer = ui.ShipWepSelect.Loadout_Wings[i][j].isPlayer
-			self.slots[slotNum].isDisabled = ui.ShipWepSelect.Loadout_Wings[i][j].isDisabled
-			self.slots[slotNum].isFilled = true
-			if ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex < 1 then
-				self.slots[slotNum].isFilled = false
-			end
-			self.slots[slotNum].isWeaponLocked = ui.ShipWepSelect.Loadout_Wings[i][j].isWeaponLocked
-			if ui.ShipWepSelect.Loadout_Wings[i][j].isShipLocked or ui.ShipWepSelect.Loadout_Wings[i][j].isWeaponLocked then
-				self.slots[slotNum].isLocked = true
-			end
+		for j = 1, loadoutHandler:GetNumWingSlots(i), 1 do
+			local slotInfo = loadoutHandler:GetShipLoadout(slotNum)
 			
 			local slotEl = self.document:CreateElement("div")
 			slotEl:SetClass("wing_slot", true)
 			slotsEl:AppendChild(slotEl)
 			
 			--default to empty slot image for now, but don't show disabled slots
-			local slotIcon = self.emptyWingSlot[2]
-			if self.slots[slotNum].isDisabled then
-				slotIcon = self.emptyWingSlot[1]
+			local slotIcon = loadoutHandler:getEmptyWingSlot()[2]
+			if slotInfo.isDisabled then
+				slotIcon = loadoutHandler:getEmptyWingSlot()[1]
 			end
-			self.slots[slotNum].Name = nil
-			local shipIndex = 0
 			
-			--This is messy, but we have to check which exact slot we are in the wing
-			if j == 1 then
+			if slotInfo.WingSlot == 1 then
 				slotEl:SetClass("wing_one", true)
-				self.slots[slotNum].Callsign = ui.ShipWepSelect.Loadout_Wings[i].Name .. " 1"
-				--Get the current ship in this slot
-				shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
-				if shipIndex > 0 then
-					local entry = self:GetShipEntry(shipIndex)
-					if self.slots[slotNum].isPlayer then
-						slotIcon = entry.GeneratedIcon[4]
-					elseif self.slots[slotNum].isLocked then
-						slotIcon = entry.GeneratedIcon[6]
-					else
-						slotIcon = entry.GeneratedIcon[1]
-					end
-					self.slots[slotNum].Name = tb.ShipClasses[shipIndex].Name
-				end
-			elseif j == 2 then
+			elseif slotInfo.WingSlot == 2 then
 				slotEl:SetClass("wing_two", true)
-				self.slots[slotNum].Callsign = ui.ShipWepSelect.Loadout_Wings[i].Name .. " 2"
-				--Get the current ship in this slot
-				shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
-				if shipIndex > 0 then
-					local entry = self:GetShipEntry(shipIndex)
-					if self.slots[slotNum].isPlayer then
-						slotIcon = entry.GeneratedIcon[4]
-					elseif self.slots[slotNum].isLocked then
-						slotIcon = entry.GeneratedIcon[6]
-					else
-						slotIcon = entry.GeneratedIcon[1]
-					end
-					self.slots[slotNum].Name = tb.ShipClasses[shipIndex].Name
-				end
-			elseif j == 3 then
+			elseif slotInfo.WingSlot == 3 then
 				slotEl:SetClass("wing_three", true)
-				self.slots[slotNum].Callsign = ui.ShipWepSelect.Loadout_Wings[i].Name .. " 3"
-				--Get the current ship in this slot
-				shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
-				if shipIndex > 0 then
-					local entry = self:GetShipEntry(shipIndex)
-					if self.slots[slotNum].isPlayer then
-						slotIcon = entry.GeneratedIcon[4]
-					elseif self.slots[slotNum].isLocked then
-						slotIcon = entry.GeneratedIcon[6]
-					else
-						slotIcon = entry.GeneratedIcon[1]
-					end
-					self.slots[slotNum].Name = tb.ShipClasses[shipIndex].Name
-				end
-			else
+			elseif slotInfo.WingSlot == 4 then
 				slotEl:SetClass("wing_four", true)
-				self.slots[slotNum].Callsign = ui.ShipWepSelect.Loadout_Wings[i].Name .. " 4"
-				--Get the current ship in this slot
-				shipIndex = ui.ShipWepSelect.Loadout_Ships[slotNum].ShipClassIndex
-				if shipIndex > 0 then
-					local entry = self:GetShipEntry(shipIndex)
-					if self.slots[slotNum].isPlayer then
-						slotIcon = entry.GeneratedIcon[4]
-					elseif self.slots[slotNum].isLocked then
-						slotIcon = entry.GeneratedIcon[6]
-					else
-						slotIcon = entry.GeneratedIcon[1]
-					end
-					self.slots[slotNum].Name = tb.ShipClasses[shipIndex].Name
+			else
+				ba.error("Got wing slot > 4! Need to add RCSS support!")
+			end
+
+			--Get the current ship in this slot
+			local shipIndex = slotInfo.ShipClassIndex
+			if shipIndex > 0 then
+				local entry = loadoutHandler:GetShipInfo(shipIndex)
+				if entry == nil then
+					ba.error("Could not find " .. tb.ShipClasses[shipIndex].Name .. " in the loadout!")
+				end
+				if slotInfo.isPlayer then
+					slotIcon = entry.GeneratedIcon[4]
+				elseif slotInfo.isShipLocked then
+					slotIcon = entry.GeneratedIcon[6]
+				elseif slotInfo.isWeaponLocked then
+					slotIcon = entry.GeneratedIcon[6]
+				else
+					slotIcon = entry.GeneratedIcon[1]
 				end
 			end
 			
@@ -349,29 +160,30 @@ function WeaponSelectController:BuildWings()
 			slotImg:SetAttribute("src", slotIcon)
 			slotEl:AppendChild(slotImg)
 			
-			slotEl.id = "slot_" .. slotNum
+			--This is here so that the event listeners use the correct slot index!
 			local index = slotNum
-			if not self.slots[slotNum].isDisabled then
+			local callsign = slotInfo.Name
+			
+			slotEl.id = "slot_" .. slotNum
+
+			if not slotInfo.isDisabled then
 				if shipIndex > 0 then
-					local thisEntry = self:GetShipEntry(shipIndex)
+					local thisEntry = loadoutHandler:GetShipInfo(shipIndex)
 					if thisEntry == nil then
-						ba.warning("got nil, appending to pool!")
-						thisEntry = self:AppendToPool(shipIndex)
+						ba.warning("Ship Info did not exist! How? Who knows! Get Mjn!")
+						thisEntry = loadoutHandler:AppendToShipInfo(shipIndex)
 					end
-					local callsign = self.slots[slotNum].Callsign
-					self.slots[slotNum].entry = thisEntry
-					local thisSlot = slotNum
 					
 					--Add click detection
 					slotEl:SetClass("button_3", true)
 					slotEl:AddEventListener("click", function(_, _, _)
-						self:SelectShip(shipIndex, callsign, thisSlot)
+						self:SelectShip(shipIndex, callsign, index)
 					end)
 					
 					if self.icon3d then
-						if not self.slots[slotNum].isLocked then
+						if not slotInfo.isShipLocked then
 							slotEl:SetClass("available", true)
-						elseif self.slots[slotNum].isWeaponLocked then
+						elseif slotInfo.isWeaponLocked then
 							slotEl:SetClass("locked", true)
 						else
 							slotEl:SetClass("available", true)
@@ -388,195 +200,27 @@ function WeaponSelectController:BuildWings()
 
 end
 
-function WeaponSelectController:GetShipEntry(shipIndex)
-
-	for i, v in ipairs(self.shipList) do
-		if v.Index == shipIndex then
-			return v
-		end
-	end
-
-end
-
-function WeaponSelectController:GetPrimaryEntry(classIndex)
-
-	for i, v in ipairs(self.primaryList) do
-		if v.Index == classIndex then
-			return v
-		end
-	end
-
-end
-
-function WeaponSelectController:GetSecondaryEntry(classIndex)
-
-	for i, v in ipairs(self.secondaryList) do
-		if v.Index == classIndex then
-			return v
-		end
-	end
-
-end
-
-function WeaponSelectController:GetWeaponEntry(classIndex)
-	if tb.WeaponClasses[classIndex]:isPrimary() then
-		return self:GetPrimaryEntry(classIndex)
-	elseif tb.WeaponClasses[classIndex]:isSecondary() then
-		return self:GetSecondaryEntry(classIndex)
-	else
-		return nil
-	end
-end
-
-function WeaponSelectController:AppendToPool(ship)
-
-	if rocketUiIcons[tb.ShipClasses[ship].Name] == nil then
-		ba.warning("No generated icon was found for " .. tb.ShipClasses[ship].Name .. "! Generating one now.")
-		ScpuiSystem:setIconFrames(tb.ShipClasses[ship].Name)
-	end
-
-	i = #self.shipList + 1
-	self.shipList[i] = {
-		Index = tb.ShipClasses[ship]:getShipClassIndex(),
-		Amount = 0,
-		Icon = tb.ShipClasses[ship].SelectIconFilename,
-		GeneratedIcon = {},
-		Anim = tb.ShipClasses[ship].SelectAnimFilename,
-		Overhead = tb.ShipClasses[ship].SelectOverheadFilename,
-		Name = tb.ShipClasses[ship].Name,
-		Type = "ship",
-		key = tb.ShipClasses[ship].Name,
-		GeneratedWidth = rocketUiIcons[tb.ShipClasses[ship].Name].Width,
-		GeneratedHeight = rocketUiIcons[tb.ShipClasses[ship].Name].Height,
-		GeneratedIcon = rocketUiIcons[tb.ShipClasses[ship].Name].Icon
-	}
-	return self.shipList[i]
-end
-
-function WeaponSelectController:IsSlotDisabled(slot)
-
-	if slot < 5 then
-		return ui.ShipWepSelect.Loadout_Wings[1][slot].isDisabled
-	elseif slot < 9 then
-		local t_slot = slot - 4
-		return ui.ShipWepSelect.Loadout_Wings[2][t_slot].isDisabled
-	elseif slot < 13 then
-		local t_slot = slot - 8
-		return ui.ShipWepSelect.Loadout_Wings[2][t_slot].isDisabled
-	else
-		return false
-	end
-
-end
-
-function WeaponSelectController:CheckShipSlots()
-
-	for i = 1, #ui.ShipWepSelect.Loadout_Ships, 1 do
-		if not self:IsSlotDisabled(i) then
-			local ship = ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex
-			if ship > 0 then
-				ship = self:GetShipEntry(ship)
-				if ship == nil then
-					self:AppendToPool(ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex)
-				end
-			end
-		end
-	end
-
-end
-
-function WeaponSelectController:CheckSlots()
-
-	for i = 1, #ui.ShipWepSelect.Loadout_Ships, 1 do
-		if not self:IsSlotDisabled(i) then
-			if ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex > 0 then
-				for j = 1, #ui.ShipWepSelect.Loadout_Ships[i].Weapons, 1 do
-					local wep = ui.ShipWepSelect.Loadout_Ships[i].Weapons[j]
-					if ui.ShipWepSelect.Loadout_Ships[i].Amounts[j] > 0 then
-						wep = self:GetWeaponEntry(wep)
-						
-						if wep == nil then
-							self:AppendWeaponToPool(ui.ShipWepSelect.Loadout_Ships[i].Weapons[j])
-						end
-					end
-				end
-			end
-		end
-	end
-
-end
-			
-
-function WeaponSelectController:AppendWeaponToPool(classIndex)
-
-	if rocketUiIcons[tb.WeaponClasses[classIndex].Name] == nil then
-		ba.warning("No generated icon was found for " .. tb.WeaponClasses[classIndex].Name .. "! Generating one now.")
-		ScpuiSystem:setIconFrames(tb.WeaponClasses[classIndex].Name)
-	end
-	
-	local list = {}
-	local type_v = nil
-	if tb.WeaponClasses[classIndex]:isPrimary() then
-		list = self.primaryList
-		type_v = "primary"
-	else
-		list = self.secondaryList
-		type_v = "secondary"
-	end
-	i = #list + 1
-	list[i] = {
-		Index = classIndex,
-		Amount = 0,
-		Icon = tb.WeaponClasses[classIndex].SelectIconFilename,
-		GeneratedIcon = {},
-		Anim = tb.WeaponClasses[classIndex].SelectAnimFilename,
-		Name = tb.WeaponClasses[classIndex].Name,
-		Title = tb.WeaponClasses[classIndex].TechTitle,
-		Description = string.gsub(tb.WeaponClasses[classIndex].Description, "Level", "<br></br>Level"),
-		Velocity = math.floor(tb.WeaponClasses[classIndex].Speed*10)/10,
-		Range = math.floor(tb.WeaponClasses[classIndex].Speed*tb.WeaponClasses[classIndex].LifeMax*10)/10,
-		Damage = math.floor(tb.WeaponClasses[classIndex].Damage*10)/10,
-		ArmorFactor = math.floor(tb.WeaponClasses[classIndex].ArmorFactor*10)/10,
-		ShieldFactor = math.floor(tb.WeaponClasses[classIndex].ShieldFactor*10)/10,
-		SubsystemFactor = math.floor(tb.WeaponClasses[classIndex].SubsystemFactor*10)/10,
-		FireWait = math.floor(tb.WeaponClasses[classIndex].FireWait*10)/10,
-		Power = tb.WeaponClasses[classIndex].EnergyConsumed,
-		Type = type_v,
-		key = tb.WeaponClasses[classIndex].Name,
-		GeneratedWidth = rocketUiIcons[tb.WeaponClasses[classIndex].Name].Width,
-		GeneratedHeight = rocketUiIcons[tb.WeaponClasses[classIndex].Name].Height,
-		GeneratedIcon = rocketUiIcons[tb.WeaponClasses[classIndex].Name].Icon
-	}
-end
-
-function WeaponSelectController:ResetAmounts()
-	for i = 1, #self.primaryList, 1 do
-		self.primaryList[i].Amount = ui.ShipWepSelect.Weapon_Pool[self.primaryList[i].Index]
-	end
-	for i = 1, #self.secondaryList, 1 do
-		self.secondaryList[i].Amount = ui.ShipWepSelect.Weapon_Pool[self.secondaryList[i].Index]
-	end
-end
-
 function WeaponSelectController:SelectInitialItems()
 
 	local selectSlot = 0
-	for i = 1, #ui.ShipWepSelect.Loadout_Ships, 1 do
-		if ui.ShipWepSelect.Loadout_Ships[1].ShipClassIndex > 0 then
+	for i = 1, loadoutHandler:GetNumSlots() do
+		if loadoutHandler:GetShipLoadout(i).ShipClassIndex > 0 then
 			selectSlot = i
 			break
 		end
 	end
 	
 	if selectSlot > 0 then
-		local wing = self:GetWingSlot(selectSlot)
-		local callsign = ui.ShipWepSelect.Loadout_Wings[wing].Name .. " 1"
-		self:SelectShip(ui.ShipWepSelect.Loadout_Ships[selectSlot].ShipClassIndex, callsign, 1)
+		local ship = loadoutHandler:GetShipLoadout(selectSlot)
+
+		self:SelectShip(ship.ShipClassIndex, ship.Name, 1)
 		
-		if self.primaryList[1] then
-			self:SelectEntry(self.primaryList[1])
-		elseif self.secondaryList[1] then
-			self:SelectEntry(self.secondaryList[1])		
+		if loadoutHandler:GetNumPrimaryWeapons() > 0 then
+			self:SelectEntry(loadoutHandler:GetPrimaryWeaponList()[1])
+		end
+		
+		if loadoutHandler:GetNumSecondaryWeapons() > 0 then
+			self:SelectEntry(loadoutHandler:GetSecondaryWeaponList()[1])
 		end
 	end
 	
@@ -592,21 +236,21 @@ function WeaponSelectController:ReloadList()
 	self:ClearEntries(list_items_el)
 	self.SelectedEntry = nil
 	self.SelectedShip = nil
-	ui.ShipWepSelect.initSelect()
-	self:ResetAmounts()
-	if self.primaryList[1] then
-		self:CreateEntries(self.primaryList)
+	if loadoutHandler:GetNumPrimaryWeapons() > 0 then
+		self:CreateEntries(loadoutHandler:GetPrimaryWeaponList())
 	end
-	if self.secondaryList[1] then
-		self:CreateEntries(self.secondaryList)
+	if loadoutHandler:GetNumSecondaryWeapons() > 0 then
+		self:CreateEntries(loadoutHandler:GetSecondaryWeaponList())
 	end
 	self:BuildWings()
 	self:SelectInitialItems()
+	self:UpdateAllPoolCounts()
+	self:UpdateAllSecondaryCounts()
 end
 
 function WeaponSelectController:ChangeIconAvailability(shipIndex)
 
-	for i, v in pairs(self.primaryList) do
+	for i, v in pairs(loadoutHandler:GetPrimaryWeaponList()) do
 		local iconEl = self.document:GetElementById(v.key).first_child.first_child.next_sibling
 		if tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(v.Index) then
 			iconEl:SetClass("drag", true)
@@ -625,7 +269,7 @@ function WeaponSelectController:ChangeIconAvailability(shipIndex)
 		end
 	end
 	
-	for i, v in pairs(self.secondaryList) do
+	for i, v in pairs(loadoutHandler:GetSecondaryWeaponList()) do
 		local iconEl = self.document:GetElementById(v.key).first_child.first_child.next_sibling
 		if tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(v.Index) then
 			iconEl:SetClass("drag", true)
@@ -656,9 +300,9 @@ function WeaponSelectController:CreateEntryItem(entry, idx)
 	li_el:AppendChild(iconWrapper)
 	
 	local countEl = self.document:CreateElement("div")
-	countEl.inner_rml = entry.Amount
+	countEl.inner_rml = loadoutHandler:GetWeaponPoolAmount(entry.Index)
 	countEl:SetClass("amount", true)
-	entry.countEl = countEl
+	countEl.id = entry.Name .. "_count"
 	
 	iconWrapper:AppendChild(countEl)
 	
@@ -687,7 +331,7 @@ end
 function WeaponSelectController:CreateEntries(list)
 
 	local list_names_el = nil
-	
+
 	if tb.WeaponClasses[list[1].Index]:isPrimary() then
 		list_names_el = self.document:GetElementById("primary_icon_list_ul")
 	elseif tb.WeaponClasses[list[1].Index]:isSecondary() then
@@ -703,8 +347,9 @@ function WeaponSelectController:CreateEntries(list)
 	end
 end
 
-function WeaponSelectController:SelectEntry(entry)
+function WeaponSelectController:SelectEntry(entry, slot)
 	if entry ~= nil then
+		ScpuiSystem.modelDraw.Hover = slot
 		if entry.key ~= self.SelectedEntry then
 			
 			self.SelectedEntry = entry.key
@@ -717,6 +362,8 @@ function WeaponSelectController:SelectEntry(entry)
 				ScpuiSystem.modelDraw.class = entry.Index
 				ScpuiSystem.modelDraw.element = self.document:GetElementById("weapon_view_window")
 				ScpuiSystem.modelDraw.start = true
+				
+				self:refreshOverheadSlot()
 			else
 				--the anim is already created so we only need to remove and reset the src
 				self.aniWepEl:RemoveAttribute("src")
@@ -729,27 +376,27 @@ end
 
 function WeaponSelectController:SelectAssignedEntry(element, slot)
 
-	local weapon = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[slot]
+	local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
+	local weapon = ship.Weapons[slot]
 	
 	local selectedEntry = nil
 	
 	if slot < 4 then
-		selectedEntry = self:GetPrimaryEntry(weapon)
+		selectedEntry = loadoutHandler:GetPrimaryInfo(weapon)
 	else
-		selectedEntry = self:GetSecondaryEntry(weapon)
+		selectedEntry = loadoutHandler:GetSecondaryInfo(weapon)
 	end
 	
-	self:SelectEntry(selectedEntry)
+	self:SelectEntry(selectedEntry, slot)
 
 end
 
 function WeaponSelectController:HighlightWeapon()
+	local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
 
-	local shipIndex = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].ShipClassIndex 
-
-	for i, v in pairs(self.primaryList) do
+	for i, v in pairs(loadoutHandler:GetPrimaryWeaponList()) do
 		local iconEl = self.document:GetElementById(v.key).first_child.first_child.next_sibling
-		if tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(v.Index) then
+		if tb.ShipClasses[ship.ShipClassIndex]:isWeaponAllowedOnShip(v.Index) then
 			if v.key == self.SelectedEntry then
 				if self.icon3d then
 					iconEl:SetClass("highlighted", true)
@@ -764,9 +411,9 @@ function WeaponSelectController:HighlightWeapon()
 		end
 	end
 	
-	for i, v in pairs(self.secondaryList) do
+	for i, v in pairs(loadoutHandler:GetSecondaryWeaponList()) do
 		local iconEl = self.document:GetElementById(v.key).first_child.first_child.next_sibling
-		if tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(v.Index) then
+		if tb.ShipClasses[ship.ShipClassIndex]:isWeaponAllowedOnShip(v.Index) then
 			if v.key == self.SelectedEntry then
 				if self.icon3d then
 					iconEl:SetClass("highlighted", true)
@@ -783,9 +430,10 @@ function WeaponSelectController:HighlightWeapon()
 	
 	for i, v in pairs(ScpuiSystem.modelDraw.banks) do
 		local index = string.sub(i, -1)
-		local weapon = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[index]
-		if weapon > 0 then
-			local thisEntry = self:GetWeaponEntry(weapon)
+
+		local weapon = ship.Weapons[index]
+		if weapon ~= nil and weapon > 0 then
+			local thisEntry = loadoutHandler:GetWeaponInfo(weapon)
 			if v.first_child ~= nil then
 				if tb.WeaponClasses[weapon].Name == self.SelectedEntry then
 					v.first_child:SetAttribute("src", thisEntry.GeneratedIcon[3])
@@ -800,24 +448,29 @@ end
 
 function WeaponSelectController:HighlightShip(slot)
 	
-	for i = 1, 12, 1 do
+	for i = 1, loadoutHandler:GetNumSlots(), 1 do
 		local slotEl = self.document:GetElementById("slot_" .. i)
-		local shipIdx = ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex
-		local thisEntry = self:GetShipEntry(shipIdx)
+		local ship = loadoutHandler:GetShipLoadout(i)
+		local shipIdx = ship.ShipClassIndex
+		local thisEntry = loadoutHandler:GetShipInfo(shipIdx)
 		if thisEntry ~= nil then
 			local icon = nil
 			if slot == i then
-				if self.slots[i].isPlayer then
+				if ship.isPlayer then
 					icon = thisEntry.GeneratedIcon[4]
-				elseif self.slots[i].isLocked then
+				elseif ship.isShipLocked then
+					icon = thisEntry.GeneratedIcon[5]
+				elseif ship.isWeaponLocked then
 					icon = thisEntry.GeneratedIcon[5]
 				else
 					icon = thisEntry.GeneratedIcon[3]
 				end
 			else
-				if self.slots[i].isPlayer then
+				if ship.isPlayer then
 					icon = thisEntry.GeneratedIcon[4]
-				elseif self.slots[i].isLocked then
+				elseif ship.isShipLocked then
+					icon = thisEntry.GeneratedIcon[6]
+				elseif ship.isWeaponLocked then
 					icon = thisEntry.GeneratedIcon[6]
 				else
 					icon = thisEntry.GeneratedIcon[1]
@@ -840,7 +493,7 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 		
 		self.document:GetElementById("ship_name").inner_rml = callsign
 		
-		local thisEntry = self:GetShipEntry(shipIndex)
+		local thisEntry = loadoutHandler:GetShipInfo(shipIndex)
 
 		self:HighlightShip(slot)
 		
@@ -855,10 +508,10 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 		if self.overhead3d or overhead == nil then
 			ScpuiSystem.modelDraw.OverheadClass = shipIndex
 			ScpuiSystem.modelDraw.OverheadElement = self.document:GetElementById("ship_view_wrapper")
-			ScpuiSystem.modelDraw.Slot = slot
-			--STILL GOTTA HANDLE THIS!
-			ScpuiSystem.modelDraw.Hover = self.hoverSlot
+			--ScpuiSystem.modelDraw.Slot = slot
 			ScpuiSystem.modelDraw.overheadEffect = self.overheadEffect
+			
+			self:refreshOverheadSlot()
 		else
 			--the anim is already created so we only need to remove and reset the src
 			self.aniEl:RemoveAttribute("src")
@@ -945,19 +598,31 @@ end
 
 function WeaponSelectController:BuildSlot(parentEl, bank)
 	local slotImg = self.document:CreateElement("img")
-		
+	
+	local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
+	
+	--Maybe show slot as locked
+	if ship.isWeaponLocked == true then
+		parentEl:SetClass("weapon_locked", true)
+	else
+		parentEl:SetClass("weapon_locked", false)
+	end
+	
 	--Get the weapon currently loaded in the slot
-	local weapon = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[bank]
-	local amount = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[bank]
+	local weapon = ship.Weapons[bank]
+	local amount = ship.Amounts[bank]
 	if amount < 1 then amount = "" end
 	if bank > 3 then
 		self.secondaryAmountEls[bank - 3].inner_rml = amount
 	end
+	
 	local slotIcon = nil
 	if weapon > 0 then
-		slotIcon = self:GetWeaponEntry(weapon).GeneratedIcon[1]
+		slotIcon = loadoutHandler:GetWeaponInfo(weapon).GeneratedIcon[1]
 		--slotIcon = tb.WeaponClasses[weapon].SelectIconFilename
-		slotImg:SetClass("drag", true)
+		if ship.isWeaponLocked == false then
+			slotImg:SetClass("drag", true)
+		end
 		slotImg:SetClass("button_3", true)
 		slotImg:SetAttribute("src", slotIcon)
 		parentEl:AppendChild(slotImg)
@@ -995,18 +660,6 @@ function WeaponSelectController:BuildInfo(entry)
 
 end
 
-function WeaponSelectController:GetWingSlot(slot)
-	if slot < 5 then
-		return 1, slot
-	elseif slot < 9 then
-		return 2, slot - 4
-	elseif slot < 13 then
-		return 3, slot - 8
-	else
-		return nil, nil
-	end
-end
-
 function WeaponSelectController:ChangeBriefState(state)
 	if state == 1 then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
@@ -1027,7 +680,7 @@ function WeaponSelectController:DragDrop(element, slot)
 end
 
 function WeaponSelectController:DragOver(element, slot)
-	if ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[slot] > 0 then
+	if loadoutHandler:GetShipLoadout(self.currentShipSlot).Weapons[slot] > 0 then
 		ScpuiSystem.modelDraw.Hover = slot
 	end
 end
@@ -1036,159 +689,9 @@ function WeaponSelectController:DragOut(element, slot)
 	ScpuiSystem.modelDraw.Hover = -1
 end
 
---This one converts the slot (1-7) to actual banks (1-3 for primaries, 1-4 for secondaries)
-function WeaponSelectController:ConvertBankSlotToBank(ship, bank, w_type)
-	local primaryBanks = tb.ShipClasses[ship].numPrimaryBanks
-	local secondaryBanks = tb.ShipClasses[ship].numSecondaryBanks
-
-	if (bank <= 3) and (w_type == 1) then
-		if bank > primaryBanks then
-			return -1
-		else
-			return bank
-		end
-	elseif (bank <= 7)  and (w_type == 2) then
-		if (bank - 3) > secondaryBanks then
-			return -1
-		else
-			return bank - 3
-		end
-	else
-		return -1
-	end
-end
-
---This one converts the slot (1-7) to actual banks on the specific ship class (1-N where N is the last secondary)
-function WeaponSelectController:ConvertBankSlotToBankIndex(ship, bank, w_type)
-	local primaryBanks = tb.ShipClasses[ship].numPrimaryBanks
-	local secondaryBanks = tb.ShipClasses[ship].numSecondaryBanks
-
-	if (bank <= 3) and (w_type == 1) then
-		if bank > primaryBanks then
-			return -1
-		else
-			return bank
-		end
-	elseif (bank <= 7)  and (w_type == 2) then
-		if (bank - 3) > secondaryBanks then
-			return -1
-		else
-			return bank - 3 + primaryBanks
-		end
-	else
-		return -1
-	end
-end
-
-function WeaponSelectController:IsWeaponAllowed(shipIndex, weaponIndex)
-
-	local primaryBanks = tb.ShipClasses[shipIndex].numPrimaryBanks
-	local secondaryBanks = tb.ShipClasses[shipIndex].numSecondaryBanks
-	local actualBank = nil
-	
-	if tb.WeaponClasses[weaponIndex]:isPrimary() then
-		actualBank = self:ConvertBankSlotToBankIndex(shipIndex, self.activeSlot, 1)
-	else
-		actualBank = self:ConvertBankSlotToBankIndex(shipIndex, self.activeSlot, 2)
-	end
-
-	if actualBank == -1 then
-		return false
-	else
-		return tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(weaponIndex, actualBank)
-	end
-
-end
-
-function WeaponSelectController:CopyToWing(element)
-
-	local sourceSlot = self.currentShipSlot
-	
-	--Now get what the other slots are that we will copy to
-	local slots = {}
-	if sourceSlot < 5 then
-		slots[1] = 1
-		slots[2] = 2
-		slots[3] = 3
-		slots[4] = 4
-	elseif sourceSlot < 9 then
-		slots[1] = 5
-		slots[2] = 6
-		slots[3] = 7
-		slots[4] = 8
-	elseif sourceSlot < 13 then
-		slots[1] = 9
-		slots[2] = 10
-		slots[3] = 11
-		slots[4] = 12
-	else
-		--do nothing because how did this happen?
-		return
-	end
-	
-	local sourceShip = ui.ShipWepSelect.Loadout_Ships[sourceSlot].ShipClassIndex
-	--Now get the weapons that we will try to copy over
-	for j = 1, #slots, 1 do
-		if slots[j] ~= sourceSlot then
-			local targetShip = ui.ShipWepSelect.Loadout_Ships[slots[j]].ShipClassIndex
-			--ba.warning(slots[j] .. " " .. tostring(self.slots[slots[j]].isDisabled) .. " " .. tostring(self.slots[slots[j]].isFilled))
-			if (not self.slots[slots[j]].isDisabled) and self.slots[slots[j]].isFilled then
-				if not self.slots[slots[j]].isWeaponLocked then
-					for i = 1, #ui.ShipWepSelect.Loadout_Ships[sourceSlot].Weapons, 1 do
-						--ba.warning(sourceShip .. " " .. targetShip .. " " .. slots[j] .. " " .. i)
-						--Does the bank exist on the source ship?
-						if self:ShipHasBank(sourceShip, i) then
-							--Does the bank exist on the target ship?
-							if self:ShipHasBank(targetShip, i) then
-								--The weapon we want to copy
-								local weapon = ui.ShipWepSelect.Loadout_Ships[sourceSlot].Weapons[i]
-								--The weapon's type
-								local w_type = 2
-								if tb.WeaponClasses[weapon]:isPrimary() then
-									w_type = 1
-								end
-								local actualBank = self:ConvertBankSlotToBank(targetShip, i, w_type)
-								local actualBankIdx = self:ConvertBankSlotToBankIndex(targetShip, i, w_type)
-								--Can that bank accept the weapon?
-								if tb.ShipClasses[targetShip]:isWeaponAllowedOnShip(weapon, actualBankIdx) then
-									--Get the capacity the bank can hold of the source weapon
-									local capacity = self:GetWeaponAmount(targetShip, weapon, actualBank)
-									--Do we have that much in the pool?
-									local thisEntry = self:GetWeaponEntry(weapon)
-									local count = tonumber(thisEntry.countEl.inner_rml)
-									if count < capacity then
-										capacity = count
-									end
-									if capacity > 0 then
-										--Return what's in the bank to the pool
-										local targetWeapon = ui.ShipWepSelect.Loadout_Ships[slots[j]].Weapons[i]
-										local targetAmount = ui.ShipWepSelect.Loadout_Ships[slots[j]].Amounts[i]
-										self:ReturnWeaponToPool(targetWeapon, targetAmount)
-										--Now add the source weapon copy
-										self:SubtractWeaponFromPool(weapon, capacity)
-										ui.ShipWepSelect.Loadout_Ships[slots[j]].Weapons[i] = weapon
-										ui.ShipWepSelect.Loadout_Ships[slots[j]].Amounts[i] = capacity
-									end
-								else
-									--Return what's in the bank to the pool
-									local targetWeapon = ui.ShipWepSelect.Loadout_Ships[slots[j]].Weapons[i]
-									local targetAmount = ui.ShipWepSelect.Loadout_Ships[slots[j]].Amounts[i]
-									self:ReturnWeaponToPool(targetWeapon, targetAmount)
-									ui.ShipWepSelect.Loadout_Ships[slots[j]].Weapons[i] = -1
-									ui.ShipWepSelect.Loadout_Ships[slots[j]].Amounts[i] = -1
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-	end
-end
-
 function WeaponSelectController:ApplyWeaponToSlot(parentEl, slot, bank, weapon)
 
-	local entry = self:GetWeaponEntry(weapon)
+	local entry = loadoutHandler:GetWeaponInfo(weapon)
 	local slotIcon = nil
 	if entry.Name == self.SelectedEntry then
 		slotIcon = entry.GeneratedIcon[3]
@@ -1202,76 +705,65 @@ function WeaponSelectController:ApplyWeaponToSlot(parentEl, slot, bank, weapon)
 	parentEl.first_child:SetAttribute("src", slotIcon)
 	parentEl.first_child:SetClass("drag", true)
 
-	
-	--Apply to the actual loadout
-	ui.ShipWepSelect.Loadout_Ships[slot].Weapons[bank] = weapon
-
-end
-
-function WeaponSelectController:ReturnWeaponToPool(weapon, amount)
-	if amount > 0 then
-		local wep
-		if tb.WeaponClasses[weapon]:isPrimary() then
-			wep = self:GetPrimaryEntry(weapon)
-		else
-			wep = self:GetSecondaryEntry(weapon)
-		end
-		wep.Amount = wep.Amount + amount
-		wep.countEl.inner_rml = wep.Amount
-	end
 end
 
 function WeaponSelectController:EmptySlot(element, slot)
-	ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[slot] = -1
-	--ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[slot] = -1
 	element:RemoveChild(element.first_child)
 	if slot > 3 then
-		local amountEl = self.secondaryAmountEls[slot-3]
-		amountEl.inner_rml = ""
+		self:UpdateSecondaryCount(slot)
 	end
 end
 
-function WeaponSelectController:SubtractWeaponFromPool(weapon, amount)
-	if amount > 0 then
-		local wep
-		if tb.WeaponClasses[weapon]:isPrimary() then
-			wep = self:GetPrimaryEntry(weapon)
-		else
-			wep = self:GetSecondaryEntry(weapon)
-		end
-		wep.Amount = wep.Amount - amount
-		if wep.Amount < 0 then
-			wep.Amount = 0
-		end
-		wep.countEl.inner_rml = wep.Amount
+function WeaponSelectController:UpdateAllPoolCounts()
+	local primaryList = loadoutHandler:GetPrimaryWeaponList()
+	for i = 1, #primaryList do
+		self:UpdatePoolCount(primaryList[i])
+	end
+	local secondaryList = loadoutHandler:GetSecondaryWeaponList()
+	for i = 1, #secondaryList do
+		self:UpdatePoolCount(secondaryList[i])
 	end
 end
 
-function WeaponSelectController:ShipHasBank(ship, bank)
-	local primaryBanks = tb.ShipClasses[ship].numPrimaryBanks
-	local secondaryBanks = tb.ShipClasses[ship].numSecondaryBanks
+function WeaponSelectController:UpdatePoolCount(data)
+	local countEl = self.document:GetElementById(data.key .. "_count")
 	
-	if bank < 1 then return false end
-	if bank == 1 and primaryBanks > 0 then return true end
-	if bank == 2 and primaryBanks > 1 then return true end
-	if bank == 3 and primaryBanks > 2 then return true end
-	if bank == 4 and secondaryBanks > 0 then return true end
-	if bank == 5 and secondaryBanks > 1 then return true end
-	if bank == 6 and secondaryBanks > 2 then return true end
-	if bank == 7 and secondaryBanks > 3 then return true end
-	if bank > 7 then return false end
+	if countEl == nil then return end
+
+	countEl.inner_rml = loadoutHandler:GetWeaponPoolAmount(data.Index)
+end
+
+function WeaponSelectController:UpdateAllSecondaryCounts()
+	for i = 1, #self.secondaryAmountEls do
+		local bank = i + loadoutHandler:GetMaxPrimaries()
+		
+		self:UpdateSecondaryCount(bank)
+	end
+end
+
+function WeaponSelectController:UpdateSecondaryCount(bank)
+	local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
+	local amount = ship.Amounts[bank]
+	
+	if amount == nil or amount < 1 then
+		amount = ""
+	end
+	
+	local element = self.secondaryAmountEls[bank - 3]
+	element.inner_rml = amount
 end
 
 function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 	if (self.replace ~= nil) and (self.activeSlot > 0) then
 		
 		--Get the slot information: ship, weapon, and amount
-		local slotShip = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].ShipClassIndex 
-		local slotWeapon = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[self.activeSlot]
-		local slotAmount = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[self.activeSlot]
+		local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
+		local shipIdx = ship.ShipClassIndex 
+		local slotWeapon = ship.Weapons[self.activeSlot]
+		local slotAmount = ship.Amounts[self.activeSlot]
 	
 		--Get the amount of the weapon we're dragging
-		local count = tonumber(entry.countEl.inner_rml)
+		local count = loadoutHandler:GetWeaponPoolAmount(weaponIndex)
 
 		--If the pool count is 0 then abort!
 		if count < 1 then
@@ -1280,14 +772,13 @@ function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 		end
 		
 		--If the ship is weapon locked then abort!
-		local wing, wingSlot = self:GetWingSlot(self.currentShipSlot)
-		if ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isWeaponLocked then
+		if ship.isWeaponLocked then
 			self.replace = nil
 			return
 		end
 		
 		--If the slot can't accept the weapon then abort!
-		if not self:IsWeaponAllowed(slotShip, weaponIndex) then
+		if not loadoutHandler:IsWeaponAllowedInBank(shipIdx, weaponIndex, self.activeSlot) then
 			self.replace = nil
 			text = ba.XSTR("That weapon slot can't accept that weapon type", -1)
 			local title = ""
@@ -1310,72 +801,62 @@ function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 		end
 		
 		--If slot doesn't exist on current ship then abort!
-		if not self:ShipHasBank(slotShip, self.activeSlot) then
+		if not loadoutHandler:ShipHasBank(shipIdx, self.activeSlot) then
 			self.replace = nil
 			return
 		end
 		
 		if count > 0 then
-			self:ApplyWeaponToSlot(self.replace, self.currentShipSlot, self.activeSlot, weaponIndex)
-				
-			local w_type = 1
-			if tb.WeaponClasses[weaponIndex]:isSecondary() then
-				w_type = 2
-			end
-			
-			local capacity = self:GetWeaponAmount(slotShip, weaponIndex, self:ConvertBankSlotToBank(slotShip, self.activeSlot, w_type))
-
-			if count > capacity then
-				ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[self.activeSlot] = capacity
-				self:SubtractWeaponFromPool(weaponIndex, capacity)
-			else
-				ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[self.activeSlot] = count
-				self:SubtractWeaponFromPool(weaponIndex, count)
-			end
-
-			if tb.WeaponClasses[weaponIndex]:isSecondary() then
-				self.secondaryAmountEls[self.activeSlot - 3].inner_rml = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[self.activeSlot]
-			end
-
+		
 			--return weapons to pool if appropriate
-			self:ReturnWeaponToPool(slotWeapon, slotAmount)
+			loadoutHandler:EmptyWeaponBank(self.currentShipSlot, self.activeSlot)
+			
+			--Apply to the actual loadout
+			loadoutHandler:AddWeaponToBank(self.currentShipSlot, self.activeSlot, weaponIndex)
+		
+			self:ApplyWeaponToSlot(self.replace, self.currentShipSlot, self.activeSlot, weaponIndex)
 			
 			self.replace = nil
 		end
+		
+		self:UpdateAllPoolCounts()
+		self:UpdateAllSecondaryCounts()
+		self:refreshOverheadSlot()
 	end
 end
 
 function WeaponSelectController:DragSlotEnd(element, slot)
 	if (self.replace ~= nil) and (self.activeSlot > -1) then
+	
+		local dropSlot = self.activeSlot
 		
 		--Get the slot information of what's being dragged: ship, weapon, and amount
-		local slotShip = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].ShipClassIndex 
-		local slotWeapon = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[slot]
-		local slotAmount = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[slot]
+		local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
+		local shipIdx = ship.ShipClassIndex 
+		local slotWeapon = ship.Weapons[slot]
+		local slotAmount = ship.Amounts[slot]
+		
+		--If the ship is weapon locked then abort!
+		if ship.isWeaponLocked then
+			self.replace = nil
+			return
+		end
 		
 		--Get the slot information of what's being dropped onto: weapon, and amount
-		local activeWeapon = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Weapons[self.activeSlot]
-		local activeAmount = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[self.activeSlot]
-		
-		--If we're just returning something to the pool then empty the slot and abort!
-		if self.activeSlot == 0 then
-			self:ReturnWeaponToPool(slotWeapon, slotAmount)
-			
+		if dropSlot > 0 then
+			local activeWeapon = ship.Weapons[dropSlot]
+			local activeAmount = ship.Amounts[dropSlot]
+		else
+			--If we're just returning something to the pool then empty the slot and abort!
+			loadoutHandler:EmptyWeaponBank(self.currentShipSlot, slot)
 			self:EmptySlot(element, slot)
 			
 			self.replace = nil
 			return
 		end
 		
-		--If the ship is weapon locked then abort!
-		local wing, wingSlot = self:GetWingSlot(self.currentShipSlot)
-		if ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isWeaponLocked then
-			self.replace = nil
-			return
-		end
-		
 		--If the slot can't accept the weapon then abort!
-		if not self:IsWeaponAllowed(slotShip, slotWeapon) then
+		if not loadoutHandler:IsWeaponAllowedInBank(shipIdx, slotWeapon, dropSlot) then
 			self.replace = nil
 			text = ba.XSTR("That weapon slot can't accept that weapon type", -1)
 			local title = ""
@@ -1398,91 +879,35 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 		end
 
 		--If slot doesn't exist on current ship then abort!
-		if not self:ShipHasBank(slotShip, self.activeSlot) then
+		if not loadoutHandler:ShipHasBank(shipIdx, dropSlot) then
 			self.replace = nil
 			return
 		end
 		
-		--Just double checking we aren't dragging a 0 amount
+		--If what is being dragged has an amount greater than 0
 		if slotAmount > 0 then
-			self:ApplyWeaponToSlot(self.replace, self.currentShipSlot, self.activeSlot, slotWeapon)
-				
-			local w_type = 1
-			if tb.WeaponClasses[slotWeapon]:isSecondary() then
-				w_type = 2
-			end
+		
+			--return weapons to pool if appropriate
+			loadoutHandler:EmptyWeaponBank(self.currentShipSlot, dropSlot)
+			loadoutHandler:EmptyWeaponBank(self.currentShipSlot, slot)
 			
-			local capacity = self:GetWeaponAmount(slotShip, slotWeapon, self:ConvertBankSlotToBank(slotShip, self.activeSlot, w_type))
-
-			if slotAmount > capacity then
-				ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[self.activeSlot] = capacity
-				--Get what's leftover to return to the pool
-				local difference = slotAmount - capacity
-				self:ReturnWeaponToPool(slotWeapon, difference)
-			else
-				ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[self.activeSlot] = slotAmount
-			end
-			
-			if tb.WeaponClasses[slotWeapon]:isSecondary() then
-				self.secondaryAmountEls[self.activeSlot - 3].inner_rml = ui.ShipWepSelect.Loadout_Ships[self.currentShipSlot].Amounts[self.activeSlot]
-			end
-
-			self:ReturnWeaponToPool(activeWeapon, activeAmount)
+			--Apply to the actual loadout
+			loadoutHandler:AddWeaponToBank(self.currentShipSlot, dropSlot, slotWeapon, slotAmount)
 			
 			self:EmptySlot(element, slot)
+			self:ApplyWeaponToSlot(self.replace, self.currentShipSlot, dropSlot, slotWeapon)
 			
 			self.replace = nil
 		end
+		
+		self:UpdateAllPoolCounts()
+		self:UpdateAllSecondaryCounts()
+		self:refreshOverheadSlot()
 	end		
 end
 
-function WeaponSelectController:SetFilled(thisSlot, status)
-
-	local curWing = 0
-	local curSlot = 0
-	if thisSlot < 5 then
-		curWing = 1
-		curSlot = thisSlot
-	elseif thisSlot < 9 then
-		curWing = 2
-		curSlot = thisSlot - 4
-	else
-		curWing = 3
-		curSlot = thisSlot - 8
-	end
-	ui.ShipWepSelect.Loadout_Wings[curWing][curSlot].isFilled = status
-			
-end
-
-function WeaponSelectController:GetWeaponAmount(shipIndex, weaponIndex, bank)
-	
-	--Primaries always get set to 1, even ballistics
-	if tb.WeaponClasses[weaponIndex]:isPrimary() then
-		return 1
-	end
-	
-	local capacity = tb.ShipClasses[shipIndex]:getSecondaryBankCapacity(bank)
-	local amount = capacity / tb.WeaponClasses[weaponIndex].CargoSize
-	return math.floor(amount+0.5)
-
-end
-
-function WeaponSelectController:GetFirstAllowedWeapon(shipIndex, bank, category)
-
-	i = 1
-	while (i < #tb.WeaponClasses) do
-		if (tb.WeaponClasses[i]:isPrimary() and (category == 1)) or (tb.WeaponClasses[i]:isSecondary() and (category == 2)) then
-			if ui.ShipWepSelect.Weapon_Pool[i] > 0 then
-				if tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(i, bank) then
-					return i
-				end
-			end
-		end
-		i = i + 1
-	end
-	
-	return -1
-
+function WeaponSelectController:CopyToWing()
+	loadoutHandler:CopyToWing(self.currentShipSlot)
 end
 
 function WeaponSelectController:Show(text, title, buttons)
@@ -1515,11 +940,14 @@ end
 
 function WeaponSelectController:reset_pressed(element)
     ui.playElementSound(element, "click", "success")
-    ui.ShipWepSelect:resetSelect()
+    loadoutHandler:resetLoadout()
 	self:ReloadList()
 end
 
 function WeaponSelectController:accept_pressed()
+
+	--Apply the loadout
+	loadoutHandler:SendAllToFSO_API()
     
 	local errorValue = ui.Briefing.commitToMission()
 	local text = ""
@@ -1549,8 +977,11 @@ function WeaponSelectController:accept_pressed()
 		text = ba.XSTR("Player " .. player .. " must select a place in player wing", 462)
 	--Success!
 	else
+		--Save to the player file
+		self.Commit = true
+		loadoutHandler:SaveInFSO_API()
+		--Cleanup
 		text = nil
-		ScpuiSystem.selectInit = false
 		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
 			ScpuiSystem.music_handle:close(true)
 		end
@@ -1609,9 +1040,22 @@ function WeaponSelectController:global_keydown(element, event)
 end
 
 function WeaponSelectController:unload()
-
+	
+	loadoutHandler:saveCurrentLoadout()
 	ScpuiSystem.modelDraw.class = nil
-	ui.ShipWepSelect:saveLoadout()
+	
+	--Since we hack the FSO loadout to handle the Overhead rendering, we need to
+	--reset it on unload but only if we're not committing to the mission so we
+	--don't accidentally overwrite the player's actual loadout
+	if self.Commit == false then
+		loadoutHandler:ResetFSO_API()
+		loadoutHandler:SaveInFSO_API()
+	end
+	
+	if self.Commit == true then
+		loadoutHandler:unloadAll()
+	end
+	
 end
 
 function WeaponSelectController:startMusic()
@@ -1665,12 +1109,27 @@ function WeaponSelectController:drawSelectModel()
 
 end
 
+function WeaponSelectController:refreshOverheadSlot()
+	if self.overhead3d or overhead == nil then
+		local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
+		loadoutHandler:SendShipToFSO_API(ship, 1)
+	end
+end
+
 function WeaponSelectController:drawOverheadModel()
 
 	if ScpuiSystem.modelDraw.OverheadClass and ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT" then  --Haaaaaaacks
 	
 		if ScpuiSystem.modelDraw.class == nil then ScpuiSystem.modelDraw.class = -1 end
 		if ScpuiSystem.modelDraw.Hover == nil then ScpuiSystem.modelDraw.Hover = -1 end
+		
+		--This is an ugly hack because drawOverheadModel checks wws_slots for
+		--drawing weapon lines. However, we don't use wss_slots until mission
+		--Commit. So we're hackin' this bitch. On each change we set wss_slot 1
+		--to whatever the current setup is and trick drawOverheadModel into
+		--thinking that's accurate. On mission Commit or unload we reset wss_slots
+		--to undo our ugly hack.
+		ScpuiSystem.modelDraw.Slot = 1
 		
 		--local thisItem = tb.ShipClasses(modelDraw.class)
 		modelView = ScpuiSystem.modelDraw.OverheadElement	

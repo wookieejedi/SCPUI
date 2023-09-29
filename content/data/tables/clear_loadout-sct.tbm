@@ -1,0 +1,19 @@
+#Conditional Hooks
+$On Key Pressed:
+[
+	if hv.Key == "F12" then
+		if ba.getCurrentGameState().Name == "GS_STATE_START_GAME" then
+			local loadoutHandler = require("loadouthandler")
+			
+			local key = loadoutHandler:getMissionKey()
+			ba.print("SCPUI got command to delete loadout file '" .. key .. "'!\n")
+			
+			local data = loadoutHandler:loadLoadoutsFromFile()
+			
+			data[key] = nil
+			
+			loadoutHandler:saveLoadoutsToFile(data)
+		end
+	end
+]
+#End
