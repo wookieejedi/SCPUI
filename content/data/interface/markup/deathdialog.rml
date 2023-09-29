@@ -1,6 +1,6 @@
 <rml>
 	<head>
-		<title>XSTR("Button Dialog", -1)</title>
+		<title>XSTR("Death Dialog", -1)</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
@@ -12,21 +12,22 @@
 			<div id="title_container"></div>
 			<div id="text_container"></div>
 		</div>
-	  <button class="button_1" id="button_4">
+	  <button id="button_4">
 		  <div id="button_4_text" class="button_text_dialog"></div>
 		  <div class="button_image_dialog"></div>
 	  </button>
-	  <button class="button_1" id="button_3">
+	  <button id="button_3">
 		  <div id="button_3_text" class="button_text_dialog"></div>
 		  <div class="button_image_dialog"></div>
 	  </button>
-	  <button class="button_1" id="button_2">
+	  <button id="button_2">
 		  <div id="button_2_text" class="button_text_dialog"></div>
 		  <div class="button_image_dialog"></div>
 	  </button>
-	  <button class="button_1" id="button_1">
+	  <button id="button_1">
 		  <div id="button_1_text" class="button_text_dialog"></div>
 		  <div class="button_image_dialog"></div>
 	  </button>
+	  <div id="button_hack_fix"></div>
 	</body>
 </rml>

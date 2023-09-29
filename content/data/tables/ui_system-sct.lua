@@ -14,7 +14,8 @@ ScpuiSystem = {
 	debrief_music = nil,
 	initIcons = nil,
 	logSection = 1,
-	render = true
+	render = true,
+	dialog = nil
 }
 
 ScpuiOptionValues = {}
@@ -210,7 +211,6 @@ function ScpuiSystem:dialogStart()
 
 		if hv.IsDeathPopup then
 			dialog:style(2)
-			--dialog:escape("deathpopup")
 		else
 			dialog:escape(-1) --Assuming that all non-death built-in popups can be cancelled safely with a negative response!
 		end
@@ -288,6 +288,16 @@ function ScpuiSystem:dialogEnd()
 		if self.Dialog ~= nil and self.Dialog.Abort ~= nil then
 			self.Dialog.Abort.Abort()
 		end
+	end
+	
+	self:CloseDialog()
+end
+
+function ScpuiSystem:CloseDialog()
+	if ScpuiSystem.dialog ~= nil then
+		ba.print("SCPUI is closing dialog `" .. ScpuiSystem.dialog.title .. "`\n")
+		ScpuiSystem.dialog:Close()
+		ScpuiSystem.dialog = nil
 	end
 end
 

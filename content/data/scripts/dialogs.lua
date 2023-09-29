@@ -16,6 +16,12 @@ module.BUTTON_MAPPING       = {
     [module.BUTTON_TYPE_NEUTRAL] = "button_neutral"
 }
 
+module.BUTTON_TEXT_MAPPING       = {
+    [module.BUTTON_TYPE_POSITIVE] = "pos",
+    [module.BUTTON_TYPE_NEGATIVE] = "neg",
+    [module.BUTTON_TYPE_NEUTRAL] = "pos"
+}
+
 local function underline(haystack, needle)
     local s, e = string.find(haystack, needle)
     if s then
@@ -38,6 +44,7 @@ local function initialize_buttons(document, properties, finish_func)
 		    local button_id = 'button_' .. tostring(i)
 				local button = document:GetElementById(button_id)
         button:SetClass(module.BUTTON_MAPPING[v.type], true)
+		button:SetClass("button_1", true)
         button:AddEventListener("click", function(_, _, _)
             if finish_func then finish_func(v.value) end
             document:Close()
@@ -45,6 +52,7 @@ local function initialize_buttons(document, properties, finish_func)
 		    local button_text_id = button_id .. '_text'
 				local button_text = document:GetElementById(button_text_id)
 				button_text.inner_rml = text_with_keypress(v.text, v.keypress)
+				button_text:SetClass(module.BUTTON_TEXT_MAPPING[v.type], true)
 		end
 end
 
@@ -56,6 +64,10 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
     else
         dialog_doc                                       = context:LoadDocument("data/interface/markup/dialog.rml")
     end
+	
+	if string.len(properties.title_string) > 0 then
+		dialog_doc.title = properties.title_string
+	end
 
     dialog_doc:GetElementById("title_container").inner_rml = properties.title_string
     dialog_doc:GetElementById("text_container").inner_rml  = properties.text_string
@@ -74,7 +86,7 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
         input_el:AddEventListener("change", function(event, _, _)
             if event.parameters.linebreak == 1 then
                 finish_func(event.parameters.value)
-                dialog_doc:Close()
+                ScpuiSystem:CloseDialog()
             end
         end)
     end
@@ -103,32 +115,41 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
         initialize_buttons(dialog_doc, properties, finish_func)
     end
     
-    dialog_doc:AddEventListener("keydown", function(event, _, _)
-        if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-            if properties.escape_value ~= nil then
-                finish_func(properties.escape_value)
-                dialog_doc:Close()
-            end
-        end
-        for i = 1, #properties.buttons, 1 do
-            if properties.buttons[i].keypress ~= nil then
-                thisKey = string.upper(properties.buttons[i].keypress)
-                if event.parameters.key_identifier == rocket.key_identifier[thisKey] then
-                    finish_func(properties.buttons[i].value)
-                    dialog_doc:Close()
-                end
-            end
-        end
-    end)
+	if properties.allow_escape ~= false then
+		dialog_doc:AddEventListener("keydown", function(event, _, _)
+			if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+				if properties.escape_value ~= nil then
+					finish_func(properties.escape_value)
+					ScpuiSystem:CloseDialog()
+				end
+			end
+			for i = 1, #properties.buttons, 1 do
+				if properties.buttons[i].keypress ~= nil then
+					thisKey = string.upper(properties.buttons[i].keypress)
+					if event.parameters.key_identifier == rocket.key_identifier[thisKey] then
+						finish_func(properties.buttons[i].value)
+						ScpuiSystem:CloseDialog()
+					end
+				end
+			end
+		end)
+	end
     
     if abortCBTable ~= nil then
         abortCBTable.Abort = function()
-            dialog_doc:Close()
+            ScpuiSystem:CloseDialog()
             reject()
         end
     end
 
     dialog_doc:Show(DocumentFocus.FOCUS) -- MODAL would be better than FOCUS but then the debugger cannot be used anymore
+	
+	if ScpuiSystem.dialog ~= nil then
+		ba.warning("SCPUI got command to close a dialog while creating a dialog! This is unusual!")
+		ScpuiSystem:CloseDialog()
+	end
+	
+	ScpuiSystem.dialog = dialog_doc
 end
 
 
@@ -179,6 +200,11 @@ end
 
 function factory_mt:escape(escape)
     self.escape_value = escape
+    return self
+end
+
+function factory_mt:allow_escape(val)
+    self.allow_escape = val
     return self
 end
 

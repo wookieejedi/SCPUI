@@ -32,6 +32,7 @@
   margin-right: 14%;
   color: white;
   overflow: auto;
+  z-index: 10;
 }
 
 #dialog_body #button_1
@@ -70,6 +71,16 @@
   height: 10%;
 }
 
+#button_hack_fix
+{
+	position: absolute;
+	top: 54%;
+	right: 8%;
+	width: 25%;
+	height: 45%;
+	z-index: 5;
+}
+
 #dialog_body button .button_text_dialog
 {
   position: absolute;
@@ -78,6 +89,7 @@
   height: 100%;
   width: 69%;
   text-align: right;
+  z-index:0;
 }
 
 #dialog_body button .button_image_dialog
@@ -87,6 +99,7 @@
   top: 0;
   height: 100%;
   width: 25%;
+  z-index:0;
 }
 
 .button_positive .button_image_dialog
@@ -141,36 +154,6 @@
 {
   background-decorator: image;
   background-image: bullet-l-o.png;
-}
-
-.button_positive:hover .button_text_dialog
-{
-  color: #abbbab;
-}
-
-.button_positive:active .button_text_dialog
-{
-  color: #c9e4c9;
-}
-
-.button_negative:hover .button_text_dialog
-{
-  color: #946565;
-}
-
-.button_negative:active .button_text_dialog
-{
-  color: #dd9393;
-}
-
-.button_neutral:hover .button_text_dialog
-{
-  color: #abbbab;
-}
-
-.button_neutral:active .button_text_dialog
-{
-  color: #c9e4c9;
 }
 
 #dialog_body #text_container scrollbarvertical 
