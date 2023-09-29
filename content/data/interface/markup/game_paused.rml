@@ -1,6 +1,6 @@
 <rml>
 	<head>
-		<title>XSTR("Button Dialog", -1)</title>
+		<title>XSTR("Game Paused", -1)</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>

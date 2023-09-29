@@ -7,6 +7,20 @@ ScpuiSystem.CustomOptions = {}
 
 function ScpuiSystem:initCustomOptions()
 	local utils = require('utils')
+	
+	--Font Multiplier is built-in so add it first
+	local entry = {
+		Title = utils.xstr({"Font Size Multiplier", -1}),
+		Description = utils.xstr({"Multiplies the font size", -1}),
+		Key = "Font_Multiplier",
+		Type = "Range",
+		Column = 1,
+		Min = 0,
+		Max = 1,
+		Value = 0.25,
+		NoDefault = true
+	}
+	table.insert(ScpuiSystem.CustomOptions, entry)
 
 	if cf.fileExists('options.tbl') then
 		utils.parseOptions('options.tbl')

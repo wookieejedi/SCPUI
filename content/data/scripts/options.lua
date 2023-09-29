@@ -247,12 +247,6 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 				if option_val ~= customOptions[Key].incrementValue then
 					updateRangeValue(option_val, btn_range_value)
 					customValues[Key] = (1 + math.ceil(option_val * #point_buttons))
-					---This is a special case just for Font_Multiplier to allow live update
-					if Key == "Font_Multiplier" then
-						self.document:GetElementById("main_background"):SetClass(fontChoice, false)
-						fontChoice = "p1-" .. customValues[Key]
-						self.document:GetElementById("main_background"):SetClass(fontChoice, true)
-					end
 					if onchange_func then
 						onchange_func(option_val)
 					end
@@ -294,12 +288,6 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 				else
 					updateRangeValue(new_val, current_range_val)
 					customValues[Key] = (math.ceil(new_val * #point_buttons))
-					---This is a special case just for Font_Multiplier to allow live update
-					if Key == "Font_Multiplier" then
-						self.document:GetElementById("main_background"):SetClass(fontChoice, false)
-						fontChoice = "p1-" .. customValues[Key]
-						self.document:GetElementById("main_background"):SetClass(fontChoice, true)
-					end
 				end
 
                 ui.playElementSound(btn_left, "click", "success")
@@ -649,6 +637,24 @@ function OptionsController:init_range_element(element, value_el, option, change_
             end
         end
     end)
+	
+	--This is a special case just for Font_Multiplier to allow live update
+	if Key == "Font_Multiplier" then
+		element:AddEventListener("click", function(event, _, _)
+			range_el.value = customOptions[Key].currentValue
+			fontChoice = "p1-" .. ScpuiSystem:getFontSize(customOptions[Key].currentValue)
+			
+			--Clear all possible font classes
+			for i = 0, 20 do
+				local class = "p1-" .. i
+				self.document:GetElementById("main_background"):SetClass(class, false)
+			end
+			
+			--Now apply the new class
+			self.document:GetElementById("main_background"):SetClass(fontChoice, true)
+		end)
+	end
+			
 
 	if option.Category ~= "Custom" then
 		range_el.value = option:getInterpolantFromValue(option.Value)
@@ -704,14 +710,7 @@ function OptionsController:createHeaderOptionElement(option, parent_id)
     title_el.inner_rml = option.Title
 
 	---Load the desired font size from the save file
-	if ScpuiOptionValues.Font_Multiplier then
-		local fontSize = ScpuiOptionValues.Font_Multiplier + 1
-		if fontSize > 10 then fontSize = 10 end
-		headerFontChoice = "p1-" .. ScpuiOptionValues.Font_Multiplier
-		self.document:GetElementById(actual_el.id):SetClass(headerFontChoice, true)
-	else
-		self.document:GetElementById(actual_el.id):SetClass("p1-6", true)
-	end
+	self.document:GetElementById(actual_el.id):SetClass("p2-" .. ScpuiSystem:getFontSize(), true)
 
     return actual_el
 end
@@ -996,14 +995,9 @@ end
 
 function OptionsController:initialize(document)
     self.document = document
-	
+
 	---Load the desired font size from the save file
-	if ScpuiOptionValues.Font_Multiplier then
-		fontChoice = "p1-" .. ScpuiOptionValues.Font_Multiplier
-		self.document:GetElementById("main_background"):SetClass(fontChoice, true)
-	else
-		self.document:GetElementById("main_background"):SetClass("p1-5", true)
-	end
+	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 
     -- Persist current changes since we might discard them in this screen
     opt.persistChanges()

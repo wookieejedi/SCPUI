@@ -24,19 +24,8 @@ function PilotSelectController:initialize(document)
     self.document  = document
 
 	---Load the desired font size from the save file
-	if ScpuiOptionValues.Font_Multiplier then
-		local fontChoice = ScpuiOptionValues.Font_Multiplier
-		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
-		--This initialize function can be called by barracks which doesn't have this element, so let's check
-		if self.document:GetElementById("copyright_info") then
-			self.document:GetElementById("copyright_info"):SetClass(("s1-" .. fontChoice), true)
-		end
-	else
-		self.document:GetElementById("main_background"):SetClass("p1-9", true)
-		if self.document:GetElementById("copyright_info") then
-			self.document:GetElementById("copyright_info"):SetClass("s1-9", true)
-		end
-	end
+	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("copyright_info"):SetClass(("s1-" .. ScpuiSystem:getFontSize()), true)
 
     local pilot_ul = document:GetElementById("pilotlist_ul")
     local pilots   = ui.PilotSelect.enumeratePilots()
@@ -62,6 +51,7 @@ function PilotSelectController:initialize(document)
 
     if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
         document:GetElementById("fso_version_info").inner_rml = ba.getVersionString()
+		document:GetElementById("mod_version_info").inner_rml = ba.getModTitle() .. " v" .. ba.getModVersion()
     end
 
     if current ~= nil then

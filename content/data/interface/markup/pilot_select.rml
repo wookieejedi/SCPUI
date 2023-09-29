@@ -120,6 +120,7 @@
 			<img src="logo-wide.png"></img>
 		</div>
 		<div id=copyright_info>
+			<p id=mod_version_info></p>
 			<p id=fso_version_info></p>
 			<p>XSTR("Copyright © 1999, Volition, Inc.  All rights reserved.", -1)</p>
 		</div>

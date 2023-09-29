@@ -86,12 +86,7 @@ function BriefingController:initialize(document)
 		
 
 	---Load the desired font size from the save file
-	if ScpuiOptionValues.Font_Multiplier then
-		fontChoice = ScpuiOptionValues.Font_Multiplier
-		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
-	else
-		self.document:GetElementById("main_background"):SetClass("p1-5", true)
-	end
+	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	
 	--Get all the required weapons
 	j = 1

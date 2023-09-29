@@ -43,12 +43,7 @@ function DebriefingController:initialize(document)
 	end
 	
 	---Load the desired font size from the save file
-	if ScpuiOptionValues.Font_Multiplier then
-		local fontChoice = ScpuiOptionValues.Font_Multiplier
-		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
-	else
-		self.document:GetElementById("main_background"):SetClass("p1-5", true)
-	end
+	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	
 	self.document:GetElementById("mission_name").inner_rml = mn.getMissionTitle()
 	self.document:GetElementById("awards_wrapper"):SetClass("hidden", true)
@@ -289,7 +284,7 @@ function DebriefingController:BuildStats()
 	end
 	
 	if self.page == 3 then
-		titles = "Mission Stats<br></br><br></br>Total Kills<br></br><br></br>Primary Weapon Shots<br></br>Primary Weapon Hits<br></br>Primary Friendly Hits<br></br>Primary Hit %<br></br>Primary Friendly Hit %<br></br><br></br>Secondary Weapon Shots<br></br>Secondary Weapon Hits<br></br>Secondary Friendly Hits<br></br>Secondary Hit %<br></br>Secondary Friendly Hit %<br></br><br></br>Assists"
+		titles = "All Time Stats<br></br><br></br>Total Kills<br></br><br></br>Primary Weapon Shots<br></br>Primary Weapon Hits<br></br>Primary Friendly Hits<br></br>Primary Hit %<br></br>Primary Friendly Hit %<br></br><br></br>Secondary Weapon Shots<br></br>Secondary Weapon Hits<br></br>Secondary Friendly Hits<br></br>Secondary Hit %<br></br>Secondary Friendly Hit %<br></br><br></br>Assists"
 		
 		local primaryHitPer = math.floor((stats.PrimaryShotsHit / stats.PrimaryShotsFired) * 100) .. "%"
 		local primaryFrHitPer = math.floor((stats.PrimaryFriendlyHit / stats.PrimaryShotsFired) * 100) .. "%"
@@ -310,7 +305,7 @@ function DebriefingController:BuildStats()
 	end
 	
 	if self.page == 4 then
-		titles = "Mission Kills by Ship Type<br></br><br></br>"
+		titles = "All Time Kills by Ship Type<br></br><br></br>"
 		numbers = "<br></br><br></br>"
 		
 		for i = 1, #tb.ShipClasses do

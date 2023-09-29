@@ -381,7 +381,7 @@ div#wings_wrapper
 
 .weapon_locked
 {
-	border-width: 0.9%;
+	border-width: 1.0%;
 	border-color: orange;
 }
 

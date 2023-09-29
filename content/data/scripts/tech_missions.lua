@@ -17,13 +17,6 @@ function TechMissionsController:initialize(document)
     self.elements = {}
     self.section = 1
 
-	---Load the desired font size from the save file
-	if ScpuiOptionValues.Font_Multiplier then
-		local fontChoice = ScpuiOptionValues.Font_Multiplier
-		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
-	else
-		self.document:GetElementById("main_background"):SetClass("p1-5", true)
-	end
 	
 	ui.TechRoom.buildMissionList()
 	
@@ -31,6 +24,8 @@ function TechMissionsController:initialize(document)
 	
 	self.document:GetElementById("campaign_title").inner_rml = self.campaignName
 	self.document:GetElementById("campaign_file").inner_rml = self.campaignFilename
+	---Load the desired font size from the save file
+	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	
 	self.document:GetElementById("data_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("mission_btn"):SetPseudoClass("checked", true)

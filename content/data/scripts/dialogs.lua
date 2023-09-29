@@ -71,11 +71,7 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
 
     dialog_doc:GetElementById("title_container").inner_rml = properties.title_string
     dialog_doc:GetElementById("text_container").inner_rml  = properties.text_string
-    if ScpuiOptionValues.Font_Multiplier then
-        dialog_doc:GetElementById("dialog_body"):SetClass(("p1-" .. ScpuiOptionValues.Font_Multiplier), true)
-    else
-        dialog_doc:GetElementById("dialog_body"):SetClass("p1-5", true)
-    end
+    dialog_doc:GetElementById("dialog_body"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
     
     if properties.input_choice then
         local input_el = dialog_doc:CreateElement("input")

@@ -16,14 +16,8 @@ function FictionViewerController:initialize(document)
 	ui.maybePlayCutscene(MOVIE_PRE_FICTION, true, 0)
 	
 	---Load the desired font size from the save file
-	if ScpuiOptionValues.Font_Multiplier then
-		local fontChoice = ScpuiOptionValues.Font_Multiplier
-		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
-		self.document:GetElementById("fiction_text"):SetClass(("p2-" .. fontChoice), true)
-	else
-		self.document:GetElementById("main_background"):SetClass("p1-5", true)
-		self.document:GetElementById("fiction_text"):SetClass("p2-5", true)
-	end
+	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("fiction_text"):SetClass(("p2-" .. ScpuiSystem:getFontSize()), true)
 	
 	self.textFile = ui.FictionViewer.getFiction().TextFile
 	self.voiceFile = ui.FictionViewer.getFiction().VoiceFile

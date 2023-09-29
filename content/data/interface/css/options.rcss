@@ -472,6 +472,7 @@ button#exit_btn:active #exit_img
 .ops_left_header
 {
 	margin-left: 12%;
+	white-space: nowrap;
 }
 
 .ops_right_header

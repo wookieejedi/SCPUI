@@ -2,6 +2,13 @@
 * Default styles for all the basic elements.
 */
 
+/* Default styles for all the basic elements. */
+
+.p1-0
+{
+	font-size: 0.5em;
+}
+
 .p1-1
 {
 	font-size: 0.6em;
@@ -50,6 +57,61 @@
 .p1-10
 {
 	font-size: 1.5em;
+}
+
+.p1-11
+{
+	font-size: 1.6em;
+}
+
+.p1-12
+{
+	font-size: 1.7em;
+}
+
+.p1-13
+{
+	font-size: 1.8em;
+}
+
+.p1-14
+{
+	font-size: 1.9em;
+}
+
+.p1-15
+{
+	font-size: 2em;
+}
+
+.p1-16
+{
+	font-size: 2.1em;
+}
+
+.p1-17
+{
+	font-size: 2.2em;
+}
+
+.p1-18
+{
+	font-size: 2.3em;
+}
+
+.p1-19
+{
+	font-size: 2.4em;
+}
+
+.p1-20
+{
+	font-size: 2.5em;
+}
+
+.p2-0
+{
+	font-size: 0.6em;
 }
 
 .p2-1
@@ -102,6 +164,61 @@
 	font-size: 1.6em;
 }
 
+.p2-11
+{
+	font-size: 1.7em;
+}
+
+.p2-12
+{
+	font-size: 1.8em;
+}
+
+.p2-13
+{
+	font-size: 1.9em;
+}
+
+.p2-14
+{
+	font-size: 2em;
+}
+
+.p2-15
+{
+	font-size: 2.1em;
+}
+
+.p2-16
+{
+	font-size: 2.2em;
+}
+
+.p2-17
+{
+	font-size: 2.3em;
+}
+
+.p2-18
+{
+	font-size: 2.4em;
+}
+
+.p2-19
+{
+	font-size: 2.5em;
+}
+
+.p2-20
+{
+	font-size: 2.6em;
+}
+
+.s1-0
+{
+	font-size: 0.2em;
+}
+
 .s1-1
 {
 	font-size: 0.3em;
@@ -150,6 +267,61 @@
 .s1-10
 {
 	font-size: 1.5em;
+}
+
+.s1-11
+{
+	font-size: 1.6em;
+}
+
+.s1-12
+{
+	font-size: 1.7em;
+}
+
+.s1-13
+{
+	font-size: 1.8em;
+}
+
+.s1-14
+{
+	font-size: 1.9em;
+}
+
+.s1-15
+{
+	font-size: 2em;
+}
+
+.s1-16
+{
+	font-size: 2.1em;
+}
+
+.s1-17
+{
+	font-size: 2.2em;
+}
+
+.s1-18
+{
+	font-size: 2.3em;
+}
+
+.s1-19
+{
+	font-size: 2.4em;
+}
+
+.s1-20
+{
+	font-size: 2.5em;
+}
+
+.h1-0
+{
+	font-size: 1.2em;
 }
 
 .h1-1
@@ -202,6 +374,61 @@
 	font-size: 2.2em;
 }
 
+.h1-11
+{
+	font-size: 2.3em;
+}
+
+.h1-12
+{
+	font-size: 2.4em;
+}
+
+.h1-13
+{
+	font-size: 2.5em;
+}
+
+.h1-14
+{
+	font-size: 2.6em;
+}
+
+.h1-15
+{
+	font-size: 2.7em;
+}
+
+.h1-16
+{
+	font-size: 2.8em;
+}
+
+.h1-17
+{
+	font-size: 2.9em;
+}
+
+.h1-18
+{
+	font-size: 3em;
+}
+
+.h1-19
+{
+	font-size: 3.1em;
+}
+
+.h1-20
+{
+	font-size: 3.2em;
+}
+
+.h2-0
+{
+	font-size: 2.0em;
+}
+
 .h2-1
 {
 	font-size: 2.1em;
@@ -250,4 +477,159 @@
 .h2-10
 {
 	font-size: 3em;
+}
+
+.h2-11
+{
+	font-size: 3.1em;
+}
+
+.h2-12
+{
+	font-size: 3.2em;
+}
+
+.h2-13
+{
+	font-size: 3.3em;
+}
+
+.h2-14
+{
+	font-size: 3.4em;
+}
+
+.h2-15
+{
+	font-size: 3.5em;
+}
+
+.h2-16
+{
+	font-size: 3.6em;
+}
+
+.h2-17
+{
+	font-size: 3.7em;
+}
+
+.h2-18
+{
+	font-size: 3.8em;
+}
+
+.h2-19
+{
+	font-size: 3.9em;
+}
+
+.h2-20
+{
+	font-size: 4em;
+}
+
+.h3-0
+{
+	font-size: 4.0em;
+}
+
+.h3-1
+{
+	font-size: 4.1em;
+}
+
+.h3-2
+{
+	font-size: 4.2em;
+}
+
+.h3-3
+{
+	font-size: 4.3em;
+}
+
+.h3-4
+{
+	font-size: 4.4em;
+}
+
+.h3-5
+{
+	font-size: 4.5em;
+}
+
+.h3-6
+{
+	font-size: 4.6em;
+}
+
+.h3-7
+{
+	font-size: 4.7em;
+}
+
+.h3-8
+{
+	font-size: 4.8em;
+}
+
+.h3-9
+{
+	font-size: 4.9em;
+}
+
+.h3-10
+{
+	font-size: 5em;
+}
+
+.h3-11
+{
+	font-size: 5.1em;
+}
+
+.h3-12
+{
+	font-size: 5.2em;
+}
+
+.h3-13
+{
+	font-size: 5.3em;
+}
+
+.h3-14
+{
+	font-size: 5.4em;
+}
+
+.h3-15
+{
+	font-size: 5.5em;
+}
+
+.h3-16
+{
+	font-size: 5.6em;
+}
+
+.h3-17
+{
+	font-size: 5.7em;
+}
+
+.h3-18
+{
+	font-size: 5.8em;
+}
+
+.h3-19
+{
+	font-size: 5.9em;
+}
+
+.h3-20
+{
+	font-size: 6em;
 }

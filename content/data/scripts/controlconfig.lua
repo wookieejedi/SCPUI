@@ -3,7 +3,6 @@ local class = require("class")
 local async_util = require("async_util")
 
 local ControlConfigController = class()
-local fontMultiplier = nil
 
 function ControlConfigController:init()
 
@@ -24,16 +23,8 @@ function ControlConfigController:initialize(document)
 	self.conflict = false
 	
 	---Load the desired font size from the save file
-	if ScpuiOptionValues.Font_Multiplier then
-		local fontChoice = ScpuiOptionValues.Font_Multiplier
-		fontMultiplier = ScpuiOptionValues.Font_Multiplier
-		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
-		self.document:GetElementById("conflict_warning"):SetClass(("h1-" .. fontChoice), true)
-	else
-		self.document:GetElementById("main_background"):SetClass("p1-5", true)
-		self.document:GetElementById("conflict_warning"):SetClass("h1-5", true)
-		fontMultiplier = 5
-	end
+	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("conflict_warning"):SetClass(("h1-" .. ScpuiSystem:getFontSize()), true)
 	
 	ui.ControlConfig.initControlConfig()
 	

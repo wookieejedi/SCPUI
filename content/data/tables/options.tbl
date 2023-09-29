@@ -1,13 +1,5 @@
 #Custom Options
 
-$Name: XSTR("Font Size Multiplier", -1)
-+Description: XSTR("Multiplies the font size", -1)
-+Key: Font_Multiplier
-+Type: TenPoint
-+Column: 1
-+Default Value: 5
-+No Default: true
-
 $Name: XSTR("Example Header", -1)
 +Description: XSTR("Category header", -1)
 +Key: Header_Example

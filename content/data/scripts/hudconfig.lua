@@ -3,7 +3,6 @@ local class = require("class")
 local async_util = require("async_util")
 
 local HudConfigController = class()
-local fontMultiplier = nil
 
 ScpuiSystem.drawHUD = nil
 
@@ -47,14 +46,7 @@ function HudConfigController:initialize(document)
     self.document = document
 	
 	---Load the desired font size from the save file
-	if ScpuiOptionValues.Font_Multiplier then
-		local fontChoice = ScpuiOptionValues.Font_Multiplier
-		fontMultiplier = ScpuiOptionValues.Font_Multiplier
-		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
-	else
-		self.document:GetElementById("main_background"):SetClass("p1-5", true)
-		fontMultiplier = 5
-	end
+	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	
 	hud_el = self.document:GetElementById("hud_drawn_content")
 	

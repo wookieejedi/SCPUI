@@ -45,12 +45,7 @@ function ShipSelectController:initialize(document)
 	aniWrapper:ReplaceChild(self.aniEl, aniWrapper.first_child)
 
 	---Load the desired font size from the save file
-	if ScpuiOptionValues.Font_Multiplier then
-		fontChoice = ScpuiOptionValues.Font_Multiplier
-		self.document:GetElementById("main_background"):SetClass(("p1-" .. fontChoice), true)
-	else
-		self.document:GetElementById("main_background"):SetClass("p1-5", true)
-	end
+	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	
 	self.document:GetElementById("brief_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("s_select_btn"):SetPseudoClass("checked", true)
