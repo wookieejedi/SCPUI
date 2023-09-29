@@ -281,10 +281,30 @@ function BriefingController:drawMap()
 		if string.lower(ScpuiOptionValues.Brief_Render_Option) == "texture" then
 			gr.setTarget(ScpuiSystem.drawBrMap.tex)
 			gr.clearScreen(0,0,0,0)
+			if not ScpuiSystem.drawBrMap.goals then
+				gr.drawImage(ScpuiSystem.drawBrMap.bg, 0, 0, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
+			end
 			ui.Briefing.drawBriefingMap(0, 0, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
+			
+			if not ScpuiSystem.drawBrMap.goals then
+				gr.setColor(r, g, b, a)
+				gr.drawLine(0, 0, 0, ScpuiSystem.drawBrMap.y2)
+				gr.drawLine(0, 0, ScpuiSystem.drawBrMap.x2, 0)
+				gr.drawLine(ScpuiSystem.drawBrMap.x2, 0, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
+				gr.drawLine(0, ScpuiSystem.drawBrMap.y2, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
+			end
 			
 		elseif string.lower(ScpuiOptionValues.Brief_Render_Option) == "screen" then
 			gr.clearScreen(0,0,0,0)
+			if not ScpuiSystem.drawBrMap.goals then
+				gr.drawImage(ScpuiSystem.drawBrMap.bg, 0, 0, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
+				
+				gr.setColor(r, g, b, a)
+				gr.drawLine(0, 0, 0, ScpuiSystem.drawBrMap.y2)
+				gr.drawLine(0, 0, ScpuiSystem.drawBrMap.x2, 0)
+				gr.drawLine(ScpuiSystem.drawBrMap.x2, 0, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
+				gr.drawLine(0, ScpuiSystem.drawBrMap.y2, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
+			end
 			gr.setTarget()
 			ui.Briefing.drawBriefingMap(ScpuiSystem.drawBrMap.x1, ScpuiSystem.drawBrMap.y1, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
 			
@@ -292,6 +312,12 @@ function BriefingController:drawMap()
 		
 	else
 		gr.clearScreen(0,0,0,0)
+		
+		gr.setColor(r, g, b, a)
+		gr.drawLine(0, 0, 0, ScpuiSystem.drawBrMap.y2)
+		gr.drawLine(0, 0, ScpuiSystem.drawBrMap.x2, 0)
+		gr.drawLine(ScpuiSystem.drawBrMap.x2, 0, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
+		gr.drawLine(0, ScpuiSystem.drawBrMap.y2, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
 	end
 	
 	gr.setTarget()
@@ -453,12 +479,13 @@ function BriefingController:mouse_move(element, event)
 		--for the ship box preview coords regardless of briefing render type
 		ScpuiSystem.drawBrMap.bx = event.parameters.mouse_x
 		ScpuiSystem.drawBrMap.by = event.parameters.mouse_y
+		
+		--Get the grid coords
+		local grid_el = self.document:GetElementById("briefing_grid")
+		local gx = grid_el.offset_left + grid_el.parent_node.offset_left + grid_el.parent_node.parent_node.offset_left
+		local gy = grid_el.offset_top + grid_el.parent_node.offset_top + grid_el.parent_node.parent_node.offset_top
 			
 		if string.lower(ScpuiOptionValues.Brief_Render_Option) == "texture" then
-		
-			local grid_el = self.document:GetElementById("briefing_grid")
-			local gx = grid_el.offset_left + grid_el.parent_node.offset_left + grid_el.parent_node.parent_node.offset_left
-			local gy = grid_el.offset_top + grid_el.parent_node.offset_top + grid_el.parent_node.parent_node.offset_top
 			
 			ScpuiSystem.drawBrMap.mx = ScpuiSystem.drawBrMap.mx - gx
 			ScpuiSystem.drawBrMap.my = ScpuiSystem.drawBrMap.my - gy
@@ -467,6 +494,18 @@ function BriefingController:mouse_move(element, event)
 		
 		if ((ScpuiSystem.drawBrMap.mx ~= nil) and (ScpuiSystem.drawBrMap.my ~= nil)) then
 			ScpuiSystem.drawBrMap.pof, ScpuiSystem.drawBrMap.closeupZoom, ScpuiSystem.drawBrMap.closeupPos, ScpuiSystem.drawBrMap.label, ScpuiSystem.drawBrMap.iconID = ui.Briefing.checkStageIcons(ScpuiSystem.drawBrMap.mx, ScpuiSystem.drawBrMap.my)
+		end
+		
+		--double check we're still inside the map X coords
+		if event.parameters.mouse_x < gx or event.parameters.mouse_x > (ScpuiSystem.drawBrMap.x2 + gx) then
+			ScpuiSystem.drawBrMap.pof = nil
+			return
+		end
+	
+		--double check we're still inside the map Y coords
+		if event.parameters.mouse_y < gy or event.parameters.mouse_y > (ScpuiSystem.drawBrMap.y2 + gy) then
+			ScpuiSystem.drawBrMap.pof = nil
+			return
 		end
 		
 		if ScpuiSystem.drawBrMap.pof == nil then
