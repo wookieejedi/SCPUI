@@ -79,4 +79,12 @@ $State: GS_STATE_SCRIPTING
 ;	+Campaign Filename: campaign filename here
 ;	+RCSS Class Name: rcss class name here
 
+#Briefing Stage Background Replacement
+
+;$Briefing Grid Background:
+;	+Mission Filename: mission filename here
+;	+Default Background Filename: background filename with extension
+;	+Stage Override: stage number
+;		+Background Filename: background filename with extension
+
 #End

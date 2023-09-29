@@ -337,6 +337,11 @@ function utils.strip_extension(name)
     return string.gsub(name, "%..+$", "")
 end
 
+function utils.hasExtension(filename)
+    local lastDotIndex = filename:find("%.[^%.]*$")
+    return lastDotIndex ~= nil
+end
+
 function utils.split(inputstr, sep)
     if sep == nil then
         sep = "%s"

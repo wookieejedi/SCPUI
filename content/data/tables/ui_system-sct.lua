@@ -6,6 +6,7 @@ local renderCategory = engine.createTracingCategory("RenderRocket", true)
 ScpuiSystem = {
     replacements = {},
 	backgrounds = {},
+	briefBackgrounds = {},
 	substate = "none",
 	cutscene = "none",
 	debriefInit = false,
@@ -80,6 +81,41 @@ function ScpuiSystem:parseTable(data)
 			local classname = parse.getString()
 			
 			self.backgrounds[campaign] = classname
+		end
+	
+	end
+	
+	if parse.optionalString("#Briefing Stage Background Replacement") then
+	
+		while parse.optionalString("$Briefing Grid Background:") do
+		
+			parse.requiredString("+Mission Filename:")
+			local mission = utils.strip_extension(parse.getString())
+			
+			parse.requiredString("+Default Background Filename:")
+			local default_file = parse.getString()
+			
+			if not utils.hasExtension(default_file) then
+				ba.warning("SCPUI parsed background file, " .. default_file .. ", that does not include an extension!")
+			end
+			
+			self.briefBackgrounds[mission] = {}
+			
+			self.briefBackgrounds[mission]["default"] = default_file
+			
+			while parse.optionalString("+Stage Override:") do
+				local stage = tostring(parse.getInt())
+				
+				parse.requiredString("+Background Filename:")
+				local file = parse.getString()
+				
+				if not utils.hasExtension(file) then
+					ba.warning("SCPUI parsed background file, " .. default_file .. ", that does not include an extension!")
+				end
+				
+				self.briefBackgrounds[mission][stage] = file
+			end
+			
 		end
 	
 	end
@@ -361,6 +397,25 @@ function ScpuiSystem:getBackgroundClass()
 	
 	return bgclass
 end
+
+function ScpuiSystem:getBriefingBackground(mission, stage)
+
+	local file = nil
+	
+	file = self.briefBackgrounds[mission][stage]
+	
+	if file == nil then
+		file = self.briefBackgrounds[mission]["default"]
+	end
+	
+	--double check
+	if file == nil then
+		file = "br-black.png"
+	end
+
+	return file
+end
+	
 
 function ScpuiSystem:CloseDialog()
 	if ScpuiSystem.dialog ~= nil then

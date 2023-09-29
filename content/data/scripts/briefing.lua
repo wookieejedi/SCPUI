@@ -223,7 +223,8 @@ function BriefingController:go_to_stage(stage_idx)
     self:leaveStage()
 
     local stage = self.stages[stage_idx]
-	ScpuiSystem.drawBrMap.bg = "br-black.png" -- default to just black bg if nothing is defined
+	
+	ScpuiSystem.drawBrMap.bg = ScpuiSystem:getBriefingBackground(mn.getMissionFilename(), tostring(stage_idx))
 
 	local brief_img = "brief-main-window.png"
 
