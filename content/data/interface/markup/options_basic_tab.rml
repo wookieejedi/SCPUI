@@ -24,7 +24,7 @@
     <div id="skill_level_container">
         <!-- Filled in by Lua -->
     </div>
-    <div class="btn_panel_large panel_right">
+    <div id=gamma_option class="btn_panel_large panel_right">
         <div id="large_panel_text" class="ops_right_header">
             <p>XSTR("Brightness", -1)</p>
         </div>

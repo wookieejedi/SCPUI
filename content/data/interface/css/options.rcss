@@ -11,6 +11,13 @@ body
 	padding-top:8%;
 }
 
+.tooltip
+{
+	width: 150%;
+	top: -50%;
+	left: -50%;
+}
+
 div#logo_wide
 {
 	position: absolute;
