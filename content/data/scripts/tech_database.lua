@@ -1,6 +1,7 @@
 local dialogs = require("dialogs")
 local class = require("class")
 local utils = require("utils")
+local async_util = require("async_util")
 
 local TechDatabaseController = class()
 
@@ -16,6 +17,7 @@ function TechDatabaseController:init()
 	}
 	self.Counter = 0
 	self.help_shown = false
+	self.first_run = false
 end
 
 --Iterate over all the ships, weapons, and intel but only grab the necessary data
@@ -31,12 +33,20 @@ function TechDatabaseController:LoadData()
 	
 	i = 1
 	while (i ~= #list + 1) do
-		self.ships[i] = {
-			Name = tostring(list[i].Name),
-			DisplayName = tostring(list[i].AltName),
-			Description = list[i].TechDescription,
-			Visibility = list[i].InTechDatabase
-		}
+		if list[i]:hasCustomData() and list[i].CustomData["HideInTechRoom"] == "true" then
+			ba.print("Skipping ship " .. list[i].Name .. " in the tech room list!")
+		else
+			self.ships[i] = {
+				Name = tostring(list[i].Name),
+				DisplayName = tostring(list[i].AltName),
+				Description = list[i].TechDescription,
+				Visibility = list[i].InTechDatabase
+			}
+			--Make sure Display Name is not an empty string
+			if self.ships[i].DisplayName == "" then
+				self.ships[i].DisplayName = self.ships[i].Name
+			end
+		end
 		i = i + 1
 	end
 	
@@ -44,13 +54,21 @@ function TechDatabaseController:LoadData()
 	
 	i = 1
 	while (i ~= #list + 1) do
-		self.weapons[i] = {
-			Name = tostring(list[i].Name),
-			DisplayName = tostring(list[i].AltName),
-			Description = list[i].TechDescription,
-			Anim = list[i].TechAnimationFilename,
-			Visibility = list[i].InTechDatabase
-		}
+		if list[i]:hasCustomData() and list[i].CustomData["HideInTechRoom"] == "true" then
+			ba.print("Skipping weapon " .. list[i].Name .. " in the tech room list!")
+		else
+			self.weapons[i] = {
+				Name = tostring(list[i].Name),
+				DisplayName = tostring(list[i].AltName),
+				Description = list[i].TechDescription,
+				Anim = list[i].TechAnimationFilename,
+				Visibility = list[i].InTechDatabase
+			}
+			--Make sure Display Name is not an empty string
+			if self.weapons[i].DisplayName == "" then
+				self.weapons[i].DisplayName = self.weapons[i].Name
+			end
+		end
 		i = i + 1
 	end
 	
@@ -65,6 +83,10 @@ function TechDatabaseController:LoadData()
 			Anim = list[i].AnimFilename,
 			Visibility = list[i].InTechDatabase
 		}
+		--Make sure Display Name is not an empty string
+		if self.intel[i].DisplayName == "" then
+			self.intel[i].DisplayName = self.intel[i].Name
+		end
 		i = i + 1
 	end
 
@@ -89,6 +111,7 @@ function TechDatabaseController:initialize(document)
 	self.SelectedEntry = nil
 	
 	self.SelectedSection = nil
+	
 	self:ChangeSection(1)
 	
 end
@@ -244,8 +267,17 @@ function TechDatabaseController:SelectEntry(entry)
 		if self.SelectedSection == "ships" then
 			self.document:GetElementById("tech_desc").inner_rml = entry.Description
 			
-			ScpuiSystem.modelDraw.class = entry.Name
-			ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
+			if self.first_run == false then
+				async.run(function()
+					async.await(async_util.wait_for(0.001))
+					ScpuiSystem.modelDraw.class = entry.Name
+					ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
+					self.first_run = true
+				end, async.OnFrameExecutor)
+			else
+				ScpuiSystem.modelDraw.class = entry.Name
+				ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
+			end
 
 		elseif self.SelectedSection == "weapons" then			
 			self.document:GetElementById("tech_desc").inner_rml = entry.Description
@@ -258,8 +290,17 @@ function TechDatabaseController:SelectEntry(entry)
 				aniEl:SetClass("anim", true)
 				aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
 			else --If we don't have an anim, then draw the tech model
-				ScpuiSystem.modelDraw.class = entry.Name
-				ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
+				if self.first_run == false then
+					async.run(function()
+						async.await(async_util.wait_for(0.001))
+						ScpuiSystem.modelDraw.class = entry.Name
+						ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
+						self.first_run = true
+					end, async.OnFrameExecutor)
+				else
+					ScpuiSystem.modelDraw.class = entry.Name
+					ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
+				end
 			end
 		elseif self.SelectedSection == "intel" then			
 			self.document:GetElementById("tech_desc").inner_rml = entry.Description
