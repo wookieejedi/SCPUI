@@ -7,6 +7,8 @@ local dialogs  = require("dialogs")
 
 local class    = require("class")
 
+local async_util = require("async_util")
+
 local customValues = {}
 local customOptions = {}
 local detailOptions = {}
@@ -132,6 +134,8 @@ function OptionsController:init()
         other  = {},
         multi  = {}
     }
+	
+	self.timers = {}
     -- A list of mappings option->ValueDescription which contains backups of the original values for special options
     -- that apply their changes immediately
     self.option_backup    = {}
@@ -831,46 +835,47 @@ end
 function OptionsController:initialize_basic_options()
     for _, option in ipairs(self.category_options.basic) do
         local key = option.Key
+		local opt_el = nil
         if key == "Input.Joystick2" then
-            self:createSelectionOptionElement(option, option:getValidValues(), "joystick_column_1", {
+            opt_el = self:createSelectionOptionElement(option, option:getValidValues(), "joystick_column_1", {
                 --no_title = true
             })
 		elseif key == "Input.Joystick" then
-            self:createSelectionOptionElement(option, option:getValidValues(), "joystick_column_1", {
+            opt_el = self:createSelectionOptionElement(option, option:getValidValues(), "joystick_column_1", {
                 --no_title = true
             })
 		elseif key == "Input.Joystick1" then
-            self:createSelectionOptionElement(option, option:getValidValues(), "joystick_column_2", {
+            opt_el = self:createSelectionOptionElement(option, option:getValidValues(), "joystick_column_2", {
                 --no_title = true
             })
 		elseif key == "Input.Joystick3" then
-            self:createSelectionOptionElement(option, option:getValidValues(), "joystick_column_2", {
+            opt_el = self:createSelectionOptionElement(option, option:getValidValues(), "joystick_column_2", {
                 --no_title = true
             })
         elseif key == "Input.JoystickDeadZone" then
-            self:createTenPointRangeElement(option, "joystick_values_wrapper", {
+            opt_el = self:createTenPointRangeElement(option, "joystick_values_wrapper", {
                 text_alignment = "right",
                 --no_background  = true
             })
         elseif key == "Input.JoystickSensitivity" then
-            self:createTenPointRangeElement(option, "joystick_values_wrapper", {
+            opt_el = self:createTenPointRangeElement(option, "joystick_values_wrapper", {
                 text_alignment = "right",
                 --no_background  = true
             })
         elseif key == "Input.UseMouse" then
-            self:createOptionElement(option, "mouse_options_container")
+            opt_el = self:createOptionElement(option, "mouse_options_container")
         elseif key == "Input.MouseSensitivity" then
-            self:createTenPointRangeElement(option, "mouse_options_container", {
+            opt_el = self:createTenPointRangeElement(option, "mouse_options_container", {
                 text_alignment = "left",
                 no_background  = false
             })
         --elseif key == "Audio.BriefingVoice" then
-            --self:createOptionElement(option, "briefing_voice_container")
+            --opt_el = self:createOptionElement(option, "briefing_voice_container")
         elseif key == "Audio.Effects" then
             -- The audio options are applied immediately so the user hears the effects
             self.option_backup[option] = option.Value
 
-            self:createTenPointRangeElement(option, "volume_sliders_container", {
+            opt_el = self:createTenPointRangeElement(option, "volume_sliders_container", {
                 text_alignment = "left",
                 no_background  = true
             }, function(_)
@@ -879,7 +884,7 @@ function OptionsController:initialize_basic_options()
         elseif key == "Audio.Music" then
             self.option_backup[option] = option.Value
 
-            self:createTenPointRangeElement(option, "volume_sliders_container", {
+            opt_el = self:createTenPointRangeElement(option, "volume_sliders_container", {
                 text_alignment = "left",
                 no_background  = true
             }, function(_)
@@ -888,7 +893,7 @@ function OptionsController:initialize_basic_options()
         elseif key == "Audio.Voice" then
             self.option_backup[option] = option.Value
 
-            self:createTenPointRangeElement(option, "volume_sliders_container", {
+            opt_el = self:createTenPointRangeElement(option, "volume_sliders_container", {
                 text_alignment = "left",
                 no_background  = true
             }, function(_)
@@ -896,7 +901,7 @@ function OptionsController:initialize_basic_options()
                 ui.OptionsMenu.playVoiceClip()
             end)
         elseif key == "Game.SkillLevel" then
-            self:createFivePointRangeElement(option, "skill_level_container")
+            opt_el = self:createFivePointRangeElement(option, "skill_level_container")
         elseif key == "Graphics.Gamma" then
             self.option_backup[option] = option.Value
 
@@ -904,7 +909,13 @@ function OptionsController:initialize_basic_options()
                 -- Apply changes immediately to make them visible
                 option:persistChanges()
             end)
+			
+			opt_el = self.document:GetElementById("gamma_option")
         end
+		
+		if option.Description then
+			self:AddOptionTooltip(option, opt_el)
+		end
     end
 end
 
@@ -922,18 +933,22 @@ local built_in_detail_keys = {
 function OptionsController:initialize_detail_options()
     local current_column = 3
     for _, option in ipairs(self.category_options.detail) do
+		local opt_el = nil
+		
         if option.Key == "Graphics.Resolution" then
-            self:createOptionElement(option, "detail_column_1")
+            opt_el = self:createOptionElement(option, "detail_column_1")
         elseif option.Key == "Graphics.WindowMode" then
-            self:createOptionElement(option, "detail_column_1")
+            opt_el = self:createOptionElement(option, "detail_column_1")
         elseif option.Key == "Graphics.Display" then
-            self:createOptionElement(option, "detail_column_1", function(_)
+            opt_el = self:createOptionElement(option, "detail_column_1", function(_)
                 self.sources["Graphics.Resolution"]:updateValues()
             end)
         elseif tblUtil.contains(built_in_detail_keys, option.Key) then
-            self:createOptionElement(option, "detail_column_2")
+            opt_el = self:createOptionElement(option, "detail_column_2")
         else
             local el = self:createOptionElement(option, string.format("detail_column_%d", current_column))
+			
+			opt_el = el
 
             if current_column == 2 or current_column == 3 then
                 el:SetClass("horz_middle", true)
@@ -946,6 +961,10 @@ function OptionsController:initialize_detail_options()
                 current_column = 3
             end
         end
+		
+		if option.Description then
+			self:AddOptionTooltip(option, opt_el)
+		end
     end
 	
 	self:setDetailDefaultStatus()
@@ -958,6 +977,10 @@ function OptionsController:initialize_prefs_options()
 	--Handle built-in preferences options
 	for _, option in ipairs(self.category_options.prefs) do
 		local el = self:createOptionElement(option, string.format("prefs_column_%d", current_column))
+		
+		if option.Description then
+			self:AddOptionTooltip(option, el)
+		end
 
 		if current_column == 2 or current_column == 3 then
 			el:SetClass("horz_middle", true)
@@ -976,6 +999,10 @@ function OptionsController:initialize_prefs_options()
 		option.Category = "Custom"
 		option.Title = option.Title
 		local el = self:createCustomOptionElement(option, string.format("prefs_column_%d", option.Column))
+		
+		if option.Description then
+			self:AddOptionTooltip(option, el)
+		end
 
 		if option.Column == 2 or option.Column == 3 then
 			el:SetClass("horz_middle", true)
@@ -991,6 +1018,49 @@ function OptionsController:initialize_prefs_options()
 	
 	self:setModDefaultStatus()
 	
+end
+
+function OptionsController:AddOptionTooltip(option, parent)
+	if option == nil or parent == nil then
+		return
+	end
+
+	local tool_el = self.document:CreateElement("div")
+	tool_el.id = option.Key .. "_tooltip"
+	tool_el:SetClass("tooltip", true)
+	tool_el.inner_rml = "<span class=\"tooltiptext\">" .. option.Description .. "</span>"
+	parent:AppendChild(tool_el)
+	
+	parent:AddEventListener("mouseover", function()
+		if self.timers[option.Key] == nil then
+			self.timers[option.Key] = 0
+		else
+			self:MaybeShowTooltip(tool_el, option.Key)
+		end
+	end)
+	
+	parent:AddEventListener("mouseout", function()
+		self.timers[option.Key] = nil
+		tool_el:SetPseudoClass("shown", false)
+	end)
+end
+
+function OptionsController:MaybeShowTooltip(tool_el, key)
+	if self.timers[key] == nil then
+		return
+	end
+	
+	if self.timers[key] >= 5 then
+		tool_el:SetPseudoClass("shown", true)
+	else
+		async.run(function()
+			async.await(async_util.wait_for(1.0))
+			if self.timers[key] ~= nil then
+				self.timers[key] = self.timers[key] + 1
+				self:MaybeShowTooltip(tool_el, key)
+			end
+		end, async.OnFrameExecutor)
+	end
 end
 
 function OptionsController:initialize(document)
