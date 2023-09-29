@@ -2,6 +2,7 @@ local dialogs = require("dialogs")
 local class = require("class")
 local async_util = require("async_util")
 local utils = require("utils")
+local async_util = require("async_util")
 
 local TechMissionsController = class()
 
@@ -16,40 +17,67 @@ function TechMissionsController:initialize(document)
     self.document = document
     self.elements = {}
     self.section = 1
+	
+	
+	
 
-	
-	ui.TechRoom.buildMissionList()
-	
-	self:GetCampaign()
-	
-	self.document:GetElementById("campaign_title").inner_rml = self.campaignName
-	self.document:GetElementById("campaign_file").inner_rml = self.campaignFilename
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	
-	self.document:GetElementById("data_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("mission_btn"):SetPseudoClass("checked", true)
-	self.document:GetElementById("cutscene_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("credits_btn"):SetPseudoClass("checked", false)
+	self:Show("Building missions list...", "Mission Simulator")
 	
-	self.SelectedEntry = nil
+	async.run(function()
+		async.await(async_util.wait_for(0.001))
 	
-	--Check for last loaded section
-	local newSection = nil
-	if ScpuiSystem.missionSection ~= nil then
-		newSection = ScpuiSystem.missionSection
-	else
-		local uidata = ScpuiOptionValues.simRoomChoice
-		if uidata == nil then
-			newSection = 1
+		ui.TechRoom.buildMissionList()
+		
+		self:GetCampaign()
+		
+		self.document:GetElementById("campaign_title").inner_rml = self.campaignName
+		self.document:GetElementById("campaign_file").inner_rml = self.campaignFilename
+		
+		self.document:GetElementById("data_btn"):SetPseudoClass("checked", false)
+		self.document:GetElementById("mission_btn"):SetPseudoClass("checked", true)
+		self.document:GetElementById("cutscene_btn"):SetPseudoClass("checked", false)
+		self.document:GetElementById("credits_btn"):SetPseudoClass("checked", false)
+		
+		self.SelectedEntry = nil
+		
+		--Check for last loaded section
+		local newSection = nil
+		if ScpuiSystem.missionSection ~= nil then
+			newSection = ScpuiSystem.missionSection
 		else
-			newSection = uidata
+			local uidata = ScpuiOptionValues.simRoomChoice
+			if uidata == nil then
+				newSection = 2
+			else
+				newSection = uidata
+			end
 		end
-	end
+		
+		self.SelectedSection = nil
+		self:ChangeSection(newSection)
+		
+		ScpuiSystem:CloseDialog()
 	
-	self.SelectedSection = nil
-	self:ChangeSection(newSection)
+	end, async.OnFrameExecutor)
 	
+end
+
+function TechMissionsController:Show(text, title)
+	--Create a simple dialog box with the text and title
+
+	currentDialog = true
+	
+	local dialog = dialogs.new()
+		dialog:title(title)
+		dialog:text(text)
+		dialog:allow_escape(false)
+		dialog:show(self.document.context)
+		:continueWith(function()end)
+	-- Route input to our context until the user dismisses the dialog box.
+	ui.enableInput(self.document.context)
 end
 
 function TechMissionsController:ChangeTechState(state)
@@ -95,6 +123,7 @@ function TechMissionsController:ChangeSection(section)
 	elseif section == 2 then
 		section = "campaign"
 	else
+		ba.warning("SCPUI got command to load unknown mission types section!")
 		section = "single"
 		self.sectionIndex = 1
 		ScpuiSystem.missionSection = 1
