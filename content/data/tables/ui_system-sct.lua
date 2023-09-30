@@ -402,10 +402,12 @@ function ScpuiSystem:getBriefingBackground(mission, stage)
 
 	local file = nil
 	
-	file = self.briefBackgrounds[mission][stage]
+	if self.briefBackgrounds[mission] ~= nil then
+		file = self.briefBackgrounds[mission][stage]
 	
-	if file == nil then
-		file = self.briefBackgrounds[mission]["default"]
+		if file == nil then
+			file = self.briefBackgrounds[mission]["default"]
+		end
 	end
 	
 	--double check
