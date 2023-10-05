@@ -2,78 +2,6 @@ local utils = {}
 
 utils.table = {}
 
-function utils.loadOptionsFromFile()
-
-	local json = require('dkjson')
-  
-	local location = 'data/players'
-  
-	local file = nil
-	local config = {}
-  
-	if cf.fileExists('scpui_options.cfg') then
-		file = cf.openFile('scpui_options.cfg', 'r', location)
-		config = json.decode(file:read('*a'))
-		file:close()
-		if not config then
-			config = {}
-		end
-	end
-  
-	if not config[ba.getCurrentPlayer():getName()] then
-		config[ba.getCurrentPlayer():getName()] = {}
-	end
-	
-	local mod = ba.getModTitle()
-	
-	if mod == "" then
-		ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
-	end
-	
-	if not config[ba.getCurrentPlayer():getName()][mod] then
-		return nil
-	else
-		return config[ba.getCurrentPlayer():getName()][mod]
-	end
-end
-
-function utils.saveOptionsToFile(data)
-
-	local json = require('dkjson')
-  
-	local location = 'data/players'
-  
-	local file = nil
-	local config = {}
-  
-	if cf.fileExists('scpui_options.cfg') then
-		file = cf.openFile('scpui_options.cfg', 'r', location)
-		config = json.decode(file:read('*a'))
-		file:close()
-		if not config then
-			config = {}
-		end
-	end
-  
-	if not config[ba.getCurrentPlayer():getName()] then
-		config[ba.getCurrentPlayer():getName()] = {}
-	end
-	
-	local mod = ba.getModTitle()
-	
-	if mod == "" then
-		ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
-	end
-	
-	config[ba.getCurrentPlayer():getName()][mod] = data
-	
-	config = utils.cleanPilotsFromSaveData(config)
-  
-	file = cf.openFile('scpui_options.cfg', 'w', location)
-	file:write(json.encode(config))
-	file:close()
-end
-
 function utils.cleanPilotsFromSaveData(data)
 	
 	--get the pilots list
@@ -89,229 +17,6 @@ function utils.cleanPilotsFromSaveData(data)
     end
 
 	return cleanData
-end
-
-function utils.parseOptions(data)
-
-	parse.readFileText(data, "data/tables")
-
-	parse.requiredString("#Custom Options")
-	
-	while parse.optionalString("$Name:") do
-		local entry = {}
-		
-		entry.Title = parse.getString()
-		
-		if parse.optionalString("+Description:") then
-			entry.Description = parse.getString()
-		end
-		
-		parse.requiredString("+Key:")
-		entry.Key = parse.getString()
-		--Create warning if Key already exists for another option here
-		
-		parse.requiredString("+Type:")
-		entry.Type = utils.verifyParsedType(parse.getString())
-		
-		if parse.optionalString("+Column:") then
-			entry.Column = parse.getInt()
-			if entry.Column < 1 then
-				entry.Column = 1
-			end
-			if entry.Column > 4 then
-				entry.Column = 4
-			end
-		else
-			entry.Column = 1
-		end
-		
-		if entry.Type ~= "Header" then
-		
-			local valCount = 0
-			local nameCount = 0
-		
-			if entry.Type == "Binary" or entry.Type == "Multi" then
-				parse.requiredString("+Valid Values")
-				
-				entry.ValidValues = {}
-				
-				while parse.optionalString("+Val:") do
-					local val = parse.getString()
-					local save = true
-					
-					if val ~= nil then
-						valCount = valCount + 1
-						if entry.Type == "Binary" and valCount > 2 then
-							parse.displayMessage("Option " .. entry.Title .. " is Binary but has more than 2 values. The rest will be ignored!", false)
-							save = false
-						end
-						
-						if entry.Type == "FivePoint" and valCount > 5 then
-							parse.displayMessage("Option " .. entry.Title .. " is FivePoint but has more than 5 values. The rest will be ignored!", false)
-							save = false
-						end
-						
-						if save then
-							entry.ValidValues[valCount] = val
-						end
-					end
-				end
-				
-				if entry.Type == "Binary" and valCount < 2 then
-					parse.displayMessage("Option " .. entry.Title .. " is Binary but only has " .. valCount .. "values! Binary types must have exactly 2 values.", true)
-				end
-				
-				if entry.Type == "Multi" and valCount < 2 then
-					parse.displayMessage("Option " .. entry.Title .. " is Multi but only has " .. valCount .. "values! Multi types must have at least 2 values.", true)
-				end
-				
-				if entry.Type == "FivePoint" and valCount < 5 then
-					parse.displayMessage("Option " .. entry.Title .. " is FivePoint but only has " .. valCount .. "values! FivePoint types must have exactly 5 values.", true)
-				end
-				
-			end
-				
-			if entry.Type == "Binary" or entry.Type == "Multi" or entry.Type == "FivePoint" then
-			
-				parse.requiredString("+Display Names")
-				
-				entry.DisplayNames = {}
-				
-				while parse.optionalString("+Val:") do
-					local val = parse.getString()
-					local save = true
-					
-					if val ~= nil then
-						nameCount = nameCount + 1
-						if entry.Type == "Binary" and nameCount > 2 then
-							parse.displayMessage("Option " .. entry.Title .. " is Binary but has more than 2 display names. The rest will be ignored!", false)
-							save = false
-						end
-						
-						if entry.Type == "FivePoint" and nameCount > 5 then
-							parse.displayMessage("Option " .. entry.Title .. " is FivePoint but has more than 5 display names. The rest will be ignored!", false)
-							save = false
-						end
-						
-						if save then
-							if entry.Type == "FivePoint" then
-								entry.DisplayNames[nameCount] = val
-							else
-								entry.DisplayNames[entry.ValidValues[nameCount]] = val
-							end
-						end
-					end
-				end
-				
-				if entry.Type == "Binary" and nameCount < 2 then
-					parse.displayMessage("Option " .. entry.Title .. " is Binary but only has " .. nameCount .. "display names! Binary types must have exactly 2 display names.", true)
-				end
-				
-				if entry.Type == "Multi" and nameCount < 2 then
-					parse.displayMessage("Option " .. entry.Title .. " is Multi but only has " .. nameCount .. "display names! Multi types must have at least 2 display names.", true)
-				end
-				
-				if entry.Type == "FivePoint" and nameCount < 5 then
-					parse.displayMessage("Option " .. entry.Title .. " is FivePoint but only has " .. nameCount .. "display names! FivePoint types must have exactly 5 display names.", true)
-				end
-				
-				if entry.Type ~= "FivePoint" and valCount ~= nameCount then
-					parse.displayMessage("Option " .. entry.Title .. " has " .. valCount .. " values but only has " .. nameCount .. " display names. There must be one display name for each value!", true)
-				end
-			end
-			
-			if entry.Type == "Range" then
-				parse.requiredString("+Min:")
-				entry.Min = parse.getFloat()
-				
-				if entry.Min < 0 then
-					entry.Min = 0
-				end
-				
-				parse.requiredString("+Max:")
-				entry.Max = parse.getFloat()
-				
-				if entry.Max <= entry.Min then
-					parse.displayMessage("Option " .. entry.Title .. " has a Max value that is less than or equal to its Min value!", true)
-				end
-			end
-			
-			parse.requiredString("+Default Value:")
-			if entry.Type == "Binary" or entry.Type == "Multi" then
-				entry.Value = parse.getString()
-			elseif entry.Type == "Range" then
-				local val = parse.getFloat()
-				if val < entry.Min then
-					val = entry.Min
-				end
-				if val > entry.Max then
-					val = entry.Max
-				end
-				entry.Value = val
-			elseif entry.Type == "FivePoint" or entry.Type == "TenPoint" then
-				local val = parse.getInt()
-				if val < 1 then
-					val = 1
-				end
-				if entry.Type == "FivePoint" and val > 5 then
-					val = 5
-				end
-				if entry.Type == "TenPoint" and val > 10 then
-					val = 10
-				end
-				entry.Value = val
-			end
-			
-			if parse.optionalString("+Force Selector:") then
-				entry.ForceSelector = parse.getBoolean()
-			else
-				entry.ForceSelector = false
-			end
-			
-			if parse.optionalString("+No Default:") then --this needs a better name
-				entry.NoDefault = parse.getBoolean()
-			else
-				entry.NoDefault = false
-			end
-		end
-		
-		table.insert(ScpuiSystem.CustomOptions, entry)
-	end
-	
-	parse.requiredString("#End")
-
-	parse.stop()
-
-end
-
-function utils.verifyParsedType(val)
-
-	if string.lower(val) == "header" then
-		return "Header"
-	end
-	
-	if string.lower(val) == "binary" then
-		return "Binary"
-	end
-	
-	if string.lower(val) == "multi" then
-		return "Multi"
-	end
-	
-	if string.lower(val) == "range" then
-		return "Range"
-	end
-	
-	if string.lower(val) == "fivepoint" then
-		return "FivePoint"
-	end
-	
-	if string.lower(val) == "tenpoint" then
-		return "TenPoint"
-	end
-	
-	parse.displayMessage("Option type " .. val .. " is not valid!", true)
-	
 end
 
 function utils.animExists(name)
@@ -333,6 +38,18 @@ function utils.animExists(name)
 	return false
 end
 
+function utils.getTableIndex(tab, val)
+
+	for i, v in ipairs(tab) do
+		if v.name == val then
+			return i
+		end
+	end
+	
+	return ""
+
+end
+
 function utils.strip_extension(name)
     return string.gsub(name, "%..+$", "")
 end
@@ -340,6 +57,16 @@ end
 function utils.hasExtension(filename)
     local lastDotIndex = filename:find("%.[^%.]*$")
     return lastDotIndex ~= nil
+end
+
+function utils.isOneOf(val, ...)
+	local ret = {}
+    for _,k in ipairs({...}) do 
+        if val == k then
+            return true
+        end
+    end
+    return false
 end
 
 function utils.split(inputstr, sep)

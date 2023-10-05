@@ -132,7 +132,7 @@ function TechMissionsController:ChangeSection(section)
 	
 	--save the choice to the player file
 	ScpuiOptionValues.simRoomChoice = self.sectionIndex
-	utils.saveOptionsToFile(ScpuiOptionValues)
+	ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
 	
 	self.show_all = false
 	self.Counter = 0

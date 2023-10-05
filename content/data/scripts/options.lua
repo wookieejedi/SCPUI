@@ -1119,7 +1119,7 @@ function OptionsController:acceptChanges(state)
 	ScpuiOptionValues = customValues
 
 	--Save mod options to file
-	utils.saveOptionsToFile(ScpuiOptionValues)
+	ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
 	
 	--Save mod options to global file for recalling before a player is selected
 	saveFilename = "scpui_options_global.cfg"
