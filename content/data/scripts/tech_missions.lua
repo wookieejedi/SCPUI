@@ -75,7 +75,6 @@ function TechMissionsController:Show(text, title)
 	local dialog = dialogs.new()
 		dialog:title(title)
 		dialog:text(text)
-		dialog:allow_escape(false)
 		dialog:show(self.document.context)
 		:continueWith(function()end)
 	-- Route input to our context until the user dismisses the dialog box.

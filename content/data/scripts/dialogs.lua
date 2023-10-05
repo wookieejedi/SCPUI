@@ -111,25 +111,23 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
         initialize_buttons(dialog_doc, properties, finish_func)
     end
     
-	if properties.allow_escape ~= false then
-		dialog_doc:AddEventListener("keydown", function(event, _, _)
-			if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-				if properties.escape_value ~= nil then
-					finish_func(properties.escape_value)
+	dialog_doc:AddEventListener("keydown", function(event, _, _)
+		if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+			if properties.escape_value ~= nil then
+				finish_func(properties.escape_value)
+				ScpuiSystem:CloseDialog()
+			end
+		end
+		for i = 1, #properties.buttons, 1 do
+			if properties.buttons[i].keypress ~= nil then
+				thisKey = string.upper(properties.buttons[i].keypress)
+				if event.parameters.key_identifier == rocket.key_identifier[thisKey] then
+					finish_func(properties.buttons[i].value)
 					ScpuiSystem:CloseDialog()
 				end
 			end
-			for i = 1, #properties.buttons, 1 do
-				if properties.buttons[i].keypress ~= nil then
-					thisKey = string.upper(properties.buttons[i].keypress)
-					if event.parameters.key_identifier == rocket.key_identifier[thisKey] then
-						finish_func(properties.buttons[i].value)
-						ScpuiSystem:CloseDialog()
-					end
-				end
-			end
-		end)
-	end
+		end
+	end)
     
     if abortCBTable ~= nil then
         abortCBTable.Abort = function()
@@ -196,11 +194,6 @@ end
 
 function factory_mt:escape(escape)
     self.escape_value = escape
-    return self
-end
-
-function factory_mt:allow_escape(val)
-    self.allow_escape = val
     return self
 end
 
