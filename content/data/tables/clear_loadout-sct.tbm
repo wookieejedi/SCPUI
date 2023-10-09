@@ -25,9 +25,11 @@ $On Campaign Begin:
 	local loadoutHandler = require("loadouthandler")
 	local data = loadoutHandler:loadLoadoutsFromFile()
 	
+	if data == nil then return end
+	
 	for k, v in pairs(data) do
-		ba.warning(k)
-		ba.warning(k:sub(-1))
+		--ba.warning(k)
+		--ba.warning(k:sub(-1))
 		if k:sub(-1) == "c" then
 			data[k] = nil
 		end
