@@ -114,7 +114,6 @@ div#briefing_goals
 #primary_goal_list
 {
 	margin-left: 10%;
-	height: auto;
 }
 
 #secondary_goal_list
@@ -181,7 +180,7 @@ div#briefing_goals
 	width: 2%;
 	height: 4%;
 	float: left;
-	margin-right: 3.5%;
+	margin-right: 2.5%;
 }
 
 .leftline

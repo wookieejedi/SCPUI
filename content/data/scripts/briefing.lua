@@ -167,36 +167,52 @@ function BriefingController:calcPercent(value, percent)
     return value * (percent/100)
 end
 
+function BriefingController:makeBullet()
+	local bullet_el = self.document:CreateElement("div")
+	bullet_el.id = "goalsdot_img"
+	bullet_el:SetClass("goalsdot", true)
+	bullet_el:SetClass("brightblue", true)
+	
+	local bullet_img = self.document:CreateElement("img")
+	bullet_img:SetClass("psuedo_img", true)
+	bullet_img:SetAttribute("src", "scroll-button.png")
+	bullet_el:AppendChild(bullet_img)
+	
+	return bullet_el
+end
+
+function BriefingController:createGoalItem(title)
+	local goal_el = self.document:CreateElement("li")
+	goal_el:SetClass("goal", true)
+	goal_el:AppendChild(self:makeBullet())
+	
+	local goal_text = self.document:CreateElement("div")
+	goal_text.inner_rml = goal.Message .. "<br></br>"
+	goal_el:AppendChild(goal_text)
+	
+	return goal_el
+end
+
 function BriefingController:buildGoals()
     if mn.hasGoalsStage() then
 		goals = ui.Briefing.Objectives
-		local bulletHTML = "<div id=\"goalsdot_img\" class=\"goalsdot brightblue\"><img src=\"scroll-button.png\" class=\"psuedo_img\"></img></div>"
-		local primaryWrapper = self.document:GetElementById("primary_goal_list")
-		local primaryText = ""
-		local secondaryWrapper = self.document:GetElementById("secondary_goal_list")
-		local secondaryText = ""
-		local bonusWrapper = self.document:GetElementById("bonus_goal_list")
-		local bonusText = ""
+		local primaryList = self.document:GetElementById("primary_goal_list")
+		local secondaryList = self.document:GetElementById("secondary_goal_list")
+		local bonusList = self.document:GetElementById("bonus_goal_list")
 		for i = 1, #goals do
 			goal = goals[i]
 			if goal.isGoalValid and goal.Message ~= "" then
 				if goal.Type == "primary" then
-					local text = "<div class=\"goal\">" .. bulletHTML .. goal.Message .. "<br></br></div>"
-					primaryText = primaryText .. text
+					primaryList:AppendChild(self:createGoalItem(goal.Message))
 				end
 				if goal.Type == "secondary" then
-					local text = bulletHTML .. goal.Message .. "<br></br></div>"
-					secondaryText = "<div class=\"goal\">" .. secondaryText .. text
+					secondaryList:AppendChild(self:createGoalItem(goal.Message))
 				end
 				if goal.Type == "bonus" then
-					local text = bulletHTML .. goal.Message .. "<br></br></div>"
-					bonusText = "<div class=\"goal\">" .. bonusText .. text
+					bonusList:AppendChild(self:createGoalItem(goal.Message))
 				end
 			end
 		end
-		primaryWrapper.inner_rml = primaryText
-		secondaryWrapper.inner_rml = secondaryText
-		bonusWrapper.inner_rml = bonusText
 	end
 end
 
