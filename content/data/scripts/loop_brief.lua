@@ -44,13 +44,17 @@ end
 
 function LoopBriefController:accept_pressed()
     ui.LoopBrief.setLoopChoice(true)
-	self.voice_handle:close()
+	if self.voice_handle then
+		self.voice_handle:close()
+	end
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_START_GAME"])
 end
 
 function LoopBriefController:deny_pressed()
     ui.LoopBrief.setLoopChoice(false)
-	self.voice_handle:close()
+	if self.voice_handle then
+		self.voice_handle:close()
+	end
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_START_GAME"])
 end
 
