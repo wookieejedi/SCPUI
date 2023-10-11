@@ -166,7 +166,7 @@ div#weapon_stats
 
 div#weapon_left_column
 {
-	margin-left: 5%;
+	margin-left: 7%;
 	position: absolute;
 	bottom: 0;
 	width: 10.5%;
@@ -175,11 +175,10 @@ div#weapon_left_column
 
 div#copy_to_wing_panel
 {
-	width: 50%;
-	height: 7%;
-	overflow: hidden;
-	position: relative;
-	margin-left: 1%;
+	width: 4.5%;
+	position: absolute;
+	left: 0%;
+	top: 20%;
 	margin-bottom: 1%;
 }
 
@@ -188,6 +187,12 @@ div#copy_to_wing_panel img
 	display: block;
 	width: 100%;
 	height: auto;
+}
+
+div#copy_to_wing_text
+{
+	width: 70%;
+	margin-left: 5%;
 }
 
 div#weapon_scroll_panel
@@ -615,9 +620,10 @@ div#copy_to_wing_wrapper
 
 div#copy_to_wing_cont
 {
-	width: 65%;
+	width: 90%;
 	height: auto;
-	margin-left: 20%;
+	margin-left: 2%;
+	margin-bottom: 20%;
 }
 
 .copy
