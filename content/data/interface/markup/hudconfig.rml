@@ -20,7 +20,7 @@
 						<div id=mod_btn_wrapper>
 							<div id=hud_on_cont>
 								<button id="hud_on_btn" class="hud_on button_1" onclick="controller:setGaugeFlags(1)">
-									<span id="hud_on_img" class="hud_on">
+									<span id="hud_on_img" class="hud_on button_img">
 										<img src="round.png" class="psuedo_img"></img>
 									</span>
 									<span class="pos button_text_left">
@@ -30,7 +30,7 @@
 							</div>
 							<div id=hud_off_cont>
 								<button id="hud_off_btn" class="hud_off button_1" onclick="controller:setGaugeFlags(2)">
-									<span id="hud_off_img" class="hud_off">
+									<span id="hud_off_img" class="hud_off button_img">
 										<img src="round.png" class="psuedo_img"></img>
 									</span>
 									<span class="pos button_text_left">
@@ -40,7 +40,7 @@
 							</div>
 							<div id=popup_cont>
 								<button id="popup_btn" class="popup button_1" onclick="controller:setGaugeFlags(3)">
-									<span id="popup_img" class="popup">
+									<span id="popup_img" class="popup button_img">
 										<img src="round.png" class="psuedo_img"></img>
 									</span>
 									<span class="pos button_text_left">
@@ -57,7 +57,7 @@
 						<div id=global_btn_wrapper>
 							<div id=reset_cont>
 								<button id="reset_btn" class="reset button_1" onclick="controller:setDefault()">
-									<span id="reset_img" class="reset">
+									<span id="reset_img" class="reset button_img">
 										<img src="default.png" class="psuedo_img"></img>
 									</span>
 									<span class="pos button_text_bottom">
@@ -67,7 +67,7 @@
 							</div>
 							<div id=select_all_cont>
 								<button id="select_all_btn" class="select_all button_1" onclick="controller:select_all()">
-									<span id="select_all_img" class="select_all">
+									<span id="select_all_img" class="select_all button_img">
 										<img src="star.png" class="psuedo_img"></img>
 									</span>
 									<span class="pos button_text_bottom">
@@ -112,7 +112,7 @@
 				<div id=preset_btn_wrapper>
 					<div id=new_cont>
 						<button id="new_btn" class="new button_1" onclick="controller:getPresetInput()">
-							<span id="new_img" class="new">
+							<span id="new_img" class="new button_img">
 								<img src="star.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
@@ -122,7 +122,7 @@
 					</div>
 					<div id=delete_cont>
 						<button id="delete_btn" class="delete button_1" onclick="controller:deletePreset()">
-							<span id="delete_img" class="delete">
+							<span id="delete_img" class="delete button_img">
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_bottom">
@@ -139,7 +139,7 @@
 				<div id=b_panel_wrapper>
 					<div id=accept_cont>
 						<button id="accept_btn" class="accept button_1" onclick="controller:Exit(element)">
-							<span id="accept_img" class="accept">
+							<span id="accept_img" class="accept button_img">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">

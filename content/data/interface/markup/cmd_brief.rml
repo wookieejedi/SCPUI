@@ -28,35 +28,35 @@
 					<div id=button_wrapper>
 						<div id=skip_cont>
 							<button id="cmdlast_btn" class="arrowbuttons button_brief_stage">
-								<span id="cmdlast_img" class="arrowbuttons">
+								<span id="cmdlast_img" class="arrowbuttons button_img">
 									<img src="skip-r.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=arrow_cont>
 							<button id="cmdnext_btn" class="arrowbuttons button_brief_stage">
-								<span id="cmdnext_img" class="arrowbuttons">
+								<span id="cmdnext_img" class="arrowbuttons button_img">
 									<img src="arrow-down.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=pause_cont>
 							<button id="cmdpause_btn" class="arrowbuttons button_1">
-								<span id="cmdpause_img" class="arrowbuttons">
+								<span id="cmdpause_img" class="arrowbuttons button_img">
 									<img src="pause.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=arrow_cont>
 							<button id="cmdprev_btn" class="arrowbuttons button_brief_stage">
-								<span id="cmdprev_img" class="arrowbuttons">
+								<span id="cmdprev_img" class="arrowbuttons button_img">
 									<img src="arrow-up.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=skip_cont>
 							<button id="cmdfirst_btn" class="arrowbuttons button_brief_stage">
-								<span id="cmdfirst_img" class="arrowbuttons">
+								<span id="cmdfirst_img" class="arrowbuttons button_img">
 									<img src="skip-l.png" class="psuedo_img"></img>
 								</span>
 							</button>
@@ -80,7 +80,7 @@
 				<div id=a_panel_wrapper>
 					<div id=accept_cont>
 						<button id="accept_btn" class="accept button_2">
-							<span id="accept_img" class="accept">
+							<span id="accept_img" class="accept button_img">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
@@ -98,7 +98,7 @@
 				<div id=b_panel_wrapper>
 					<div id=help_cont>
 						<button id="help_btn" class="help button_1" onclick="controller:help_clicked()">
-							<span id="help_img" class="help">
+							<span id="help_img" class="help button_img">
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
@@ -108,7 +108,7 @@
 					</div>
 					<div id=options_cont>
 						<button id="options_btn" class="options button_1">
-							<span id="options_img" class="options">
+							<span id="options_img" class="options button_img">
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">

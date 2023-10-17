@@ -17,7 +17,7 @@
 				<div id=top_a_panel_wrapper>
 					<div id=skip_m_cont>
 						<button id="skip_btn" class="skip button_1" onclick="controller:skip_pressed(element)">
-							<span id="skip_img" class="skip">
+							<span id="skip_img" class="skip button_img">
 								<img src="skip-r.png" class="psuedo_img"></img>
 							</span>
 							<span id="skip_m_text" class="pos button_text_left">
@@ -32,7 +32,7 @@
 				<div id=top_b_panel_wrapper>
 					<div id=bullet_cont>
 						<button id="brief_btn" class="bullet button_1" onclick="controller:ChangeBriefState(1)">
-							<span id="bullet_img" class="bullet">
+							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
@@ -42,7 +42,7 @@
 					</div>
 					<div id=bullet_cont>
 						<button id="s_select_btn" class="bullet button_1" onclick="controller:ChangeBriefState(2)">
-							<span id="bullet_img" class="bullet">
+							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
@@ -52,7 +52,7 @@
 					</div>
 					<div id=bullet_cont>
 						<button id="w_select_btn" class="bullet button_1" onclick="controller:ChangeBriefState(3)">
-							<span id="bullet_img" class="bullet">
+							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
@@ -139,35 +139,35 @@
 					<div id=button_wrapper>
 						<div id=skip_cont>
 							<button id="cmdfirst_btn" class="arrowbuttons button_1">
-								<span id="cmdfirst_img" class="arrowbuttons">
+								<span id="cmdfirst_img" class="arrowbuttons button_img">
 									<img src="skip-l.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=arrow_cont>
 							<button id="cmdprev_btn" class="arrowbuttons button_1">
-								<span id="cmdprev_img" class="arrowbuttons">
+								<span id="cmdprev_img" class="arrowbuttons button_img">
 									<img src="arrow-up.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=pause_cont>
 							<button id="cmdpause_btn" class="arrowbuttons button_1">
-								<span id="cmdpause_img" class="arrowbuttons">
+								<span id="cmdpause_img" class="arrowbuttons button_img">
 									<img src="pause.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=arrow_cont>
 							<button id="cmdnext_btn" class="arrowbuttons button_1">
-								<span id="cmdnext_img" class="arrowbuttons">
+								<span id="cmdnext_img" class="arrowbuttons button_img">
 									<img src="arrow-down.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=skip_cont>
 							<button id="cmdlast_btn" class="arrowbuttons button_1">
-								<span id="cmdlast_img" class="arrowbuttons">
+								<span id="cmdlast_img" class="arrowbuttons button_img">
 									<img src="skip-r.png" class="psuedo_img"></img>
 								</span>
 							</button>
@@ -177,7 +177,7 @@
 						<span class="tooltiptext">XSTR("Click here to change briefing stages", -1)</span>
 					</div>
 				</div>
-				<img src="brief-main-window.png"></img>
+				<img src="brief-main-window-bta.png"></img>
 			</div>
 			<div id=brief_text_window>
 				<div id=brief_text_wrapper>
@@ -194,7 +194,7 @@
 				<div id=a_panel_wrapper>
 					<div id=accept_cont>
 						<button id="accept_btn" class="accept button_1">
-							<span id="accept_img" class="accept">
+							<span id="accept_img" class="accept button_img">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
@@ -212,7 +212,7 @@
 				<div id=b_panel_wrapper>
 					<div id=help_cont>
 						<button id="help_btn" class="help button_1" onclick="controller:help_clicked()">
-							<span id="help_img" class="help">
+							<span id="help_img" class="help button_img">
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
@@ -222,7 +222,7 @@
 					</div>
 					<div id=options_cont>
 						<button id="options_btn" class="options button_1">
-							<span id="options_img" class="options">
+							<span id="options_img" class="options button_img">
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">

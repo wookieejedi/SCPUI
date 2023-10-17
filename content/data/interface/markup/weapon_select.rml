@@ -16,7 +16,7 @@
 				<div id=top_b_panel_wrapper>
 					<div id=bullet_cont>
 						<button id="brief_btn" class="bullet button_1" onclick="controller:ChangeBriefState(1)">
-							<span id="bullet_img" class="bullet">
+							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
@@ -26,7 +26,7 @@
 					</div>
 					<div id=bullet_cont>
 						<button id="s_select_btn" class="bullet button_1" onclick="controller:ChangeBriefState(2)">
-							<span id="bullet_img" class="bullet">
+							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
@@ -36,7 +36,7 @@
 					</div>
 					<div id=bullet_cont>
 						<button id="w_select_btn" class="bullet button_1" onclick="controller:ChangeBriefState(3)">
-							<span id="bullet_img" class="bullet">
+							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
@@ -108,7 +108,7 @@
 			<div id=copy_to_wing_wrapper>
 				<div id=copy_to_wing_cont>
 					<button id="copy_btn" class="copy button_1"  onclick="controller:CopyToWing(element)">
-						<span id="copy_img" class="copy">
+						<span id="copy_img" class="copy button_img">
 							<img src="multiplayer.png" class="psuedo_img"></img>
 						</span>
 					</button>
@@ -152,7 +152,7 @@
 				<div id=c_panel_wrapper>
 					<div id=reset_cont>
 						<button id="reset_btn" class="reset button_1" onclick="controller:reset_pressed(element)">
-							<span id="reset_img" class="reset">
+							<span id="reset_img" class="reset button_img">
 								<img src="default.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
@@ -170,7 +170,7 @@
 				<div id=a_panel_wrapper>
 					<div id=accept_cont>
 						<button id="accept_btn" class="accept button_1" onclick="controller:accept_pressed(element)">
-							<span id="accept_img" class="accept">
+							<span id="accept_img" class="accept button_img">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
@@ -188,7 +188,7 @@
 				<div id=b_panel_wrapper>
 					<div id=help_cont>
 						<button id="help_btn" class="help button_1" onclick="controller:help_clicked()">
-							<span id="help_img" class="help">
+							<span id="help_img" class="help button_img">
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
@@ -198,7 +198,7 @@
 					</div>
 					<div id=options_cont>
 						<button id="options_btn" class="options button_1" onclick="controller:options_button_clicked()">
-							<span id="options_img" class="options">
+							<span id="options_img" class="options button_img">
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">

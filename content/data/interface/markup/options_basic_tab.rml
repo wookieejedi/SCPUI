@@ -32,14 +32,14 @@
             <div id="gamma_controls" class="gamma_setting">
                 <div id=arrow_cont>
                     <button id="brightness_increase_btn" class="right_arrow_btn arrow button_1">
-                        <div id="right_arrow_img" class="arrow">
+                        <div id="right_arrow_img" class="arrow button_img">
                             <img src="arrow-right.png" class="psuedo_img"></img>
                         </div>
                     </button>
                 </div>
                 <div id=arrow_cont>
                     <button id="brightness_decrease_btn" class="left_arrow_btn arrow button_1">
-                        <div id="left_arrow_img" class="arrow">
+                        <div id="left_arrow_img" class="arrow button_img">
                             <img src="arrow-left.png" class="psuedo_img"></img>
                         </div>
                     </button>

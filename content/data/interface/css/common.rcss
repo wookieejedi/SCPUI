@@ -44,6 +44,12 @@ selectvalue
 	text-align: center;
 }
 
+/*Used to make sure button images do not take the global color*/
+.button_img
+{
+	color:white;
+}
+
 .button_text_right
 {
 	text-align: left;
@@ -95,7 +101,7 @@ selectvalue
 
 .psuedo_img
 {
-	z-index: -1;
+	visibility: hidden;
 }
 
 .hidden

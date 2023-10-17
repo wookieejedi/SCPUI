@@ -28,49 +28,49 @@ Parameters:
         <div class="fps_slider">
             <div id=arrow_cont>
                 <button id="right_arrow_btn" class="fps_right_btn arrow button_1">
-                    <div id="right_arrow_img" class="arrow">
+                    <div id="right_arrow_img" class="arrow button_img">
                         <img src="arrow-right.png" class="psuedo_img"></img>
                     </div>
                 </button>
             </div>
             <div id=oval_cont>
                 <button id="oval_btn" class="fps_button_4 oval button_1">
-                    <div id="oval_img" class="oval">
+                    <div id="oval_img" class="oval button_img">
                         <img src="oval.png" class="psuedo_img"></img>
                     </div>
                 </button>
             </div>
             <div id=oval_cont>
                 <button id="oval_btn" class="fps_button_3 oval button_1">
-                    <div id="oval_img" class="oval">
+                    <div id="oval_img" class="oval button_img">
                         <img src="oval.png" class="psuedo_img"></img>
                     </div>
                 </button>
             </div>
             <div id=oval_cont>
                 <button id="oval_btn" class="fps_button_2 oval button_1">
-                    <div id="oval_img" class="oval">
+                    <div id="oval_img" class="oval button_img">
                         <img src="oval.png" class="psuedo_img"></img>
                     </div>
                 </button>
             </div>
             <div id=oval_cont>
                 <button id="oval_btn" class="fps_button_1 oval button_1">
-                    <div id="oval_img" class="oval">
+                    <div id="oval_img" class="oval button_img">
                         <img src="oval.png" class="psuedo_img"></img>
                     </div>
                 </button>
             </div>
             <div id=oval_cont>
                 <button id="oval_btn" class="fps_button_0 oval button_1">
-                    <div id="oval_img" class="oval">
+                    <div id="oval_img" class="oval button_img">
                         <img src="oval.png" class="psuedo_img"></img>
                     </div>
                 </button>
             </div>
             <div id=arrow_cont>
                 <button id="left_arrow_btn" class="fps_left_btn arrow button_1">
-                    <div id="left_arrow_img" class="arrow">
+                    <div id="left_arrow_img" class="arrow button_img">
                         <img src="arrow-left.png" class="psuedo_img"></img>
                     </div>
                 </button>
@@ -88,7 +88,7 @@ Parameters:
 <div id="tenpoint_selector_template" class="ten_dot_slider">
     <div id=arrow_cont>
         <button id="right_arrow_btn" class="arrow">
-            <div id="right_arrow_img" class="tps_right_arrow arrow">
+            <div id="right_arrow_img" class="tps_right_arrow arrow button_img">
                 <img src="arrow-right.png" class="psuedo_img"></img>
             </div>
             <if condition="text_alignment == 'right'">
@@ -100,77 +100,77 @@ Parameters:
     </div>
     <div id=round_ten_cont>
         <button id="round_btn" class="round button_1 tps_button_9">
-            <div id="round_img" class="round">
+            <div id="round_img" class="round button_img">
                 <img src="round.png" class="psuedo_img"></img>
             </div>
         </button>
     </div>
     <div id=round_ten_cont>
         <button id="round_btn" class="round button_1 tps_button_8">
-            <div id="round_img" class="round">
+            <div id="round_img" class="round button_img">
                 <img src="round.png" class="psuedo_img"></img>
             </div>
         </button>
     </div>
     <div id=round_ten_cont>
         <button id="round_btn" class="round button_1 tps_button_7">
-            <div id="round_img" class="round">
+            <div id="round_img" class="round button_img">
                 <img src="round.png" class="psuedo_img"></img>
             </div>
         </button>
     </div>
     <div id=round_ten_cont>
         <button id="round_btn" class="round button_1 tps_button_6">
-            <div id="round_img" class="round">
+            <div id="round_img" class="round button_img">
                 <img src="round.png" class="psuedo_img"></img>
             </div>
         </button>
     </div>
     <div id=round_ten_cont>
         <button id="round_btn" class="round button_1 tps_button_5">
-            <div id="round_img" class="round">
+            <div id="round_img" class="round button_img">
                 <img src="round.png" class="psuedo_img"></img>
             </div>
         </button>
     </div>
     <div id=round_ten_cont>
         <button id="round_btn" class="round button_1 tps_button_4">
-            <div id="round_img" class="round">
+            <div id="round_img" class="round button_img">
                 <img src="round.png" class="psuedo_img"></img>
             </div>
         </button>
     </div>
     <div id=round_ten_cont>
         <button id="round_btn" class="round button_1 tps_button_3">
-            <div id="round_img" class="round">
+            <div id="round_img" class="round button_img">
                 <img src="round.png" class="psuedo_img"></img>
             </div>
         </button>
     </div>
     <div id=round_ten_cont>
         <button id="round_btn" class="round button_1 tps_button_2">
-            <div id="round_img" class="round">
+            <div id="round_img" class="round button_img">
                 <img src="round.png" class="psuedo_img"></img>
             </div>
         </button>
     </div>
     <div id=round_ten_cont>
         <button id="round_btn" class="round button_1 tps_button_1">
-            <div id="round_img" class="round">
+            <div id="round_img" class="round button_img">
                 <img src="round.png" class="psuedo_img"></img>
             </div>
         </button>
     </div>
     <div id=round_ten_cont>
         <button id="round_btn" class="round button_1 tps_button_0">
-            <div id="round_img" class="round">
+            <div id="round_img" class="round button_img">
                 <img src="round.png" class="psuedo_img"></img>
             </div>
         </button>
     </div>
     <div id=arrow_cont>
         <button id="left_arrow_btn" class="tps_left_arrow arrow">
-            <div id="left_arrow_img" class="arrow">
+            <div id="left_arrow_img" class="arrow button_img">
                 <img src="arrow-left.png" class="psuedo_img"></img>
             </div>
         </button>
@@ -192,7 +192,7 @@ Parameters:
     <div id=horz_panel_wrapper>
         <div id=round_option_cont>
             <button id="round_btn" class="binary_left_btn_el round button_1">
-                <div id="round_img" class="round">
+                <div id="round_img" class="round button_img">
                     <img src="round.png" class="psuedo_img"></img>
                 </div>
                 <div class="pos button_text_left">
@@ -202,7 +202,7 @@ Parameters:
         </div>
         <div id=round_option_cont>
             <button id="round_btn" class="binary_right_btn_el round button_1">
-                <div id="round_img" class="round">
+                <div id="round_img" class="round button_img">
                     <img src="round.png" class="psuedo_img"></img>
                 </div>
                 <div class="pos button_text_left">

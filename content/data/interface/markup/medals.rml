@@ -52,7 +52,7 @@
 				<div id=a_panel_wrapper>
 					<div id=accept_cont>
 						<button id="fv_accept_btn" class="accept button_1" onclick="controller:accept_pressed(element)">
-							<span id="accept_img" class="accept">
+							<span id="accept_img" class="accept button_img">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">

@@ -7,7 +7,7 @@
         <div id=vert_panel_wrapper>
             <div id=bullet_choice_cont>
                 <button id="mod_custom_btn" class="bullet button_1" onclick="controller:ModCustom(element)">
-                    <div id="bullet_r_img" class="bullet">
+                    <div id="bullet_r_img" class="bullet button_img">
                         <img src="bullet-r.png" class="psuedo_img"></img>
                     </div>
                     <div class="pos button_text_right">
@@ -17,7 +17,7 @@
             </div>
             <div id=bullet_choice_cont>
                 <button id="mod_default_btn" class="bullet button_1" onclick="controller:ModDefault(element)">
-                    <div id="bullet_r_img" class="bullet">
+                    <div id="bullet_r_img" class="bullet button_img">
                         <img src="bullet-r.png" class="psuedo_img"></img>
                     </div>
                     <div class="pos button_text_right">

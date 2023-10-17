@@ -32,14 +32,14 @@
 				<div id=arrows_wrapper>
 					<div id=left_cont>
 						<button id="left_btn" class="left button_1" onclick="controller:DecrementSection(element)">
-							<span id="left_img" class="left">
+							<span id="left_img" class="left button_img">
 								<img src="arrow-left.png" class="psuedo_img"></img>
 							</span>
 						</button>
 					</div>
 					<div id=right_cont>
 						<button id="right_btn" class="right button_1" onclick="controller:IncrementSection(element)">
-							<span id="right_img" class="right">
+							<span id="right_img" class="right button_img">
 								<img src="arrow-right.png" class="psuedo_img"></img>
 							</span>
 						</button>
@@ -53,7 +53,7 @@
 				<div id=b_panel_wrapper>
 					<div id=accept_cont>
 						<button id="accept_btn" class="accept button_1" onclick="controller:Exit(element)">
-							<span id="accept_img" class="accept">
+							<span id="accept_img" class="accept button_img">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">

@@ -10,6 +10,7 @@ scrollbarvertical
 	width: 5%;
 	scrollchange-sound: 9;
 	z-index: 5;
+	color: white;
 }
 
 scrollbarvertical slidertrack

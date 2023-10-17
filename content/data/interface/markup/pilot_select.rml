@@ -26,7 +26,7 @@
 				<div id=button_wrapper>
 					<div id=single_multi_cont>
 						<button id="multiplayer_btn" class="multiplayer button_1" onclick="controller:set_player_mode(element, 'multi')">
-							<span id="multiplayer_img" class="multiplayer">
+							<span id="multiplayer_img" class="multiplayer button_img">
 								<img src="multiplayer.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text">
@@ -36,7 +36,7 @@
 					</div>
 					<div id=single_multi_cont>
 						<button id="singleplayer_btn" class="singleplayer button_1" onclick="controller:set_player_mode(element, 'single')">
-							<span id="singleplayer_img" class="singleplayer">
+							<span id="singleplayer_img" class="singleplayer button_img">
 								<img src="single-player.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text">
@@ -50,7 +50,7 @@
 				<div id="player_control_wrapper">
 					<div id=player_control_cont>
 						<button id="createplayer_btn" class="createplayer button_1" onclick="controller:create_player(element)">
-							<span id="createplayer_img" class="createplayer">
+							<span id="createplayer_img" class="createplayer button_img">
 								<img src="create-pilot.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text below">
@@ -60,7 +60,7 @@
 					</div>
 					<div id=player_control_cont>
 						<button id="cloneplayer_btn" class="cloneplayer button_1" onclick="controller:clone_player(element)">
-							<span id="cloneplayer_img" class="cloneplayer">
+							<span id="cloneplayer_img" class="cloneplayer button_img">
 								<img src="clone-pilot.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text below">
@@ -70,7 +70,7 @@
 					</div>
 					<div id=player_control_cont>
 						<button id="deleteplayer_btn" class="deleteplayer button_1" onclick="controller:delete_player(element)">
-							<span id="deleteplayer_img" class="deleteplayer">
+							<span id="deleteplayer_img" class="deleteplayer button_img">
 								<img src="delete-pilot.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text below">
@@ -84,7 +84,7 @@
 				<div id=button_wrapper>
 					<div id=player_commit_cont>
 						<button id="playercommit_btn" class="playercommit button_2" onclick="controller:commit_pressed()">
-							<span id="playercommit_img" class="playercommit">
+							<span id="playercommit_img" class="playercommit button_img">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text below">
@@ -94,14 +94,14 @@
 					</div>
 					<div id=arrow_cont>
 						<button id="playernext_btn" class="arrowbuttons button_1" onclick="controller:up_button_pressed()">
-							<span id="playernext_img" class="arrowbuttons">
+							<span id="playernext_img" class="arrowbuttons button_img">
 								<img src="arrow-down.png" class="psuedo_img"></img>
 							</span>
 						</button>
 					</div>
 					<div id=arrow_cont>
 						<button id="playerprev_btn" class="arrowbuttons button_1"  onclick="controller:down_button_pressed()">
-							<span id="playerprev_img" class="arrowbuttons">
+							<span id="playerprev_img" class="arrowbuttons button_img">
 								<img src="arrow-up.png" class="psuedo_img"></img>
 							</span>
 						</button>

@@ -27,7 +27,7 @@
 					<div id=button_wrapper>
 						<div id=single_multi_cont>
 							<button id="multiplayer_btn" class="multiplayer button_1" onclick="controller:set_player_mode(element, 'multi')">
-								<span id="multiplayer_img" class="multiplayer">
+								<span id="multiplayer_img" class="multiplayer button_img">
 									<img src="multiplayer.png" class="psuedo_img"></img>
 								</span>
 								<span class="pos button_text">
@@ -37,7 +37,7 @@
 						</div>
 						<div id=single_multi_cont>
 							<button id="singleplayer_btn" class="singleplayer button_1" onclick="controller:set_player_mode(element, 'single')">
-								<span id="singleplayer_img" class="singleplayer">
+								<span id="singleplayer_img" class="singleplayer button_img">
 									<img src="single-player.png" class="psuedo_img"></img>
 								</span>
 								<span class="pos button_text">
@@ -57,7 +57,7 @@
 					<div id="player_control_wrapper">
 						<div id=player_control_cont>
 							<button id="createplayer_btn" class="createplayer button_1" onclick="controller:create_player(element)">
-								<span id="createplayer_img" class="createplayer">
+								<span id="createplayer_img" class="createplayer button_img">
 									<img src="create-pilot.png" class="psuedo_img"></img>
 								</span>
 								<span class="pos button_text below">
@@ -67,7 +67,7 @@
 						</div>
 						<div id=player_control_cont>
 							<button id="cloneplayer_btn" class="cloneplayer button_1" onclick="controller:clone_player(element)">
-								<span id="cloneplayer_img" class="cloneplayer">
+								<span id="cloneplayer_img" class="cloneplayer button_img">
 									<img src="clone-pilot.png" class="psuedo_img"></img>
 								</span>
 								<span class="pos button_text below">
@@ -77,7 +77,7 @@
 						</div>
 						<div id=player_control_cont>
 							<button id="deleteplayer_btn" class="deleteplayer button_1" onclick="controller:delete_player(element)">
-								<span id="deleteplayer_img" class="deleteplayer">
+								<span id="deleteplayer_img" class="deleteplayer button_img">
 									<img src="delete-pilot.png" class="psuedo_img"></img>
 								</span>
 								<span class="pos button_text below">
@@ -91,7 +91,7 @@
 					<div id=button_wrapper>
 						<div id=player_commit_cont>
 							<button id="playercommit_btn" class="playercommit button_2">
-								<span id="playercommit_img" class="playercommit">
+								<span id="playercommit_img" class="playercommit button_img">
 									<img src="select.png" class="psuedo_img"></img>
 								</span>
 								<span class="neg button_text below">
@@ -101,14 +101,14 @@
 						</div>
 						<div id=arrow_cont>
 							<button id="playernext_btn" class="arrowbuttons button_1" onclick="controller:up_button_pressed()">
-								<span id="playernext_img" class="arrowbuttons">
+								<span id="playernext_img" class="arrowbuttons button_img">
 									<img src="arrow-down.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=arrow_cont>
 							<button id="playerprev_btn" class="arrowbuttons button_1"  onclick="controller:down_button_pressed()">
-								<span id="playerprev_img" class="arrowbuttons">
+								<span id="playerprev_img" class="arrowbuttons button_img">
 									<img src="arrow-up.png" class="psuedo_img"></img>
 								</span>
 							</button>
@@ -128,7 +128,7 @@
 					<div id=lr_arrows_cont>
 						<button class="arrow_right_btn lr_arrows button_1"
 								onclick="controller:next_image_pressed(element)">
-							<span class="arrow_right_img lr_arrows">
+							<span class="arrow_right_img lr_arrows button_img">
 								<img src="arrow-right.png" class="psuedo_img"></img>
 							</span>
 						</button>
@@ -136,7 +136,7 @@
 					<div id=lr_arrows_cont>
 						<button class="arrow_left_btn lr_arrows button_1"
 								onclick="controller:prev_image_pressed(element)">
-							<span class="arrow_left_img lr_arrows">
+							<span class="arrow_left_img lr_arrows button_img">
 								<img src="arrow-left.png" class="psuedo_img"></img>
 							</span>
 						</button>
@@ -158,14 +158,14 @@
 				<div id=stats_scroll_wrapper>
 					<div id=stats_scroll_cont>
 						<button id="scroll_up_btn" class="stats_scroll_btns button_1">
-							<span id="scroll_up_img" class="stats_scroll_btns">
+							<span id="scroll_up_img" class="stats_scroll_btns button_img">
 								<img src="arrow-dbl-up.png" class="psuedo_img"></img>
 							</span>
 						</button>
 					</div>
 					<div id=stats_scroll_cont>
 						<button id="scroll_down_btn" class="stats_scroll_btns button_1">
-							<span id="scroll_down_img" class="stats_scroll_btns">
+							<span id="scroll_down_img" class="stats_scroll_btns button_img">
 								<img src="arrow-dbl-down.png" class="psuedo_img"></img>
 							</span>
 						</button>
@@ -177,7 +177,7 @@
 				<div id=medals_btn_wrapper>
 					<div id=medals_btn_cont>
 						<button id="medals_btn" class="medals button_1" onclick="controller:medals_button_clicked()">
-							<span id="medals_img" class="medals">
+							<span id="medals_img" class="medals button_img">
 								<img src="medals.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
@@ -199,7 +199,7 @@
 					<div id=lr_arrows_cont_2>
 						<button id="squad_select_right_btn" class="arrow_right_btn lr_arrows button_1"
 								onclick="controller:next_squad_pressed(element)">
-							<span class="arrow_right_img lr_arrows">
+							<span class="arrow_right_img lr_arrows button_img">
 								<img src="arrow-right.png" class="psuedo_img"></img>
 							</span>
 						</button>
@@ -207,7 +207,7 @@
 					<div id=lr_arrows_cont_2>
 						<button id="squad_select_left_btn" class="arrow_left_btn lr_arrows button_1"
 								onclick="controller:prev_squad_pressed(element)">
-							<span class="arrow_left_img lr_arrows">
+							<span class="arrow_left_img lr_arrows button_img">
 								<img src="arrow-left.png" class="psuedo_img"></img>
 							</span>
 						</button>
@@ -227,7 +227,7 @@
 				<div id=a_panel_wrapper>
 					<div id=accept_cont>
 						<button id="accept_btn" class="accept button_1" onclick="controller:commit_pressed(element)">
-							<span id="accept_img" class="accept">
+							<span id="accept_img" class="accept button_img">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
@@ -242,7 +242,7 @@
 				<div id=b_panel_wrapper>
 					<div id=help_cont>
 						<button id="help_btn" class="help button_1" onclick="controller:help_clicked()">
-							<span id="help_img" class="help">
+							<span id="help_img" class="help button_img">
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
@@ -252,7 +252,7 @@
 					</div>
 					<div id=options_cont>
 						<button id="options_btn" class="options button_1" onclick="controller:options_button_clicked()">
-							<span id="options_img" class="options">
+							<span id="options_img" class="options button_img">
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">

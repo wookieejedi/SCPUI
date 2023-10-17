@@ -39,7 +39,7 @@
 				<div id=a_panel_wrapper>
 					<div id=accept_cont>
 						<button id="accept_btn" class="accept button_1" onclick="controller:accept_pressed(element)">
-							<span id="accept_img" class="accept">
+							<span id="accept_img" class="accept button_img">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
@@ -54,7 +54,7 @@
 				<div id=b_panel_wrapper>
 					<div id=decline_cont>
 						<button id="decline_btn" class="decline button_1" onclick="controller:deny_pressed(element)">
-							<span id="decline_img" class="decline">
+							<span id="decline_img" class="decline button_img">
 								<img src="decline.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
