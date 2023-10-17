@@ -45,6 +45,7 @@ local function initialize_buttons(document, properties, finish_func)
 				local button = document:GetElementById(button_id)
         button:SetClass(module.BUTTON_MAPPING[v.type], true)
 		button:SetClass("button_1", true)
+		button:SetClass("button_img", true)
         button:AddEventListener("click", function(_, _, _)
             if finish_func then finish_func(v.value) end
             document:Close()
