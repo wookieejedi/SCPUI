@@ -27,9 +27,6 @@ function LoadoutHandler:init()
 		self:backupLoadout()
 		self:getSavedLoadouts()
 		self:maybeApplySavedLoadout()
-		
-		--For BtA: Set the initial countermeasures
-		self:initCountermeasureSlots()
 	end
 end
 
@@ -957,126 +954,6 @@ function LoadoutHandler:EmptyWeaponBank(slot, bank, onlyEmpty)
 	end
 end
 
---For BtA: Init the countermeasure slots
-function LoadoutHandler:initCountermeasureSlots()
-	BtACustomLoadouts["countermeasures"] = {}
-	for i = 1, self:GetNumSlots() do
-		local ship = self:GetShipLoadout(i)
-		local cmType = ""
-		if ship.ShipClassIndex > 0 then
-			cmType = self:GetDefaultCountermeasure(ship.ShipClassIndex)
-		end
-		
-		BtACustomLoadouts["countermeasures"][i] = {ship.Name, cmType}
-	end
-end
-
---For BtA: Empty the countermeasure slot
-function LoadoutHandler:EmptyCountermeasureSlot(slot)
-	
-	if BtACustomLoadouts["countermeasures"] == nil then return end
-
-	local ship = self:GetShipLoadout(slot)
-	BtACustomLoadouts["countermeasures"][slot] = {ship.Name, ""}
-end
-
---For BtA: Get the default countermeasure type for the ship class
-function LoadoutHandler:GetDefaultCountermeasure(shipIdx)
-	return tb.ShipClasses[shipIdx].CountermeasureClass.Name
-end
-
---For BtA: Set the countermeasure slot to default
-function LoadoutHandler:SetDefaultCountermeasure(slot)
-	
-	if BtACustomLoadouts["countermeasures"] == nil then return end
-	
-	local ship = self:GetShipLoadout(slot)
-	local cmType = self:GetDefaultCountermeasure(ship.ShipClassIndex)
-	BtACustomLoadouts["countermeasures"][slot] = {ship.Name, cmType}
-end
-
---For BtA: Set the countermeasure slot
-function LoadoutHandler:SetCountermeasure(slot, cmType)
-
-	if BtACustomLoadouts["countermeasures"] == nil then return end
-
-	if self:isCountermeasureTypeValid(cmType) then
-		local ship = self:GetShipLoadout(slot)
-		BtACustomLoadouts["countermeasures"][slot] = {ship.Name, cmType}
-	else
-		ba.warning("Tried to set invalid countermeasure type " .. cmType .. "!")
-	end
-end
-
---For BtA: Get the countermeasure in the slot
-function LoadoutHandler:GetCountermeasure(slot)
-	local cm = BtACustomLoadouts["countermeasures"][slot]
-	return cm[2]
-end
-
---For BtA: Get the list of allowed countermeasures for a ship class
-function LoadoutHandler:GetAllowedCountermeasures(shipIdx)
-	local allowedCMs = {}
-	if tb.ShipClasses[shipIdx]:hasCustomData() then
-		local cm_string = tb.ShipClasses[shipIdx].CustomData["allowedCMs"]	
-		if cm_string ~= nil then
-			include("util.lua")
-			allowedCMs = split(cm_string, ",")
-		end
-	end
-	
-	return allowedCMs
-end
-
---For BtA: Return true if slot can have countermeasure type, false otherwise
-function LoadoutHandler:isCountermeasureAllowed(slot, cmType)
-	local ship = self:GetShipLoadout(slot)
-	
-	if cmType == self:GetDefaultCountermeasure(ship.ShipClassIndex) then
-		return true
-	end
-	
-	local allowedCMs = self:GetAllowedCountermeasures(ship.ShipClassIndex)
-	
-	if #allowedCMs <= 0 then
-		return false
-	end
-	
-	for j, v in pairs(allowedCMs) do
-		if cmType == v then
-			return true
-		end
-	end
-	
-	return false
-end
-
---For BtA: Get the list of valid countermeasure types
-function LoadoutHandler:GetCountermeasureList()
-	return BtACustomLoadouts["cm_types"]
-end
-
---For BtA: Get the number of valid countermeasure types
-function LoadoutHandler:GetNumCountermeasureTypes()
-	return #BtACustomLoadouts["cm_types"]
-end
-
---For BtA: Get the list of valid countermeasure types
-function LoadoutHandler:GetCountermeasureInfo(index)
-	return BtACustomLoadouts["cm_types"][index]
-end
-
-function LoadoutHandler:isCountermeasureTypeValid(cm)
-	for i = 1, self:GetNumCountermeasureTypes() do
-		local v = self:GetCountermeasureInfo(i)
-		if v == cm then
-			return true
-		end
-	end
-	
-	return false
-end
-
 function LoadoutHandler:SetFilled(slot, state)
 
 	ship = self:GetShipLoadout(slot)
@@ -1091,9 +968,6 @@ function LoadoutHandler:TakeShipFromSlot(slot)
 	ScpuiSystem.loadouts.slots[slot].Weapons = {}
 	ScpuiSystem.loadouts.slots[slot].Amounts = {}
 	self:SetFilled(slot, false)
-	
-	--For BtA: Empty the countermeasure slot
-	self:EmptyCountermeasureSlot(slot)
 
 end
 
@@ -1101,9 +975,6 @@ function LoadoutHandler:AddShipToSlot(slot, shipIdx)
 
 	ScpuiSystem.loadouts.slots[slot].ShipClassIndex = shipIdx
 	self:SetDefaultWeapons(slot, shipIdx)
-	
-	--For BtA: Set the countermeasure slot to default
-	self:SetDefaultCountermeasure(slot)
 
 end
 
@@ -1128,9 +999,6 @@ function LoadoutHandler:ReturnShipToPool(slot)
 	--Return the ship
 	local amount = self:GetShipPoolAmount(ship.ShipClassIndex)
 	ScpuiSystem.loadouts.shipPool[ship.ShipClassIndex] = amount + 1
-	
-	--For BtA: Empty the countermeasure slot
-	self:EmptyCountermeasureSlot(slot)
 
 end
 
@@ -1232,14 +1100,7 @@ function LoadoutHandler:CopyToWing(sourceSlot)
 								self:AddWeaponToBank(j, i, weapon)
 							end
 						end
-					end
-					
-					--For BtA: Copy the countermeasure slot if possible
-					local sourceCM = self:GetCountermeasure(sourceSlot)
-					if self:isCountermeasureAllowed(slots[j], sourceCM) then
-						self:SetCountermeasure(slots[j], sourceCM)
-					end
-					
+					end					
 				end
 			end
 		end
@@ -1358,29 +1219,12 @@ function LoadoutHandler:saveLoadoutsToFile(data)
 	end
 	
 	config[ba.getCurrentPlayer():getName()][mod] = data
-	
-	config = self:cleanPilotsFromSaveData(config)
+	local utils = require("utils")
+	config = utils.cleanPilotsFromSaveData(config)
   
 	file = cf.openFile('scpui_loadouts.cfg', 'w', location)
 	file:write(json.encode(config))
 	file:close()
-end
-
-function LoadoutHandler:cleanPilotsFromSaveData(data)
-	
-	--get the pilots list
-	local pilots = ui.PilotSelect.enumeratePilots()
-	
-	local cleanData = {}
-	
-	-- for each existing pilot, keep the data
-	for _, v in ipairs(pilots) do
-		if data[v] ~= nil then
-			cleanData[v] = data[v]
-		end
-    end
-
-	return cleanData
 end
 
 function LoadoutHandler:getMissionKey()

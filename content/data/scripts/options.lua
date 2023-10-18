@@ -9,7 +9,7 @@ local class    = require("class")
 
 local async_util = require("async_util")
 
-local customValues = {}
+local customValues = ScpuiOptionValues
 local customOptions = {}
 local detailOptions = {}
 local modCustom = true

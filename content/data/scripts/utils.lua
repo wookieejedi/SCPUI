@@ -2,6 +2,79 @@ local utils = {}
 
 utils.table = {}
 
+--Parses an XSTR from Custom data if it's formated like so:
+-- +Val: NAME "string", #
+--and returns the string and id in a table
+function utils.parseCustomXSTR(text)
+
+	local inputString = text
+	local result = {}
+
+	-- Remove the leading and trailing parentheses
+	text = string.gsub(text, "^%(", "")
+	text = string.gsub(text, "%)$", "")
+
+	-- Extract the values inside quotation marks
+	local quotedValue = string.match(inputString, '"([^"]+)"')
+
+	-- Extract the number after the comma
+	local numberValue = tonumber(string.match(inputString, ',%s*(-?%d+)'))
+	
+	if not quotedValue then
+		ba.warning("Could not find the string in the xstr '" .. inputString .. "'. Expected it to be contained within quotation marks.")
+		quotedValue = ""
+	end
+	
+	if not numberValue then
+		ba.warning("Could not find the number in the xstr '" .. inputString .. "'. Expected it to be a valid number after a comma.")
+		numberValue = -1
+	end
+
+	table.insert(result, quotedValue)
+	table.insert(result, numberValue)
+
+	return result
+
+end
+
+--A wrapper for mn.runSEXP that is not fucking stupid.
+function utils.runSEXP(sexp, ...)
+
+	local sexp = sexp
+	local warned = false
+  
+	for _, data in ipairs(arg) do
+  
+		if data ~= nil and data ~= "" then
+			local param = ""
+	
+			if type(data) == "boolean" then
+				param = "( " .. tostring(data) .. " )"
+			elseif type(data) == "number" then
+				param = math.floor(data)
+			elseif type(data) == "string" then
+				param = "!" .. data .. "!"
+			end
+		  
+			if param ~= "" then
+				sexp = sexp .. " " .. param
+			else
+				ba.warning("Util runSEXP() got parameter '" .. tostring(data) .. "' which is not a valid data type! Must be boolean, number, or string.")
+				warned = true
+			end
+	  
+		end
+	
+	end
+  
+	if not warned then
+		return mn.runSEXP("( " .. sexp .. " )")
+	end
+  
+	return false
+  
+end
+
 function utils.cleanPilotsFromSaveData(data)
 	
 	--get the pilots list
@@ -69,6 +142,18 @@ function utils.isOneOf(val, ...)
     return false
 end
 
+function utils.extractString(inputstr, stop)
+	local startIndex, endIndex = string.find(inputstr, stop)
+    
+    -- Check if an underscore was found
+    if startIndex then
+        -- Extract the substring from the start to the first underscore
+        return string.sub(inputstr, 1, startIndex - 1)
+    else
+		return inputstr
+	end
+end
+
 function utils.split(inputstr, sep)
     if sep == nil then
         sep = "%s"
@@ -93,7 +178,7 @@ end
 
 function utils.xstr(message)
   if type(message) == 'string' then
-    ba.print('SCPUI: Got string with missing XSTR index: ' .. message .. "\n")
+    ba.print('Utils.lua: Got string with missing XSTR index: ' .. message .. "\n")
     return message
   else
     return ba.XSTR(message[1], message[2])
@@ -107,8 +192,46 @@ function utils.copy(obj, seen)
   local s = seen or {}
   local res = setmetatable({}, getmetatable(obj))
   s[obj] = res
-  for k, v in pairs(obj) do res[copy(k, s)] = copy(v, s) end
+  for k, v in pairs(obj) do res[utils.copy(k, s)] = utils.copy(v, s) end
   return res
+end
+
+function utils.safeRand(min, max, exact)
+    if (min == nil and max ~= nil) then
+        return max
+    elseif (max == nil and min ~= nil) then
+        return min
+    elseif (min == nil and max == nil) then
+        return 0
+    end
+
+    if (min == max) then
+        return min
+    end
+
+    if (exact) then
+        if (min > max) then
+            return math.random(max, min)
+        else
+            return math.random(min, max)
+        end
+    else
+        if (min > max) then
+            return max + (min - max) * math.random()
+        else
+            return min + (max - min) * math.random()
+        end
+    end
+end
+
+function utils.tableLength(T)
+	local count = 0
+	for _ in pairs(T) do count = count + 1 end
+	return count
+end
+
+function utils.trim(str)
+	return str:find'^%s*$' and '' or str:match'^%s*(.*%S)'
 end
 
 --- find_first

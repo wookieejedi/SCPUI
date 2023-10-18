@@ -47,15 +47,10 @@ function TechMissionsController:initialize(document)
 		
 		--Check for last loaded section
 		local newSection = nil
-		if ScpuiSystem.missionSection ~= nil then
-			newSection = ScpuiSystem.missionSection
+		if ScpuiOptionValues.simRoomChoice ~= nil then
+			newSection = ScpuiOptionValues.simRoomChoice
 		else
-			local uidata = ScpuiOptionValues.simRoomChoice
-			if uidata == nil then
-				newSection = 2
-			else
-				newSection = uidata
-			end
+			newSection = 2
 		end
 		
 		self.SelectedSection = nil
@@ -117,17 +112,14 @@ end
 function TechMissionsController:ChangeSection(section)
 
 	self.sectionIndex = section
-	ScpuiSystem.missionSection = section
 
 	if section == 1 then 
 		section = "single"
 	elseif section == 2 then
 		section = "campaign"
 	else
-		ba.warning("SCPUI got command to load unknown mission types section!")
-		section = "single"
-		self.sectionIndex = 1
-		ScpuiSystem.missionSection = 1
+		section = "campaign"
+		self.sectionIndex = 2
 	end
 	
 	--save the choice to the player file
