@@ -32,6 +32,11 @@ selectvalue
 	color: #6f92f5;
 }
 
+/*Make sure these are reset to white to not make images appear faded*/
+selectarrow, slidertrack, sliderbar, sliderarrowdec, sliderarrowinc
+{
+	color: white;
+}
 
 .window_title
 {
