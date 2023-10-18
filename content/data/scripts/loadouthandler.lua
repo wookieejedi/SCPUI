@@ -89,12 +89,6 @@ function LoadoutHandler:saveCurrentLoadout()
 end
 
 function LoadoutHandler:maybeApplySavedLoadout()
-
-	--For BtA: If backstock has updated then we must not load saved loadouts!
-	if backstock.updated == true and mn.isInCampaign() then
-		backstock.updated = nil
-		return
-	end
 	
 	local key = self:getMissionKey()
 	
@@ -120,11 +114,6 @@ function LoadoutHandler:getLoadout()
 end
 
 function LoadoutHandler:cleanLoadoutShips()
-	--For BtA: Check Inventory availability of all the ships
-	if mn.isInCampaign() and string.sub(mn.getMissionFilename(), 1, 4) == "bta2" then
-		self:applyInventoryLimits()
-	end
-	
 	--FSO must have internal code to remove ships in wings from the pool
 	--so let's do that manually here
 	for i = 1, #ScpuiSystem.loadouts.slots do
@@ -132,147 +121,6 @@ function LoadoutHandler:cleanLoadoutShips()
 			self:TakeShipFromPool(ScpuiSystem.loadouts.slots[i].ShipClassIndex)
 		end
 	end
-end
-
---For BtA: Here we apply limits set by the Inventory system in BtA2
-function LoadoutHandler:applyInventoryLimits()
-
-	--Make a copy of Inventory temporarily so we can decrement ship availability
-	--as we go without messing with the actual Inventory data
-	local utils = require("utils")
-	local inventory = utils.copy(backstock.current.ships)
-	local priorities = self:getPriorityList()
-	
-	if inventory == nil then
-		ba.error("Inventory list is invalid in loadout handler!")
-	end
-	
-	if priorities == nil then
-		ba.error("Priority list is invalid in loadout handler!")
-	end
-
-	for i=1, self:GetNumSlots() do
-		local ship = self:GetShipLoadout(i)
-		
-		local wing = string.lower(ship.WingName)
-		
-		--Only apply Inventory limits to Alpha, Beta, and Gamma wings
-		if wing == "alpha" or wing == "beta" or wing == "gamma" then
-
-			for _, v in pairs(inventory) do
-				if v.name == tb.ShipClasses[ship.ShipClassIndex].Name then
-
-					--We have this ship available, so decrement and continue
-					if v.remaining > 0 then
-						v.remaining = v.remaining - 1
-					else --We ran out of this ship class. Now find a new one!
-						v.remaining = 0
-						local p_type = self:getShipPriority(v.name, priorities)
-						local newShipClass = self:getNextShipFromInventory(inventory, p_type, priorities)
-						if newShipClass then
-							self:AddShipToSlot(i, newShipClass)
-						else
-							self:TakeShipFromSlot(i)
-						end
-						
-					end
-					
-					break
-					
-				end
-			end
-			
-		end
-	end
-	
-end
-
---For BtA: Find the next available ship. This will be updated with a better
---version soon (tm)
-function LoadoutHandler:getNextShipFromInventory(inventory, p_type, priorities)
-	
-	if p_type == nil then
-		ba.warning("Current ship does not have a priority type! Using next available ship in Inventory!")
-		
-		for i, v in pairs(inventory) do
-			if v.remaining > 0 then
-				v.remaining = v.remaining - 1
-				local idx = tb.ShipClasses[v.name]:getShipClassIndex()
-				
-				return idx
-			end
-		end
-	else
-		for i = 1, #priorities do
-		
-			for _, n in ipairs(priorities[p_type]) do
-				for _, v in pairs(inventory) do
-					if v.name == n then
-						if v.remaining > 0 then
-							local idx = tb.ShipClasses[v.name]:getShipClassIndex()
-							--Make sure this ship is allowed in this mission's loadout as well
-							if self:GetShipInfo(idx) ~= nil then
-								v.remaining = v.remaining - 1
-								return idx
-							end
-						end
-					end
-				end
-			end
-			
-			p_type = p_type + 1
-			
-			if p_type > #priorities then
-				p_type = 1
-			end
-			
-		end
-	end
-
-end
-
---For BtA: Get a ship's priority type
-function LoadoutHandler:getShipPriority(shipName, priorities)
-	for i, _ in ipairs(priorities) do
-		for _, v in ipairs(priorities[i]) do
-			if v == shipName then
-				return i
-			end
-		end
-	end
-	
-	return nil
-end
-
---For BtA: Load the ship_priority.cfg data
-function LoadoutHandler:getPriorityList()
-	local json = require('dkjson')
-	
-	--Loadouts are explicitely not saved across mod versions
-	local location = 'data/config'
-  
-	local file = nil
-	local config = {}
-  
-	if cf.fileExists('ship_priority.cfg') then
-		file = cf.openFile('ship_priority.cfg', 'r', location)
-		config = json.decode(file:read('*a'))
-		file:close()
-		if not config then
-			config = {}
-		end
-	end
-	
-	--Validate the list
-	for i, _ in ipairs(config) do
-		for _, v in ipairs(config[i]) do
-			if not tb.ShipClasses[v]:isValid() then
-				ba.warning("Ship '" .. v .. "' is not a valid ship!")
-			end
-		end
-	end
-  
-	return config
 end
 
 function LoadoutHandler:getPool(pool)
