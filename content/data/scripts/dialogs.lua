@@ -140,7 +140,7 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
     dialog_doc:Show(DocumentFocus.FOCUS) -- MODAL would be better than FOCUS but then the debugger cannot be used anymore
 	
 	if ScpuiSystem.dialog ~= nil then
-		ba.warning("SCPUI got command to close a dialog while creating a dialog! This is unusual!")
+		ba.print("SCPUI got command to close a dialog while creating a dialog! This is unusual!\n")
 		ScpuiSystem:CloseDialog()
 	end
 	
