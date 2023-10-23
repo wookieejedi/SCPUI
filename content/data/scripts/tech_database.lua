@@ -464,7 +464,7 @@ function TechDatabaseController:global_keydown(element, event)
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
     elseif event.parameters.key_identifier == rocket.key_identifier.S and event.parameters.ctrl_key == 1 and event.parameters.shift_key == 1 then
-		self.show_all  = not self.show_all
+		self.show_all = not self.show_all
 		self:ReloadList()
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.ctrl_key == 1 then
 		self:ChangeTechState(4)

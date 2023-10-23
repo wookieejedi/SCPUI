@@ -6,6 +6,7 @@ local AbstractBriefingController = require("briefingCommon")
 local CommandBriefingController = class(AbstractBriefingController)
 
 function CommandBriefingController:init()
+	ScpuiSystem:maybePlayCutscene(MOVIE_PRE_CMD_BRIEF)
     --- @type cmd_briefing_stage[]
     self.stages = {}
 

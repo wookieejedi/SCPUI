@@ -340,13 +340,13 @@ function DebriefingController:ClearText()
 end
 
 function DebriefingController:startMusic()
-	local filename = ui.Debriefing.getDebriefingMusicName()
-	
-	ScpuiSystem.debrief_music = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
-	async.run(function()
-		async.await(async_util.wait_for(2.5))
-		ScpuiSystem.debrief_music:play(ad.MasterEventMusicVolume, true, 0)
-	end, async.OnFrameExecutor)
+    local filename = ui.Debriefing.getDebriefingMusicName()
+    
+    ScpuiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+    async.run(function()
+        async.await(async_util.wait_for(2.5))
+        ScpuiSystem.music_handle:play(ad.MasterEventMusicVolume, true, 0)
+    end, async.OnFrameExecutor)
 end
 
 function DebriefingController:Show(text, title, buttons)
@@ -669,9 +669,9 @@ function DebriefingController:global_keydown(_, event)
 end
 
 function DebriefingController:close()
-	if ScpuiSystem.debrief_music ~= nil and ScpuiSystem.debrief_music:isValid() then
-        ScpuiSystem.debrief_music:close(false)
-		ScpuiSystem.debrief_music = nil
+    if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+        ScpuiSystem.music_handle:close(false)
+        ScpuiSystem.music_handle = nil
     end
 	ScpuiSystem.debriefInit = false
 end

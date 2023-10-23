@@ -17,8 +17,7 @@ function HotkeyController:initialize(document)
 	self.document:GetElementById("current_key"):SetClass(("h2-" .. ScpuiSystem:getFontSize()), true)
 	
 	if mn.isInMission() then
-		ad.pauseMusic(-1, true)
-		ad.pauseWeaponSounds(true)
+		ScpuiSystem:pauseAllAudio(true)
 	end
 	
 	ui.MissionHotkeys.initHotkeysList()
@@ -310,9 +309,7 @@ function HotkeyController:Exit(element)
 
     ui.playElementSound(element, "click", "success")
 	if mn.isInMission() then
-		ad.pauseMusic(-1, false)
-		ad.pauseWeaponSounds(false)
-		ui.PauseScreen.closePause()
+		ScpuiSystem:pauseAllAudio(false)
 	end
 	ui.MissionHotkeys.saveHotkeys()
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
@@ -323,9 +320,7 @@ function HotkeyController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
 		if mn.isInMission() then
-			ad.pauseMusic(-1, false)
-			ad.pauseWeaponSounds(false)
-			ui.PauseScreen.closePause()
+			ScpuiSystem:pauseAllAudio(false)
 		end
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
     elseif event.parameters.key_identifier == rocket.key_identifier.F5 then

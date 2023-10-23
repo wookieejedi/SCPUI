@@ -7,6 +7,8 @@ ScpuiSystem = {
     replacements = {},
 	backgrounds = {},
 	briefBackgrounds = {},
+	preloadCoroutines = {},
+	Sounds = {},
 	substate = "none",
 	cutscene = "none",
 	debriefInit = false,
@@ -14,7 +16,6 @@ ScpuiSystem = {
 	shipSelectInit = false,
 	music_handle = nil,
 	current_played = nil,
-	debrief_music = nil,
 	initIcons = nil,
 	logSection = 1,
 	render = true,
@@ -124,6 +125,65 @@ function ScpuiSystem:parseTable(data)
 	parse.requiredString("#End")
 
 	parse.stop()
+end
+
+function ScpuiSystem:pauseScriptedSounds(toggle)
+	if toggle == true then
+		for i, v in pairs(ScpuiSystem.Sounds) do
+			--v.handle:pause()
+		end
+	else
+		for i, v in pairs(ScpuiSystem.Sounds) do
+			--v.handle:resume()
+		end
+	end
+end
+
+function ScpuiSystem:updateVolumes(voice)
+	for i, v in pairs(ScpuiSystem.Sounds) do
+		if v.voice == voice then
+			--v.handle:setVolume(1.0, voice)
+		end
+	end
+end
+
+function ScpuiSystem:pauseAllAudio(toggle)
+	ad.pauseMusic(-1, toggle)
+	ad.pauseWeaponSounds(toggle)
+	--ad.pauseVoiceMessages(toggle)
+	self:pauseScriptedSounds(toggle)
+end
+
+function ScpuiSystem:getAbsoluteLeft(element)
+	local val = element.offset_left
+	local parent = element.parent_node
+	while parent ~= nil do
+		val = val + parent.offset_left
+		parent = parent.parent_node
+	end
+	
+	return val
+end
+
+function ScpuiSystem:getAbsoluteTop(element)
+	local val = element.offset_top
+	local parent = element.parent_node
+	while parent ~= nil do
+		val = val + parent.offset_top
+		parent = parent.parent_node
+	end
+	
+	return val
+end
+
+function ScpuiSystem:maybePlayCutscene(scene)
+	if self.music_handle ~= nil then
+		self.music_handle:pause()
+	end
+	ui.maybePlayCutscene(scene, true, 0)
+	if self.music_handle ~= nil then
+		self.music_handle:unpause()
+	end
 end
 
 function ScpuiSystem:getDef(state)
@@ -344,6 +404,27 @@ function ScpuiSystem:dialogEnd()
 	end
 	
 	self:CloseDialog()
+end
+
+function ScpuiSystem:addPreload(message, text, run, val)
+	if self.preloadCoroutines == nil then
+		self.preloadCoroutines = {}
+	end
+	
+	local num = #self.preloadCoroutines + 1
+	
+	if val > 1 then
+		val = 2
+	else
+		val = 1
+	end
+	
+	self.preloadCoroutines[num] = {
+		debugMessage = message,
+		debugString = text,
+		func = run,
+		priority = val
+	}
 end
 
 function ScpuiSystem:getFontSize(val)

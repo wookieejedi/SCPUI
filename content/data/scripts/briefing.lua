@@ -10,6 +10,7 @@ local BriefingController = class(AbstractBriefingController)
 ScpuiSystem.drawBrMap = nil
 
 function BriefingController:init()
+	ScpuiSystem:maybePlayCutscene(MOVIE_PRE_BRIEF)
     --- @type briefing_stage[]
     self.stages = {}
 	
@@ -40,32 +41,13 @@ end
 function BriefingController:initialize(document)
     AbstractBriefingController.initialize(self, document)
 	
-	ui.maybePlayCutscene(MOVIE_PRE_BRIEF, true, 0)
 	self.Commit = false
 	self.requiredWeps = {}
 	
 	---Load background choice
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
-	--Default width is 888, default height is 371
-	
-	briefView = self.document:GetElementById("briefing_grid")
-						
-	local viewLeft = briefView.offset_left + briefView.parent_node.offset_left + briefView.parent_node.parent_node.offset_left
-	local viewTop = briefView.offset_top + briefView.parent_node.offset_top + briefView.parent_node.parent_node.offset_top
-	
-	--The grid needs to be a very specific aspect ratio, so we'll calculate
-	--the percent change here and use that to calculate the height below.
-	local percentChange = ((briefView.offset_width - 888) / 888) * 100
-	
-	ScpuiSystem.drawBrMap.x1 = viewLeft
-	ScpuiSystem.drawBrMap.y1 = viewTop
-	ScpuiSystem.drawBrMap.x2 = briefView.offset_width
-	ScpuiSystem.drawBrMap.y2 = self:calcPercent(371, (100 + percentChange))
-	
 	ui.Briefing.initBriefing()
-
-	--ui.Briefing.startBriefingMap(ScpuiSystem.drawBrMap.x1, ScpuiSystem.drawBrMap.y1, ScpuiSystem.drawBrMap.x2, ScpuiSystem.drawBrMap.y2)
 	
 	if mn.hasNoBriefing() then
 		self.Commit = true
@@ -148,6 +130,19 @@ function BriefingController:initialize(document)
 	end
 	
 	self.document:GetElementById("brief_btn"):SetPseudoClass("checked", true)
+	
+	--Default width is 888, default height is 371
+	
+	local briefView = self.document:GetElementById("briefing_grid")
+	
+	--The grid needs to be a very specific aspect ratio, so we'll calculate
+	--the percent change here and use that to calculate the height below.
+	local percentChange = ((briefView.offset_width - 888) / 888) * 100
+	
+	ScpuiSystem.drawBrMap.x1 = ScpuiSystem:getAbsoluteLeft(briefView)
+	ScpuiSystem.drawBrMap.y1 = ScpuiSystem:getAbsoluteTop(briefView)
+	ScpuiSystem.drawBrMap.x2 = briefView.offset_width
+	ScpuiSystem.drawBrMap.y2 = self:calcPercent(371, (100 + percentChange))
 	
 	self:buildGoals()
 	
@@ -277,6 +272,10 @@ function BriefingController:CutToStage()
 end
 
 function BriefingController:drawMap()
+
+	if ScpuiSystem.drawBrMap == nil then
+		return
+	end
 	
 	--Testing icon ship rendering stuff
 	ScpuiSystem.drawBrMap.modelRot = ScpuiSystem.drawBrMap.modelRot + (7 * ba.getRealFrametime())

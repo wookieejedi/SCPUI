@@ -16,8 +16,7 @@ function GamehelpController:initialize(document)
 	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	
 	if mn.isInMission() then
-		ad.pauseMusic(-1, true)
-		ad.pauseWeaponSounds(true)
+		ScpuiSystem:pauseAllAudio(true)
 	end
 	
 	ui.GameHelp.initGameHelp()
@@ -113,9 +112,7 @@ function GamehelpController:Exit(element)
 
     ui.playElementSound(element, "click", "success")
 	if mn.isInMission() then
-		ad.pauseMusic(-1, false)
-		ad.pauseWeaponSounds(false)
-		ui.PauseScreen.closePause()
+		ScpuiSystem:pauseAllAudio(false)
 	end
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
 
@@ -125,9 +122,7 @@ function GamehelpController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
 		if mn.isInMission() then
-			ad.pauseMusic(-1, false)
-			ad.pauseWeaponSounds(false)
-			ui.PauseScreen.closePause()
+			ScpuiSystem:pauseAllAudio(false)
 		end
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
     end

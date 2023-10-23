@@ -8,12 +8,11 @@ local AbstractBriefingController = require("briefingCommon")
 local FictionViewerController = class(AbstractBriefingController)
 
 function FictionViewerController:init()
+	ScpuiSystem:maybePlayCutscene(MOVIE_PRE_FICTION)
 end
 
 function FictionViewerController:initialize(document)
 	AbstractBriefingController.initialize(self, document)
-	
-	ui.maybePlayCutscene(MOVIE_PRE_FICTION, true, 0)
 	
 	---Load background choice
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)

@@ -141,8 +141,7 @@ function OptionsController:init()
     self.option_backup    = {}
 	
 	if mn.isInMission() then
-		ad.pauseMusic(-1, true)
-		ad.pauseWeaponSounds(true)
+		ScpuiSystem:pauseAllAudio(true)
 	end
 	
 end
@@ -880,6 +879,7 @@ function OptionsController:initialize_basic_options()
                 no_background  = true
             }, function(_)
                 option:persistChanges()
+				ScpuiSystem:updateVolumes(false)
             end)
         elseif key == "Audio.Music" then
             self.option_backup[option] = option.Value
@@ -899,6 +899,7 @@ function OptionsController:initialize_basic_options()
             }, function(_)
                 option:persistChanges()
                 ui.OptionsMenu.playVoiceClip()
+				ScpuiSystem:updateVolumes(true)
             end)
         elseif key == "Game.SkillLevel" then
             opt_el = self:createFivePointRangeElement(option, "skill_level_container")
@@ -1133,8 +1134,7 @@ function OptionsController:acceptChanges(state)
     if #unchanged <= 0 then
         -- All options were applied
 		if mn.isInMission() then
-			ad.pauseMusic(-1, false)
-			ad.pauseWeaponSounds(false)
+			ScpuiSystem:pauseAllAudio(false)
 		end
         ba.postGameEvent(ba.GameEvents[state])
         return
@@ -1160,8 +1160,7 @@ function OptionsController:acceptChanges(state)
         if val then
 			
 			if mn.isInMission() then
-				ad.pauseMusic(-1, false)
-				ad.pauseWeaponSounds(false)
+				ScpuiSystem:pauseAllAudio(false)
 			end
 		
             ba.postGameEvent(ba.GameEvents[state])
@@ -1681,8 +1680,7 @@ function OptionsController:global_keydown(element, event)
         self:discardChanges()
 		
 		if mn.isInMission() then
-			ad.pauseMusic(-1, false)
-			ad.pauseWeaponSounds(false)
+			ScpuiSystem:pauseAllAudio(false)
 		end
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])

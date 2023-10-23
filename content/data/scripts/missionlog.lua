@@ -16,8 +16,7 @@ function MissionlogController:initialize(document)
 	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	
 	if mn.isInMission() then
-		ad.pauseMusic(-1, true)
-		ad.pauseWeaponSounds(true)
+		ScpuiSystem:pauseAllAudio(true)
 	end
 	
 	local mTime = mn.getMissionTime()
@@ -359,8 +358,7 @@ function MissionlogController:Exit(element)
 
     ui.playElementSound(element, "click", "success")
 	if mn.isInMission() then
-		ad.pauseMusic(-1, false)
-		ad.pauseWeaponSounds(false)
+		ScpuiSystem:pauseAllAudio(false)
 		ui.PauseScreen.closePause()
 	end
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
@@ -371,8 +369,7 @@ function MissionlogController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
 		if mn.isInMission() then
-			ad.pauseMusic(-1, false)
-			ad.pauseWeaponSounds(false)
+			ScpuiSystem:pauseAllAudio(false)
 			ui.PauseScreen.closePause()
 		end
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
