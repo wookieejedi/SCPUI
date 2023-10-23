@@ -177,7 +177,7 @@
 						<span class="tooltiptext">XSTR("Click here to change briefing stages", -1)</span>
 					</div>
 				</div>
-				<img src="brief-main-window-bta.png"></img>
+				<img src="brief-main-window.png"></img>
 			</div>
 			<div id=brief_text_window>
 				<div id=brief_text_wrapper>
