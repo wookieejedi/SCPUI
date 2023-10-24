@@ -1,0 +1,20 @@
+--------------------------------------------------------------------
+XSTR("SCPUI", -1)
+--------------------------------------------------------------------
+
+XSTR("This mod is released under the following license", -1)
+XSTR("Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International", -1)
+XSTR("A copy of this license may be found in data\tables", -1)
+XSTR("or at creativecommons.org/licenses/by-nc-sa/4.0/", -1)
+
+XSTR("You are free to copy and redistribute this mod in any medium or format", -1)
+XSTR("You must give appropriate credit when using this mod", -1)
+XSTR("Derivative works of this mod must be released under the same license", -1)
+XSTR("You must obtain permission to use this work for commercial purposes", -1)
+
+XSTR("Primary Coders", -1)
+XSTR("Mike "MjnMixael" Nelson", -1)
+XSTR("m!m", -1)
+XSTR("Naomi Coffman", -1)
+
+#end
