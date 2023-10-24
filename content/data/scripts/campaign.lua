@@ -1,5 +1,6 @@
 local dialogs = require("dialogs")
 local class = require("class")
+local topics = require("ui_topics")
 
 local CampaignController = class()
 
@@ -35,6 +36,8 @@ function CampaignController:initialize(document)
             selectedCampaign = v
         end
     end
+	
+	topics.campaign.initialize:send(self)
 
     self:init_campaign_list()
 

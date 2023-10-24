@@ -3,6 +3,7 @@ local class = require("class")
 local async_util = require("async_util")
 local utils = require("utils")
 local async_util = require("async_util")
+local topics = require("ui_topics")
 
 local TechMissionsController = class()
 
@@ -21,7 +22,14 @@ function TechMissionsController:initialize(document)
 	---Load background choice
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
+	self.document:GetElementById("tech_btn_1"):SetPseudoClass("checked", false)
+	self.document:GetElementById("tech_btn_2"):SetPseudoClass("checked", true)
+	self.document:GetElementById("tech_btn_3"):SetPseudoClass("checked", false)
+	self.document:GetElementById("tech_btn_4"):SetPseudoClass("checked", false)
 	
+	topics.techroom.initialize:send(self)
+	
+	topics.simulator.initialize:send(self)
 
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
@@ -37,11 +45,6 @@ function TechMissionsController:initialize(document)
 		
 		self.document:GetElementById("campaign_title").inner_rml = self.campaignName
 		self.document:GetElementById("campaign_file").inner_rml = self.campaignFilename
-		
-		self.document:GetElementById("data_btn"):SetPseudoClass("checked", false)
-		self.document:GetElementById("mission_btn"):SetPseudoClass("checked", true)
-		self.document:GetElementById("cutscene_btn"):SetPseudoClass("checked", false)
-		self.document:GetElementById("credits_btn"):SetPseudoClass("checked", false)
 		
 		self.SelectedEntry = nil
 		
@@ -79,17 +82,17 @@ end
 function TechMissionsController:ChangeTechState(state)
 
 	if state == 1 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_TECH_MENU"])
+		topics.techroom.btn1Action:send()
 	end
 	if state == 2 then
 		--This is where we are already, so don't do anything
-		--ba.postGameEvent(ba.GameEvents["GS_EVENT_SIMULATOR_ROOM"])
+		--topics.techroom.btn2Action:send()
 	end
 	if state == 3 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"])
+		topics.techroom.btn3Action:send()
 	end
 	if state == 4 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_CREDITS"])
+		topics.techroom.btn4Action:send()
 	end
 	
 end
@@ -118,8 +121,12 @@ function TechMissionsController:ChangeSection(section)
 	elseif section == 2 then
 		section = "campaign"
 	else
-		section = "campaign"
-		self.sectionIndex = 2
+		section = topics.simulator.sectionname:send(section)
+		
+		if section == nil then
+			section = "campaign"
+			self.sectionIndex = 2
+		end
 	end
 	
 	--save the choice to the player file
@@ -138,30 +145,39 @@ function TechMissionsController:ChangeSection(section)
 			self.document:GetElementById("campaign_name_wrapper"):SetClass("hidden", true)
 			missionList = ui.TechRoom.SingleMissions
 			local i = 0
+			local j = 1
 			while (i ~= #missionList) do
-				self.currentList[i+1] = {
-					Name = missionList[i].Name,
-					Filename = missionList[i].Filename,
-					Description = missionList[i].Description,
-					Author = missionList[i].Author,
-					isVisible = true
-				}
+				local file = missionList[i].Filename
+				if topics.simulator.listSingle:send(file) == true then
+					self.currentList[j] = {
+						Name = missionList[i].Name,
+						Filename = missionList[i].Filename,
+						Description = missionList[i].Description:gsub("\n", ""),
+						Author = missionList[i].Author,
+						isVisible = true
+					}
+					j = j + 1
+				end
 				i = i + 1
 			end
 		elseif section == "campaign" then
 			self.document:GetElementById("campaign_name_wrapper"):SetClass("hidden", false)
 			missionList = ui.TechRoom.CampaignMissions
 			local i = 0
+			local j = 1
 			while (i ~= #missionList) do
-				self.currentList[i+1] = {
+				self.currentList[j] = {
 					Name = missionList[i].Name,
 					Filename = missionList[i].Filename,
-					Description = missionList[i].Description,
+					Description = missionList[i].Description:gsub("\n", ""),
 					Author = missionList[i].Author,
 					isVisible = missionList[i].isVisible
 				}
+				j = j + 1
 				i = i + 1
 			end
+		else
+			topics.simulator.newsection:send({self, section})
 		end
 		
 		if self.SelectedEntry then
@@ -252,8 +268,28 @@ function TechMissionsController:CreateEntryItem(entry, index)
 	self.Counter = self.Counter + 1
 
 	local li_el = self.document:CreateElement("li")
-
-	li_el.inner_rml = "<div class=\"missionlist_name\">" .. entry.Name .. "</div><div class=\"missionlist_author\">" .. entry.Author .. "</div><div class=\"missionlist_filename\">" .. entry.Filename .. "</div><div class=\"missionlist_description\">" .. entry.Description .. "</div>"
+	
+	local name_el = self.document:CreateElement("div")
+	name_el:SetClass("missionlist_name", true)
+	name_el.inner_rml = entry.Name
+	
+	local author_el = self.document:CreateElement("div")
+	author_el:SetClass("missionlist_author", true)
+	author_el.inner_rml = entry.Author
+	
+	local file_el = self.document:CreateElement("div")
+	file_el:SetClass("missionlist_filename", true)
+	file_el.inner_rml = entry.Filename
+	
+	local desc_el = self.document:CreateElement("div")
+	desc_el:SetClass("missionlist_description", true)
+	desc_el.inner_rml = entry.Description
+	
+	li_el:AppendChild(name_el)
+	li_el:AppendChild(author_el)
+	li_el:AppendChild(file_el)
+	li_el:AppendChild(desc_el)
+	
 	li_el.id = entry.Filename
 
 	li_el:SetClass("missionlist_element", true)
@@ -271,6 +307,8 @@ function TechMissionsController:CreateEntryItem(entry, index)
 	entry.key = li_el.id
 	
 	self.visibleList[self.Counter].Index = self.Counter
+	
+	topics.simulator.createitem:send(li_el)
 
 	return li_el
 end
@@ -282,7 +320,7 @@ function TechMissionsController:CreateEntries(list)
 	self:ClearEntries(list_names_el)
 
 	for i, v in pairs(list) do
-		if self.show_all then
+		if self.show_all and topics.simulator.allowall:send(self) then
 			list_names_el:AppendChild(self:CreateEntryItem(v, i))
 		elseif v.isVisible == true then
 			list_names_el:AppendChild(self:CreateEntryItem(v, i))
@@ -332,7 +370,7 @@ end
 
 function TechMissionsController:GetCampaign()
 
-	ui.CampaignMenu.loadCampaignList();
+	ui.CampaignMenu.loadCampaignList()
 
     local names, fileNames, descriptions = ui.CampaignMenu.getCampaignList()
 
@@ -346,7 +384,7 @@ function TechMissionsController:GetCampaign()
         self.descriptions[v] = descriptions[i]
         self.fileNames[v] = fileNames[i]
 
-        if fileNames[i] == currentCampaignFile then
+        if string.lower(fileNames[i]) == string.lower(currentCampaignFile) then
             selectedCampaign = v
         end
     end
@@ -369,12 +407,7 @@ function TechMissionsController:global_keydown(element, event)
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then
 		self:ChangeTechState(3)
 	elseif event.parameters.key_identifier == rocket.key_identifier.TAB then
-		local newSection = nil
-		if self.sectionIndex == 2 then
-			newSection = 1
-		else
-			newSection = 2
-		end
+		local newSection = topics.simulator.tabkey:send(self.sectionIndex)
 		self:ChangeSection(newSection)
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.shift_key == 1 then
 		self:ScrollList(self.document:GetElementById("mission_list"), 0)

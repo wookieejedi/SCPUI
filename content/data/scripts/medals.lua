@@ -1,5 +1,5 @@
 local rocket_utils = require("rocket_util")
-
+local topics = require("ui_topics")
 local class = require("class")
 
 local MedalsController = class(AbstractBriefingController)
@@ -72,6 +72,9 @@ function MedalsController:showMedal(idx)
 	else
 		num = "_" .. num
 	end
+	
+	--BtA forces the Commander rank always so force the right png name, too
+	num = topics.medals.setRankBitmap:send({medal.Name, num})
 	
 	local filename = medal_el.id .. num .. ".png"
 	

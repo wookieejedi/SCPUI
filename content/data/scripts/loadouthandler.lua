@@ -1,5 +1,7 @@
 local LoadoutHandler = {}
 
+local topics = require('ui_topics')
+
 function LoadoutHandler:init()
 	if not ScpuiSystem.selectInit then
 		ui.ShipWepSelect.initSelect()
@@ -27,6 +29,8 @@ function LoadoutHandler:init()
 		self:backupLoadout()
 		self:getSavedLoadouts()
 		self:maybeApplySavedLoadout()
+		
+		topics.loadouts.initialize:send()
 	end
 end
 
@@ -89,6 +93,10 @@ function LoadoutHandler:saveCurrentLoadout()
 end
 
 function LoadoutHandler:maybeApplySavedLoadout()
+
+	if topics.loadouts.rejectSavedLoadout:send() == true then
+		return
+	end
 	
 	local key = self:getMissionKey()
 	
@@ -114,6 +122,9 @@ function LoadoutHandler:getLoadout()
 end
 
 function LoadoutHandler:cleanLoadoutShips()
+	
+	topics.loadouts.initPool:send()
+	
 	--FSO must have internal code to remove ships in wings from the pool
 	--so let's do that manually here
 	for i = 1, #ScpuiSystem.loadouts.slots do
@@ -816,6 +827,8 @@ function LoadoutHandler:TakeShipFromSlot(slot)
 	ScpuiSystem.loadouts.slots[slot].Weapons = {}
 	ScpuiSystem.loadouts.slots[slot].Amounts = {}
 	self:SetFilled(slot, false)
+	
+	topics.loadouts.emptyShipSlot:send(slot)
 
 end
 
@@ -823,6 +836,8 @@ function LoadoutHandler:AddShipToSlot(slot, shipIdx)
 
 	ScpuiSystem.loadouts.slots[slot].ShipClassIndex = shipIdx
 	self:SetDefaultWeapons(slot, shipIdx)
+	
+	topics.loadouts.fillShipSlot:send(slot)
 
 end
 
@@ -847,6 +862,8 @@ function LoadoutHandler:ReturnShipToPool(slot)
 	--Return the ship
 	local amount = self:GetShipPoolAmount(ship.ShipClassIndex)
 	ScpuiSystem.loadouts.shipPool[ship.ShipClassIndex] = amount + 1
+	
+	topics.loadouts.returnShipSlot:send(slot)
 
 end
 
@@ -948,7 +965,9 @@ function LoadoutHandler:CopyToWing(sourceSlot)
 								self:AddWeaponToBank(j, i, weapon)
 							end
 						end
-					end					
+					end
+					
+					topics.loadouts.copyShipSlot:send({sourceSlot, slots[j]})
 				end
 			end
 		end

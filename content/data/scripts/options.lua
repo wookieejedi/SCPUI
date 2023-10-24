@@ -1,10 +1,8 @@
 local utils = require('utils')
 local tblUtil  = utils.table
-
 local templates = require("rocket_templates")
-
 local dialogs  = require("dialogs")
-
+local topics   = require("ui_topics")
 local class    = require("class")
 
 local async_util = require("async_util")
@@ -30,7 +28,8 @@ local detailPresets = {
 	"option_graphics_msaasamples_element",
 	"option_graphics_postprocessing_element",
 	"option_graphics_lightshafts_element",
-	"option_graphics_softparticles_element"
+	"option_graphics_softparticles_element",
+	"option_graphics_deferredlighting_element"
 	}
 
 local fontChoice = nil
@@ -1067,8 +1066,8 @@ end
 function OptionsController:initialize(document)
     self.document = document
 
-	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	local bgclass = topics.options.background:send(context)
+	self.document:GetElementById("main_background"):SetClass(bgclass, true)
 	
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)

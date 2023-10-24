@@ -1,4 +1,5 @@
 local utils = require("utils")
+local topics = require("ui_topics")
 
 local updateCategory = engine.createTracingCategory("UpdateRocket", false)
 local renderCategory = engine.createTracingCategory("RenderRocket", true)
@@ -11,6 +12,7 @@ ScpuiSystem = {
 	Sounds = {},
 	substate = "none",
 	cutscene = "none",
+	hideMulti = false,
 	debriefInit = false,
 	selectInit = false,
 	shipSelectInit = false,
@@ -47,6 +49,14 @@ end
 
 function ScpuiSystem:parseTable(data)
 	parse.readFileText(data, "data/tables")
+	
+	if parse.optionalString("#Settings") then
+		
+		if parse.optionalString("$Hide Multiplayer:") then
+			ScpuiSystem.hideMulti = parse.getBoolean()
+		end
+		
+	end
 
 	parse.requiredString("#State Replacement")
 
@@ -324,6 +334,7 @@ function ScpuiSystem:dialogStart()
 
 		if hv.IsDeathPopup then
 			dialog:style(2)
+			dialog:text(topics.deathpopup.setText:send(self))
 		else
 			dialog:escape(-1) --Assuming that all non-death built-in popups can be cancelled safely with a negative response!
 		end

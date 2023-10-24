@@ -1,5 +1,6 @@
 local class = require("class")
 local utils = require("utils")
+local topics = require("ui_topics")
 
 local GamePausedController = class()
 
@@ -26,6 +27,12 @@ function GamePausedController:initialize(document)
 
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("h2-" .. ScpuiSystem:getFontSize()), true)
+	
+	local bgclass = topics.gamepaused.bg:send()
+	
+	if bgclass ~= nil then
+		self.document:GetElementById("main_background"):SetClass(bgclass, true)
+	end
 	
 	local main_bg = self.document:GetElementById("screenrender")
 	local imgEl = self.document:CreateElement("img")

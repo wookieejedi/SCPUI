@@ -2,10 +2,7 @@ local dialogs = require("dialogs")
 local class = require("class")
 local async_util = require("async_util")
 local loadoutHandler = require("loadouthandler")
-
---local AbstractBriefingController = require("briefingCommon")
-
---local BriefingController = class(AbstractBriefingController)
+local topics = require("ui_topics")
 
 local WeaponSelectController = class()
 
@@ -76,6 +73,8 @@ function WeaponSelectController:initialize(document)
 	self.SelectedShip = nil
 	
 	self:BuildWings()
+	
+	topics.weaponselect.initialize:send(self)
 	
 	--Only create entries if there are any to create
 	if loadoutHandler:GetNumPrimaryWeapons() > 0 then
@@ -506,6 +505,8 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 		self:ChangeIconAvailability(shipIndex)
 		
 		self:HighlightWeapon()
+		
+		topics.weaponselect.selectShip:send({self, shipIndex})
 		
 		if self.overhead3d or overhead == nil then
 			ScpuiSystem.modelDraw.OverheadClass = shipIndex

@@ -15,7 +15,7 @@
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
 					<div id=bullet_cont>
-						<button id="data_btn" class="bullet button_1" onclick="controller:ChangeTechState(1)">
+						<button id="tech_btn_1" class="bullet button_1" onclick="controller:ChangeTechState(1)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -25,7 +25,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="mission_btn" class="bullet button_1" onclick="controller:ChangeTechState(2)">
+						<button id="tech_btn_2" class="bullet button_1" onclick="controller:ChangeTechState(2)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -35,7 +35,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="cutscene_btn" class="bullet button_1" onclick="controller:ChangeTechState(3)">
+						<button id="tech_btn_3" class="bullet button_1" onclick="controller:ChangeTechState(3)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -45,7 +45,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="credits_btn" class="bullet button_1" onclick="controller:ChangeTechState(4)">
+						<button id="tech_btn_4" class="bullet button_1" onclick="controller:ChangeTechState(4)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -60,6 +60,72 @@
 		</div>
 		<div id=logo_wide>
 			<img src="logo-wide.png"></img>
+		</div>
+		<div id=sorting_panel_wrapper>
+			<div id=sorting_panel_b>
+				<div id=sorting_text>
+					<p>XSTR("Sort Items", -1)</p>
+				</div>
+				<div id=sorting_b_panel_wrapper>
+					<div id=sort_bullet_cont>
+						<button id="default_sort_btn" class="bullet button_1" onclick="controller:setSortType('index')">
+							<span id="bullet_img" class="bullet button_img">
+								<img src="bullet-r.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_sort">
+								<p>XSTR("Default", -1)</p>
+							</span>
+						</button>
+					</div>
+					<div id=sort_bullet_cont>
+						<button id="name_sort_btn" class="bullet button_1" onclick="controller:setSortType('name')">
+							<span id="bullet_img" class="bullet button_img">
+								<img src="bullet-r.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_sort">
+								<p>XSTR("By Name", -1)</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<div class="tooltip">
+					<span class="tooltiptext">XSTR("Sort the list. Click multiple times to change how the list is sorted.", -1)</span>
+				</div>
+				<img src="ops-panel-vert-tall-l.png"></img>
+			</div>
+		</div>
+		<div id=category_panel_wrapper>
+			<div id=category_panel_b>
+				<div id=category_text>
+					<p>XSTR("Categorize", -1)</p>
+				</div>
+				<div id=category_b_panel_wrapper>
+					<div id=sort_bullet_cont>
+						<button id="default_cat_btn" class="bullet button_1" onclick="controller:setSortCategory('none')">
+							<span id="bullet_img" class="bullet button_img">
+								<img src="bullet-r.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_sort">
+								<p>XSTR("None", -1)</p>
+							</span>
+						</button>
+					</div>
+					<div id=sort_bullet_cont>
+						<button id="type_cat_btn" class="bullet button_1" onclick="controller:setSortCategory('type')">
+							<span id="bullet_img" class="bullet button_img">
+								<img src="bullet-r.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_sort">
+								<p>XSTR("By Type", -1)</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<div class="tooltip">
+					<span class="tooltiptext">XSTR("Categorize items. Click multiple times to change how categories are listed.", -1)</span>
+				</div>
+				<img src="ops-panel-vert-tall-l.png"></img>
+			</div>
 		</div>
 		<div id=tech_list_panel_wrapper>
 			<div id=tech_list_wrapper>

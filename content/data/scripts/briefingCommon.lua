@@ -1,6 +1,7 @@
 local rocket_utils = require("rocket_util")
 local async_util = require("async_util")
 local utils = require("utils")
+local topics = require("ui_topics")
 local loadoutHandler = require("loadouthandler")
 
 local class = require("class")
@@ -64,6 +65,9 @@ function AbstractBriefingController:initialize(document)
 	if self.briefState ~= "fiction" then
 		self.document:GetElementById(self.element_names.pause_btn):SetPseudoClass("checked", not autoAdvance)
 	end
+	
+	topics.briefcommon.initialize:send(self)
+
 end
 
 function AbstractBriefingController:global_keydown(_, event)

@@ -2,6 +2,7 @@ local dialogs = require("dialogs")
 local class = require("class")
 local utils = require("utils")
 local async_util = require("async_util")
+local topics = require("ui_topics")
 
 local TechDatabaseController = class()
 
@@ -25,9 +26,15 @@ function TechDatabaseController:LoadData()
 
 	local list = nil
 	
+	--Initalize the lists
 	self.ships = {}
 	self.weapons = {}
 	self.intel = {}
+	
+	--Initialize the category tables
+	self.s_types = {}
+	self.w_types = {}
+	self.i_types = {}
 	
 	list = tb.ShipClasses
 	
@@ -36,16 +43,22 @@ function TechDatabaseController:LoadData()
 		if list[i]:hasCustomData() and list[i].CustomData["HideInTechRoom"] == "true" then
 			ba.print("Skipping ship " .. list[i].Name .. " in the tech room list!")
 		else
-			self.ships[i] = {
+			local ship = {
 				Name = tostring(list[i].Name),
-				DisplayName = tostring(list[i].AltName),
-				Description = list[i].TechDescription,
-				Visibility = list[i].InTechDatabase
+				DefaultPos = list[i]:getShipClassIndex(),
+				DisplayName = topics.ships.name:send(list[i]),
+				Description = topics.ships.description:send(list[i]),
+				Type = tostring(list[i].TypeString),
+				Visibility = topics.ships.filter:send(list[i])
 			}
-			--Make sure Display Name is not an empty string
-			if self.ships[i].DisplayName == "" then
-				self.ships[i].DisplayName = self.ships[i].Name
+			
+			--build the category tables
+			if not utils.table.contains(self.s_types, ship.Type) then
+				table.insert(self.s_types, ship.Type)
 			end
+			end
+			
+			table.insert(self.ships, ship)
 		end
 		i = i + 1
 	end
@@ -57,17 +70,28 @@ function TechDatabaseController:LoadData()
 		if list[i]:hasCustomData() and list[i].CustomData["HideInTechRoom"] == "true" then
 			ba.print("Skipping weapon " .. list[i].Name .. " in the tech room list!")
 		else
-			self.weapons[i] = {
-				Name = tostring(list[i].Name),
-				DisplayName = tostring(list[i].AltName),
-				Description = list[i].TechDescription,
-				Anim = list[i].TechAnimationFilename,
-				Visibility = list[i].InTechDatabase
-			}
-			--Make sure Display Name is not an empty string
-			if self.weapons[i].DisplayName == "" then
-				self.weapons[i].DisplayName = self.weapons[i].Name
+			local t_string = utils.xstr("Primary", -1)
+			if list[i]:isSecondary() then
+				t_string = utils.xstr("Secondary", -1)
 			end
+			
+			local weapon = {
+				Name = tostring(list[i].Name),
+				DefaultPos = list[i]:getWeaponClassIndex(),
+				DisplayName = topics.weapons.name:send(list[i]),
+				Description = topics.weapons.description:send(list[i]),
+				Anim = tostring(list[i].TechAnimationFilename),
+				Type = t_string,
+				Visibility = topics.weapons.filter:send(list[i])
+			}
+			
+			--build the category tables
+			if not utils.table.contains(self.w_types, weapon.Type) then
+				table.insert(self.w_types, weapon.Type)
+			end
+			end
+			
+			table.insert(self.weapons, weapon)
 		end
 		i = i + 1
 	end
@@ -76,17 +100,22 @@ function TechDatabaseController:LoadData()
 	
 	i = 1
 	while (i ~= #list + 1) do
-		self.intel[i] = {
+		local intel = {
 			Name = tostring(list[i].Name),
-			DisplayName = tostring(list[i].Name),
-			Description = list[i].Description,
-			Anim = list[i].AnimFilename,
-			Visibility = list[i].InTechDatabase
+			DefaultPos = i,
+			DisplayName = topics.intel.name:send(list[i]),
+			Type = topics.intel.type:send(list[i]),
+			Description = topics.intel.description:send(list[i]),
+			Anim = tostring(list[i].AnimFilename),
+			Visibility = topics.intel.filter:send(list[i])
 		}
-		--Make sure Display Name is not an empty string
-		if self.intel[i].DisplayName == "" then
-			self.intel[i].DisplayName = self.intel[i].Name
-		end
+		
+		--build the category tables
+	  if not utils.table.contains(self.i_types, intel.Type) then
+		  table.insert(self.i_types, intel.Type)
+	  end
+		
+		table.insert(self.intel, intel)
 		i = i + 1
 	end
 
@@ -103,10 +132,12 @@ function TechDatabaseController:initialize(document)
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	
-	self.document:GetElementById("data_btn"):SetPseudoClass("checked", true)
-	self.document:GetElementById("mission_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("cutscene_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("credits_btn"):SetPseudoClass("checked", false)
+	self.document:GetElementById("tech_btn_1"):SetPseudoClass("checked", true)
+	self.document:GetElementById("tech_btn_2"):SetPseudoClass("checked", false)
+	self.document:GetElementById("tech_btn_3"):SetPseudoClass("checked", false)
+	self.document:GetElementById("tech_btn_4"):SetPseudoClass("checked", false)
+	
+	topics.techroom.initialize:send(self)
 	
 	--Get all the table data fresh each time in case there are changes
 	self:LoadData()
@@ -119,6 +150,227 @@ function TechDatabaseController:initialize(document)
 	
 end
 
+function TechDatabaseController:setSortType(sort)
+	if sort == "name" then
+		if self.currentSort == "name_asc" then
+			self.currentSort = "name_des"
+		else
+			self.currentSort = "name_asc"
+		end
+	elseif sort == "index" then
+		if self.currentSort == "index_asc" then
+			self.currentSort = "index_des"
+		else
+			self.currentSort = "index_asc"
+		end
+	else --catch unhandled
+		sort = "index_asc"
+	end
+	self:SortList()
+	self:ReloadList()
+end
+
+function TechDatabaseController:setSortCategory(category)
+	if category == "type" then
+	    if self.currentSortCategory == "type_asc_alph" then
+		    self.currentSortCategory = "type_des_alph"
+		elseif self.currentSortCategory == "type_des_alph" then
+		    self.currentSortCategory = "type_asc_idx"
+		elseif self.currentSortCategory == "type_asc_idx" then
+		    self.currentSortCategory = "type_des_idx"
+		else
+		    self.currentSortCategory = "type_asc_alph"
+		end
+	else --catch unhandled
+		self.currentSortCategory = "none"
+	end
+	self:SortList()
+	self:ReloadList()
+end
+
+function TechDatabaseController:SortList()
+	
+	local ItemSort = nil
+	--loadstring(v.func .. '()' )()
+	
+	--Item Sorters
+	local function sortByIndexAsc(a, b)
+		return a.DefaultPos < b.DefaultPos
+	end
+	
+	local function sortByIndexDes(a, b)
+		return a.DefaultPos > b.DefaultPos
+	end
+
+	local function sortByNameAsc(a, b)
+		return a.Name < b.Name
+	end
+	
+	local function sortByNameDes(a, b)
+		return a.Name > b.Name
+	end
+	
+	--Category Sorters
+	local function sortByTypeAsc_Alph(a, b)
+		if a.Type == b.Type then
+			return ItemSort(a, b)
+		else
+			return a.Type < b.Type
+		end
+	end
+	
+	local function sortByTypeDes_Alph(a, b)
+		if a.Type == b.Type then
+			return ItemSort(a, b)
+		else
+			return a.Type > b.Type
+		end
+	end
+	
+	local function sortByTypeAsc_Idx(a, b)
+		local tbl = nil
+		if self.SelectedSection == "ships" then
+			tbl = self.s_types
+		elseif self.SelectedSection == "weapons" then
+			tbl = self.w_types
+		elseif self.SelectedSection == "intel" then
+			tbl = self.i_types
+		end
+		
+		local a_idx = utils.table.ifind(tbl, a.Type)
+		local b_idx = utils.table.ifind(tbl, b.Type)
+		if a.Type == b.Type then
+			return ItemSort(a, b)
+		else
+			return a_idx < b_idx
+		end
+	end
+	
+	local function sortByTypeDes_Idx(a, b)
+		local tbl = nil
+		if self.SelectedSection == "ships" then
+			tbl = self.s_types
+		elseif self.SelectedSection == "weapons" then
+			tbl = self.w_types
+		elseif self.SelectedSection == "intel" then
+			tbl = self.i_types
+		end
+		
+		local a_idx = utils.table.ifind(tbl, a.Type)
+		local b_idx = utils.table.ifind(tbl, b.Type)
+		if a.Type == b.Type then
+			return ItemSort(a, b)
+		else
+			return a_idx > b_idx
+		end
+	end
+
+	
+	self:UncheckAllSortButtons()
+	
+	if self.currentSort == nil then
+		selfcurrentSort = "index_asc"
+	end
+	
+	if self.currentSortCategory == nil then
+		self.currentSortCategory = "none"
+	end
+	
+	--Check item sort
+	if self.currentSort == "index_asc" then
+		if self.currentSortCategory == "none" then
+			table.sort(self.currentList, sortByIndexAsc)
+		else
+			ItemSort = sortByIndexAsc
+		end
+		self.document:GetElementById("default_sort_btn"):SetPseudoClass("checked", true)
+	elseif self.currentSort == "index_des" then
+		if self.currentSortCategory == "none" then
+			table.sort(self.currentList, sortByIndexDes)
+		else
+			ItemSort = sortByIndexDes
+		end
+		self.document:GetElementById("default_sort_btn"):SetPseudoClass("checked", true)
+	elseif self.currentSort == "name_asc" then
+		if self.currentSortCategory == "none" then
+			table.sort(self.currentList, sortByNameAsc)
+		else
+			ItemSort = sortByNameAsc
+		end
+		self.document:GetElementById("name_sort_btn"):SetPseudoClass("checked", true)
+	elseif self.currentSort == "name_des" then
+		if self.currentSortCategory == "none" then
+			table.sort(self.currentList, sortByNameDes)
+		else
+			ItemSort = sortByNameDes
+		end
+		self.document:GetElementById("name_sort_btn"):SetPseudoClass("checked", true)
+	else
+		ba.warning("Got invalid sort method! Using Default.")
+		
+		self.currentSort = "index_asc"
+		return self:SortList()
+	end
+	
+	--Check categorization
+	if self.currentSortCategory ~= "none" then
+		if self.currentSortCategory == "type_asc_alph" then
+			table.sort(self.currentList, sortByTypeAsc_Alph)
+			self.document:GetElementById("type_cat_btn"):SetPseudoClass("checked", true)
+		elseif self.currentSortCategory == "type_des_alph" then
+			table.sort(self.currentList, sortByTypeDes_Alph)
+			self.document:GetElementById("type_cat_btn"):SetPseudoClass("checked", true)
+		elseif self.currentSortCategory == "type_asc_idx" then
+			table.sort(self.currentList, sortByTypeAsc_Idx)
+			self.document:GetElementById("type_cat_btn"):SetPseudoClass("checked", true)
+		elseif self.currentSortCategory == "type_des_idx" then
+			table.sort(self.currentList, sortByTypeDes_Idx)
+			self.document:GetElementById("type_cat_btn"):SetPseudoClass("checked", true)
+		else
+			ba.warning("Got invalid sort category! Using Default.")
+			self.currentSortCategory = "none"
+			return self:SortList()
+		end
+	else
+		self.document:GetElementById("default_cat_btn"):SetPseudoClass("checked", true)
+	end
+	
+	--save the choice to the player file
+	if ScpuiOptionValues.databaseSort == nil then
+		ScpuiOptionValues.databaseSort = {}
+			ScpuiOptionValues.databaseSort["ships"] = "index_asc"
+			ScpuiOptionValues.databaseSort["weapons"] = "index_asc"
+			ScpuiOptionValues.databaseSort["intel"] = "index_asc"
+	end
+	if ScpuiOptionValues.databaseCategory == nil then
+		ScpuiOptionValues.databaseCategory = {}
+			ScpuiOptionValues.databaseCategory["ships"] = "none"
+			ScpuiOptionValues.databaseCategory["weapons"] = "none"
+			ScpuiOptionValues.databaseCategory["intel"] = "none"
+	end
+	ScpuiOptionValues.databaseSort[self.SelectedSection] = self.currentSort
+	ScpuiOptionValues.databaseCategory[self.SelectedSection] = self.currentSortCategory
+	ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
+end
+
+function TechDatabaseController:UncheckAllSortButtons()
+	self.document:GetElementById("default_sort_btn"):SetPseudoClass("checked", false)
+	self.document:GetElementById("name_sort_btn"):SetPseudoClass("checked", false)
+	self.document:GetElementById("default_cat_btn"):SetPseudoClass("checked", false)
+	self.document:GetElementById("type_cat_btn"):SetPseudoClass("checked", false)
+	--For BtA
+	self.document:GetElementById("faction_cat_btn"):SetPseudoClass("checked", false)
+	self.document:GetElementById("manufacturer_cat_btn"):SetPseudoClass("checked", false)
+end
+
+function TechDatabaseController:getFirstIndex()
+	if self.currentSortCategory ~= "none" then
+	    return 2
+	else
+		return 1
+	end
+end
+
 function TechDatabaseController:ReloadList()
 
 	local list_items_el = self.document:GetElementById("list_items_ul")
@@ -128,7 +380,7 @@ function TechDatabaseController:ReloadList()
 	self.visibleList = {}
 	self.Counter = 0
 	self:CreateEntries(self.currentList)
-	self:SelectEntry(self.visibleList[1])
+	self:SelectEntry(self.visibleList[self:getFirstIndex()])
 
 end
 
@@ -136,16 +388,16 @@ function TechDatabaseController:ChangeTechState(state)
 
 	if state == 1 then
 		--This is where we are already, so don't do anything
-		--ba.postGameEvent(ba.GameEvents["GS_EVENT_TECH_MENU"])
+		--topics.techroom.btn1Action:send()
 	end
 	if state == 2 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_SIMULATOR_ROOM"])
+		topics.techroom.btn2Action:send()
 	end
 	if state == 3 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"])
+		topics.techroom.btn3Action:send()
 	end
 	if state == 4 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_CREDITS"])
+		topics.techroom.btn4Action:send()
 	end
 	
 end
@@ -186,11 +438,34 @@ function TechDatabaseController:ChangeSection(section)
 		self.SelectedSection = section
 		ScpuiSystem.modelDraw.section = section
 		
+		--Check for last sort type
+		if ScpuiOptionValues.databaseSort ~= nil then
+			self.currentSort = ScpuiOptionValues.databaseSort[section]
+		else
+			self.currentSort = "index_asc"
+		end
+		
+		if ScpuiOptionValues.databaseCategory ~= nil then
+			self.currentSortCategory = ScpuiOptionValues.databaseCategory[section]
+		else
+			self.currentSortCategory = "none"
+		end		
+
+		self:SortList()
+		
+		if section == "intel" then
+			self.document:GetElementById("faction_cat_btn"):SetClass("hidden", true)
+			self.document:GetElementById("manufacturer_cat_btn"):SetClass("hidden", true)
+		else
+			self.document:GetElementById("faction_cat_btn"):SetClass("hidden", false)
+			self.document:GetElementById("manufacturer_cat_btn"):SetClass("hidden", false)
+		end
+		
 		--Only create entries if there are any to create
 		if self.currentList[1] then
 			self.visibleList = {}
 			self:CreateEntries(self.currentList)
-			self:SelectEntry(self.visibleList[1])
+			self:SelectEntry(self.visibleList[self:getFirstIndex()])
 		else
 			local list_items_el = self.document:GetElementById("list_items_ul")
 			self:ClearEntries(list_items_el)
@@ -204,24 +479,33 @@ function TechDatabaseController:ChangeSection(section)
 	
 end
 
-function TechDatabaseController:CreateEntryItem(entry, index)
+function TechDatabaseController:CreateEntryItem(entry, index, selectable, heading)
 
 	self.Counter = self.Counter + 1
 	
-	if self.show_all then
-		--ba.warning(self.currentList[self.Counter].Name)
-	end
-
+	entry.Selectable = selectable
+	entry.Heading = heading
+	
 	local li_el = self.document:CreateElement("li")
 
 	li_el.inner_rml = "<span>" .. entry.DisplayName .. "</span>"
 	li_el.id = entry.Name
 
-	li_el:SetClass("list_element", true)
-	li_el:SetClass("button_1", true)
-	li_el:AddEventListener("click", function(_, _, _)
-		self:SelectEntry(entry)
-	end)
+	if heading == true then
+		if selectable == true then
+			li_el:SetClass("list_heading", true)
+		else
+			li_el:SetClass("list_heading_plain", true)
+		end
+	else
+		li_el:SetClass("list_element", true)
+	end
+	if selectable == true then
+		li_el:SetClass("button_1", true)
+		li_el:AddEventListener("click", function(_, _, _)
+			self:SelectEntry(entry)
+		end)
+	end
 	self.visibleList[self.Counter] = entry
 	entry.key = li_el.id
 	
@@ -235,12 +519,28 @@ function TechDatabaseController:CreateEntries(list)
 	local list_names_el = self.document:GetElementById("list_items_ul")
 
 	self:ClearEntries(list_names_el)
+	
+	local cur_category = nil
 
-	for i, v in pairs(list) do
-		if self.show_all then
-			list_names_el:AppendChild(self:CreateEntryItem(v, i))
-		elseif v.Visibility then
-			list_names_el:AppendChild(self:CreateEntryItem(v, i))
+	for i, v in ipairs(list) do
+	
+		--maybe create a category header
+		if utils.extractString(self.currentSortCategory, "_") == "type" then
+			if v.Visibility or self.show_all then
+				if v.Type ~= cur_category then
+					cur_category = v.Type
+					local entry = {
+						Name = v.Type,
+						DisplayName = v.Type
+					}
+					list_names_el:AppendChild(self:CreateEntryItem(entry, i, false, true))
+				end
+			end
+		
+		end
+					
+		if self.show_all or v.Visibility then
+			list_names_el:AppendChild(self:CreateEntryItem(v, i, true, false))
 		end
 	end
 end
@@ -255,6 +555,9 @@ function TechDatabaseController:SelectEntry(entry)
 		ScpuiSystem.modelDraw.Rot = 40
 		
 		local aniWrapper = self.document:GetElementById("tech_view")
+		if aniWrapper.first_child ~= nil then
+			aniWrapper.first_child:RemoveChild(aniWrapper.first_child.first_child) --yo dawg
+		end
 		aniWrapper:RemoveChild(aniWrapper.first_child)
 	
 		if self.SelectedEntry then
@@ -306,7 +609,7 @@ function TechDatabaseController:SelectEntry(entry)
 				end
 			end
 		elseif self.SelectedSection == "intel" then			
-			self.document:GetElementById("tech_desc").inner_rml = entry.Description
+			self.document:GetElementById("tech_desc").inner_rml = entry.Description or ''
 			
 			if entry.Anim then
 				ScpuiSystem.modelDraw.class = nil
@@ -519,7 +822,18 @@ function TechDatabaseController:select_next()
 	if self.SelectedIndex == num then
 		ui.playElementSound(element, "click", "error")
 	else
-		self:SelectEntry(self.visibleList[self.SelectedIndex + 1])
+		local count = 1
+		while self.visibleList[self.SelectedIndex + count] ~= nil and self.visibleList[self.SelectedIndex + count].Selectable == false do
+			count = count + 1
+		end
+		
+		if (self.SelectedIndex + count) > num then
+			ui.playElementSound(element, "click", "error")
+		elseif self.visibleList[self.SelectedIndex + count].Selectable == false then
+			ui.playElementSound(element, "click", "error")
+		else
+			self:SelectEntry(self.visibleList[self.SelectedIndex + count])
+		end
 	end
 end
 
@@ -527,7 +841,18 @@ function TechDatabaseController:select_prev()
 	if self.SelectedIndex == 1 then
 		ui.playElementSound(element, "click", "error")
 	else
-		self:SelectEntry(self.visibleList[self.SelectedIndex - 1])
+		local count = 1
+		while self.visibleList[self.SelectedIndex - count] ~= nil and self.visibleList[self.SelectedIndex - count].Selectable == false do
+			count = count + 1
+		end
+		
+		if (self.SelectedIndex - count) < 1 then
+			ui.playElementSound(element, "click", "error")
+		elseif self.visibleList[self.SelectedIndex - count].Selectable == false then
+			ui.playElementSound(element, "click", "error")
+		else
+			self:SelectEntry(self.visibleList[self.SelectedIndex - count])
+		end
 	end
 end
 

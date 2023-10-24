@@ -54,6 +54,14 @@ function PilotSelectController:initialize(document)
     if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
         document:GetElementById("fso_version_info").inner_rml = ba.getVersionString()
 		document:GetElementById("mod_version_info").inner_rml = ba.getModTitle() .. " v" .. ba.getModVersion()
+		
+		--Hide Multistuff maybe
+		if ScpuiSystem.hideMulti == true then
+			self.document:GetElementById("singleplayer_text"):SetClass("hidden", true)
+			self.document:GetElementById("multiplayer_text"):SetClass("hidden", true)
+			self.document:GetElementById("singleplayer_btn"):SetClass("hidden", true)
+			self.document:GetElementById("multiplayer_btn"):SetClass("hidden", true)
+		end
     end
 
     if current ~= nil then

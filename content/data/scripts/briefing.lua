@@ -1,5 +1,6 @@
 local dialogs = require("dialogs")
 local class = require("class")
+local topics = require("ui_topics")
 local async_util = require("async_util")
 local loadoutHandler = require("loadouthandler")
 
@@ -237,7 +238,7 @@ function BriefingController:go_to_stage(stage_idx)
 	
 	ScpuiSystem.drawBrMap.bg = ScpuiSystem:getBriefingBackground(mn.getMissionFilename(), tostring(stage_idx))
 
-	local brief_img = "brief-main-window.png"
+	local brief_img = topics.briefing.brief_bg:send((mn.hasGoalsStage() and stage_idx == #self.stages))
 
 	if mn.hasGoalsStage() and stage_idx == #self.stages then
 		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
@@ -483,6 +484,11 @@ function BriefingController:acceptPressed()
 end
 
 function BriefingController:skip_pressed()
+
+	if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+		ScpuiSystem.music_handle:close(true)
+	end
+	ScpuiSystem.music_handle = nil
     
 	if mn.isTraining() then
 		ui.Briefing.skipTraining()

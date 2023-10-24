@@ -1,8 +1,7 @@
 local utils                    = require("utils")
 local tblUtil                  = utils.table
-
 local dialogs                  = require("dialogs")
-
+local topics                   = require("ui_topics")
 local class                    = require("class")
 
 local PilotSelectController    = require("pilotSelect")
@@ -20,12 +19,19 @@ function BarracksScreenController:initialize(document)
 
     PilotSelectController.initialize(self, document)
 	
-	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	--Hide Multistuff maybe
+	if ScpuiSystem.hideMulti == true then
+		self.document:GetElementById("multiplayer_btn"):SetClass("hidden", true)
+	end
+
+    ---Load background choice
+    self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+
+    ---Load the desired font size from the save file
+    self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	
-	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
-	
+	topics.barracks.initialize:send(self)
+
 end
 
 function BarracksScreenController:changeImage(new_img)
@@ -167,8 +173,9 @@ function BarracksScreenController:initialize_stats_text()
         local kills    = stats:getShipclassKills(ship_cls)
 
         if kills > 0 then
+            local name = topics.ships.name:send(ship_cls)
             score_from_kills = score_from_kills + kills * ship_cls.Score
-            self:add_value_element(text_container, ship_cls.Name .. ":", kills)
+            self:add_value_element(text_container, name .. ":", kills)
         end
     end
     self:add_value_element(text_container, "Score from kills only:", score_from_kills)

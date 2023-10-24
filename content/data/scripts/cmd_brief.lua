@@ -1,5 +1,6 @@
 local class = require("class")
 local utils = require("utils")
+local topics = require("ui_topics")
 
 local AbstractBriefingController = require("briefingCommon")
 
@@ -24,8 +25,6 @@ end
 
 function CommandBriefingController:initialize(document)
     AbstractBriefingController.initialize(self, document)
-
-	ui.maybePlayCutscene(MOVIE_PRE_CMD_BRIEF, true, 0)
 	
 	---Load background choice
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
@@ -35,11 +34,11 @@ function CommandBriefingController:initialize(document)
 	self.document:GetElementById("cmd_text"):SetClass(("p2-" .. ScpuiSystem:getFontSize()), true)
 
     local briefing = ui.CommandBriefing.getCmdBriefing()
+	
     for i = 1, #briefing do
-        --- @type cmd_briefing_stage
-        local stage = briefing[i]
+		local stage = briefing[i]
 
-        self.stages[i] = stage
+		self.stages[i] = topics.cmdbriefing.stage:send({stage, i})
     end
 
     self:go_to_stage(1)

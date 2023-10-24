@@ -10,6 +10,12 @@ body
 	color: #7b7b7b;
 }
 
+.general_bg
+{
+	background-decorator: image;
+	background-image: bg.png;
+}
+
 li
 {
 	color: #7b7b7b;

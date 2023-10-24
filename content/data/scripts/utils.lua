@@ -133,7 +133,6 @@ function utils.hasExtension(filename)
 end
 
 function utils.isOneOf(val, ...)
-	local ret = {}
     for _,k in ipairs({...}) do 
         if val == k then
             return true
@@ -160,7 +159,7 @@ function utils.split(inputstr, sep)
     end
     local t = {}
     for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
-        table.insert(t, str)
+        table.insert(t, utils.trim(str))
     end
     return t
 end
@@ -228,6 +227,10 @@ function utils.tableLength(T)
 	local count = 0
 	for _ in pairs(T) do count = count + 1 end
 	return count
+end
+
+function utils.stringStartsWith(str, pattern)
+	return str:sub(1, #pattern) == pattern
 end
 
 function utils.trim(str)

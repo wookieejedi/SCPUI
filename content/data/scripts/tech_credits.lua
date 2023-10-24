@@ -1,6 +1,7 @@
 local dialogs = require("dialogs")
 local class = require("class")
 local async_util = require("async_util")
+local topics = require("ui_topics")
 
 local TechCreditsController = class()
 
@@ -76,27 +77,29 @@ function TechCreditsController:initialize(document)
 	self:timeImages()
 
 	
-	self.document:GetElementById("data_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("mission_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("cutscene_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("credits_btn"):SetPseudoClass("checked", true)
+	self.document:GetElementById("tech_btn_1"):SetPseudoClass("checked", false)
+	self.document:GetElementById("tech_btn_2"):SetPseudoClass("checked", false)
+	self.document:GetElementById("tech_btn_3"):SetPseudoClass("checked", false)
+	self.document:GetElementById("tech_btn_4"):SetPseudoClass("checked", true)
+	
+	topics.techroom.initialize:send(self)
 	
 end
 
 function TechCreditsController:ChangeTechState(state)
 
 	if state == 1 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_TECH_MENU"])
+		topics.techroom.btn1Action:send()
 	end
 	if state == 2 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_SIMULATOR_ROOM"])
+		topics.techroom.btn2Action:send()
 	end
 	if state == 3 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"])
+		topics.techroom.btn3Action:send()
 	end
 	if state == 4 then
 		--This is where we are already, so don't do anything
-		--ba.postGameEvent(ba.GameEvents["GS_EVENT_CREDITS"])
+		--topics.techroom.btn4Action:send()
 	end
 	
 end

@@ -1,6 +1,7 @@
 local rocket_utils = require("rocket_util")
 local async_util = require("async_util")
 local loadoutHandler = require("loadouthandler")
+local topics = require("ui_topics")
 
 local class = require("class")
 
@@ -35,12 +36,14 @@ function RedAlertController:initialize(document)
 			self.current_voice_handle:play(ad.MasterVoiceVolume)
 		end
 	end
-	
+
 	--Whenever we start a new mission, we reset the log ui to goals
 	ScpuiSystem.logSection = 1
 	
 	alert_el = self.document:GetElementById("incoming_transmission")
 	RedAlertController:blink()
+	
+	topics.redalert.initialize:send(self)
 
 end
 
@@ -63,6 +66,7 @@ end
 
 function RedAlertController:commit_pressed()
 	loadoutHandler:unloadAll()
+	topics.redalert.commit:send(self)
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_ENTER_GAME"])
 end
 

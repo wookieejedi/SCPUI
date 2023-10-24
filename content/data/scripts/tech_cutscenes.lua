@@ -1,5 +1,6 @@
 local dialogs = require("dialogs")
 local class = require("class")
+local topics = require("ui_topics")
 
 local TechCutscenesController = class()
 
@@ -18,12 +19,12 @@ function TechCutscenesController:initialize(document)
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	
-	--ba.warning(ui.TechRoom.Cutscenes[1].Filename)
+	self.document:GetElementById("tech_btn_1"):SetPseudoClass("checked", false)
+	self.document:GetElementById("tech_btn_2"):SetPseudoClass("checked", false)
+	self.document:GetElementById("tech_btn_3"):SetPseudoClass("checked", true)
+	self.document:GetElementById("tech_btn_4"):SetPseudoClass("checked", false)
 	
-	self.document:GetElementById("data_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("mission_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("cutscene_btn"):SetPseudoClass("checked", true)
-	self.document:GetElementById("credits_btn"):SetPseudoClass("checked", false)
+	topics.techroom.initialize:send(self)
 	
 	self.SelectedEntry = nil
 	self.list = {}
@@ -38,8 +39,11 @@ function TechCutscenesController:initialize(document)
 			isVisible = cutsceneList[i].isVisible,
 			Index = i + 1
 		}
+		topics.cutscenes.addParam:send({self.list[i+1], cutsceneList[i]})
 		i = i + 1
 	end
+	
+	topics.cutscenes.initialize:send(self)
 	
 	--Only create entries if there are any to create
 	if self.list[1] then
@@ -93,10 +97,16 @@ function TechCutscenesController:CreateEntries(list)
 	self:ClearEntries(list_names_el)
 
 	for i, v in pairs(list) do
-		if self.show_all then
-			list_names_el:AppendChild(self:CreateEntryItem(v, i))
-		elseif v.isVisible == true then
-			list_names_el:AppendChild(self:CreateEntryItem(v, i))
+	
+		if topics.cutscenes.hideMovie:send(v) == false then
+						
+			topics.cutscenes.createList:send({self, v})
+		
+			if self.show_all then
+				list_names_el:AppendChild(self:CreateEntryItem(v, i))
+			elseif v.isVisible == true then
+				list_names_el:AppendChild(self:CreateEntryItem(v, i))
+			end
 		end
 	end
 end
@@ -104,6 +114,8 @@ end
 function TechCutscenesController:SelectEntry(entry)
 
 	if entry.key ~= self.SelectedEntry then
+	
+		topics.cutscenes.selectScene:send({self, entry})
 		
 		if self.SelectedEntry then
 			local oldEntry = self.document:GetElementById(self.SelectedEntry)
@@ -124,17 +136,17 @@ end
 function TechCutscenesController:ChangeTechState(state)
 
 	if state == 1 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_TECH_MENU"])
+		topics.techroom.btn1Action:send()
 	end
 	if state == 2 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_SIMULATOR_ROOM"])
+		topics.techroom.btn2Action:send()
 	end
 	if state == 3 then
 		--This is where we are already, so don't do anything
-		--ba.postGameEvent(ba.GameEvents["GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"])
+		--topics.techroom.btn3Action:send()
 	end
 	if state == 4 then
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_CREDITS"])
+		topics.techroom.btn4Action:send()
 	end
 	
 end

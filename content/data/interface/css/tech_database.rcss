@@ -63,6 +63,31 @@ div#tech_list
 	line-height: 75%;
 }
 
+.list_heading_plain
+{
+	margin-left: 0.1%;
+	color: #494949;
+	display: block;
+	width: 90%;
+}
+
+.list_heading
+{
+	margin-left: 0.1%;
+	color: #494949;
+	display: block;
+	width: 90%;
+}
+.list_heading:hover
+{
+	color: #abbbab;
+}
+.list_heading:checked
+{
+	color: #6f92f5;
+
+}
+
 .list_element
 {
 	display: block;
@@ -112,6 +137,14 @@ div#tech_view
 {
 	width: 100%;
 	text-align: center;
+}
+
+div#logo
+{
+	width: 70%;
+	text-align: center;
+	margin-left: 15%;
+	margin-top: 12%;
 }
 
 div#tech_desc_wrapper
@@ -333,6 +366,175 @@ button#cmdnext_btn:active #cmdnext_img
 	background-image: arrow-right-o.png;
 }
 
+/*Sorting Panel Elements*/
+
+div#sorting_panel_wrapper
+{
+	width: 4%;
+	height: auto;
+	position: absolute;
+	top: 22%;
+	left: 0%;
+}
+
+div#sorting_panel_b
+{
+	width: 90%;
+	height: auto;
+	position: relative;
+	float: left;
+}
+
+div#sorting_panel_b img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+div#sorting_b_panel_wrapper
+{
+	position: absolute;
+	margin-top: 5%;
+	width: 90%;
+}
+
+div#sorting_text
+{
+	width: 100%;
+}
+
+div#category_panel_wrapper
+{
+	width: 4%;
+	height: auto;
+	position: absolute;
+	top: 45%;
+	left: 0%;
+}
+
+div#category_panel_b
+{
+	width: 90%;
+	height: auto;
+	position: relative;
+	float: left;
+}
+
+div#category_panel_b img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+div#category_b_panel_wrapper
+{
+	position: absolute;
+	margin-top: 5%;
+	width: 90%;
+}
+
+div#category_text
+{
+	width: 100%;
+}
+
+div#sort_bullet_cont
+{
+	width: 90%;
+	height: auto;
+	margin: auto;
+
+}
+
+.button_text_sort
+{
+	text-align: left;
+}
+
+.button_text_sort p
+{
+	width: 400%;
+	margin-left: 120%;
+	margin-top: -20%;
+	margin-bottom: 2%;
+}
+
+button#default_sort_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#default_sort_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#default_sort_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#name_sort_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#name_sort_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#name_sort_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#type_cat_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#type_cat_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#type_cat_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#default_cat_btn:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#default_cat_btn:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#default_cat_btn:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
 /*Top Panel Elements*/
 
 div#top_panel_wrapper
@@ -398,73 +600,73 @@ div#bullet_cont
 	background-image: bullet-r.png;
 }
 
-button#data_btn:hover #bullet_img
+button#tech_btn_1:hover #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-h.png;
 }
 
-button#data_btn:active #bullet_img
+button#tech_btn_1:active #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
 }
 
-button#data_btn:checked #bullet_img
+button#tech_btn_1:checked #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
 }
 
-button#mission_btn:hover #bullet_img
+button#tech_btn_2:hover #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-h.png;
 }
 
-button#mission_btn:active #bullet_img
+button#tech_btn_2:active #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
 }
 
-button#mission_btn:checked #bullet_img
+button#tech_btn_2:checked #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
 }
 
-button#cutscene_btn:hover #bullet_img
+button#tech_btn_3:hover #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-h.png;
 }
 
-button#cutscene_btn:active #bullet_img
+button#tech_btn_3:active #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
 }
 
-button#cutscene_btn:checked #bullet_img
+button#tech_btn_3:checked #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
 }
 
-button#credits_btn:hover #bullet_img
+button#tech_btn_4:hover #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-h.png;
 }
 
-button#credits_btn:active #bullet_img
+button#tech_btn_4:active #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
 }
 
-button#credits_btn:checked #bullet_img
+button#tech_btn_4:checked #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
@@ -802,4 +1004,22 @@ div#tech_select .tooltip
 	width: 500%;
 	top: 0%;
 	right: 100%;
+}
+
+div#sorting_panel_b .tooltip
+{
+	width: 400%;
+	top: 35%;
+	left: 100%;
+	z-index: 20;
+	white-space: normal;
+}
+
+div#category_panel_b .tooltip
+{
+	width: 400%;
+	top: 35%;
+	left: 100%;
+	z-index: 20;
+	white-space: normal;
 }
