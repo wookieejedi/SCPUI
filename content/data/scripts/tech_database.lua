@@ -56,7 +56,6 @@ function TechDatabaseController:LoadData()
 			if not utils.table.contains(self.s_types, ship.Type) then
 				table.insert(self.s_types, ship.Type)
 			end
-			end
 			
 			table.insert(self.ships, ship)
 		end
@@ -88,7 +87,6 @@ function TechDatabaseController:LoadData()
 			--build the category tables
 			if not utils.table.contains(self.w_types, weapon.Type) then
 				table.insert(self.w_types, weapon.Type)
-			end
 			end
 			
 			table.insert(self.weapons, weapon)
@@ -358,9 +356,6 @@ function TechDatabaseController:UncheckAllSortButtons()
 	self.document:GetElementById("name_sort_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("default_cat_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("type_cat_btn"):SetPseudoClass("checked", false)
-	--For BtA
-	self.document:GetElementById("faction_cat_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("manufacturer_cat_btn"):SetPseudoClass("checked", false)
 end
 
 function TechDatabaseController:getFirstIndex()
@@ -452,14 +447,6 @@ function TechDatabaseController:ChangeSection(section)
 		end		
 
 		self:SortList()
-		
-		if section == "intel" then
-			self.document:GetElementById("faction_cat_btn"):SetClass("hidden", true)
-			self.document:GetElementById("manufacturer_cat_btn"):SetClass("hidden", true)
-		else
-			self.document:GetElementById("faction_cat_btn"):SetClass("hidden", false)
-			self.document:GetElementById("manufacturer_cat_btn"):SetClass("hidden", false)
-		end
 		
 		--Only create entries if there are any to create
 		if self.currentList[1] then
