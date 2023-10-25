@@ -25,11 +25,6 @@ function BriefingController:init()
         stage_text_el = "brief_stage_text_el",
     }
 	
-	ScpuiSystem.drawBrMap = {
-		tex = nil,
-		modelRot = 40
-	}
-	
 	loadoutHandler:init()
 	
 	--Whenever we start a new mission, we reset the log ui to goals
@@ -233,6 +228,13 @@ end
 
 function BriefingController:go_to_stage(stage_idx)
     self:leaveStage()
+	
+	if ScpuiSystem.drawBrMap == nil then
+		ScpuiSystem.drawBrMap = {
+			tex = nil,
+			modelRot = 40
+		}
+	end
 
     local stage = self.stages[stage_idx]
 	
