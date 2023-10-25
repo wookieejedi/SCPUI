@@ -87,7 +87,59 @@ function AbstractBriefingController:global_keydown(_, event)
 		
 		mn.unloadMission(true)
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+	elseif event.parameters.key_identifier == rocket.key_identifier.UP then
+		self:scroll_down()
+	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
+		self:scroll_up()
+	elseif event.parameters.key_identifier == rocket.key_identifier.LEFT then
+		self:go_to_prev_stage()
+	elseif event.parameters.key_identifier == rocket.key_identifier.RIGHT then
+		self:go_to_next_stage()
     end
+end
+
+function AbstractBriefingController:scroll_up()
+	local text_el = self.document:GetElementById(self.element_names.text_el)
+	text_el.parent_node.scroll_top = text_el.parent_node.scroll_top + 10
+end
+
+function AbstractBriefingController:scroll_down()
+	local text_el = self.document:GetElementById(self.element_names.text_el)
+	text_el.parent_node.scroll_top = text_el.parent_node.scroll_top - 10
+end
+
+function AbstractBriefingController:go_to_next_stage()
+	if self.current_stage >= #self.stages then
+		ui.playElementSound(el, "click", "fail")
+		return
+	end
+	
+	if self.briefState == "briefing" then
+		ui.Briefing.callNextMapStage()
+		if self.stages[self.current_stage].hasForwardCut then
+			self:CutToStage()
+		end
+	end
+
+	self:go_to_stage(self.current_stage + 1)
+	ui.playElementSound(el, "click", "success")
+end
+
+function AbstractBriefingController:go_to_prev_stage()
+	if self.current_stage <= 1 then
+		ui.playElementSound(el, "click", "fail")
+		return
+	end
+
+	if self.briefState == "briefing" then
+		ui.Briefing.callPrevMapStage()
+		if self.stages[self.current_stage].hasBackwardCut then
+			self:CutToStage()
+		end
+	end
+
+	self:go_to_stage(self.current_stage - 1)
+	ui.playElementSound(el, "click", "success")
 end
 
 function AbstractBriefingController:registerEventHandlers()
@@ -106,37 +158,10 @@ function AbstractBriefingController:registerEventHandlers()
         ui.playElementSound(el, "click", "success")
     end)
     self.document:GetElementById(self.element_names.next_btn):AddEventListener("click", function(_, el, _)
-        --Special handling will go here to handle Briefing Objectives state
-		if self.current_stage >= #self.stages then
-            ui.playElementSound(el, "click", "fail")
-            return
-        end
-		
-		if self.briefState == "briefing" then
-			ui.Briefing.callNextMapStage()
-			if self.stages[self.current_stage].hasForwardCut then
-				self:CutToStage()
-			end
-		end
-
-        self:go_to_stage(self.current_stage + 1)
-        ui.playElementSound(el, "click", "success")
+        self:go_to_next_stage()
     end)
     self.document:GetElementById(self.element_names.prev_btn):AddEventListener("click", function(_, el, _)
-        if self.current_stage <= 1 then
-            ui.playElementSound(el, "click", "fail")
-            return
-        end
-
-		if self.briefState == "briefing" then
-			ui.Briefing.callPrevMapStage()
-			if self.stages[self.current_stage].hasBackwardCut then
-				self:CutToStage()
-			end
-		end
-
-        self:go_to_stage(self.current_stage - 1)
-        ui.playElementSound(el, "click", "success")
+        self:go_to_prev_stage()
     end)
     self.document:GetElementById(self.element_names.first_btn):AddEventListener("click", function(_, el, _)
         if self.current_stage <= 1 then
@@ -247,6 +272,7 @@ function AbstractBriefingController:initializeStage(stageIdx, briefingText, audi
 	end
 
     local text_el = self.document:GetElementById(self.element_names.text_el)
+	text_el.parent_node.scroll_top = 0
     local num_stage_lines = rocket_utils.set_briefing_text(text_el, briefingText)
 
     local stage_indicator_el = self.document:GetElementById(self.element_names.stage_text_el)
