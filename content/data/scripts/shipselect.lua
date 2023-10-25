@@ -1,5 +1,6 @@
 local dialogs = require("dialogs")
 local class = require("class")
+local topics = require("ui_topics")
 local async_util = require("async_util")
 local loadoutHandler = require("loadouthandler")
 
@@ -52,6 +53,8 @@ function ShipSelectController:initialize(document)
 	self.SelectedEntry = nil
 	
 	self:BuildWings()
+	
+	topics.shipselect.initialize:send(self)
 	
 	--Only create entries if there are any to create
 	if loadoutHandler:GetNumShips() > 0 then

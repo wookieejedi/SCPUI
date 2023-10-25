@@ -1,8 +1,5 @@
 body
 {
-	font-family: BankGothic Md BT;
-	font-weight: normal;
-	font-style: normal;
 	/*font-size: 1em;*/
 	font-charset: U+0020-00FF; /* By default, we specify all the Latin1 chars */
 	width: 100%;

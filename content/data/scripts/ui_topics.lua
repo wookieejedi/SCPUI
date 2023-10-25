@@ -44,15 +44,23 @@ return {
   briefcommon = {
     initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the document context
   },
+  fictionviewer = {
+    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context
+  },
   cmdbriefing = {
+    initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the UI context.
     stage       = Topic(function(x) return x[1] end) --Sends the stage handle and the stage index in a table, expects the stage returned
   },
   briefing = {
+    initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the UI context.
     brief_bg    = Topic(function() return "brief-main-window.png" end) --Expects an image file returned, replaces the briefing goals stage BG
   },
   redalert = {
     initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the UI context.
 	commit      = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
+  loopbrief = {
+    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the UI context.
   },
   debrief = {
     initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the document context
@@ -80,13 +88,32 @@ return {
 	selectShip  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context and the selected ship.
   },
   medals = {
+    initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context
     setRankBitmap       = Topic(function(x) return x[2] end) --Sends the medal name and bitmap suffix. Expects a new bitmap suffix returned
   },
   options = {
-    background  = Topic(defaultBG) --Sends the UI contet, expects a css class returned
+    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context
+  },
+  missionlog = {
+    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context
+  },
+  controlconfig = {
+    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
+  hudconfig = {
+    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
+  hotkeyconfig = {
+    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
+  gamehelp = {
+    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the UI context.
   },
   gamepaused = {
-    bg          = Topic(function() return nil end) --Expects a CSS class returned
+    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
+  shipselect = {
+    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context
   },
   techroom = { --All tech room UIs!
     initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context
@@ -94,6 +121,12 @@ return {
 	btn2Action  = Topic(function() return nil end), --The code to run when tech room button 2 is clicked. When changing game states, lowest priority takes precedence.
 	btn3Action  = Topic(function() return nil end), --The code to run when tech room button 3 is clicked. When changing game states, lowest priority takes precedence.
 	btn4Action  = Topic(function() return nil end) --The code to run when tech room button 4 is clicked. When changing game states, lowest priority takes precedence.
+  },
+  techdatabase = {
+    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context
+  },
+  techcredits = {
+    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context
   },
   simulator = {
     initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context

@@ -1,11 +1,12 @@
 <rml>
 	<head>
-		<title>XSTR("Control Config", -1)</title>
+		<title>Control Config</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="controlconfig.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
 		<script>
 			controller = require("controlconfig")()
 		</script>

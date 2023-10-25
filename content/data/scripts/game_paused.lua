@@ -28,12 +28,6 @@ function GamePausedController:initialize(document)
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("h2-" .. ScpuiSystem:getFontSize()), true)
 	
-	local bgclass = topics.gamepaused.bg:send()
-	
-	if bgclass ~= nil then
-		self.document:GetElementById("main_background"):SetClass(bgclass, true)
-	end
-	
 	local main_bg = self.document:GetElementById("screenrender")
 	local imgEl = self.document:CreateElement("img")
 	main_bg:AppendChild(imgEl)
@@ -41,6 +35,8 @@ function GamePausedController:initialize(document)
 	imgEl:SetAttribute("src", screenRender)
 	
 	self.document:GetElementById("text").inner_rml = utils.xstr(pausedText)
+	
+	topics.gamepaused.initialize:send(self)
 	
 end
 

@@ -1,15 +1,7 @@
 body
 {
-	background-decorator: image;
-	background-image: bg.png;
 	z-index: bottom;
 	z-index: -1;
-}
-
-.main_bg
-{
-	background-decorator: image;
-	background-image: bg-cockpit.png;
 }
 
 .below p

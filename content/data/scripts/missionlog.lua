@@ -1,4 +1,5 @@
 local class = require("class")
+local topics = require("ui_topics")
 
 local MissionlogController = class()
 
@@ -33,6 +34,8 @@ function MissionlogController:initialize(document)
 	self:initGoalsLog()
 	
 	ui.MissionLog.closeMissionLog()
+	
+	topics.missionlog.initialize:send(self)
 	
 	self:ChangeSection(ScpuiSystem.logSection)
 	

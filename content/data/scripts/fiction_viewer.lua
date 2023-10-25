@@ -1,3 +1,4 @@
+local topics = require("ui_topics")
 local rocket_utils = require("rocket_util")
 local async_util = require("async_util")
 
@@ -31,6 +32,8 @@ function FictionViewerController:initialize(document)
 	local text_el = self.document:GetElementById("fiction_text")
 	
 	local color_text = rocket_utils.set_briefing_text(text_el, self.text)
+	
+	topics.fictionviewer.initialize:send(self)
 	
 	self.voice_handle = ad.openAudioStream(self.voiceFile, AUDIOSTREAM_VOICE)
 	self.voice_handle:play(ad.MasterVoiceVolume)

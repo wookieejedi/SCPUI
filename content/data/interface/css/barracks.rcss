@@ -1,7 +1,5 @@
 body
 {
-	background-decorator: image;
-	background-image: bg.png;
 	z-index: bottom;
 	z-index: -1;
 }

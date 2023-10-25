@@ -1,11 +1,12 @@
 <rml>
 	<head>
-		<title>XSTR("Weapon Select", -1)</title>
+		<title>Weapon Select</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="weapon_select.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
 		<script>
 			controller = require("weaponselect")()
 		</script>

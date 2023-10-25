@@ -1,11 +1,12 @@
 <rml>
 	<head>
-		<title>XSTR("Fiction Viewer", -1)</title>
+		<title>Fiction Viewer</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="fiction_viewer.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
 		<script>
 			controller = require("fiction_viewer")()
 		</script>

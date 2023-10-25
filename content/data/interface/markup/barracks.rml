@@ -1,11 +1,12 @@
 <rml>
 	<head>
-		<title>XSTR("Barracks", -1)</title>
+		<title>Barracks</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="barracks.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
 		<script>
 			controller = require("barracks")()
 		</script>

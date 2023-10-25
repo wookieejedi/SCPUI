@@ -1,11 +1,12 @@
 <rml>
 	<head>
-		<title>XSTR("Loop Briefing", -1)</title>
+		<title>Loop Briefing</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="loop_brief.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
 		<script>
 			controller = require("loop_brief")()
 		</script>

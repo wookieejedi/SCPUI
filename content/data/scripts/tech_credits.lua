@@ -1,5 +1,6 @@
 local dialogs = require("dialogs")
 local class = require("class")
+local topics = require("ui_topics")
 local async_util = require("async_util")
 local topics = require("ui_topics")
 
@@ -53,6 +54,9 @@ function TechCreditsController:initialize(document)
 	
 	self.creditsElement = text_el
 	
+	topics.techroom.initialize:send(self)
+	topics.techcredits.initialize:send(self)
+	
 	self:ScrollCredits()
 	
 	local image_el = self.document:GetElementById("credits_image")
@@ -81,8 +85,6 @@ function TechCreditsController:initialize(document)
 	self.document:GetElementById("tech_btn_2"):SetPseudoClass("checked", false)
 	self.document:GetElementById("tech_btn_3"):SetPseudoClass("checked", false)
 	self.document:GetElementById("tech_btn_4"):SetPseudoClass("checked", true)
-	
-	topics.techroom.initialize:send(self)
 	
 end
 

@@ -148,6 +148,8 @@ function BriefingController:initialize(document)
 	local aniEl = self.document:CreateElement("img")
     aniEl:SetAttribute("src", ScpuiSystem.drawBrMap.url)
 	briefView:ReplaceChild(aniEl, briefView.first_child)
+	
+	topics.briefing.initialize:send(self)
 
 end
 

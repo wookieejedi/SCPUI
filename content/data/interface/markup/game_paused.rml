@@ -1,10 +1,11 @@
 <rml>
 	<head>
-		<title>XSTR("Game Paused", -1)</title>
+		<title>Game Paused</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="game_paused.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
 		<script>
 			controller = require("game_paused")()
 		</script>

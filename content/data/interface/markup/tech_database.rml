@@ -1,11 +1,12 @@
 <rml>
 	<head>
-		<title>XSTR("Tech Database", -1)</title>
+		<title>Tech Database</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="tech_database.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
 		<script>
 			controller = require("tech_database")()
 		</script>

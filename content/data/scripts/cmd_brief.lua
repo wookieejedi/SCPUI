@@ -40,6 +40,8 @@ function CommandBriefingController:initialize(document)
 
 		self.stages[i] = topics.cmdbriefing.stage:send({stage, i})
     end
+	
+	topics.cmdbriefing.initialize:send(self)
 
     self:go_to_stage(1)
 end

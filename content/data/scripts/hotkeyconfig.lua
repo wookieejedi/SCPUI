@@ -1,4 +1,5 @@
 local class = require("class")
+local topics = require("ui_topics")
 
 local HotkeyController = class()
 
@@ -24,6 +25,8 @@ function HotkeyController:initialize(document)
 	
 	self:initHotkeys()
 	self:createHotkeysList()
+	
+	topics.hotkeyconfig.initialize:send(self)
 	
 	self:ChangeKey(1)
 end

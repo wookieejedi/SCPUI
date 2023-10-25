@@ -1,4 +1,5 @@
 local dialogs = require("dialogs")
+local topics = require("ui_topics")
 local class = require("class")
 local async_util = require("async_util")
 
@@ -87,6 +88,8 @@ function HudConfigController:initialize(document)
 	self.selectAll = false
 	
 	self:initPresets()
+	
+	topics.hudconfig.initialize:send(self)
 end
 
 function HudConfigController:initPresets()

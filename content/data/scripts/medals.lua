@@ -40,6 +40,8 @@ function MedalsController:initialize(document)
 	end
 	
 	self.document:GetElementById("medals_text").inner_rml = self.playerName
+	
+	topics.medals.initialize:send(self)
 
 end
 

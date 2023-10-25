@@ -136,6 +136,7 @@ function TechDatabaseController:initialize(document)
 	self.document:GetElementById("tech_btn_4"):SetPseudoClass("checked", false)
 	
 	topics.techroom.initialize:send(self)
+	topics.techdatabase.initialize:send(self)
 	
 	--Get all the table data fresh each time in case there are changes
 	self:LoadData()

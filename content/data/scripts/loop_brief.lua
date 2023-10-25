@@ -1,4 +1,5 @@
 local rocket_utils = require("rocket_util")
+local topics = require("ui_topics")
 local async_util = require("async_util")
 local dialogs = require("dialogs")
 
@@ -39,6 +40,8 @@ function LoopBriefController:initialize(document)
 
         aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
     end
+	
+	topics.loopbrief.initialize:send(self)
 
 end
 

@@ -1,11 +1,12 @@
 <rml>
 	<head>
-		<title>XSTR("Mission Simulator", -1)</title>
+		<title>Mission Simulator</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="tech_missions.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
 		<script>
 			controller = require("tech_missions")()
 		</script>

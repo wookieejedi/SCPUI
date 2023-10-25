@@ -1,4 +1,5 @@
 local class = require("class")
+local topics = require("ui_topics")
 
 local GamehelpController = class()
 
@@ -40,6 +41,8 @@ function GamehelpController:initialize(document)
 	end
 	
 	ui.GameHelp.closeGameHelp()
+	
+	topics.gamehelp.initialize:send(self)
 	
 	self:ChangeSection(1)
 	

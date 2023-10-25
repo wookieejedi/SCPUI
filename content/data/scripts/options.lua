@@ -1065,9 +1065,9 @@ end
 
 function OptionsController:initialize(document)
     self.document = document
-
-	local bgclass = topics.options.background:send(context)
-	self.document:GetElementById("main_background"):SetClass(bgclass, true)
+	
+	---Load background choice
+	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
@@ -1112,6 +1112,8 @@ function OptionsController:initialize(document)
     self:initialize_detail_options()
 	
 	self:initialize_prefs_options()
+	
+	topics.options.initialize:send(self)
 end
 
 function OptionsController:acceptChanges(state)

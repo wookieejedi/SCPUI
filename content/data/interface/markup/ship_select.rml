@@ -1,11 +1,12 @@
 <rml>
 	<head>
-		<title>XSTR("Ship Select", -1)</title>
+		<title>Ship Select</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="ship_select.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
 		<script>
 			controller = require("shipselect")()
 		</script>

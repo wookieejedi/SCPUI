@@ -1,11 +1,12 @@
 <rml>
 	<head>
-		<title>XSTR("Death Dialog", -1)</title>
+		<title>Death Dialog</title>
 		<link type="text/rcss" href="default.rcss"/>
 		<link type="text/rcss" href="fontsizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
 		<link type="text/rcss" href="scrollbars.rcss"/>
 		<link type="text/rcss" href="deathdialog.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
 	</head>
 	<body id="dialog_body">
 		<div id="content">

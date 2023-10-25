@@ -1,5 +1,6 @@
 local dialogs = require("dialogs")
 local class = require("class")
+local topics = require("ui_topics")
 local async_util = require("async_util")
 
 local ControlConfigController = class()
@@ -33,6 +34,8 @@ function ControlConfigController:initialize(document)
 	
 	self:initPresets()
 	self.document:GetElementById("new_lock"):SetClass("hidden", false)
+	
+	topics.controlconfig.initialize:send(self)
 	
 	self:changeSection(0)
 end
