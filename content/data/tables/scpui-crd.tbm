@@ -13,8 +13,11 @@ XSTR("Derivative works of this mod must be released under the same license", -1)
 XSTR("You must obtain permission to use this work for commercial purposes", -1)
 
 XSTR("Primary Coders", -1)
-XSTR("Mike "MjnMixael" Nelson", -1)
+XSTR("Mike 'MjnMixael' Nelson", -1)
 XSTR("m!m", -1)
 XSTR("Naomi Coffman", -1)
+
+XSTR("Contributors", -1)
+XSTR("Axem", -1)
 
 #end
