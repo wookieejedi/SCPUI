@@ -275,6 +275,9 @@ function LoadoutHandler:AppendToShipInfo(shipIdx)
 		GeneratedHeight = rocketUiIcons[tb.ShipClasses[shipIdx].Name].Height,
 		GeneratedIcon = rocketUiIcons[tb.ShipClasses[shipIdx].Name].Icon
 	}
+	
+	topics.loadouts.initShipInfo:send(ScpuiSystem.loadouts.shipInfo[i])
+	
 	return ScpuiSystem.loadouts.shipInfo[i]
 end
 
@@ -351,6 +354,8 @@ function LoadoutHandler:AppendToWeaponInfo(wepIdx)
 		GeneratedHeight = rocketUiIcons[tb.WeaponClasses[wepIdx].Name].Height,
 		GeneratedIcon = rocketUiIcons[tb.WeaponClasses[wepIdx].Name].Icon
 	}
+	
+	topics.loadouts.initWeaponInfo:send(data)
 	
 	if tb.WeaponClasses[wepIdx]:isPrimary() then
 		local i = #ScpuiSystem.loadouts.primaryInfo + 1
