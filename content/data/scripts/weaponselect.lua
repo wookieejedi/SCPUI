@@ -646,20 +646,34 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	local infoEl = self.document:GetElementById("weapon_stats")
 	
+	self:ClearEntries(infoEl)
+	
 	local hull = entry.ArmorFactor * entry.Damage
 	local shield = entry.ShieldFactor * entry.Damage
 	local subsystem = entry.SubsystemFactor * entry.Damage
 	local power = math.floor(entry.Power * 100)
 	local rof = math.floor(100 / entry.FireWait) / 100
-
-	local weaponDescription    = "<p>" .. entry.Description .. "</p>"
-	local WeaponLine2 = "<p>" .. ba.XSTR("Velocity", -1) .. ": " .. entry.Velocity .. "m/s " .. ba.XSTR("Range", -1) .. ": " .. entry.Range .. "m</p>"
-	local WeaponLine3 = "<p class=\"info\">" .. ba.XSTR("Damage", -1) .. ": " .. hull .. " " .. ba.XSTR("Hull", -1) .. ", " .. shield .. " " .. ba.XSTR("Shield", -1) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", -1) .. "</p>"
-	local WeaponLine4 = "<p class=\"info\">" .. ba.XSTR("Power Use", -1) .. ": " .. power .. ba.XSTR("W", -1) .. " " .. ba.XSTR("ROF", -1) .. ": " .. rof .. "/s</p>"
-
-	local completeRML = weaponDescription .. WeaponLine2 .. WeaponLine3 .. WeaponLine4
 	
-	infoEl.inner_rml = completeRML
+	local desc_el = self.document:CreateElement("p")
+	desc_el.inner_rml = entry.Description
+	
+	local stats1_el = self.document:CreateElement("p")
+	stats1_el.inner_rml = ba.XSTR("Velocity", -1) .. ": " .. entry.Velocity .. "m/s " .. ba.XSTR("Range", -1) .. ": " .. entry.Range .. "m"
+	
+	local stats2_el = self.document:CreateElement("p")
+	stats2_el:SetClass("info", true)
+	stats2_el.inner_rml = ba.XSTR("Damage", -1) .. ": " .. hull .. " " .. ba.XSTR("Hull", -1) .. ", " .. shield .. " " .. ba.XSTR("Shield", -1) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", -1)
+	
+	local stats3_el = self.document:CreateElement("p")
+	stats3_el:SetClass("info", true)
+	stats3_el.inner_rml = ba.XSTR("Power Use", -1) .. ": " .. power .. ba.XSTR("W", -1) .. " " .. ba.XSTR("ROF", -1) .. ": " .. rof .. "/s"
+	
+	infoEl:AppendChild(desc_el)
+	infoEl:AppendChild(stats1_el)
+	infoEl:AppendChild(stats2_el)
+	infoEl:AppendChild(stats3_el)
+	
+	topics.weaponselect.entryInfo:send({entry, infoEl})
 
 end
 

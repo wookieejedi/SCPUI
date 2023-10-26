@@ -81,11 +81,9 @@ return {
 	emptyShipSlot       = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the ship slot
 	fillShipSlot        = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the ship slot
 	returnShipSlot      = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the ship slot
+	initWeaponInfo      = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the weapon data as a table
+	initShipInfo        = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the ship data as a table
 	copyShipSlot        = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the source ship slot and the target ship slot
-  },
-  weaponselect = {
-    initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context.
-	selectShip  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context and the selected ship.
   },
   medals = {
     initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context
@@ -113,7 +111,13 @@ return {
     initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the UI context.
   },
   shipselect = {
-    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context
+    initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context
+	entryInfo   = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the ship entry and the stats UI element
+  },
+  weaponselect = {
+    initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context.
+	entryInfo   = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the weapon entry and the stats UI element
+	selectShip  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context and the selected ship.
   },
   techroom = { --All tech room UIs!
     initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context

@@ -338,20 +338,38 @@ function ShipSelectController:BuildInfo(entry)
 	
 	local midString = "</p><p class=\"info\">"
 	
-	local shipClass    = "<p>" .. ba.XSTR("Class", 739) .. midString .. entry.Name .. "</p>"
-	local shipType     = "<p>" .. ba.XSTR("Type", 740) .. midString .. entry.Type .. "</p>"
-	local shipLength   = "<p>" .. ba.XSTR("Length", 741) .. midString .. entry.Length .. "</p>"
-	local shipVelocity = "<p>" .. ba.XSTR("Max Velocity", 742) .. midString .. entry.Velocity .. "</p>"
-	local shipManeuv   = "<p>" .. ba.XSTR("Maneuverability", 744) .. midString .. entry.Maneuverability .. "</p>"
-	local shipArmor    = "<p>" .. ba.XSTR("Armor", 745) .. midString .. entry.Armor .. "</p>"
-	local shipGuns     = "<p>" .. ba.XSTR("Gun Mounts", 746) .. midString .. entry.GunMounts .. "</p>"
-	local shipMissiles = "<p>" .. ba.XSTR("Missile Banks", 747) .. midString .. entry.MissileBanks .. "</p>"
-	local shipManufac  = "<p>" .. ba.XSTR("Manufacturer", 748) .. midString .. entry.Manufacturer .. "</p>"
-
-	local completeRML = shipClass .. shipType .. shipLength .. shipVelocity .. shipManeuv .. shipArmor .. shipGuns .. shipMissiles .. shipManufac
+	local array    = {
+		{ba.XSTR("Class", 739), entry.Name},
+		{ba.XSTR("Type", 740), entry.Type},
+		{ba.XSTR("Length", 741), entry.Length},
+		{ba.XSTR("Max Velocity", 742), entry.Velocity},
+		{ba.XSTR("Maneuverability", 744), entry.Maneuverability},
+		{ba.XSTR("Armor", 745), entry.Armor},
+		{ba.XSTR("Gun Mounts", 746), entry.GunMounts},
+		{ba.XSTR("Missile Banks", 747), entry.MissileBanks},
+		{ba.XSTR("Manufacturer", 748), entry.Manufacturer}
+	}
 	
-	infoEl.inner_rml = completeRML
+	for _, v in ipairs(array) do
+		infoEl:AppendChild(self:BuildInfoTitle(v[1]))
+		infoEl:AppendChild(self:BuildInfoStat(v[2]))
+	end
+	
+	topics.shipselect.entryInfo:send({entry, infoEl})
 
+end
+
+function ShipSelectController:BuildInfoTitle(text)
+	local element = self.document:CreateElement("p")
+	element.inner_rml = text
+	return element
+end
+
+function ShipSelectController:BuildInfoStat(text)
+	local element = self.document:CreateElement("p")
+	element:SetClass("info", true)
+	element.inner_rml = text
+	return element
 end
 
 function ShipSelectController:ChangeBriefState(state)
