@@ -1,0 +1,183 @@
+#Conditional Hooks
+$Application: FS2_Open
+$On Game Init:
+[
+
+--Misc functions for handling various UI-related tasks
+
+function ScpuiSystem:pauseScriptedSounds(toggle)
+	if toggle == true then
+		for i, v in pairs(ScpuiSystem.Sounds) do
+			--v.handle:pause()
+		end
+	else
+		for i, v in pairs(ScpuiSystem.Sounds) do
+			--v.handle:resume()
+		end
+	end
+end
+
+function ScpuiSystem:updateVolumes(voice)
+	for i, v in pairs(ScpuiSystem.Sounds) do
+		if v.voice == voice then
+			--v.handle:setVolume(1.0, voice)
+		end
+	end
+end
+
+function ScpuiSystem:pauseAllAudio(toggle)
+	ad.pauseMusic(-1, toggle)
+	ad.pauseWeaponSounds(toggle)
+	--ad.pauseVoiceMessages(toggle)
+	self:pauseScriptedSounds(toggle)
+end
+
+function ScpuiSystem:getAbsoluteLeft(element)
+	local val = element.offset_left
+	local parent = element.parent_node
+	while parent ~= nil do
+		val = val + parent.offset_left
+		parent = parent.parent_node
+	end
+	
+	return val
+end
+
+function ScpuiSystem:getAbsoluteTop(element)
+	local val = element.offset_top
+	local parent = element.parent_node
+	while parent ~= nil do
+		val = val + parent.offset_top
+		parent = parent.parent_node
+	end
+	
+	return val
+end
+
+function ScpuiSystem:maybePlayCutscene(scene)
+	if self.music_handle ~= nil then
+		self.music_handle:pause()
+	end
+	ui.maybePlayCutscene(scene, true, 0)
+	if self.music_handle ~= nil then
+		self.music_handle:unpause()
+	end
+end
+
+function ScpuiSystem:getFontSize(val)
+	-- If we have don't have val, then get the stored one
+	if val == nil then
+		if ScpuiOptionValues == nil then
+			ba.warning("Cannot get font size before SCPUI is initialized! Using default.")
+			return 5
+		else
+			val = ScpuiOptionValues.Font_Multiplier
+			
+			-- If value is not set then use default
+			if val == nil then
+				return 5
+			end
+		end
+	end
+	
+	-- Make sure val is a number
+	val = tonumber(val)
+	if val == nil then
+		ba.warning("SCPUI got invalid data for Font Multiplier! Using default.")
+		return 5
+	end
+	
+	-- If value is greater than 1, then it's an old style and we can just return it directly
+	-- But math.floor it just in case.
+	if val > 1.0 then
+		return math.floor(val)
+	end
+	
+	-- Range check
+	if val < 0.0 then
+        val = 0.0
+    elseif val > 1.0 then
+        val = 1.0
+    end
+
+    -- Perform the conversion
+    local convertedValue = 1 + (val * 19)
+    return math.floor(convertedValue)
+end
+
+function ScpuiSystem:getBackgroundClass()
+	local campaignfilename = ba.getCurrentPlayer():getCampaignFilename()
+	local bgclass = self.backgrounds[campaignfilename]
+	
+	if not bgclass then
+		bgclass = "general_bg"
+	end
+	
+	return bgclass
+end
+
+function ScpuiSystem:getBriefingBackground(mission, stage)
+
+	local file = nil
+	
+	if self.briefBackgrounds[mission] ~= nil then
+		file = self.briefBackgrounds[mission][stage]
+	
+		if file == nil then
+			file = self.briefBackgrounds[mission]["default"]
+		end
+	end
+	
+	--double check
+	if file == nil then
+		file = "br-black.png"
+	end
+
+	return file
+end
+
+--Makes a button and returns the element
+function ScpuiSystem:makeButton(context, cont_id, button_id, button_classes, img_base, img_file, text_id, text_classes, text)
+	local cont_el = context.document:CreateElement("div")
+	cont_el.id = cont_id
+	
+	local button_el = context.document:CreateElement("button")
+	button_el.id = button_id
+	for _, v in ipairs(button_classes) do
+		button_el:SetClass(v, true)
+	end
+	
+	local button_img_el = context.document:CreateElement("span")
+	button_img_el.id = img_base .. "_img"
+	button_img_el:SetClass(img_base, true)
+	button_img_el:SetClass("button_img", true)
+	
+	local button_img = context.document:CreateElement("img")
+	button_img:SetAttribute("src", img_file)
+	button_img:SetClass("psuedo_img", true)
+	
+	local button_text_el = context.document:CreateElement("span")
+	button_text_el.id = text_id
+	for _, v in ipairs(text_classes) do
+		button_text_el:SetClass(v, true)
+	end
+	
+	local button_text = context.document:CreateElement("p")
+	button_text.inner_rml = text
+	
+	button_text_el:AppendChild(button_text)
+	button_img_el:AppendChild(button_img)
+	button_el:AppendChild(button_img_el)
+	button_el:AppendChild(button_text_el)
+	cont_el:AppendChild(button_el)
+	
+	return cont_el, button_el
+end
+
+function ScpuiSystem:makeButtonPanel(name)
+	-- unused
+end
+
+]
+
+#End

@@ -1,6 +1,12 @@
 local utils = require("utils")
 local topics = require("ui_topics")
 
+-----------------------------------
+--This is the core SCPUI file. It handles state management and
+--all necessary preloading of content. Disabling this, disables
+--everything. Modify with care.
+-----------------------------------
+
 local updateCategory = engine.createTracingCategory("UpdateRocket", false)
 local renderCategory = engine.createTracingCategory("RenderRocket", true)
 
@@ -135,65 +141,6 @@ function ScpuiSystem:parseTable(data)
 	parse.requiredString("#End")
 
 	parse.stop()
-end
-
-function ScpuiSystem:pauseScriptedSounds(toggle)
-	if toggle == true then
-		for i, v in pairs(ScpuiSystem.Sounds) do
-			--v.handle:pause()
-		end
-	else
-		for i, v in pairs(ScpuiSystem.Sounds) do
-			--v.handle:resume()
-		end
-	end
-end
-
-function ScpuiSystem:updateVolumes(voice)
-	for i, v in pairs(ScpuiSystem.Sounds) do
-		if v.voice == voice then
-			--v.handle:setVolume(1.0, voice)
-		end
-	end
-end
-
-function ScpuiSystem:pauseAllAudio(toggle)
-	ad.pauseMusic(-1, toggle)
-	ad.pauseWeaponSounds(toggle)
-	--ad.pauseVoiceMessages(toggle)
-	self:pauseScriptedSounds(toggle)
-end
-
-function ScpuiSystem:getAbsoluteLeft(element)
-	local val = element.offset_left
-	local parent = element.parent_node
-	while parent ~= nil do
-		val = val + parent.offset_left
-		parent = parent.parent_node
-	end
-	
-	return val
-end
-
-function ScpuiSystem:getAbsoluteTop(element)
-	local val = element.offset_top
-	local parent = element.parent_node
-	while parent ~= nil do
-		val = val + parent.offset_top
-		parent = parent.parent_node
-	end
-	
-	return val
-end
-
-function ScpuiSystem:maybePlayCutscene(scene)
-	if self.music_handle ~= nil then
-		self.music_handle:pause()
-	end
-	ui.maybePlayCutscene(scene, true, 0)
-	if self.music_handle ~= nil then
-		self.music_handle:unpause()
-	end
 end
 
 function ScpuiSystem:getDef(state)
@@ -436,80 +383,7 @@ function ScpuiSystem:addPreload(message, text, run, val)
 		func = run,
 		priority = val
 	}
-end
-
-function ScpuiSystem:getFontSize(val)
-	-- If we have don't have val, then get the stored one
-	if val == nil then
-		if ScpuiOptionValues == nil then
-			ba.warning("Cannot get font size before SCPUI is initialized! Using default.")
-			return 5
-		else
-			val = ScpuiOptionValues.Font_Multiplier
-			
-			-- If value is not set then use default
-			if val == nil then
-				return 5
-			end
-		end
-	end
-	
-	-- Make sure val is a number
-	val = tonumber(val)
-	if val == nil then
-		ba.warning("SCPUI got invalid data for Font Multiplier! Using default.")
-		return 5
-	end
-	
-	-- If value is greater than 1, then it's an old style and we can just return it directly
-	-- But math.floor it just in case.
-	if val > 1.0 then
-		return math.floor(val)
-	end
-	
-	-- Range check
-	if val < 0.0 then
-        val = 0.0
-    elseif val > 1.0 then
-        val = 1.0
-    end
-
-    -- Perform the conversion
-    local convertedValue = 1 + (val * 19)
-    return math.floor(convertedValue)
-end
-
-function ScpuiSystem:getBackgroundClass()
-	local campaignfilename = ba.getCurrentPlayer():getCampaignFilename()
-	local bgclass = self.backgrounds[campaignfilename]
-	
-	if not bgclass then
-		bgclass = "general_bg"
-	end
-	
-	return bgclass
-end
-
-function ScpuiSystem:getBriefingBackground(mission, stage)
-
-	local file = nil
-	
-	if self.briefBackgrounds[mission] ~= nil then
-		file = self.briefBackgrounds[mission][stage]
-	
-		if file == nil then
-			file = self.briefBackgrounds[mission]["default"]
-		end
-	end
-	
-	--double check
-	if file == nil then
-		file = "br-black.png"
-	end
-
-	return file
-end
-	
+end	
 
 function ScpuiSystem:CloseDialog()
 	if ScpuiSystem.dialog ~= nil then
