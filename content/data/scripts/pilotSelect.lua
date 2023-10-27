@@ -1,9 +1,9 @@
-local utils                              = require("utils")
-local tblUtil                            = utils.table
+local utils = require("utils")
+local tblUtil = utils.table
+local topics = require("ui_topics")
+local dialogs = require("dialogs")
 
-local dialogs                            = require("dialogs")
-
-local class                              = require("class")
+local class = require("class")
 
 local VALID_MODES                        = { "single", "multi" }
 
@@ -22,11 +22,12 @@ end
 
 function PilotSelectController:initialize(document)
     self.document  = document
-
+	
 	---Load the desired font size from the save file
+	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize(nil, 9)), true)
+	
 	if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
-		self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
-		self.document:GetElementById("copyright_info"):SetClass(("s1-" .. ScpuiSystem:getFontSize()), true)
+		self.document:GetElementById("copyright_info"):SetClass(("s1-" .. ScpuiSystem:getFontSize(nil, 9)), true)
 	end
 
     local pilot_ul = document:GetElementById("pilotlist_ul")
@@ -55,7 +56,7 @@ function PilotSelectController:initialize(document)
         document:GetElementById("fso_version_info").inner_rml = ba.getVersionString()
 		document:GetElementById("mod_version_info").inner_rml = ba.getModTitle() .. " v" .. ba.getModVersion()
 		
-		--Hide Multistuff maybe
+		--Hide Multi stuff maybe
 		if ScpuiSystem.hideMulti == true then
 			self.document:GetElementById("singleplayer_text"):SetClass("hidden", true)
 			self.document:GetElementById("multiplayer_text"):SetClass("hidden", true)
@@ -85,7 +86,9 @@ function PilotSelectController:initialize(document)
         end
     end
 
-    ui.MainHall.startAmbientSound()
+	if topics.pilotselect.startsound:send(self) then
+		ui.MainHall.startAmbientSound()
+	end
 
     if ui.PilotSelect.WarningCount > 10 or ui.PilotSelect.ErrorCount > 0 then
         local text    = string.format(ba.XSTR("The currently active mod has generated %d warnings and/or errors during"
@@ -107,6 +110,8 @@ function PilotSelectController:initialize(document)
         if ui.PilotSelect.isAutoselect() then
             self.document:GetElementById("playercommit_btn"):Click()
         end
+		
+		topics.pilotselect.initialize:send(self)
     end
 end
 
@@ -242,9 +247,9 @@ function PilotSelectController:global_keydown(element, event)
         event:StopPropagation()
 
         if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
-            ba.postGameEvent(ba.GameEvents["GS_EVENT_QUIT_GAME"])
-        else
-            ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+			if topics.pilotselect.escKeypress:send(self) == true then
+				ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+			end
         end
     end
 end
@@ -460,6 +465,10 @@ function PilotSelectController:down_button_pressed()
     end
 
     self:selectPilot(self.pilots[idx])
+end
+
+function PilotSelectController:unload()
+	topics.pilotselect.unload:send(self)
 end
 
 return PilotSelectController

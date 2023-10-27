@@ -1,7 +1,6 @@
 body
 {
-	z-index: bottom;
-	z-index: -1;
+	z-index:-1;
 }
 
 .below p
@@ -31,7 +30,6 @@ div#copyright_info
 	position: absolute;
 	bottom: 1%;
 	margin: auto;
-	width: 70%;
 	width: 70%;
 	height: auto;
 	overflow: hidden;
@@ -311,7 +309,7 @@ div#player_control_cont
 	margin-right: 1%;
 	margin-left: 5%;
 	top: 0;
-	margin-bottom: -6%;
+	margin-bottom: -8%;
 	z-index: 1;
 }
 

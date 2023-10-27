@@ -64,18 +64,21 @@ function ScpuiSystem:maybePlayCutscene(scene)
 	end
 end
 
-function ScpuiSystem:getFontSize(val)
+function ScpuiSystem:getFontSize(val, default)
+	if default == nil then
+		default = 5
+	end
 	-- If we have don't have val, then get the stored one
 	if val == nil then
 		if ScpuiOptionValues == nil then
 			ba.warning("Cannot get font size before SCPUI is initialized! Using default.")
-			return 5
+			return default
 		else
 			val = ScpuiOptionValues.Font_Multiplier
 			
 			-- If value is not set then use default
 			if val == nil then
-				return 5
+				return default
 			end
 		end
 	end
@@ -84,7 +87,7 @@ function ScpuiSystem:getFontSize(val)
 	val = tonumber(val)
 	if val == nil then
 		ba.warning("SCPUI got invalid data for Font Multiplier! Using default.")
-		return 5
+		return default
 	end
 	
 	-- If value is greater than 1, then it's an old style and we can just return it directly
@@ -136,7 +139,54 @@ function ScpuiSystem:getBriefingBackground(mission, stage)
 	return file
 end
 
---Makes a button and returns the element
+--Makes an element of the specified type and with the specified id
+function ScpuiSystem:makeElement(context, t, id)
+	local el = context.document:CreateElement(t)
+	if id ~= nil then
+		el.id = id
+	end
+	return el
+end
+
+--Makes an image element
+function ScpuiSystem:makeImg(context, file, animated)
+	local t = "img"
+	if animated == true then
+		t = "ani"
+	end
+	local el = context.document:CreateElement(t)
+	el:SetAttribute("src", file)
+	return el
+end
+
+--Makes a text-only button and returns the elements
+function ScpuiSystem:makeTextButton(context, cont_id, button_id, button_classes, text_id, text_classes, text)
+	local cont_el = context.document:CreateElement("div")
+	cont_el.id = cont_id
+	
+	local button_el = context.document:CreateElement("button")
+	button_el.id = button_id
+	for _, v in ipairs(button_classes) do
+		button_el:SetClass(v, true)
+	end
+	
+	local button_text_el = context.document:CreateElement("span")
+	button_text_el.id = text_id
+	for _, v in ipairs(text_classes) do
+		button_text_el:SetClass(v, true)
+	end
+	
+	local button_text = context.document:CreateElement("p")
+	button_text.inner_rml = text
+	
+	button_text_el:AppendChild(button_text)
+	button_el:AppendChild(button_text_el)
+	cont_el:AppendChild(button_el)
+	
+	return cont_el, button_el
+end
+
+--Makes an image button and returns the elements
 function ScpuiSystem:makeButton(context, cont_id, button_id, button_classes, img_base, img_file, text_id, text_classes, text)
 	local cont_el = context.document:CreateElement("div")
 	cont_el.id = cont_id

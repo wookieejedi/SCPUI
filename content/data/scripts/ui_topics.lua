@@ -41,6 +41,12 @@ return {
   },
   
   --Interfaces
+  pilotselect = {
+    initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the document context
+	startsound  = Topic(function() return true end), --Whether or not to start the default mainhall background sound. Sends the document context and expects boolean return
+	escKeypress = Topic(function() return true end), --Whether or not to use the default action on ESC keydown. Sends the document context and expects boolean return
+	unload      = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the document context
+  },
   briefcommon = {
     initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the document context
   },
