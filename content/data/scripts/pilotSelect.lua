@@ -243,17 +243,25 @@ function PilotSelectController:set_player_mode(element, mode)
 end
 
 function PilotSelectController:global_keydown(element, event)
-    if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-        event:StopPropagation()
-
-        if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
-			if topics.pilotselect.escKeypress:send(self) == true then
-				ba.postGameEvent(ba.GameEvents["GS_EVENT_QUIT_GAME"])
-			end
-        else
-			ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+	if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
+		if event.parameters.key_identifier == rocket.key_identifier.ESCAPE and topics.pilotselect.escKeypress:send(self) == true then
+			event:StopPropagation()
+			ba.postGameEvent(ba.GameEvents["GS_EVENT_QUIT_GAME"])
+		elseif event.parameters.key_identifier == rocket.key_identifier.UP and topics.pilotselect.upKeypress:send(self) == true then
+			self:down_button_pressed()
+		elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and topics.pilotselect.dwnKeypress:send(self) == true then
+			self:up_button_pressed()
+		elseif event.parameters.key_identifier == rocket.key_identifier.RETURN and topics.pilotselect.retKeypress:send(self) == true then
+			self:commit_pressed()
+		elseif event.parameters.key_identifier == rocket.key_identifier.DELETE and topics.pilotselect.delKeypress:send(self) == true then
+			self:delete_player()
+		else
+			--Catch all for customization
+			topics.pilotselect.globalKeypress:send({self, event})
 		end
-    end
+	else
+		ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+	end
 end
 
 function PilotSelectController:callsign_input_cancel()

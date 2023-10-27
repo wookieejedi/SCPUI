@@ -42,10 +42,15 @@ return {
   
   --Interfaces
   pilotselect = {
-    initialize  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the document context
-	startsound  = Topic(function() return true end), --Whether or not to start the default mainhall background sound. Sends the document context and expects boolean return
-	escKeypress = Topic(function() return true end), --Whether or not to use the default action on ESC keydown. Sends the document context and expects boolean return
-	unload      = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the document context
+    initialize      = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the document context
+	startsound      = Topic(function() return true end), --Whether or not to start the default mainhall background sound. Sends the document context and expects boolean return
+	escKeypress     = Topic(function() return true end), --Whether or not to use the default action on ESC keydown. Sends the document context and expects boolean return
+	upKeypress      = Topic(function() return true end), --Whether or not to use the default action on UP keydown. Sends the document context and expects boolean return
+	dwnKeypress     = Topic(function() return true end), --Whether or not to use the default action on DOWN keydown. Sends the document context and expects boolean return
+	retKeypress     = Topic(function() return true end), --Whether or not to use the default action on RETURN keydown. Sends the document context and expects boolean return
+	delKeypress     = Topic(function() return true end), --Whether or not to use the default action on DELETE keydown. Sends the document context and expects boolean return
+	globalKeypress  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the document context and the event
+	unload          = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the document context
   },
   briefcommon = {
     initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the document context
