@@ -36,6 +36,8 @@ function TechDatabaseController:LoadData()
 	self.w_types = {}
 	self.i_types = {}
 	
+	topics.techdatabase.beginDataLoad:send(self)
+	
 	list = tb.ShipClasses
 	
 	i = 1
@@ -56,6 +58,8 @@ function TechDatabaseController:LoadData()
 			if not utils.table.contains(self.s_types, ship.Type) then
 				table.insert(self.s_types, ship.Type)
 			end
+			
+			topics.techdatabase.initShipData:send({self, ship})
 			
 			table.insert(self.ships, ship)
 		end
@@ -89,6 +93,8 @@ function TechDatabaseController:LoadData()
 				table.insert(self.w_types, weapon.Type)
 			end
 			
+			topics.techdatabase.initWeaponData:send({self, weapon})
+			
 			table.insert(self.weapons, weapon)
 		end
 		i = i + 1
@@ -109,9 +115,11 @@ function TechDatabaseController:LoadData()
 		}
 		
 		--build the category tables
-	  if not utils.table.contains(self.i_types, intel.Type) then
-		  table.insert(self.i_types, intel.Type)
-	  end
+		if not utils.table.contains(self.i_types, intel.Type) then
+			table.insert(self.i_types, intel.Type)
+		end
+		
+		topics.techdatabase.initIntelData:send({self, intel})
 		
 		table.insert(self.intel, intel)
 		i = i + 1
@@ -137,6 +145,8 @@ function TechDatabaseController:initialize(document)
 	
 	topics.techroom.initialize:send(self)
 	topics.techdatabase.initialize:send(self)
+	
+	self:InitSortFunctions()
 	
 	--Get all the table data fresh each time in case there are changes
 	self:LoadData()
@@ -181,50 +191,58 @@ function TechDatabaseController:setSortCategory(category)
 		    self.currentSortCategory = "type_asc_alph"
 		end
 	else --catch unhandled
-		self.currentSortCategory = "none"
+		if topics.techdatabase.setSortCat:send({self, category}) == false then
+			self.currentSortCategory = "none"
+		end
 	end
 	self:SortList()
 	self:ReloadList()
 end
 
-function TechDatabaseController:SortList()
+function TechDatabaseController:InitSortFunctions()
+
+	self.sortFunctions = {}
 	
-	local ItemSort = nil
-	--loadstring(v.func .. '()' )()
-	
+
 	--Item Sorters
 	local function sortByIndexAsc(a, b)
 		return a.DefaultPos < b.DefaultPos
 	end
+	self.sortFunctions.sortByIndexAsc = sortByIndexAsc
 	
 	local function sortByIndexDes(a, b)
 		return a.DefaultPos > b.DefaultPos
 	end
+	self.sortFunctions.sortByIndexDes = sortByIndexDes
 
 	local function sortByNameAsc(a, b)
 		return a.Name < b.Name
 	end
+	self.sortFunctions.sortByNameAsc = sortByNameAsc
 	
 	local function sortByNameDes(a, b)
 		return a.Name > b.Name
 	end
+	self.sortFunctions.sortByNameDes = sortByNameDes
 	
 	--Category Sorters
 	local function sortByTypeAsc_Alph(a, b)
 		if a.Type == b.Type then
-			return ItemSort(a, b)
+			return self.ItemSort(a, b)
 		else
 			return a.Type < b.Type
 		end
 	end
+	self.sortFunctions.sortByTypeAsc_Alph = sortByTypeAsc_Alph
 	
 	local function sortByTypeDes_Alph(a, b)
 		if a.Type == b.Type then
-			return ItemSort(a, b)
+			return self.ItemSort(a, b)
 		else
 			return a.Type > b.Type
 		end
 	end
+	self.sortFunctions.sortByTypeDes_Alph = sortByTypeDes_Alph
 	
 	local function sortByTypeAsc_Idx(a, b)
 		local tbl = nil
@@ -239,11 +257,12 @@ function TechDatabaseController:SortList()
 		local a_idx = utils.table.ifind(tbl, a.Type)
 		local b_idx = utils.table.ifind(tbl, b.Type)
 		if a.Type == b.Type then
-			return ItemSort(a, b)
+			return self.ItemSort(a, b)
 		else
 			return a_idx < b_idx
 		end
 	end
+	self.sortFunctions.sortByTypeAsc_Idx = sortByTypeAsc_Idx
 	
 	local function sortByTypeDes_Idx(a, b)
 		local tbl = nil
@@ -258,12 +277,22 @@ function TechDatabaseController:SortList()
 		local a_idx = utils.table.ifind(tbl, a.Type)
 		local b_idx = utils.table.ifind(tbl, b.Type)
 		if a.Type == b.Type then
-			return ItemSort(a, b)
+			return self.ItemSort(a, b)
 		else
 			return a_idx > b_idx
 		end
 	end
+	self.sortFunctions.sortByTypeDes_Idx = sortByTypeDes_Idx
+	
+	topics.techdatabase.initSortFuncs:send(self)
+end
 
+	
+
+function TechDatabaseController:SortList()
+	
+	self.ItemSort = nil
+	--loadstring(v.func .. '()' )()
 	
 	self:UncheckAllSortButtons()
 	
@@ -278,57 +307,61 @@ function TechDatabaseController:SortList()
 	--Check item sort
 	if self.currentSort == "index_asc" then
 		if self.currentSortCategory == "none" then
-			table.sort(self.currentList, sortByIndexAsc)
+			table.sort(self.currentList, self.sortFunctions.sortByIndexAsc)
 		else
-			ItemSort = sortByIndexAsc
+			self.ItemSort = self.sortFunctions.sortByIndexAsc
 		end
 		self.document:GetElementById("default_sort_btn"):SetPseudoClass("checked", true)
 	elseif self.currentSort == "index_des" then
 		if self.currentSortCategory == "none" then
-			table.sort(self.currentList, sortByIndexDes)
+			table.sort(self.currentList, self.sortFunctions.sortByIndexDes)
 		else
-			ItemSort = sortByIndexDes
+			self.ItemSort = self.sortFunctions.sortByIndexDes
 		end
 		self.document:GetElementById("default_sort_btn"):SetPseudoClass("checked", true)
 	elseif self.currentSort == "name_asc" then
 		if self.currentSortCategory == "none" then
-			table.sort(self.currentList, sortByNameAsc)
+			table.sort(self.currentList, self.sortFunctions.sortByNameAsc)
 		else
-			ItemSort = sortByNameAsc
+			self.ItemSort = self.sortFunctions.sortByNameAsc
 		end
 		self.document:GetElementById("name_sort_btn"):SetPseudoClass("checked", true)
 	elseif self.currentSort == "name_des" then
 		if self.currentSortCategory == "none" then
-			table.sort(self.currentList, sortByNameDes)
+			table.sort(self.currentList, self.sortFunctions.sortByNameDes)
 		else
-			ItemSort = sortByNameDes
+			self.ItemSort = self.sortFunctions.sortByNameDes
 		end
 		self.document:GetElementById("name_sort_btn"):SetPseudoClass("checked", true)
 	else
-		ba.warning("Got invalid sort method! Using Default.")
-		
-		self.currentSort = "index_asc"
-		return self:SortList()
+		if topics.techdatabase.sortItems:send(self) == false then
+			ba.warning("Got invalid sort method! Using Default.")
+			
+			self.currentSort = "index_asc"
+			return self:SortList()
+		end
 	end
 	
 	--Check categorization
 	if self.currentSortCategory ~= "none" then
 		if self.currentSortCategory == "type_asc_alph" then
-			table.sort(self.currentList, sortByTypeAsc_Alph)
+			table.sort(self.currentList, self.sortFunctions.sortByTypeAsc_Alph)
 			self.document:GetElementById("type_cat_btn"):SetPseudoClass("checked", true)
 		elseif self.currentSortCategory == "type_des_alph" then
-			table.sort(self.currentList, sortByTypeDes_Alph)
+			table.sort(self.currentList, self.sortFunctions.sortByTypeDes_Alph)
 			self.document:GetElementById("type_cat_btn"):SetPseudoClass("checked", true)
 		elseif self.currentSortCategory == "type_asc_idx" then
-			table.sort(self.currentList, sortByTypeAsc_Idx)
+			table.sort(self.currentList, self.sortFunctions.sortByTypeAsc_Idx)
 			self.document:GetElementById("type_cat_btn"):SetPseudoClass("checked", true)
 		elseif self.currentSortCategory == "type_des_idx" then
-			table.sort(self.currentList, sortByTypeDes_Idx)
+			table.sort(self.currentList, self.sortFunctions.sortByTypeDes_Idx)
 			self.document:GetElementById("type_cat_btn"):SetPseudoClass("checked", true)
 		else
-			ba.warning("Got invalid sort category! Using Default.")
-			self.currentSortCategory = "none"
-			return self:SortList()
+			if topics.techdatabase.sortCategories:send(self) == false then
+				ba.warning("Got invalid sort category! Using Default.")
+				self.currentSortCategory = "none"
+				return self:SortList()
+			end
 		end
 	else
 		self.document:GetElementById("default_cat_btn"):SetPseudoClass("checked", true)
@@ -357,6 +390,8 @@ function TechDatabaseController:UncheckAllSortButtons()
 	self.document:GetElementById("name_sort_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("default_cat_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("type_cat_btn"):SetPseudoClass("checked", false)
+	
+	topics.techdatabase.uncheckSorts:send(self)
 end
 
 function TechDatabaseController:getFirstIndex()
@@ -449,6 +484,8 @@ function TechDatabaseController:ChangeSection(section)
 
 		self:SortList()
 		
+		topics.techdatabase.selectSection:send({self, section})
+		
 		--Only create entries if there are any to create
 		if self.currentList[1] then
 			self.visibleList = {}
@@ -508,15 +545,15 @@ function TechDatabaseController:CreateEntries(list)
 
 	self:ClearEntries(list_names_el)
 	
-	local cur_category = nil
+	self.cur_category = nil
 
 	for i, v in ipairs(list) do
 	
 		--maybe create a category header
 		if utils.extractString(self.currentSortCategory, "_") == "type" then
 			if v.Visibility or self.show_all then
-				if v.Type ~= cur_category then
-					cur_category = v.Type
+				if v.Type ~= self.cur_category then
+					self.cur_category = v.Type
 					local entry = {
 						Name = v.Type,
 						DisplayName = v.Type
@@ -524,7 +561,8 @@ function TechDatabaseController:CreateEntries(list)
 					list_names_el:AppendChild(self:CreateEntryItem(entry, i, false, true))
 				end
 			end
-		
+		else
+			topics.techdatabase.createHeader:send({self, v})
 		end
 					
 		if self.show_all or v.Visibility then
@@ -556,6 +594,12 @@ function TechDatabaseController:SelectEntry(entry)
 		local thisEntry = self.document:GetElementById(entry.key)
 		self.SelectedEntry = entry.key
 		thisEntry:SetPseudoClass("checked", true)
+		
+		--Headings can be made selectable. If so, then custom code is required
+		if entry.Heading == true then
+			topics.techdatabase.selectHeader:send({self, entry})
+			return
+		end
 		
 		--Decide if item is a weapon or a ship
 		if self.SelectedSection == "ships" then

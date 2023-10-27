@@ -127,7 +127,19 @@ return {
 	btn4Action  = Topic(function() return nil end) --The code to run when tech room button 4 is clicked. When changing game states, lowest priority takes precedence.
   },
   techdatabase = {
-    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context
+    initialize      = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context
+	beginDataLoad   = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context
+	initShipData    = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context and the ship
+	initWeaponData  = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context and the weapon
+	initIntelData   = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context and the intel
+	initSortFuncs   = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context
+	selectSection   = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context
+	sortItems       = Topic(function() return false end), --Sends the context. Expects a boolean return for whether or not custom sort was sucessful
+	sortCategories  = Topic(function() return false end), --Sends the context. Expects a boolean return for whether or not custom sort was sucessful
+	setSortCat      = Topic(function() return false end), --Sends the context. Expects a boolean return for whether or not category was set
+	uncheckSorts    = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context
+	createHeader    = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context
+	selectHeader    = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context
   },
   techcredits = {
     initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context
