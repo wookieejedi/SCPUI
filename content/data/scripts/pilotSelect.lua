@@ -248,13 +248,12 @@ function PilotSelectController:global_keydown(element, event)
 
         if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
 			if topics.pilotselect.escKeypress:send(self) == true then
-				ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+				ba.postGameEvent(ba.GameEvents["GS_EVENT_QUIT_GAME"])
 			end
-        end
+        else
+			ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+		end
     end
-end
-
-function PilotSelectController:callsign_input_focus_lost()
 end
 
 function PilotSelectController:callsign_input_cancel()
