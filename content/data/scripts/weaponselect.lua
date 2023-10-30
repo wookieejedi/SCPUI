@@ -245,8 +245,7 @@ function WeaponSelectController:ReloadList()
 	end
 	self:BuildWings()
 	self:SelectInitialItems()
-	self:UpdateAllPoolCounts()
-	self:UpdateAllSecondaryCounts()
+	self:UpdateUiElements()
 end
 
 function WeaponSelectController:ChangeIconAvailability(shipIndex)
@@ -750,6 +749,12 @@ function WeaponSelectController:UpdatePoolCount(data)
 	countEl.inner_rml = loadoutHandler:GetWeaponPoolAmount(data.Index)
 end
 
+function WeaponSelectController:UpdateUiElements()
+	self:UpdateAllPoolCounts()
+	self:UpdateAllSecondaryCounts()
+	self:refreshOverheadSlot()
+end
+
 function WeaponSelectController:UpdateAllSecondaryCounts()
 	for i = 1, #self.secondaryAmountEls do
 		local bank = i + loadoutHandler:GetMaxPrimaries()
@@ -836,9 +841,7 @@ function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 			self.replace = nil
 		end
 		
-		self:UpdateAllPoolCounts()
-		self:UpdateAllSecondaryCounts()
-		self:refreshOverheadSlot()
+		self:UpdateUiElements()
 	end
 end
 
@@ -869,9 +872,7 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 			self:EmptySlot(element, slot)
 			
 			self.replace = nil
-			self:UpdateAllPoolCounts()
-			self:UpdateAllSecondaryCounts()
-			self:refreshOverheadSlot()
+			self:UpdateUiElements()
 			return
 		end
 		
@@ -920,9 +921,7 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 			self.replace = nil
 		end
 		
-		self:UpdateAllPoolCounts()
-		self:UpdateAllSecondaryCounts()
-		self:refreshOverheadSlot()
+		self:UpdateUiElements()
 	end		
 end
 
