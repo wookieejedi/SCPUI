@@ -139,6 +139,20 @@ function ScpuiSystem:getBriefingBackground(mission, stage)
 	return file
 end
 
+--Clears a dropdown list
+function ScpuiSystem:clearDropdown(element)
+	while element.options[0] ~= nil do
+		element:Remove(0)
+	end
+end
+
+--Add all table elements to a dropdown as selections
+function ScpuiSystem:buildSelectList(element, list)
+	for i, v in ipairs(list) do
+		element:Add(v, v, i)
+	end
+end
+
 --Makes an element of the specified type and with the specified id
 function ScpuiSystem:makeElement(context, t, id)
 	local el = context.document:CreateElement(t)

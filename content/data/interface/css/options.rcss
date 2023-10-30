@@ -1497,66 +1497,6 @@ input.range sliderarrowinc:active
 	width: 100%;
 }
 
-select,
-dataselect
-{
-	width: 98%;
-	margin-left: 10%;
-	margin-bottom: 3%;
-
-}
-
-selectvalue
-{
-	border-color: rgba(127,127,127,200);
-	border-width: 1px;
-	width: 75%;
-	height: 100%;
-	background-color: rgba(0,0,0,100);
-	text-align: center;
-	padding-bottom: 0%;
-}
-
-selectvalue:hover
-{
-	border-color: rgba(127,127,127,255);
-	background-color: rgba(255,255,255,50);
-}
-
-selectarrow
-{
-	icon-decorator: image;
-	icon-image: arrow-dbl-down.png;
-	width: 20%;
-}
-
-selectarrow:hover
-{
-	icon-decorator: image;
-	icon-image: arrow-dbl-down-h.png;
-}
-
-selectarrow:active,
-selectarrow:checked
-{
-	icon-decorator: image;
-	icon-image: arrow-dbl-down-o.png;
-}
-
-selectbox
-{
-	width: 75%;
-	text-align: center;
-	background-color: rgba(0,0,0,220);
-	border-color: rgba(127,127,127,255);
-	border-width: 1px;
-}
-
-selectbox option:hover
-{
-	color: white;
-}
-
 .mouse_settings
 {
 	margin-top: 20%;
