@@ -869,6 +869,9 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 			self:EmptySlot(element, slot)
 			
 			self.replace = nil
+			self:UpdateAllPoolCounts()
+			self:UpdateAllSecondaryCounts()
+			self:refreshOverheadSlot()
 			return
 		end
 		
