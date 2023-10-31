@@ -33,7 +33,7 @@ function JournalUI:ParseTable(file, entriesonly)
 		return newdata
 	end
 	
-	if parse.optionalString("#Journal Options") then
+	if (not entriesonly) and parse.optionalString("#Journal Options") then
 		if parse.optionalString("$Title:") then
 			newdata.title = parse.getString()
 		end
@@ -118,6 +118,8 @@ function JournalUI:ParseTable(file, entriesonly)
 		parse.requiredString("#End")
 		
 	end
+	
+	parse.stop()
 	
 	return newdata
 	
@@ -271,6 +273,28 @@ function JournalUI:SaveDataToFile(t)
 	local saveLocation = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
 	local BtA = require("btafunctions")
 	BtA:saveDataToFile(saveLocation, t, true)
+
+end
+
+function JournalUI:LockEntry(section, ...)
+
+	--load data
+	self:LoadData()
+	--get section
+	local section = self:GetGroupIndex(section, self.Data.Sections)
+	--get key(s)
+	for _, v in ipairs(arg) do
+		for _, entry in ipairs(self.SaveData[section]) do
+			if string.lower(v[1]) == entry.Key then
+				entry.Visible = false
+				break
+			end	
+		end
+	end
+	--save
+	self:SaveDataToFile(self.SaveData)
+	--unload
+	self:UnloadData()
 
 end
 
