@@ -201,7 +201,7 @@ function DebriefingController:BuildStats()
     local stats = self.player.Stats
     local name = self.player:getName()
     local difficulty = ba.getGameDifficulty()
-    local missionTime = mn.getMissionTime()
+    local missionTime = mn.getMissionTime() + mn.MissionHUDTimerPadding 
     
     --Convert mission time to minutes + seconds
     missionTime = (math.floor(missionTime/60)) .. ":" .. (math.floor(missionTime % 60))
