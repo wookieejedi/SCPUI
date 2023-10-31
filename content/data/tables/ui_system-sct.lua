@@ -27,7 +27,8 @@ ScpuiSystem = {
 	initIcons = nil,
 	logSection = 1,
 	render = true,
-	dialog = nil
+	dialog = nil,
+	dataSaverMulti = 1
 }
 
 ScpuiOptionValues = {}
@@ -60,6 +61,10 @@ function ScpuiSystem:parseTable(data)
 		
 		if parse.optionalString("$Hide Multiplayer:") then
 			ScpuiSystem.hideMulti = parse.getBoolean()
+		end
+		
+		if parse.optionalString("$Data Saver Multiplier:") then
+			ScpuiSystem.dataSaverMulti = parse.getInt()
 		end
 		
 	end

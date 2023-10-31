@@ -180,8 +180,8 @@ end
 function JournalUI:LoadDataFromFile()
 	
 	local saveLocation = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
-	local BtA = require("btafunctions")
-	local config = BtA:loadDataFromFile(saveLocation, true)
+	local datasaver = require("datasaver")
+	local config = datasaver:loadDataFromFile(saveLocation, true)
 	
 	if config == nil then
 		config = self:CreateSaveData()
@@ -197,17 +197,15 @@ function JournalUI:ClearNew()
 	local t = {}
 	
 	local saveLocation = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
-	local BtA = require("btafunctions")
-	BtA:saveDataToFile(saveLocation, t, true)	
+	local datasaver = require("datasaver")
+	datasaver:saveDataToFile(saveLocation, t, true)	
 
 end
 
 function JournalUI:CheckNew()
 	local t = {}
-	
-	local saveLocation = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
-	local BtA = require("btafunctions")
-	local config = BtA:loadDataFromFile(saveLocation, true)
+
+	local config = self:LoadDataFromFile()
 	
 	if config ~= nil then
 		t = config
@@ -271,8 +269,8 @@ end
 function JournalUI:SaveDataToFile(t)
 
 	local saveLocation = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
-	local BtA = require("btafunctions")
-	BtA:saveDataToFile(saveLocation, t, true)
+	local datasaver = require("datasaver")
+	datasaver:saveDataToFile(saveLocation, t, true)
 
 end
 

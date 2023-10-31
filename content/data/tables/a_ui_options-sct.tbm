@@ -5,6 +5,11 @@ $On Game Init:
 --Load up the options.tbl and tbms
 ScpuiSystem.CustomOptions = {}
 
+--Verify that the mod has a proper title
+if ba.getModTitle() == "" then
+	ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
+end
+
 function ScpuiSystem:initCustomOptions()
 	local utils = require('utils')
 	
@@ -366,7 +371,7 @@ if ((hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT") and (hv.NewState.Name
 	ScpuiOptionValues = {}
 	local utils = require('utils')
 	ScpuiOptionValues = ScpuiSystem:loadOptionsFromFile()
-	
+
 	--load defaults if we have bad data
 	if type(ScpuiOptionValues) ~= "table" then
 		ba.print("SCPUI: Got bad ScpuiOptionValues data! Loading defaults!")
