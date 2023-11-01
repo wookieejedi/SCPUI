@@ -62,7 +62,7 @@ function GamehelpController:CreateEntries(section)
 
 	local list_el = self.document:GetElementById("list_keys_ul")
 
-	self:ClearEntries(list_el)
+	ScpuiSystem:ClearEntries(list_el)
 	
 	for i = 1, #self.sections[self.currentSection].Keys do
 		local line = self.sections[self.currentSection].Keys[i]
@@ -73,7 +73,7 @@ function GamehelpController:CreateEntries(section)
 	
 	local list_el = self.document:GetElementById("list_texts_ul")
 
-	self:ClearEntries(list_el)
+	ScpuiSystem:ClearEntries(list_el)
 	
 	for i = 1, #self.sections[self.currentSection].Texts do
 		local line = self.sections[self.currentSection].Texts[i]
@@ -81,14 +81,6 @@ function GamehelpController:CreateEntries(section)
 		li_el.inner_rml = line
 		list_el:AppendChild(li_el)
 	end
-end
-
-function GamehelpController:ClearEntries(parent)
-
-	while parent:HasChildNodes() do
-		parent:RemoveChild(parent.first_child)
-	end
-
 end
 
 function GamehelpController:DecrementSection(element)

@@ -405,7 +405,7 @@ end
 function TechDatabaseController:ReloadList()
 
 	local list_items_el = self.document:GetElementById("list_items_ul")
-	self:ClearEntries(list_items_el)
+	ScpuiSystem:ClearEntries(list_items_el)
 	self:ClearData()
 	self.SelectedEntry = nil
 	self.visibleList = {}
@@ -493,7 +493,7 @@ function TechDatabaseController:ChangeSection(section)
 			self:SelectEntry(self.visibleList[self:getFirstIndex()])
 		else
 			local list_items_el = self.document:GetElementById("list_items_ul")
-			self:ClearEntries(list_items_el)
+			ScpuiSystem:ClearEntries(list_items_el)
 			self:ClearData()
 		end
 
@@ -543,7 +543,7 @@ function TechDatabaseController:CreateEntries(list)
 
 	local list_names_el = self.document:GetElementById("list_items_ul")
 
-	self:ClearEntries(list_names_el)
+	ScpuiSystem:ClearEntries(list_names_el)
 	
 	self.cur_category = nil
 
@@ -783,14 +783,6 @@ function TechDatabaseController:ClearData()
 	aniWrapper:RemoveChild(aniWrapper.first_child)
 	self.document:GetElementById("tech_desc").inner_rml = "<p></p>"
 	
-end
-
-function TechDatabaseController:ClearEntries(parent)
-
-	while parent:HasChildNodes() do
-		parent:RemoveChild(parent.first_child)
-	end
-
 end
 
 function TechDatabaseController:global_keydown(element, event)

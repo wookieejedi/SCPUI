@@ -95,7 +95,7 @@ end
 function HudConfigController:initPresets()
 	local parent_el = self.document:GetElementById("list_presets_ul")
 	
-	self:ClearEntries(parent_el)
+	ScpuiSystem:ClearEntries(parent_el)
 	
 	self.oldPreset = nil
 	
@@ -274,14 +274,6 @@ function HudConfigController:deletePreset()
 	
 	self:initPresets()
 	
-end
-
-function HudConfigController:ClearEntries(parent)
-
-	while parent:HasChildNodes() do
-		parent:RemoveChild(parent.first_child)
-	end
-
 end
 
 function HudConfigController:Exit(element)

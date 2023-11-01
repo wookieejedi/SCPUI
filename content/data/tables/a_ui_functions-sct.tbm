@@ -139,6 +139,13 @@ function ScpuiSystem:getBriefingBackground(mission, stage)
 	return file
 end
 
+--Clears an element of all children
+function ScpuiSystem:ClearEntries(parent)
+	while parent:HasChildNodes() do
+		parent:RemoveChild(parent.first_child)
+	end
+end
+
 --Clears a dropdown list
 function ScpuiSystem:clearDropdown(element)
 	while element.options[0] ~= nil do

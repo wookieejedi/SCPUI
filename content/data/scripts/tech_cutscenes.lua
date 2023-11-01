@@ -59,7 +59,7 @@ end
 function TechCutscenesController:ReloadList()
 
 	local list_items_el = self.document:GetElementById("cutscene_list_ul")
-	self:ClearEntries(list_items_el)
+	ScpuiSystem:ClearEntries(list_items_el)
 	self.SelectedEntry = nil
 	self.visibleList = {}
 	self.Counter = 0
@@ -94,7 +94,7 @@ function TechCutscenesController:CreateEntries(list)
 
 	local list_names_el = self.document:GetElementById("cutscene_list_ul")
 	
-	self:ClearEntries(list_names_el)
+	ScpuiSystem:ClearEntries(list_names_el)
 
 	for i, v in pairs(list) do
 	
@@ -149,14 +149,6 @@ function TechCutscenesController:ChangeTechState(state)
 		topics.techroom.btn4Action:send()
 	end
 	
-end
-
-function TechCutscenesController:ClearEntries(parent)
-
-	while parent:HasChildNodes() do
-		parent:RemoveChild(parent.first_child)
-	end
-
 end
 
 function TechCutscenesController:global_keydown(element, event)

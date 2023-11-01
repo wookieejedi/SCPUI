@@ -243,14 +243,6 @@ function HotkeyController:CheckWings(text)
 	
 end
 
-function HotkeyController:ClearEntries(parent)
-
-	while parent:HasChildNodes() do
-		parent:RemoveChild(parent.first_child)
-	end
-
-end
-
 function HotkeyController:ChangeKey(key)
 	self.currentKey = key
 	local key_el = self.document:GetElementById("current_key")
@@ -285,7 +277,7 @@ function HotkeyController:ResetKeys()
 	ui.MissionHotkeys.resetHotkeys()
 	
 	local parent_el = self.document:GetElementById("log_text_wrapper")
-	self:ClearEntries(parent_el)
+	ScpuiSystem:ClearEntries(parent_el)
 	self:createHotkeysList()
 
 end
@@ -303,7 +295,7 @@ function HotkeyController:SetDefaults()
 	ui.MissionHotkeys.resetHotkeysDefault()
 	
 	local parent_el = self.document:GetElementById("log_text_wrapper")
-	self:ClearEntries(parent_el)
+	ScpuiSystem:ClearEntries(parent_el)
 	self:createHotkeysList()
 
 end

@@ -20,7 +20,7 @@ function MissionlogController:initialize(document)
 		ScpuiSystem:pauseAllAudio(true)
 	end
 	
-	local mTime = mn.getMissionTime()
+	local mTime = mn.getMissionTime() + mn.MissionHUDTimerPadding 
 	local hours = math.floor(mTime/3600)
 	local minutes = math.floor(math.fmod(mTime,3600)/60)
 	local seconds = math.floor(math.fmod(mTime,60))
@@ -310,7 +310,7 @@ function MissionlogController:CleanupMissionLog()
 
 	local parent_el = self.document:GetElementById("log_text_wrapper")
 	
-	self:ClearEntries(parent_el)
+	ScpuiSystem:ClearEntries(parent_el)
 	
 end
 
@@ -318,7 +318,7 @@ function MissionlogController:CleanupMessageLog()
 
 	local parent_el = self.document:GetElementById("log_text_wrapper")
 	
-	self:ClearEntries(parent_el)
+	ScpuiSystem:ClearEntries(parent_el)
 
 end
 
@@ -327,14 +327,6 @@ function MissionlogController:CleanupGoalsLog()
 	self.document:GetElementById("briefing_goals"):SetClass("hidden", true)
 	self.document:GetElementById("goal_key"):SetClass("hidden", true)
 	
-end
-
-function MissionlogController:ClearEntries(parent)
-
-	while parent:HasChildNodes() do
-		parent:RemoveChild(parent.first_child)
-	end
-
 end
 
 function MissionlogController:DecrementSection(element)

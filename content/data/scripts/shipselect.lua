@@ -73,7 +73,7 @@ function ShipSelectController:BuildWings()
 
 	local slotNum = 1
 	local wrapperEl = self.document:GetElementById("wings_wrapper")
-	self:ClearEntries(wrapperEl)
+	ScpuiSystem:ClearEntries(wrapperEl)
 
 	for i = 1, loadoutHandler.GetNumWings() do
 
@@ -196,7 +196,7 @@ function ShipSelectController:ReloadList()
 
 	ScpuiSystem.modelDraw.class = nil
 	local list_items_el = self.document:GetElementById("ship_icon_list_ul")
-	self:ClearEntries(list_items_el)
+	ScpuiSystem:ClearEntries(list_items_el)
 	self.SelectedEntry = nil
 	self:CreateEntries(loadoutHandler:GetShipList())
 	self:BuildWings()
@@ -246,7 +246,7 @@ function ShipSelectController:CreateEntries(list)
 
 	local list_names_el = self.document:GetElementById("ship_icon_list_ul")
 	
-	self:ClearEntries(list_names_el)
+	ScpuiSystem:ClearEntries(list_names_el)
 
 	for i, v in pairs(list) do
 		list_names_el:AppendChild(self:CreateEntryItem(v, i))
@@ -324,17 +324,11 @@ function ShipSelectController:SelectEntry(entry)
 
 end
 
-function ShipSelectController:ClearEntries(parent)
-
-	while parent:HasChildNodes() do
-		parent:RemoveChild(parent.first_child)
-	end
-
-end
-
 function ShipSelectController:BuildInfo(entry)
 
 	local infoEl = self.document:GetElementById("ship_stats_info")
+	
+	ScpuiSystem:ClearEntries(infoEl)
 	
 	local midString = "</p><p class=\"info\">"
 	

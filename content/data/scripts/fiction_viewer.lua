@@ -40,6 +40,16 @@ function FictionViewerController:initialize(document)
 
 end
 
+function FictionViewerController:scroll_up()
+	local text_el = self.document:GetElementById("fiction_text")
+	text_el.scroll_top = text_el.scroll_top + 10
+end
+
+function FictionViewerController:scroll_down()
+	local text_el = self.document:GetElementById("fiction_text")
+	text_el.scroll_top = text_el.scroll_top - 10
+end
+
 function FictionViewerController:accept_pressed()
 	if mn.hasCommandBriefing() then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_CMD_BRIEF"])
@@ -63,6 +73,12 @@ function FictionViewerController:global_keydown(_, event)
 
 		mn.unloadMission(true)
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+	elseif event.parameters.key_identifier == rocket.key_identifier.UP then
+		self:scroll_down()
+	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
+		self:scroll_up()
+	elseif event.parameters.key_identifier == rocket.key_identifier.RETURN then
+		self:accept_pressed()
     end
 end
 

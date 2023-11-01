@@ -96,7 +96,8 @@ function JournalController:CreateEntries(section)
 
 	local list_el = self.document:GetElementById("list_items_ul")
 
-	self:ClearEntries(list_el)
+	ScpuiSystem:ClearEntries(list_el)
+	self.Data.VisibleList = {}
 
 	for i, v in ipairs(self.Data.Entries[section]) do
 		local savedData = self.SaveData[section][i]
@@ -195,16 +196,6 @@ function JournalController:GetTextFromFile(file)
 	thisFile:close()
 
 	return text
-
-end
-
-function JournalController:ClearEntries(parent)
-
-	while parent:HasChildNodes() do
-		parent:RemoveChild(parent.first_child)
-	end
-
-	self.Data.VisibleList = {}
 
 end
 

@@ -100,7 +100,7 @@ end
 function TechMissionsController:ReloadList()
 
 	local list_items_el = self.document:GetElementById("list_item_names_ul")
-	self:ClearEntries(list_items_el)
+	ScpuiSystem:ClearEntries(list_items_el)
 	self:ClearData()
 	self.SelectedEntry = nil
 	self.visibleList = {}
@@ -202,7 +202,7 @@ function TechMissionsController:ChangeSection(section)
 			end
 		else
 			local list_names_el = self.document:GetElementById("list_item_names_ul")
-			self:ClearEntries(list_names_el)
+			ScpuiSystem:ClearEntries(list_names_el)
 			self:ClearData()
 		end
 
@@ -317,7 +317,7 @@ function TechMissionsController:CreateEntries(list)
 
 	local list_names_el = self.document:GetElementById("list_item_names_ul")
 
-	self:ClearEntries(list_names_el)
+	ScpuiSystem:ClearEntries(list_names_el)
 
 	for i, v in pairs(list) do
 		if self.show_all and topics.simulator.allowall:send(self) then
@@ -339,14 +339,6 @@ function TechMissionsController:ClearData()
 
 	--We have nothing to clear here!
 	
-end
-
-function TechMissionsController:ClearEntries(parent)
-
-	while parent:HasChildNodes() do
-		parent:RemoveChild(parent.first_child)
-	end
-
 end
 
 function TechMissionsController:SelectEntry(entry)

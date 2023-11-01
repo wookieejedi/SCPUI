@@ -1131,6 +1131,8 @@ function OptionsController:acceptChanges(state)
     file:close()
 
     local unchanged = opt.persistChanges()
+	
+	ui.OptionsMenu.savePlayerData()
 
     if #unchanged <= 0 then
         -- All options were applied
