@@ -582,17 +582,58 @@ end
 
 --Get a ship slot
 function LoadoutHandler:GetShipLoadout(slot)
-	return ScpuiSystem.loadouts.slots[slot]
+	if not slot then
+		ba.error("Attempting to get loadout slot with a nil value! Get Mjn!")
+		return nil
+	else
+		if slot < 0 or slot > #ScpuiSystem.loadouts.slots then
+			ba.error("Attempting to get invalid loadout slot '" .. slot .. "'! Get Mjn!")
+			return nil
+		else
+			return ScpuiSystem.loadouts.slots[slot]
+		end
+	end
 end
 
 --Get amount left in weapon pool
 function LoadoutHandler:GetWeaponPoolAmount(idx)
-	return ScpuiSystem.loadouts.weaponPool[idx]
+	if not idx then
+		ba.warning("Checking weapon amount for a nil weapon index! Get Mjn!")
+		return 0
+	else
+		if idx < 0 or idx > #ScpuiSystem.loadouts.weaponPool then
+			ba.warning("Checking invalid weapon index '" .. idx .. "' for pool amount! Returning 0! Get Mjn!")
+			return 0
+		else
+			local val = ScpuiSystem.loadouts.weaponPool[idx]
+			if val == nil then
+				ba.error("Weapon amount for '" .. idx .. "' was nil! Get Mjn!")
+				return 0
+			else
+				return val
+			end
+		end
+	end
 end
 
 --Get amount left in ship pool
 function LoadoutHandler:GetShipPoolAmount(idx)
-	return ScpuiSystem.loadouts.shipPool[idx]
+	if not idx then
+		ba.warning("Checking ship amount for a nil ship index! Get Mjn!")
+		return 0
+	else
+		if idx < 0 or idx > #ScpuiSystem.loadouts.shipPool then
+			ba.warning("Checking invalid ship index '" .. idx .. "' for pool amount! Returning 0! Get Mjn!")
+			return 0
+		else
+			local val = ScpuiSystem.loadouts.shipPool[idx]
+			if val == nil then
+				ba.error("Ship amount for '" .. idx .. "' was nil! Get Mjn!")
+			else
+				return val
+			end
+		end
+	end
 end
 
 --Convert slot index to wing/slot position
@@ -895,6 +936,10 @@ function LoadoutHandler:SetDefaultWeapons(slot, shipIndex)
 		if self:GetWeaponPoolAmount(weapon) <= 0 then
 			--Find a new weapon
 			weapon = self:GetFirstAllowedWeapon(shipIndex, i, 2)
+		end
+		--No weapons available, so leave the bank empty
+		if weapon < 0 then
+			return
 		end
 		--Get an appropriate amount for the weapon and bank
 		local amount = self:GetWeaponAmount(shipIndex, weapon, i)
