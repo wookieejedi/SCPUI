@@ -29,11 +29,17 @@ function HotkeyController:initialize(document)
 	topics.hotkeyconfig.initialize:send(self)
 	
 	self:ChangeKey(1)
+	
+	self.selectedIndex = 1
+	local entry = self.indexList[self.selectedIndex]
+	
+	self:SelectEntry(entry[1], entry[2], entry[3], entry[4], 1)
 end
 
 function HotkeyController:initHotkeys()
 	
 	self.hotkeys = {}
+	self.indexList = {}
 	
 	local section = 0
 	local ship = 0
@@ -133,11 +139,14 @@ function HotkeyController:createHotkeysList()
 			li_el:SetClass("hotkeylist_element", true)
 			li_el:SetClass("button_1", true)
 			li_el:AddEventListener("click", function(_, _, _)
-				self:SelectEntry(self.hotkeys[i].ships[entry].index, li_el, i, entry)
+				self:SelectEntry(self.hotkeys[i].ships[entry].index, li_el, i, entry, #self.indexList + 1)
 			end)
 			li_el:AddEventListener("dblclick", function(_, _, _)
 				self:ToggleKey(self.hotkeys[i].ships[entry].index, li_el, i, entry)
 			end)
+			
+			local t = {self.hotkeys[i].ships[entry].index, li_el, i, entry}
+			table.insert(self.indexList, t)
 			
 			list_el:AppendChild(li_el)
 		end
@@ -145,9 +154,10 @@ function HotkeyController:createHotkeysList()
 
 end
 
-function HotkeyController:SelectEntry(idx, element, group, item)
+function HotkeyController:SelectEntry(idx, element, group, item, listIdx)
 
 	self.currentEntry = idx
+	self.selectedIndex = listIdx
 	
 	if self.oldElement == nil then
 		self.oldElement = element
@@ -163,25 +173,29 @@ function HotkeyController:SelectEntry(idx, element, group, item)
 
 end
 
-function HotkeyController:ToggleKey(idx, element, group, item)
+function HotkeyController:ToggleKey(idx, element, group, item, key)
 	
-	self:SelectEntry(idx, element, group, item)
+	self:SelectEntry(idx, element, group, item, self.selectedIndex)
 	
-	local keyID = "key_" .. self.selectedGroup .. "_" .. self.selectedElement .. "_" .. self.currentKey
+	if key == nil then
+		key = self.currentKey
+	end
+	
+	local keyID = "key_" .. self.selectedGroup .. "_" .. self.selectedElement .. "_" .. key
 	local key_el = self.document:GetElementById(keyID)
 	
-	local keyText = "F" .. tostring(self.currentKey + 4)
+	local keyText = "F" .. tostring(key + 4)
 	if key_el.inner_rml == keyText then
-		self:RemKey()
+		self:RemKey(key)
 	else
-		self:AddKey()
+		self:AddKey(key)
 	end
 	
 end
 
-function HotkeyController:AddKey()
+function HotkeyController:AddKey(key)
 
-	if self.currentKey == nil then
+	if key == nil then
 		ba.warning("How did that happen? Get Mjn")
 		return
 	end
@@ -191,20 +205,20 @@ function HotkeyController:AddKey()
 		return
 	end
 
-	ui.MissionHotkeys.Hotkeys_List[self.currentEntry]:addHotkey(self.currentKey)
+	ui.MissionHotkeys.Hotkeys_List[self.currentEntry]:addHotkey(key)
 	
-	local keyID = "key_" .. self.selectedGroup .. "_" .. self.selectedElement .. "_" .. self.currentKey
+	local keyID = "key_" .. self.selectedGroup .. "_" .. self.selectedElement .. "_" .. key
 	local key_el = self.document:GetElementById(keyID)
 	
-	local keyText = "F" .. tostring(self.currentKey + 4)
+	local keyText = "F" .. tostring(key + 4)
 	key_el.inner_rml = keyText
 	
-	self:CheckWings(keyText)
+	self:CheckWings(key, keyText)
 end
 
-function HotkeyController:RemKey()
+function HotkeyController:RemKey(key)
 
-	if self.currentKey == nil then
+	if key == nil then
 		ba.warning("How did that happen? Get Mjn")
 		return
 	end
@@ -214,18 +228,46 @@ function HotkeyController:RemKey()
 		return
 	end
 	
-	ui.MissionHotkeys.Hotkeys_List[self.currentEntry]:removeHotkey(self.currentKey)
+	ui.MissionHotkeys.Hotkeys_List[self.currentEntry]:removeHotkey(key)
 	
-	local keyID = "key_" .. self.selectedGroup .. "_" .. self.selectedElement .. "_" .. self.currentKey
+	local keyID = "key_" .. self.selectedGroup .. "_" .. self.selectedElement .. "_" .. key
 	local key_el = self.document:GetElementById(keyID)
 	
 	local keyText = "&nbsp;"
 	key_el.inner_rml = keyText
 	
-	self:CheckWings(keyText)
+	self:CheckWings(key, keyText)
 end
 
-function HotkeyController:CheckWings(text)
+function HotkeyController:SelectNext()
+
+    if self.selectedIndex >= #self.indexList then
+		return
+	end
+	
+	self.selectedIndex = self.selectedIndex + 1
+	
+	local entry = self.indexList[self.selectedIndex]
+	
+	self:SelectEntry(entry[1], entry[2], entry[3], entry[4], self.selectedIndex)
+
+end
+
+function HotkeyController:SelectPrev()
+
+	if self.selectedIndex <= 1 then
+		return
+	end
+	
+	self.selectedIndex = self.selectedIndex - 1
+	
+	local entry = self.indexList[self.selectedIndex]
+	
+	self:SelectEntry(entry[1], entry[2], entry[3], entry[4], self.selectedIndex)
+
+end
+
+function HotkeyController:CheckWings(key, text)
 
 	if ui.MissionHotkeys.Hotkeys_List[self.currentEntry].Type == HOTKEY_LINE_WING then
 		local idx = self.selectedElement
@@ -233,7 +275,7 @@ function HotkeyController:CheckWings(text)
 		for i = self.currentEntry + 1, self.currentEntry + 6 do
 			idx = idx + 1
 			if ui.MissionHotkeys.Hotkeys_List[i].Type == HOTKEY_LINE_SUBSHIP then
-				local keyID = "key_" .. self.selectedGroup .. "_" .. idx .. "_" .. self.currentKey
+				local keyID = "key_" .. self.selectedGroup .. "_" .. idx .. "_" .. key
 				local key_el = self.document:GetElementById(keyID)
 				key_el.inner_rml = text
 			end
@@ -285,7 +327,7 @@ end
 function HotkeyController:ClearKey()
 
     ui.playElementSound(element, "click", "success")
-	self:RemKey()
+	self:RemKey(self.currentKey)
 
 end
 
@@ -318,22 +360,69 @@ function HotkeyController:global_keydown(_, event)
 			ScpuiSystem:pauseAllAudio(false)
 		end
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
+	elseif event.parameters.key_identifier == rocket.key_identifier.UP then
+		self:SelectPrev()
+	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
+		self:SelectNext()
+	elseif event.parameters.key_identifier == rocket.key_identifier.RETURN then
+		local entry = self.indexList[self.selectedIndex]
+		self:ToggleKey(entry[1], entry[2], entry[3], entry[4])
     elseif event.parameters.key_identifier == rocket.key_identifier.F5 then
-		self:ChangeKey(1)
+		if event.parameters.shift_key == 1 then
+			local entry = self.indexList[self.selectedIndex]
+			self:ToggleKey(entry[1], entry[2], entry[3], entry[4], 1)
+		else
+			self:ChangeKey(1)
+		end
 	elseif event.parameters.key_identifier == rocket.key_identifier.F6 then
-		self:ChangeKey(2)
+		if event.parameters.shift_key == 1 then
+			local entry = self.indexList[self.selectedIndex]
+			self:ToggleKey(entry[1], entry[2], entry[3], entry[4], 2)
+		else
+			self:ChangeKey(2)
+		end
 	elseif event.parameters.key_identifier == rocket.key_identifier.F7 then
-		self:ChangeKey(3)
+		if event.parameters.shift_key == 1 then
+			local entry = self.indexList[self.selectedIndex]
+			self:ToggleKey(entry[1], entry[2], entry[3], entry[4], 3)
+		else
+			self:ChangeKey(3)
+		end
 	elseif event.parameters.key_identifier == rocket.key_identifier.F8 then
-		self:ChangeKey(4)
+		if event.parameters.shift_key == 1 then
+			local entry = self.indexList[self.selectedIndex]
+			self:ToggleKey(entry[1], entry[2], entry[3], entry[4], 4)
+		else
+			self:ChangeKey(4)
+		end
 	elseif event.parameters.key_identifier == rocket.key_identifier.F9 then
-		self:ChangeKey(5)
+		if event.parameters.shift_key == 1 then
+			local entry = self.indexList[self.selectedIndex]
+			self:ToggleKey(entry[1], entry[2], entry[3], entry[4], 5)
+		else
+			self:ChangeKey(5)
+		end
 	elseif event.parameters.key_identifier == rocket.key_identifier.F10 then
-		self:ChangeKey(6)
+		if event.parameters.shift_key == 1 then
+			local entry = self.indexList[self.selectedIndex]
+			self:ToggleKey(entry[1], entry[2], entry[3], entry[4], 6)
+		else
+			self:ChangeKey(6)
+		end
 	elseif event.parameters.key_identifier == rocket.key_identifier.F11 then
-		self:ChangeKey(7)
+		if event.parameters.shift_key == 1 then
+			local entry = self.indexList[self.selectedIndex]
+			self:ToggleKey(entry[1], entry[2], entry[3], entry[4], 7)
+		else
+			self:ChangeKey(7)
+		end
 	elseif event.parameters.key_identifier == rocket.key_identifier.F12 then
-		self:ChangeKey(8)
+		if event.parameters.shift_key == 1 then
+			local entry = self.indexList[self.selectedIndex]
+			self:ToggleKey(entry[1], entry[2], entry[3], entry[4], 8)
+		else
+			self:ChangeKey(8)
+		end
 	end
 end
 

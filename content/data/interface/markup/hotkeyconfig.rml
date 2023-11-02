@@ -18,14 +18,14 @@
 				</div>
 				<div id=top_right_btn_wrapper>
 					<div id=increment_cont>
-						<button id="increment_btn" class="increment button_1" onclick="controller:IncrementKey()">
+						<button id="increment_btn" class="increment button_1" onclick="controller:DecrementKey()">
 							<span id="increment_img" class="increment button_img">
 								<img src="arrow-up.png" class="psuedo_img"></img>
 							</span>
 						</button>
 					</div>
 					<div id=decrement_cont>
-						<button id="decrement_btn" class="decrement button_1" onclick="controller:DecrementKey()">
+						<button id="decrement_btn" class="decrement button_1" onclick="controller:IncrementKey()">
 							<span id="decrement_img" class="decrement button_img">
 								<img src="arrow-down.png" class="psuedo_img"></img>
 							</span>
