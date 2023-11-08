@@ -58,7 +58,7 @@ function MissionlogController:initMissionLog()
 		
 		local subject = "<span style=\"color:rgba(" .. entry.ObjectiveColor.Red .. "," .. entry.ObjectiveColor.Green .. "," .. entry.ObjectiveColor.Blue .. "," .. entry.ObjectiveColor.Alpha .. ");\">" .. entry.ObjectiveText .. " </span>"
 		
-		self.logTimestamps[logs] = entry.Timestamp
+		self.logTimestamps[logs] = entry.paddedTimestamp
 		self.logSubjects[logs] = subject
 		self.logDescriptions[logs] = segment
 	end
@@ -89,7 +89,7 @@ function MissionlogController:initMessageLog()
 		
 		local text = "<span style=\"color:rgba(" .. entry.Color.Red .. "," .. entry.Color.Green .. "," .. entry.Color.Blue .. "," .. entry.Color.Alpha .. ");\">" .. textString .. " </span>"
 		
-		self.messageTimestamps[logs] = entry.Timestamp
+		self.messageTimestamps[logs] = entry.paddedTimestamp
 		self.messageTexts[logs] = text
 	end
 end

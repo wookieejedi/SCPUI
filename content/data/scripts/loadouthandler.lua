@@ -1028,8 +1028,8 @@ end
 function LoadoutHandler:SendShipToFSO_API(ship, slot)
 
 	--Set the ship
+	ui.ShipWepSelect.Loadout_Ships[slot].ShipClassIndex = ship.ShipClassIndex
 	if ui.ShipWepSelect.Loadout_Wings[ship.Wing][ship.WingSlot].isShipLocked == false then
-		ui.ShipWepSelect.Loadout_Ships[slot].ShipClassIndex = ship.ShipClassIndex
 		if ship.ShipClassIndex > 0 then
 			ui.ShipWepSelect.Loadout_Wings[ship.Wing][ship.WingSlot].isFilled = true
 		else

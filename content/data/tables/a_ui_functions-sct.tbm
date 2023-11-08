@@ -5,31 +5,13 @@ $On Game Init:
 
 --Misc functions for handling various UI-related tasks
 
-function ScpuiSystem:pauseScriptedSounds(toggle)
-	if toggle == true then
-		for i, v in pairs(ScpuiSystem.Sounds) do
-			--v.handle:pause()
-		end
-	else
-		for i, v in pairs(ScpuiSystem.Sounds) do
-			--v.handle:resume()
-		end
-	end
-end
-
-function ScpuiSystem:updateVolumes(voice)
-	for i, v in pairs(ScpuiSystem.Sounds) do
-		if v.voice == voice then
-			--v.handle:setVolume(1.0, voice)
-		end
-	end
-end
-
 function ScpuiSystem:pauseAllAudio(toggle)
+	local topics = require("ui_topics")
+	
 	ad.pauseMusic(-1, toggle)
 	ad.pauseWeaponSounds(toggle)
-	--ad.pauseVoiceMessages(toggle)
-	self:pauseScriptedSounds(toggle)
+	ad.pauseVoiceMessages(toggle)
+	topics.Scpui.pauseAudio:send(toggle)
 end
 
 function ScpuiSystem:getAbsoluteLeft(element)

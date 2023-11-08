@@ -15,7 +15,6 @@ ScpuiSystem = {
 	backgrounds = {},
 	briefBackgrounds = {},
 	preloadCoroutines = {},
-	Sounds = {},
 	substate = "none",
 	cutscene = "none",
 	hideMulti = false,

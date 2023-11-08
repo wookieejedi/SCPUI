@@ -495,7 +495,7 @@ function BriefingController:skip_pressed()
 	ScpuiSystem.music_handle = nil
     
 	if mn.isTraining() then
-		ui.Briefing.skipTraining()
+		ui.Briefing.skipMission()
 	elseif mn.isInCampaignLoop() then
 		ui.Briefing.exitLoop()
 	elseif mn.isMissionSkipAllowed() then
