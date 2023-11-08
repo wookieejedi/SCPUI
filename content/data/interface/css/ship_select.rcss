@@ -36,6 +36,8 @@ div#ship_stats_wrapper
 	position: absolute;
 	margin-top: 12%;
 	margin-left: 12%;
+	height: 86%;
+	overflow: scroll;
 }
 
 div#ship_stats_info
@@ -664,6 +666,77 @@ button#options_btn:active #options_img
 #ship_icon_list scrollbarvertical sliderarrowinc:active
 {
 	icon-image: arrow-wide-down-o.png;
+}
+
+#ship_stats_wrapper scrollbarvertical
+{
+	scrollchange-sound: 9;
+	width: 10%;
+	position: absolute;
+	left: -13%;
+	z-index: 5;
+}
+
+#ship_stats_wrapper scrollbarvertical slidertrack
+{
+	visibility: hidden;
+}
+
+#ship_stats_wrapper scrollbarvertical sliderbar
+{
+	visibility: hidden;
+}
+
+#ship_stats_wrapper scrollbarvertical sliderbar:hover
+{
+	
+}
+
+#ship_stats_wrapper scrollbarvertical sliderbar:active
+{
+	
+}
+
+#ship_stats_wrapper scrollbarvertical sliderarrowdec
+{
+	width: 100%;
+	height: 20%;
+	margin-top: -11%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
+}
+
+#ship_stats_wrapper scrollbarvertical sliderarrowinc
+{
+	width: 100%;
+	height: 20%;
+	margin-bottom: 57%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
+}
+
+#ship_stats_wrapper scrollbarvertical sliderarrowdec:hover
+{
+	icon-image: arrow-dbl-up-h.png;
+}
+
+#ship_stats_wrapper scrollbarvertical sliderarrowinc:hover
+{
+	icon-image: arrow-dbl-down-h.png;
+}
+
+#ship_stats_wrapper scrollbarvertical sliderarrowdec:active
+{
+	icon-image: arrow-dbl-up-o.png;
+}
+
+#ship_stats_wrapper scrollbarvertical sliderarrowinc:active
+{
+	icon-image: arrow-dbl-down-o.png;
 }
 
 /*Tooltip placements*/
