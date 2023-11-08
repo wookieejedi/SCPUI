@@ -37,6 +37,15 @@ function utils.parseCustomXSTR(text)
 
 end
 
+--Translates an XSTR from Custom data if it's formated like so:
+-- +Val: NAME "string", #
+--and returns translated string
+function utils.translateCustomXSTR(text)
+	local result = utils.parseCustomXSTR(text)
+	result = ba.XSTR(result[1], result[2])
+	return result
+end
+
 --A wrapper for mn.runSEXP that is not fucking stupid.
 function utils.runSEXP(sexp, ...)
 
