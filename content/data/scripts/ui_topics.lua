@@ -22,6 +22,10 @@ local function simulatorTab(x)
 end
 
 return {
+  --Global
+  Scpui = {
+    pauseAudio	= Topic(nil)
+  },
   --Objects
   ships = {
     filter      = Topic(function(x) return x.InTechDatabase end),
@@ -101,7 +105,9 @@ return {
     setRankBitmap       = Topic(function(x) return x[2] end) --Sends the medal name and bitmap suffix. Expects a new bitmap suffix returned
   },
   options = {
-    initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context
+    initialize        = Topic(function() return nil end), --Runs arbitrary script and expects no return value. Sends the context
+	changeEffectsVol  = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+	changeVoiceVol    = Topic(nil) --Runs arbitrary script and expects no return value. Sends the context
   },
   missionlog = {
     initialize  = Topic(function() return nil end) --Runs arbitrary script and expects no return value. Sends the context

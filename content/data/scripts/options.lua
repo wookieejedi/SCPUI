@@ -878,7 +878,7 @@ function OptionsController:initialize_basic_options()
                 no_background  = true
             }, function(_)
                 option:persistChanges()
-				ScpuiSystem:updateVolumes(false)
+				topics.options.changeEffectsVol:send(self)
             end)
         elseif key == "Audio.Music" then
             self.option_backup[option] = option.Value
@@ -898,7 +898,7 @@ function OptionsController:initialize_basic_options()
             }, function(_)
                 option:persistChanges()
                 ui.OptionsMenu.playVoiceClip()
-				ScpuiSystem:updateVolumes(true)
+				topics.options.changeVoiceVol:send(self)
             end)
         elseif key == "Game.SkillLevel" then
             opt_el = self:createFivePointRangeElement(option, "skill_level_container")
