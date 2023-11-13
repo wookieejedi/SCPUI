@@ -43,7 +43,7 @@ function TechDatabaseController:LoadData()
 	i = 1
 	while (i ~= #list + 1) do
 		if list[i]:hasCustomData() and list[i].CustomData["HideInTechRoom"] == "true" then
-			ba.print("Skipping ship " .. list[i].Name .. " in the tech room list!")
+			ba.print("Skipping ship " .. list[i].Name .. " in the tech room list!\n")
 		else
 			local ship = {
 				Name = tostring(list[i].Name),
@@ -71,7 +71,7 @@ function TechDatabaseController:LoadData()
 	i = 1
 	while (i ~= #list + 1) do
 		if list[i]:hasCustomData() and list[i].CustomData["HideInTechRoom"] == "true" then
-			ba.print("Skipping weapon " .. list[i].Name .. " in the tech room list!")
+			ba.print("Skipping weapon " .. list[i].Name .. " in the tech room list!\n")
 		else
 			local t_string = utils.xstr("Primary", -1)
 			if list[i]:isSecondary() then
