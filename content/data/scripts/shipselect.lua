@@ -328,6 +328,8 @@ function ShipSelectController:BuildInfo(entry)
 
 	local infoEl = self.document:GetElementById("ship_stats_info")
 	
+	self.document:GetElementById("ship_stats_wrapper").scroll_top = 0
+	
 	ScpuiSystem:ClearEntries(infoEl)
 	
 	local midString = "</p><p class=\"info\">"

@@ -33,7 +33,9 @@ function HotkeyController:initialize(document)
 	self.selectedIndex = 1
 	local entry = self.indexList[self.selectedIndex]
 	
-	self:SelectEntry(entry[1], entry[2], entry[3], entry[4], 1)
+	if entry ~= nil then
+		self:SelectEntry(entry[1], entry[2], entry[3], entry[4], 1)
+	end
 end
 
 function HotkeyController:initHotkeys()
