@@ -8,6 +8,9 @@ if not JournalUI then
 	JournalUI = {}
 end
 
+JournalUI.sections = nil
+JournalUI.lists = {}
+
 function JournalUI:GetGroupIndex(sectionname, sections)
 	
 	sectionname = string.lower(sectionname)
@@ -138,6 +141,35 @@ function JournalUI:CheckLanguage(filename)
 
 end
 
+]
+
+$Application: FRED2_Open
+$On Game Init:
+[
+
+local journal_files = cf.listFiles("data/tables", "*journal.tbl")
+
+for _, v in pairs(journal_files) do
+	local data = JournalUI:ParseTable(v)
+	
+	if #data.Sections > 0 then
+		local name = "Journal Sections"
+		JournalUI.sections = mn.LuaEnums[name]
+		JournalUI.sections:removeEnumItem("<none>")
+	end
+	for i = 1, #data.Sections do
+		local name = "Journal " .. data.Sections[i].Display
+		mn.addLuaEnum(name)
+		JournalUI.sections:addEnumItem(name)
+		JournalUI.lists[i] = mn.LuaEnums[name]
+	end
+	
+	for i = 1, #data.Entries do
+		for _, entry in ipairs(data.Entries[i]) do
+			JournalUI.lists[i]:addEnumItem(entry.Key)
+		end
+	end
+end
 ]
 
 $Application: FS2_Open
@@ -331,6 +363,24 @@ function JournalUI:ClearAll()
 	self:SaveDataToFile(config)
 
 end
+
+mn.LuaSEXPs["lua-journal-unlock-article"].Action = function(section, ...)
+
+	--Remove the first part of the parent enum name so we can unlock using the actual section name
+	local function removeJournalPrefix(inputString)
+		local prefix = "Journal "
+		if string.sub(inputString, 1, #prefix) == prefix then
+			return string.sub(inputString, #prefix + 1)
+		else
+			return inputString
+		end
+	end
+
+	if mn.isInCampaign() then
+		JournalUI:UnlockEntry(removeJournalPrefix(section), ...)
+	end
+end
+
 ]
 
 $On Campaign Begin:
