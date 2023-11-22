@@ -444,6 +444,10 @@ function PilotSelectController:select_first()
     self:selectPilot(self.pilots[1])
 end
 
+function PilotSelectController:callsign_input_focus_lost()
+--do nothing
+end
+
 function PilotSelectController:up_button_pressed()
     if self.selection == nil then
         self:select_first()
