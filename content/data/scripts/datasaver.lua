@@ -29,7 +29,7 @@ function datasaver:loadDataFromFile(source, persistent)
 	local filename = nil
 	local id = self:basicStringHash(ba.getModTitle())
   
-	if persistent then
+	if persistent == true then
 		location = 'data/players'
 		filename = id .. '_save_data.cfg'
 	else
@@ -73,7 +73,7 @@ function datasaver:saveDataToFile(source, data, persistent)
 	local filename = nil
 	local id = self:basicStringHash(ba.getModTitle())
   
-	if persistent then
+	if persistent == true then
 		location = 'data/players'
 		filename = id .. '_save_data.cfg'
 	else
