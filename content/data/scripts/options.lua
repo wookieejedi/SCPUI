@@ -867,6 +867,10 @@ function OptionsController:initialize_basic_options()
                 text_alignment = "left",
                 no_background  = false
             })
+		elseif key == "Game.Language" then
+            opt_el = self:createSelectionOptionElement(option, option:getValidValues(), "language_selector", {
+                --no_title = true
+            })
         --elseif key == "Audio.BriefingVoice" then
             --opt_el = self:createOptionElement(option, "briefing_voice_container")
         elseif key == "Audio.Effects" then

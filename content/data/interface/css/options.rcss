@@ -1490,6 +1490,13 @@ input.range sliderarrowinc:active
 	icon-image: arrow-right-o.png;
 }
 
+#misc_options_wrapper
+{
+	position:relative;
+	margin-top: 1%;
+	padding-left: 1%;
+}
+
 /*Dropdown Selector*/
 
 #dropdown_cont
@@ -1517,6 +1524,11 @@ input.range sliderarrowinc:active
 {
 	position:relative;
 	margin-top: 1%;
+}
+
+#language_selector
+{
+	width: 46%;
 }
 
 #joystick_column_1
