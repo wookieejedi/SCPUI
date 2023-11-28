@@ -361,7 +361,9 @@ function ScpuiSystem:dialogEnd()
 		end
 	else
 		if self.Dialog ~= nil and self.Dialog.Abort ~= nil then
-			self.Dialog.Abort.Abort()
+			if self.Dialog.Abort.Abort ~= nil then
+				self.Dialog.Abort.Abort()
+			end
 		end
 	end
 	
