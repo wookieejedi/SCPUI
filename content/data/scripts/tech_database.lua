@@ -573,6 +573,10 @@ end
 
 function TechDatabaseController:SelectEntry(entry)
 
+	if entry == nil then
+		return
+	end
+
 	if entry.key ~= self.SelectedEntry then
 		self.document:GetElementById(entry.key):SetPseudoClass("checked", true)
 
