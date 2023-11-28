@@ -17,6 +17,7 @@ ScpuiSystem = {
 	preloadCoroutines = {},
 	substate = "none",
 	cutscene = "none",
+	disableInMulti = true,
 	hideMulti = false,
 	debriefInit = false,
 	selectInit = false,
@@ -60,6 +61,10 @@ function ScpuiSystem:parseTable(data)
 		
 		if parse.optionalString("$Hide Multiplayer:") then
 			ScpuiSystem.hideMulti = parse.getBoolean()
+		end
+		
+		if parse.optionalString("$Disable during Multiplayer:") then
+			ScpuiSystem.disableInMulti = parse.getBoolean()
 		end
 		
 		if parse.optionalString("$Data Saver Multiplier:") then
@@ -156,7 +161,9 @@ end
 
 function ScpuiSystem:stateStart()
 
-	if not ba.MultiplayerMode then
+	if ba.MultiplayerMode then
+		self.render = not ScpuiSystem.disableInMulti
+	else
 		self.render = true
 	end
 
@@ -219,7 +226,7 @@ function ScpuiSystem:stateEnd()
 	end
 	
 	if ba.MultiplayerMode then
-		self.render = false
+		self.render = ScpuiSystem.disableInMulti
 	end
 end
 
