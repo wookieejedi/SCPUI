@@ -1,3 +1,7 @@
+#Settings
+
+$Disable during Multiplayer: true
+
 #State Replacement
 
 $State: GS_STATE_INITIAL_PLAYER_SELECT
@@ -72,6 +76,12 @@ $State: GS_STATE_GAME_PAUSED
 $State: GS_STATE_SCRIPTING
     +Substate: Cutscene
     +Markup: data/interface/markup/cutscene.rml
+
+$State: GS_STATE_PXO
+    +Markup: data/interface/markup/multi_pxo.rml
+
+$State: GS_STATE_PXO_HELP
+    +Markup: data/interface/markup/multi_pxo_help.rml
 
 #Background Replacement
 
