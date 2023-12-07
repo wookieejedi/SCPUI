@@ -647,7 +647,7 @@ function OptionsController:init_range_element(element, value_el, option, change_
 			fontChoice = "p1-" .. ScpuiSystem:getFontSize(customOptions[Key].currentValue)
 			
 			--Clear all possible font classes
-			for i = 0, 20 do
+			for i = 0, ScpuiSystem.numFontSizes do
 				local class = "p1-" .. i
 				self.document:GetElementById("main_background"):SetClass(class, false)
 			end
@@ -831,6 +831,20 @@ function OptionsController:handleBrightnessOption(option, onchange_func)
 end
 
 function OptionsController:initialize_basic_options()
+	--Create the font size selector option
+	local fontOption = {
+		Title = utils.xstr({"Font Size Multiplier", -1}),
+		Description = utils.xstr({"Multiplies the font size", -1}),
+		Key = "Font_Multiplier",
+		Type = "Range",
+		Category = "Custom",
+		Min = 0,
+		Max = 1,
+		Value = 0.25
+	}
+	local font_el = self:createCustomOptionElement(fontOption, "font_size_selector")
+	self:AddOptionTooltip(fontOption, font_el)
+	
     for _, option in ipairs(self.category_options.basic) do
         local key = option.Key
 		local opt_el = nil
@@ -871,8 +885,14 @@ function OptionsController:initialize_basic_options()
             opt_el = self:createSelectionOptionElement(option, option:getValidValues(), "language_selector", {
                 --no_title = true
             })
-        --elseif key == "Audio.BriefingVoice" then
-            --opt_el = self:createOptionElement(option, "briefing_voice_container")
+		elseif key == "Game.Discord" then
+            opt_el = self:createOptionElement(option, "discord_selector", {
+                --no_title = true
+            })
+        elseif key == "Audio.BriefingVoice" then
+            opt_el = self:createOptionElement(option, "briefing_voice_container", {
+                --no_title = true
+            })
         elseif key == "Audio.Effects" then
             -- The audio options are applied immediately so the user hears the effects
             self.option_backup[option] = option.Value
@@ -1001,7 +1021,7 @@ function OptionsController:initialize_prefs_options()
 	--Handle mod custom preferences options
     for _, option in ipairs(ScpuiSystem.CustomOptions) do
 		option.Category = "Custom"
-		option.Title = option.Title
+		--option.Title = option.Title
 		local el = self:createCustomOptionElement(option, string.format("prefs_column_%d", option.Column))
 		
 		if option.Description then
@@ -1116,6 +1136,10 @@ function OptionsController:initialize(document)
     self:initialize_detail_options()
 	
 	self:initialize_prefs_options()
+	
+	if ScpuiSystem.hideMulti == true then
+		self.document:GetElementById("multi_btn"):SetClass("hidden", true)
+	end
 	
 	topics.options.initialize:send(self)
 end

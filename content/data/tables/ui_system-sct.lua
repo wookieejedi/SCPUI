@@ -11,6 +11,8 @@ local updateCategory = engine.createTracingCategory("UpdateRocket", false)
 local renderCategory = engine.createTracingCategory("RenderRocket", true)
 
 ScpuiSystem = {
+	active = true,
+	numFontSizes = 20,
     replacements = {},
 	backgrounds = {},
 	briefBackgrounds = {},
@@ -35,11 +37,13 @@ ScpuiOptionValues = {}
 
 --RUN AWAY IT'S FRED!
 if ba.inMissionEditor() then
+	ScpuiSystem.active = nil
 	return
 end
 
 --setting this to true will completely disable SCPUI
 if false then
+	ScpuiSystem.active = nil
 	return
 end
 

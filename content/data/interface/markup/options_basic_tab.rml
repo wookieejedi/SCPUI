@@ -1,8 +1,5 @@
 <body>
 <div class="options_column_40">
-    <!--<div id="briefing_voice_container">-->
-        <!-- Filled in by Lua -->
-    <!--</div>-->
     <div class="btn_panel_large">
         <div id="large_panel_text" class="ops_left_header">
             <p>XSTR("Volume", -1)</p>
@@ -18,8 +15,21 @@
         </div>
     </div>
 	<div id="misc_options_wrapper">
-		<div id="language_selector">
-			<!-- Lua will fill in the options UI elements here -->
+		<div id="misc_options_col_1">
+			<div id="language_selector">
+				<!-- Lua will fill in the options UI elements here -->
+			</div>
+			<div id="font_size_selector">
+				<!-- Lua will fill in the options UI elements here -->
+			</div>
+		</div>
+		<div id="misc_options_col_2">
+			<div id="discord_selector">
+				<!-- Lua will fill in the options UI elements here -->
+			</div>
+			<div id="briefing_voice_container">
+				<!-- Lua will fill in the options UI elements here -->
+			</div>
 		</div>
 	</div>
 </div>

@@ -175,6 +175,10 @@ function ScpuiSystem:finishIconGeneration()
 end
 
 function ScpuiSystem:genIcons()
+
+	if not ScpuiSystem.active then
+		return
+	end
 	
 	ScpuiSystem:addPreload(
 		"SCPUI is starting generation of ship and weapon loadout icons!",

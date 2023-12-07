@@ -1,8 +1,8 @@
 /*
-* Default styles for all the basic elements.
+* Font size classes.
+* If you add additional font sizes then you must also update
+* ScpuiSystem.numFontSizes in ui_system-sct.lua
 */
-
-/* Default styles for all the basic elements. */
 
 .p1-0
 {

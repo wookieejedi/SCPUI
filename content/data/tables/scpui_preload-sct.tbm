@@ -286,7 +286,7 @@ function ScpuiSystem:firstRun()
 
 end
 
-if ScpuiSystem.initPreLoad == nil then
+if ScpuiSystem.active and ScpuiSystem.initPreLoad == nil then
 	ScpuiSystem:firstRun()
 end
 

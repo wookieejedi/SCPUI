@@ -41,6 +41,7 @@ div#options_window
 	height: auto;
 	overflow: hidden;
 	position: relative;
+	z-index: 5;
 }
 
 div#options_window img
@@ -274,11 +275,6 @@ div#bottom_panel_c img
 {
 	background-decorator: image;
 	background-image: multiplayer-o.png;
-}
-
-#multi_btn
-{
-	visibility: hidden;
 }
 
 /*Accept Button*/
@@ -1526,9 +1522,16 @@ input.range sliderarrowinc:active
 	margin-top: 1%;
 }
 
-#language_selector
+#misc_options_col_1
 {
-	width: 46%;
+	width: 49%;
+	float: left;
+}
+
+#misc_options_col_2
+{
+	width: 49%;
+	float: right;
 }
 
 #joystick_column_1
