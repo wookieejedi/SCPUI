@@ -30,6 +30,9 @@
 			<div id="briefing_voice_container">
 				<!-- Lua will fill in the options UI elements here -->
 			</div>
+			<div id="unfocused_pause_container">
+				<!-- Lua will fill in the options UI elements here -->
+			</div>
 		</div>
 	</div>
 </div>

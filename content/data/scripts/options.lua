@@ -893,6 +893,10 @@ function OptionsController:initialize_basic_options()
             opt_el = self:createOptionElement(option, "briefing_voice_container", {
                 --no_title = true
             })
+		elseif key == "Game.UnfocusedPause" then
+            opt_el = self:createOptionElement(option, "unfocused_pause_container", {
+                --no_title = true
+            })
         elseif key == "Audio.Effects" then
             -- The audio options are applied immediately so the user hears the effects
             self.option_backup[option] = option.Value
