@@ -22,6 +22,7 @@ function WeaponSelectController:initialize(document)
 	self.aniEl = self.document:CreateElement("img")
 	self.aniWepEl = self.document:CreateElement("ani")
 	self.requiredWeps = {}
+	ScpuiSystem.modelDraw.Weapons = {}
 	ScpuiSystem.modelDraw.banks = {
 		bank1 = self.document:GetElementById("primary_one"),
 		bank2 = self.document:GetElementById("primary_two"),
@@ -510,7 +511,6 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 		if self.overhead3d or overhead == nil then
 			ScpuiSystem.modelDraw.OverheadClass = shipIndex
 			ScpuiSystem.modelDraw.OverheadElement = self.document:GetElementById("ship_view_wrapper")
-			--ScpuiSystem.modelDraw.Slot = slot
 			ScpuiSystem.modelDraw.overheadEffect = self.overheadEffect
 			
 			self:refreshOverheadSlot()
@@ -1042,11 +1042,6 @@ function WeaponSelectController:global_keydown(element, event)
         event:StopPropagation()
 
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
-        --ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
-	--elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.ctrl_key == 1 then
-	--	self:ChangeTechState(3)
-	--elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then
-	--	self:ChangeTechState(1)
 	end
 end
 
@@ -1055,9 +1050,6 @@ function WeaponSelectController:unload()
 	loadoutHandler:saveCurrentLoadout()
 	ScpuiSystem.modelDraw.class = nil
 	
-	--Since we hack the FSO loadout to handle the Overhead rendering, we need to
-	--reset it on unload but only if we're not committing to the mission so we
-	--don't accidentally overwrite the player's actual loadout
 	if self.Commit == false then
 		loadoutHandler:ResetFSO_API()
 		loadoutHandler:SaveInFSO_API()
@@ -1123,7 +1115,7 @@ end
 function WeaponSelectController:refreshOverheadSlot()
 	if self.overhead3d or overhead == nil then
 		local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
-		loadoutHandler:SendShipToFSO_API(ship, 1)
+		ScpuiSystem.modelDraw.Weapons = ship.Weapons
 	end
 end
 
@@ -1133,14 +1125,6 @@ function WeaponSelectController:drawOverheadModel()
 	
 		if ScpuiSystem.modelDraw.class == nil then ScpuiSystem.modelDraw.class = -1 end
 		if ScpuiSystem.modelDraw.Hover == nil then ScpuiSystem.modelDraw.Hover = -1 end
-		
-		--This is an ugly hack because drawOverheadModel checks wws_slots for
-		--drawing weapon lines. However, we don't use wss_slots until mission
-		--Commit. So we're hackin' this bitch. On each change we set wss_slot 1
-		--to whatever the current setup is and trick drawOverheadModel into
-		--thinking that's accurate. On mission Commit or unload we reset wss_slots
-		--to undo our ugly hack.
-		ScpuiSystem.modelDraw.Slot = 1
 		
 		--local thisItem = tb.ShipClasses(modelDraw.class)
 		modelView = ScpuiSystem.modelDraw.OverheadElement	
@@ -1188,7 +1172,7 @@ function WeaponSelectController:drawOverheadModel()
 		modelWidth = modelWidth * (1 + val)
 		modelHeight = modelHeight * (1 + val)
 		
-		local test = tb.ShipClasses[ScpuiSystem.modelDraw.OverheadClass]:renderOverheadModel(modelLeft, modelTop, modelWidth, modelHeight, ScpuiSystem.modelDraw.Slot, ScpuiSystem.modelDraw.class, ScpuiSystem.modelDraw.Hover, bank1_x, bank1_y, bank2_x, bank2_y, bank3_x, bank3_y, bank4_x, bank4_y, bank5_x, bank5_y, bank6_x, bank6_y, bank7_x, bank7_y, ScpuiSystem.modelDraw.overheadEffect)
+		local test = tb.ShipClasses[ScpuiSystem.modelDraw.OverheadClass]:renderOverheadModel(modelLeft, modelTop, modelWidth, modelHeight, ScpuiSystem.modelDraw.Weapons, ScpuiSystem.modelDraw.class, ScpuiSystem.modelDraw.Hover, bank1_x, bank1_y, bank2_x, bank2_y, bank3_x, bank3_y, bank4_x, bank4_y, bank5_x, bank5_y, bank6_x, bank6_y, bank7_x, bank7_y, ScpuiSystem.modelDraw.overheadEffect)
 		
 		ScpuiSystem.modelDraw.start = false
 		
