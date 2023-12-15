@@ -184,8 +184,10 @@ function utils.loadConfig(filename)
   return config
 end
 
-function utils.xstr(message)
-  if type(message) == 'string' then
+function utils.xstr(message, id)
+  if id then
+    return ba.XSTR(message, id)
+  elseif type(message) == 'string' then
     ba.print('Utils.lua: Got string with missing XSTR index: ' .. message .. "\n")
     return message
   else
