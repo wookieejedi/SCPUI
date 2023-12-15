@@ -685,6 +685,12 @@ end
 
 --Returns true if a ship has a specific bank and false if not
 function LoadoutHandler:ShipHasBank(ship, bank)
+
+	--If we're out of bounds then the ship doesn't have the bank!
+	if (ship < 1) or (ship > #tb.ShipClasses) then
+		return false
+	end
+
 	local primaryBanks = tb.ShipClasses[ship].numPrimaryBanks
 	local secondaryBanks = tb.ShipClasses[ship].numSecondaryBanks
 	
@@ -1025,38 +1031,64 @@ function LoadoutHandler:CopyToWing(sourceSlot)
 end
 
 --Methods to save the loadout from Lua to the FSO API
-function LoadoutHandler:SendShipToFSO_API(ship, slot)
+function LoadoutHandler:SendShipToFSO_API(ship, slot, logging)
+
+	if logging then
+		ba.print("LOADOUT HANDLER: Setting ship slot " .. slot .. "\n")
+		ba.print("LOADOUT HANDLER: Ship slot has name '" .. ScpuiSystem.loadouts.slots[slot].Name .. "'\n")
+	end
 
 	--Set the ship
 	ui.ShipWepSelect.Loadout_Ships[slot].ShipClassIndex = ship.ShipClassIndex
 	if ui.ShipWepSelect.Loadout_Wings[ship.Wing][ship.WingSlot].isShipLocked == false then
+		ba.print("LOADOUT HANDLER: Ship is not locked, setting filled status!\n")
 		if ship.ShipClassIndex > 0 then
 			ui.ShipWepSelect.Loadout_Wings[ship.Wing][ship.WingSlot].isFilled = true
+			if logging then
+				ba.print("LOADOUT HANDLER: Setting filled ship to class '" .. ship.Name .. "'\n")
+			end
 		else
 			ui.ShipWepSelect.Loadout_Wings[ship.Wing][ship.WingSlot].isFilled = false
+			if logging then
+				ba.print("LOADOUT HANDLER: Setting ship slot to empty!\n")
+			end
 			return
 		end
+	else
+		ba.print("LOADOUT HANDLER: Ship is locked, cannot set filled status!\n")
 	end
 	
 	--Set the weapons
-	if ui.ShipWepSelect.Loadout_Wings[ship.Wing][ship.WingSlot].isWeaponLocked == false then
-		for i = 1, self:GetMaxBanks() do
-			if self:ShipHasBank(ship.ShipClassIndex, i) then
-				if ship.Weapons[i] > 0 then
-					ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i] = ship.Weapons[i]
-					ui.ShipWepSelect.Loadout_Ships[slot].Amounts[i] = ship.Amounts[i]
-				else
-					ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i] = -1
+	for i = 1, self:GetMaxBanks() do
+		if self:ShipHasBank(ship.ShipClassIndex, i) then
+			if logging then
+				ba.print("LOADOUT HANDLER: Setting ship bank " .. i .. "\n")
+			end
+			if ship.Weapons[i] > 0 then
+				ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i] = ship.Weapons[i]
+				ui.ShipWepSelect.Loadout_Ships[slot].Amounts[i] = ship.Amounts[i]
+				if logging then
+					ba.print("LOADOUT HANDLER: Setting ship bank weapon to '" .. tb.WeaponClasses[ship.Weapons[i]].Name .. "'\n")
+					ba.print("LOADOUT HANDLER: Setting ship bank amount to '" .. ship.Amounts[i] .. "'\n")
+				end
+			else
+				ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i] = -1
+				if logging then
+					ba.print("LOADOUT HANDLER: Setting ship bank weapon to empty!\n")
 				end
 			end
 		end
+	end
+	
+	if logging then
+		ba.print("LOADOUT HANDLER: Done with slot " .. slot .. "\n")
 	end
 end
 
 function LoadoutHandler:SendAllToFSO_API()
 	for i = 1, self:GetNumSlots() do
 		local ship = self:GetShipLoadout(i)
-		self:SendShipToFSO_API(ship, i)
+		self:SendShipToFSO_API(ship, i, true)
 	end
 end
 
