@@ -367,7 +367,7 @@ function TechMissionsController:GetCampaign()
     local names, fileNames, descriptions = ui.CampaignMenu.getCampaignList()
 
     local currentCampaignFile = ba.getCurrentPlayer():getCampaignFilename()
-    local selectedCampaign = nil
+    local selectedCampaign = ""
 
     self.names = names
     self.descriptions = {}
@@ -381,7 +381,13 @@ function TechMissionsController:GetCampaign()
         end
     end
 	
-	self.campaignFilename = currentCampaignFile .. ".fc2"
+	--It's possible that the current campaign is invalid for the mod, so let's check
+	if selectedCampaign == "" and not cf.fileExists(currentCampaignFile .. ".fc2") then
+		self.campaignFilename = ""
+	else
+		self.campaignFilename = currentCampaignFile .. ".fc2"
+	end
+	
 	self.campaignName = selectedCampaign
 	
 end
