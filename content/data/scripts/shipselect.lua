@@ -16,6 +16,7 @@ function ShipSelectController:init()
 	loadoutHandler:init()
 	ScpuiSystem.modelDraw = {}
 	self.help_shown = false
+	self.enabled = false
 end
 
 function ShipSelectController:initialize(document)
@@ -52,16 +53,16 @@ function ShipSelectController:initialize(document)
 	
 	self.SelectedEntry = nil
 	
-	self:BuildWings()
+	self.enabled = self:BuildWings()
 	
 	topics.shipselect.initialize:send(self)
 	
 	--Only create entries if there are any to create
-	if loadoutHandler:GetNumShips() > 0 then
+	if loadoutHandler:GetNumShips() > 0 and self.enabled == true then
 		self:CreateEntries(loadoutHandler:GetShipList())
 	end
 	
-	if loadoutHandler:GetNumShips() > 0 then
+	if loadoutHandler:GetNumShips() > 0 and self.enabled == true then
 		self:SelectEntry(loadoutHandler:GetShipList()[1])
 	end
 	
@@ -74,6 +75,12 @@ function ShipSelectController:BuildWings()
 	local slotNum = 1
 	local wrapperEl = self.document:GetElementById("wings_wrapper")
 	ScpuiSystem:ClearEntries(wrapperEl)
+	
+	--Check that we actually have wing slots
+	if loadoutHandler.GetNumWings() <= 0 then
+		ba.warning("Mission has no loadout wings! Check the loadout in FRED!")
+		return false
+	end
 
 	for i = 1, loadoutHandler.GetNumWings() do
 
@@ -90,8 +97,14 @@ function ShipSelectController:BuildWings()
 		--Add the wing name
 		local nameEl = self.document:CreateElement("div")
 		nameEl:SetClass("wing_name", true)
-		nameEl.inner_rml = loadoutHandler:GetShipLoadout(slotNum).WingName
+		nameEl.inner_rml = loadoutHandler:GetWingName(i)
 		wingEl:AppendChild(nameEl)
+		
+		--Check that the wing actually has valid ship slots
+		if loadoutHandler:GetNumWingSlots(slotNum) <= 0 then
+			ba.warning("Loadout wing '" .. loadoutHandler:GetWingName(i) .. "' has no valid ship slots! Check the loadout in FRED!")
+			return false
+		end
 		
 		--Now we add the actual wing slots
 		for j = 1, loadoutHandler:GetNumWingSlots(i), 1 do
@@ -189,6 +202,8 @@ function ShipSelectController:BuildWings()
 			slotNum = slotNum + 1
 		end
 	end
+	
+	return true
 
 end
 
@@ -271,7 +286,7 @@ function ShipSelectController:HighlightShip(entry)
 			iconEl:SetAttribute("src", v.GeneratedIcon[1])
 		end
 	end
-	
+
 	for i = 1, loadoutHandler:GetNumSlots() do
 		local ship = loadoutHandler:GetShipLoadout(i)
 		local element = self.document:GetElementById("slot_" .. i)
@@ -529,9 +544,11 @@ function ShipSelectController:Show(text, title, buttons)
 end
 
 function ShipSelectController:reset_pressed(element)
-    ui.playElementSound(element, "click", "success")
-    loadoutHandler:resetLoadout()
-	self:ReloadList()
+	if self.enabled == true then
+		ui.playElementSound(element, "click", "success")
+		loadoutHandler:resetLoadout()
+		self:ReloadList()
+	end
 end
 
 function ShipSelectController:accept_pressed()

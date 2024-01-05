@@ -12,6 +12,7 @@ function WeaponSelectController:init()
 	loadoutHandler:init()
 	ScpuiSystem.modelDraw = {}
 	self.help_shown = false
+	self.enabled = false
 end
 
 function WeaponSelectController:initialize(document)
@@ -73,19 +74,21 @@ function WeaponSelectController:initialize(document)
 	self.SelectedEntry = nil
 	self.SelectedShip = nil
 	
-	self:BuildWings()
+	self.enabled = self:BuildWings()
 	
 	topics.weaponselect.initialize:send(self)
 	
 	--Only create entries if there are any to create
-	if loadoutHandler:GetNumPrimaryWeapons() > 0 then
+	if loadoutHandler:GetNumPrimaryWeapons() > 0 and self.enabled == true then
 		self:CreateEntries(loadoutHandler:GetPrimaryWeaponList())
 	end
-	if loadoutHandler:GetNumSecondaryWeapons() > 0 then
+	if loadoutHandler:GetNumSecondaryWeapons() > 0 and self.enabled == true then
 		self:CreateEntries(loadoutHandler:GetSecondaryWeaponList())
 	end
 	
-	self:SelectInitialItems()
+	if self.enabled == true then
+		self:SelectInitialItems()
+	end
 	
 	self:startMusic()
 
@@ -96,6 +99,12 @@ function WeaponSelectController:BuildWings()
 	local slotNum = 1
 	local wrapperEl = self.document:GetElementById("wings_wrapper")
 	ScpuiSystem:ClearEntries(wrapperEl)
+	
+	--Check that we actually have wing slots
+	if loadoutHandler.GetNumWings() <= 0 then
+		ba.warning("Mission has no loadout wings! Check the loadout in FRED!")
+		return false
+	end
 
 	for i = 1, loadoutHandler.GetNumWings(), 1 do
 		--First create a wrapper for the whole wing
@@ -111,8 +120,14 @@ function WeaponSelectController:BuildWings()
 		--Add the wing name
 		local nameEl = self.document:CreateElement("div")
 		nameEl:SetClass("wing_name", true)
-		nameEl.inner_rml = loadoutHandler:GetShipLoadout(slotNum).WingName
+		nameEl.inner_rml = loadoutHandler:GetWingName(i)
 		wingEl:AppendChild(nameEl)
+		
+		--Check that the wing actually has valid ship slots
+		if loadoutHandler:GetNumWingSlots(i) <= 0 then
+			ba.warning("Loadout wing '" .. loadoutHandler:GetWingName(i) .. "' has no valid ship slots! Check the loadout in FRED!")
+			return false
+		end
 		
 		--Now we add the actual wing slots
 		for j = 1, loadoutHandler:GetNumWingSlots(i), 1 do
@@ -199,6 +214,8 @@ function WeaponSelectController:BuildWings()
 			slotNum = slotNum + 1
 		end
 	end
+	
+	return true
 
 end
 
@@ -450,7 +467,7 @@ end
 function WeaponSelectController:HighlightShip(slot)
 	
 	for i = 1, loadoutHandler:GetNumSlots(), 1 do
-		local slotEl = self.document:GetElementById("slot_" .. i)
+		local slotEl = self.document:GetElementById("slot_" .. i)		
 		local ship = loadoutHandler:GetShipLoadout(i)
 		local shipIdx = ship.ShipClassIndex
 		local thisEntry = loadoutHandler:GetShipInfo(shipIdx)
@@ -482,6 +499,8 @@ function WeaponSelectController:HighlightShip(slot)
 			
 		end
 	end
+	
+	return true
 				
 end
 
@@ -496,7 +515,10 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 		
 		local thisEntry = loadoutHandler:GetShipInfo(shipIndex)
 
-		self:HighlightShip(slot)
+		--If we have an error highlighting the ship then the rest will fail, so bail
+		if self:HighlightShip(slot) == false then
+			return
+		end
 		
 		local overhead = thisEntry.Overhead
 
@@ -918,7 +940,9 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 end
 
 function WeaponSelectController:CopyToWing()
-	loadoutHandler:CopyToWing(self.currentShipSlot)
+	if self.enabled == true then
+		loadoutHandler:CopyToWing(self.currentShipSlot)
+	end
 end
 
 function WeaponSelectController:Show(text, title, buttons)
@@ -950,9 +974,11 @@ function WeaponSelectController:Show(text, title, buttons)
 end
 
 function WeaponSelectController:reset_pressed(element)
-    ui.playElementSound(element, "click", "success")
-    loadoutHandler:resetLoadout()
-	self:ReloadList()
+    if self.enabled == true then
+		ui.playElementSound(element, "click", "success")
+		loadoutHandler:resetLoadout()
+		self:ReloadList()
+	end
 end
 
 function WeaponSelectController:accept_pressed()

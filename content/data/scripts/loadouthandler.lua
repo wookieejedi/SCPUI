@@ -515,6 +515,10 @@ function LoadoutHandler:GetNumWingSlots(wing)
 	return #ui.ShipWepSelect.Loadout_Wings[wing]
 end
 
+function LoadoutHandler:GetWingName(wing)
+	return ui.ShipWepSelect.Loadout_Wings[wing].Name
+end
+
 function LoadoutHandler:IsSlotDisabled(slot)
 	return ScpuiSystem.loadouts.slots[slot].isDisabled
 end
