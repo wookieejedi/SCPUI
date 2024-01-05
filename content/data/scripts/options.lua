@@ -38,6 +38,10 @@ local function getFormatterName(key)
     return key:gsub("%.", "_")
 end
 
+local function getCategoryFromKey(key)
+	return key:match("([^%.]+)")
+end
+
 local function getOptionElementId(option)
     local key = option.Key
     key       = key:gsub("%.", "_")
@@ -1121,8 +1125,7 @@ function OptionsController:initialize(document)
 			end
 		end
 
-        -- TODO: The category might be a translated string at some point so this needs to be fixed then
-        local category = v.Category
+        local category = getCategoryFromKey(v.Key)
         local key      = v.Key
 
         if category == "Input" or category == "Audio" or category == "Game" or key == "Graphics.Gamma" then
