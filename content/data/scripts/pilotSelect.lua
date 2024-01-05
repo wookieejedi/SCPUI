@@ -53,6 +53,9 @@ function PilotSelectController:initialize(document)
     end
 
     if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
+		---Load background choice
+		self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+		
         document:GetElementById("fso_version_info").inner_rml = ba.getVersionString()
 		document:GetElementById("mod_version_info").inner_rml = ba.getModTitle() .. " v" .. ba.getModVersion()
 		
