@@ -569,7 +569,7 @@ end)
 --Prevent the briefing UI from being drawn if we're just going
 --to skip it in a frame or two
 engine.addHook("On Frame", function()
-	if ba.getCurrentGameState().Name == "GS_STATE_BRIEFING" and mn.hasNoBriefing() then
+	if ba.getCurrentGameState().Name == "GS_STATE_BRIEFING" and mn.hasNoBriefing() then --and not ui.isCutscenePlaying() then
 		gr.clearScreen()
 	end
 end, {}, function()

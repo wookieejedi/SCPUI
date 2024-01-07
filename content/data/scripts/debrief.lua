@@ -9,6 +9,9 @@ local class = require("class")
 local DebriefingController = class()
 
 function DebriefingController:init()
+	if not ScpuiSystem.debriefInit then
+		ScpuiSystem:maybePlayCutscene(MOVIE_PRE_DEBRIEF)
+	end
     self.stages = {}
     self.recommendVisible = false
     self.player = nil
@@ -17,13 +20,11 @@ function DebriefingController:init()
 end
 
 function DebriefingController:initialize(document)
-    --AbstractBriefingController.initialize(self, document)
     self.document = document
     self.selectedSection = 1
     self.audioPlaying = 0
     
     if not ScpuiSystem.debriefInit then
-		ScpuiSystem:maybePlayCutscene(MOVIE_PRE_DEBRIEF)
         ui.Debriefing.initDebriefing()
         if not mn.hasDebriefing() then
 			topics.debrief.skip:send()
@@ -701,7 +702,7 @@ end
 --Prevent the debriefing UI from being drawn if we're just going
 --to skip it in a frame or two
 engine.addHook("On Frame", function()
-    if ba.getCurrentGameState().Name == "GS_STATE_DEBRIEF" and not mn.hasDebriefing() then
+    if ba.getCurrentGameState().Name == "GS_STATE_DEBRIEF" and not mn.hasDebriefing() then --and not ui.isCutscenePlaying() then
         gr.clearScreen()
     end
 end, {}, function()

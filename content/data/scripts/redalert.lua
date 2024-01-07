@@ -8,6 +8,8 @@ local class = require("class")
 local RedAlertController = class()
 
 function RedAlertController:init()
+	ScpuiSystem:maybePlayCutscene(MOVIE_PRE_BRIEF)
+	
 	loadoutHandler:init()
 end
 
@@ -16,8 +18,6 @@ local alert_bool = true
 
 function RedAlertController:initialize(document)
 	self.document = document
-
-	ScpuiSystem:maybePlayCutscene(MOVIE_PRE_BRIEF)
 	
 	---Load background choice
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
