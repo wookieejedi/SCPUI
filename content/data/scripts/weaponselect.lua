@@ -710,8 +710,12 @@ function WeaponSelectController:DragDrop(element, slot)
 end
 
 function WeaponSelectController:DragOver(element, slot)
-	if loadoutHandler:GetShipLoadout(self.currentShipSlot).Weapons[slot] > 0 then
-		ScpuiSystem.modelDraw.Hover = slot
+	local amount = loadoutHandler:GetShipLoadout(self.currentShipSlot).Weapons[slot]
+
+	if amount ~= nil then
+		if amount > 0 then
+			ScpuiSystem.modelDraw.Hover = slot
+		end
 	end
 end
 
