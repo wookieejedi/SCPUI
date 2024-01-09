@@ -253,7 +253,7 @@ function JournalUI:CheckNew()
 	for i = 1, #t do
 		for j, v in ipairs(t[i]) do
 			local item = t[i][j]
-			if item.Visible == true and item.Unread == true then
+			if item and item.Visible == true and item.Unread == true then
 				return true
 			end
 		end
@@ -314,8 +314,8 @@ function JournalUI:LockEntry(section, ...)
 	local section = self:GetGroupIndex(section, self.Data.Sections)
 	--get key(s)
 	for _, v in ipairs(arg) do
-		for _, entry in ipairs(self.SaveData[section]) do
-			if string.lower(v[1]) == entry.Key then
+		for _, entry in ipairs(self.SaveData[section] or {}) do
+			if string.lower(v[1] or v) == entry.Key then
 				entry.Visible = false
 				break
 			end	
@@ -336,8 +336,8 @@ function JournalUI:UnlockEntry(section, ...)
 	local section = self:GetGroupIndex(section, self.Data.Sections)
 	--get key(s)
 	for _, v in ipairs(arg) do
-		for _, entry in ipairs(self.SaveData[section]) do
-			if string.lower(v[1]) == entry.Key then
+		for _, entry in ipairs(self.SaveData[section] or {}) do
+			if string.lower(v[1] or v) == entry.Key then
 				entry.Visible = true
 				break
 			end	
