@@ -157,6 +157,14 @@ function TechDatabaseController:initialize(document)
 	
 	self:ChangeSection(1)
 	
+	local a_slider_el = self.document:GetElementById("angle_range_cont").first_child
+	local a_range_el = Element.As.ElementFormControlInput(a_slider_el)
+	a_range_el.value = ScpuiOptionValues.databaseModelAngle or 0.5
+
+	local s_slider_el = self.document:GetElementById("speed_range_cont").first_child
+	local s_range_el = Element.As.ElementFormControlInput(s_slider_el)
+	s_range_el.value = ScpuiOptionValues.databaseModelSpeed or 0.5
+	
 end
 
 function TechDatabaseController:setSortType(sort)
@@ -620,6 +628,8 @@ function TechDatabaseController:SelectEntry(entry)
 				ScpuiSystem.modelDraw.class = entry.Name
 				ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
 			end
+			
+			self:toggleSliders(true)
 
 		elseif self.SelectedSection == "weapons" then			
 			self.document:GetElementById("tech_desc").inner_rml = entry.Description
@@ -631,6 +641,8 @@ function TechDatabaseController:SelectEntry(entry)
 				aniEl:SetAttribute("src", entry.Anim)
 				aniEl:SetClass("anim", true)
 				aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
+				
+				self:toggleSliders(false)
 			else --If we don't have an anim, then draw the tech model
 				if self.first_run == false then
 					async.run(function()
@@ -643,9 +655,11 @@ function TechDatabaseController:SelectEntry(entry)
 					ScpuiSystem.modelDraw.class = entry.Name
 					ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
 				end
+				self:toggleSliders(true)
 			end
 		elseif self.SelectedSection == "intel" then			
 			self.document:GetElementById("tech_desc").inner_rml = entry.Description or ''
+			self:toggleSliders(false)
 			
 			if entry.Anim then
 				ScpuiSystem.modelDraw.class = nil
@@ -694,6 +708,35 @@ function TechDatabaseController:mouse_down(element, event)
 
 end
 
+function TechDatabaseController:toggleSliders(toggle)
+	self.document:GetElementById("angle_slider"):SetClass("hidden", not toggle)
+	self.document:GetElementById("speed_slider"):SetClass("hidden", not toggle)
+end
+
+function TechDatabaseController:update_angle(element, event)
+	if self.first_run == true then
+		ScpuiOptionValues.databaseModelAngle = event.parameters.value
+	end
+	self:update_angle_slider(event.parameters.value)
+end
+
+function TechDatabaseController:update_angle_slider(val)
+	local angle = (val * 3) - 1.5
+	ScpuiSystem.modelDraw.angle = angle
+end
+
+function TechDatabaseController:update_speed(element, event)
+	if self.first_run == true then
+		ScpuiOptionValues.databaseModelSpeed = event.parameters.value
+	end
+	self:update_speed_slider(event.parameters.value)
+end
+
+function TechDatabaseController:update_speed_slider(val)
+	local speed = (val * 2)
+	ScpuiSystem.modelDraw.speed = speed
+end
+
 function TechDatabaseController:DrawModel()
 
 	if ScpuiSystem.modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU" then  --Haaaaaaacks
@@ -706,7 +749,7 @@ function TechDatabaseController:DrawModel()
 		end
 		
 		if not ScpuiSystem.modelDraw.click then
-			ScpuiSystem.modelDraw.Rot = ScpuiSystem.modelDraw.Rot + (1 * ba.getRealFrametime())
+			ScpuiSystem.modelDraw.Rot = ScpuiSystem.modelDraw.Rot + (ScpuiSystem.modelDraw.speed * ba.getRealFrametime())
 		end
 
 		if ScpuiSystem.modelDraw.Rot >= 100 then
@@ -761,7 +804,7 @@ function TechDatabaseController:DrawModel()
 			ScpuiSystem.modelDraw.clickOrient = ba.createOrientationFromVectors(fvec, uvec, rvec)
 		end
 		
-		local orient = ba.createOrientation(-49.75, 0, ScpuiSystem.modelDraw.Rot)
+		local orient = ba.createOrientation(ScpuiSystem.modelDraw.angle, 0, ScpuiSystem.modelDraw.Rot)
 		if ScpuiSystem.modelDraw.click then
 			orient = ScpuiSystem.modelDraw.clickOrient * orient
 		end
@@ -906,6 +949,7 @@ function TechDatabaseController:help_clicked(element)
 end
 
 function TechDatabaseController:unload()
+	ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
     gr.freeAllModels()
 end
 

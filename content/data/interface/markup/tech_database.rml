@@ -161,6 +161,26 @@
 						<span class="tooltiptext">XSTR("View the next or previous data entry", -1)</span>
 					</div>
 				</div>
+				<div id="angle_slider">
+					<div id="horz_panel_text">
+						<span class="slider_title_el">Angle</span>
+					</div>
+					<div id=horz_panel_wrapper>
+						<div id=angle_range_cont>
+							<input class="slider_range_el" type="range" min="0" max="1" step="0.01" orientation="vertical" onchange="controller:update_angle(element, event)"></input>
+						</div>
+					</div>
+				</div>
+				<div id="speed_slider">
+					<div id="horz_panel_text">
+						<span class="slider_title_el">Speed</span>
+					</div>
+					<div id=horz_panel_wrapper>
+						<div id=speed_range_cont>
+							<input class="slider_range_el" type="range" min="0" max="1" step="0.01" onchange="controller:update_speed(element, event)"></input>
+						</div>
+					</div>
+				</div>
 				<img src="tech-room-view-window.png"></img>
 			</div>
 		</div>
