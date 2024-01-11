@@ -17,6 +17,7 @@ ScpuiSystem = {
 	backgrounds = {},
 	briefBackgrounds = {},
 	preloadCoroutines = {},
+	medalInfo = {},
 	substate = "none",
 	cutscene = "none",
 	disableInMulti = true,
@@ -146,6 +147,27 @@ function ScpuiSystem:parseTable(data)
 				self.briefBackgrounds[mission][stage] = file
 			end
 			
+		end
+	
+	end
+	
+	if parse.optionalString("#Medal Placements") then
+	
+		while parse.optionalString("$Medal Bitmap:") do
+		
+			local id = parse.getString()
+			
+			self.medalInfo[id] = {}
+			
+			parse.requiredString("+Position X:")
+			self.medalInfo[id].x = parse.getFloat()
+			
+			parse.requiredString("+Position Y:")
+			self.medalInfo[id].y = parse.getFloat()
+			
+			parse.requiredString("+Width:")
+			self.medalInfo[id].w = parse.getFloat()
+		
 		end
 	
 	end

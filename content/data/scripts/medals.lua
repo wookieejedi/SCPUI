@@ -29,6 +29,10 @@ function MedalsController:initialize(document)
 	self.playerName = ba.getCurrentPlayer():getName()
 	
 	for i = 1, #self.playerMedals do
+		self:build_medal_div(i)
+	end
+	
+	for i = 1, #self.playerMedals do
 		if self.playerMedals[i] > 0 then
 			self:showMedal(i)
 		end
@@ -45,7 +49,59 @@ function MedalsController:initialize(document)
 
 end
 
+function MedalsController:isBadge(medal)
+	--Eventually we can check through the API directly
+	--but for now we just gotta check the name
+	return string.find(string.lower(medal.Name), "ace") ~= nil
+	--return (medal.KillsNeeded > 0)
+end
+
+function MedalsController:isRank(medal)
+	--Eventually we can check through the API directly
+	--but for now we just gotta check the name
+	return string.find(string.lower(medal.Name), "rank") ~= nil
+	--return medal.isRank()
+end
+
+function MedalsController:GetMedalInfo(id)
+	local info = ScpuiSystem.medalInfo[id]
+	
+	if info == nil then
+		info = {
+			x = 0,
+			y = 0,
+			w = 10
+		}
+	end
+	
+	return info
+end
+
+function MedalsController:build_medal_div(idx)
+	local medal = ui.Medals.Medals_List[idx]
+	
+	local parent_el = self.document:GetElementById("medals_wrapper_actual")
+	
+	local id = string.lower(medal.Bitmap:match("(.+)%..+$"))
+	local info = self:GetMedalInfo(id)
+	
+	local medal_el = self.document:CreateElement("div")
+	medal_el.id = id
+	medal_el:SetClass("medal", true)
+	medal_el.style.position = "absolute"
+	medal_el.style.width = info.w .. "%"
+	medal_el.style.top = info.y .. "%"
+	medal_el.style.left = info.x .. "%"
+	
+	local img_el = self.document:CreateElement("img")
+	img_el:SetAttribute("src", id .. "_00.png")
+	
+	medal_el:AppendChild(img_el)
+	parent_el:AppendChild(medal_el)
+end
+
 function MedalsController:showMedal(idx)
+
 	local medal = ui.Medals.Medals_List[idx]
 	
 	--get the div
@@ -69,13 +125,9 @@ function MedalsController:showMedal(idx)
 	end
 	
 	--now setup for the png name
-	if num < 10 then
-		num = "_0" .. num
-	else
-		num = "_" .. num
-	end
+	num = "_" .. self:setupCountString(num)
 	
-	--BtA forces the Commander rank always so force the right png name, too
+	--Special access to the png id for external scripts
 	num = topics.medals.setRankBitmap:send({medal.Name, num})
 	
 	local filename = medal_el.id .. num .. ".png"
@@ -93,6 +145,16 @@ function MedalsController:showMedal(idx)
 	medal_el:AddEventListener("mouseout", function()
 		ScpuiSystem.drawMedalText.name = nil
 	end)
+end
+
+function MedalsController:setupCountString(num)
+	local r_string
+	if num < 10 then
+		r_string = "0" .. num
+	else
+		r_string = num
+	end
+	return r_string
 end
 
 function MedalsController:accept_pressed()

@@ -19,33 +19,6 @@
 			<div id=medals_wrapper_actual>
 				<div id=medals_text>
 				</div>
-				<div id=medal01 class="medal">
-				<img src="medal01_00.png"></img>
-				</div>
-				<div id=medal02 class="medal">
-				<img src="medal02_00.png"></img>
-				</div>
-				<div id=medal03 class="medal">
-				<img src="medal03_00.png"></img>
-				</div>
-				<div id=medal04 class="medal">
-				<img src="medal04_00.png"></img>
-				</div>
-				<div id=medal05 class="medal">
-				<img src="medal05_00.png"></img>
-				</div>
-				<div id=medal06 class="medal">
-				<img src="medal06_00.png"></img>
-				</div>
-				<div id=medal07 class="medal">
-				<img src="medal07_00.png"></img>
-				</div>
-				<div id=medal08 class="medal">
-				<img src="medal08_00.png"></img>
-				</div>
-				<div id=medal09 class="medal">
-				<img src="medal09_00.png"></img>
-				</div>
 			</div>
 		</div>
 		<div id=bottom_panel_wrapper>
