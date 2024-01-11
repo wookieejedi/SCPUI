@@ -18,6 +18,11 @@ function MedalsController:initialize(document)
 	
 	self.document = document
 	
+	--This will reparse the medal info data in SCPUI's tables to make positioning medals
+	--easier. Basically this makes it so ctrl-shift-r will allow reflecting table data
+	--changes without having to restart the entire game.
+	--self:reparseTableData() --Disabled until parse.skipToString() is merged into FSO
+	
 	---Load background choice
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
@@ -47,6 +52,43 @@ function MedalsController:initialize(document)
 	
 	topics.medals.initialize:send(self)
 
+end
+
+function MedalsController:reparseTableData()
+	if cf.fileExists("scpui.tbl") then
+        self:parseMedalInfo("scpui.tbl")
+    end
+    for _, v in ipairs(cf.listFiles("data/tables", "*-ui.tbm")) do
+        self:parseMedalInfo(v)
+    end
+end
+
+function MedalsController:parseMedalInfo(data)
+	parse.readFileText(data, "data/tables")
+	
+	if parse.skipToString("#Medal Placements") then
+	
+		while parse.optionalString("$Medal Bitmap:") do
+		
+			local id = parse.getString()
+			ba.warning(id)
+			
+			ScpuiSystem.medalInfo[id] = {}
+			
+			parse.requiredString("+Position X:")
+			ScpuiSystem.medalInfo[id].x = parse.getFloat()
+			
+			parse.requiredString("+Position Y:")
+			ScpuiSystem.medalInfo[id].y = parse.getFloat()
+			
+			parse.requiredString("+Width:")
+			ScpuiSystem.medalInfo[id].w = parse.getFloat()
+		
+		end
+	
+	end
+	
+	parse.stop()
 end
 
 function MedalsController:isBadge(medal)
