@@ -50,7 +50,7 @@ function FictionViewerController:scroll_down()
 	text_el.scroll_top = text_el.scroll_top - 10
 end
 
-function FictionViewerController:accept_pressed()
+function FictionViewerController:go_to_next()
 	if mn.hasCommandBriefing() then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_CMD_BRIEF"])
 	else
@@ -59,6 +59,12 @@ function FictionViewerController:accept_pressed()
 		else
 			ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
 		end
+	end
+end
+
+function FictionViewerController:accept_pressed()
+	if topics.fictionviewer.accept:send(self) then
+		self:go_to_next()
 	end
 end
 

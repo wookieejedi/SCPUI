@@ -56,7 +56,8 @@ return {
     initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
   },
   fictionviewer = {
-    initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the context
+    initialize           = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+	accept               = Topic(true) --Whether or not to continue to with the Accept press. Sends the context and expects boolean return
   },
   cmdbriefing = {
     initialize           = Topic(nil), --Runs arbitrary script and expects no return value. Sends the UI context.
