@@ -1,0 +1,198 @@
+#Conditional Hooks
+$Application: FS2_Open
+$On Game Init:
+[
+--Set up the player's ribbons
+ScpuiSystem.PlayerRibbons = {}
+
+mn.LuaSEXPs['grant-scpui-ribbon'].Action = function(title, desc_name, border_r, border_g, border_b, ...)	
+	local desc = "From " .. ba.getModTitle()
+	if mn.hasCustomStrings() then
+		for _, v in ipairs(mn.CustomStrings) do
+			if v.Name == desc_name then
+				desc = v.String
+			end
+		end
+	end
+	
+	border_color = {}
+	border_color.r = border_r
+	border_color.g = border_g
+	border_color.b = border_b
+	
+	stripe_colors = {}
+	for _, v in ipairs(arg) do
+		local stripe = {}
+		stripe.p = v[1]
+		stripe.r = v[2]
+		stripe.g = v[3]
+		stripe.b = v[4]
+		table.insert(stripe_colors, stripe)
+	end
+	
+	ScpuiSystem:grantRibbon(title, desc, border_color, stripe_colors)
+end
+
+-- Grants a ribbon.
+-- border_color is an array of 3 values, r, g, b
+-- stripe_colors is an array of stripe is an array of 4 values, p, r, g, b where p is the position
+function ScpuiSystem:grantRibbon(title, description, border_color, stripe_colors)
+	local ribbon = {}
+	
+	ribbon.name = title
+	ribbon.description = description
+	ribbon.source = ba.getModTitle()
+	ribbon.border = border_color
+	ribbon.colors = stripe_colors
+	
+	ScpuiSystem:loadRibbonsFromFile()
+	
+	local ignore_ribbon = false
+	local count = 0
+	for _, v in ipairs(ScpuiSystem.PlayerRibbons) do
+		if v.name == ribbon.title then
+			ignore_ribbon = true
+			ba.print("SCPUI: Ribbon '" .. title .. "' already exists!\n")
+			break
+		end
+		
+		-- Limit mods to 5 ribbons. It's semi arbitrary, but let's prevent mods from going nuts with these
+		if v.source == ribbon.source then
+			count = count + 1
+		end
+		
+		if count > 5 then
+			ignore_ribbon = true
+			ba.print("SCPUI: Current mod already has 5 ribbons. Ribbon '" .. title .. "' will not be added!\n")
+		end
+		
+	end
+	
+	if not ignore_ribbon then
+		ba.print("SCPUI: Granted ribbon '" .. title .. "' to player!\n")
+		table.insert(ScpuiSystem.PlayerRibbons, ribbon)
+	end
+	
+	ScpuiSystem:saveRibbonsToFile()
+end
+	
+
+function ScpuiSystem:loadRibbonsFromFile()
+
+	local json = require('dkjson')
+  
+	local location = 'data/players'
+  
+	local file = nil
+	local config = {}
+  
+	if cf.fileExists('scpui_ribbons.cfg') then
+		file = cf.openFile('scpui_ribbons.cfg', 'r', location)
+		config = json.decode(file:read('*a'))
+		file:close()
+		if not config then
+			config = {}
+		end
+	end
+
+	--Currently not doing this per-player on purpose.. but we could!
+	--[[if not config[ba.getCurrentPlayer():getName()] then
+		config[ba.getCurrentPlayer():getName()] = {}
+	end]]--
+	
+	ScpuiSystem.PlayerRibbons = config
+end
+
+function ScpuiSystem:saveRibbonsToFile()
+
+	local json = require('dkjson')
+  
+	local location = 'data/players'
+  
+	local file = nil
+	local config = {}
+  
+	if cf.fileExists('scpui_ribbons.cfg') then
+		file = cf.openFile('scpui_ribbons.cfg', 'r', location)
+		config = json.decode(file:read('*a'))
+		file:close()
+		if not config then
+			config = {}
+		end
+	end
+
+	--Currently not doing this per-player on purpose.. but we could!
+	--[[if not config[ba.getCurrentPlayer():getName()] then
+		config[ba.getCurrentPlayer():getName()] = {}
+	end]]--
+	
+	config = ScpuiSystem.PlayerRibbons
+	
+	local utils = require('utils')
+	--config = utils.cleanPilotsFromSaveData(config)
+  
+	file = cf.openFile('scpui_ribbons.cfg', 'w', location)
+	file:write(json.encode(config))
+	file:close()
+end
+
+function ScpuiSystem:createRibbonImage(ribbon)
+	local utils = require("utils")
+	
+	local savedColor = gr.getColor(true)
+	local tex_h = gr.createTexture(200, 50)
+	gr.setTarget(tex_h)
+	
+	local img = nil
+	local border = gr.createColor(200, 200, 200, 255)
+	
+	if ribbon.border then
+		local r = utils.clamp(ribbon.border.r, 0, 255)
+		local g = utils.clamp(ribbon.border.g, 0, 255)
+		local b = utils.clamp(ribbon.border.b, 0, 255)
+		border = gr.createColor(r, g, b, 255)
+	end
+	
+	gr.setColor(border)
+	gr.drawRectangle(0, 0, 200, 50)
+	
+	for i = 1, #ribbon.colors do
+		pos = ribbon.colors[i].p
+		if i == 1 or pos < 3 then
+			pos = 3
+		end
+		if pos >= 100 then
+			pos = 99
+		end
+		
+		local r = utils.clamp(ribbon.colors[i].r, 0, 255)
+		local g = utils.clamp(ribbon.colors[i].g, 0, 255)
+		local b = utils.clamp(ribbon.colors[i].b, 0, 255)
+		
+		local thisColor = gr.createColor(r, g, b, 255)
+		
+		gr.setColor(thisColor)
+		
+		gr.drawRectangle(pos, 2, (200 - pos), 48)
+	end
+	
+	local black = gr.createColor(0, 0, 0, 50)
+	for i = 3, 48, 2 do
+		gr.setColor(black)
+		gr.drawRectangle(3, i, 197, i+1)
+	end
+	
+	img = gr.screenToBlob()
+	
+	--clean up
+	gr.setTarget()
+	tex_h:destroyRenderTarget()
+	tex_h:unload()
+	gr.setColor(savedColor)
+	
+	return img
+end
+
+]
+
+#End

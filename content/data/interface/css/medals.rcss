@@ -9,23 +9,6 @@ body
 	padding-top:8%;
 }
 
-div#logo_wide
-{
-	position: absolute;
-	bottom: 1%;
-	margin: auto;
-	width: 35%;
-	height: auto;
-	overflow: hidden;
-}
-
-div#logo_wide img
-{
-	display: block;
-	width: 100%;
-	height: auto;
-}
-
 div#medals_text
 {
 	position: absolute;
@@ -64,10 +47,6 @@ div#medals_case img
 	height: auto;
 }
 
-
-
-/*Medal div positions*/
-
 .medal
 {
 	z-index: 1;
@@ -77,6 +56,61 @@ div#medals_case img
 {
 	width: 100%;
 	height: auto;
+}
+
+/*Ribbons stuff*/
+
+div#ribbons_wrapper
+{
+	margin: auto;
+	position: absolute;
+	top: 8%;
+	width: 79%;
+}
+
+div#ribbons_wrapper img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#ribbons_wrapper_actual
+{
+	width: 98%;
+	height: 93.5%;
+	position: absolute;
+	top: 3.5%;
+	left: 1%;
+	overflow: scroll;
+}
+
+.ribbon_column
+{
+	width: 20%;
+	position: relative;
+	float: left;
+}
+
+.ribbon
+{
+	width: 80%;
+	z-index: 10;
+	margin-left: 10%;
+	margin-right: 10%;
+	margin-top: 2%;
+}
+
+.ribbon img
+{
+	width: 100%;
+	height: auto;
+}
+
+.ribbon p
+{
+	text-align: center;
+	height: 5%;
 }
 
 /*Bottom Panel Elements*/
@@ -126,7 +160,6 @@ div#accept_cont
 	display: block;
 	width: 100%;
 	height: auto;
-
 }
 
 #accept_img
@@ -144,4 +177,182 @@ button#fv_accept_btn:active #accept_img
 {
 	background-decorator: image;
 	background-image: select-neg-o.png;
+}
+
+/*Top Panel Elements*/
+
+div#top_panel_wrapper
+{
+	width: 100%;
+	height: auto;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 7;
+}
+
+div#top_panel_b
+{
+	width: 4%;
+	height: auto;
+	position: relative;
+	float: left;
+}
+
+div#top_panel_b img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+/*Top B Panel Buttons*/
+
+div#top_b_panel_wrapper
+{
+	position: absolute;
+	margin-top: 5%;
+}
+
+.button_text_right p
+{
+	margin-top: -20%;
+	width: 400%;
+	margin-left: 100%;
+}
+
+/*Bullet Button*/
+
+div#bullet_cont
+{
+	width: 65%;
+	height: auto;
+	margin: auto;
+
+}
+
+.bullet
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+}
+
+button#award_btn_1:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#award_btn_1:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#award_btn_1:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#award_btn_2:hover #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#award_btn_2:active #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#award_btn_2:checked #bullet_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+/*Scroll Buttons*/
+
+#ribbons_wrapper_actual scrollbarvertical
+{
+	scrollchange-sound: 9;
+	width: 4%;
+	position: absolute;
+	right: 1.1%;
+	top: -9%;
+	z-index: 5;
+}
+
+#ribbons_wrapper_actual scrollbarvertical slidertrack
+{
+	visibility: hidden;
+}
+
+#ribbons_wrapper_actual scrollbarvertical sliderbar
+{
+	height: 5%;
+}
+
+#ribbons_wrapper_actual scrollbarvertical sliderbar:hover
+{
+	
+}
+
+#ribbons_wrapper_actual scrollbarvertical sliderbar:active
+{
+	
+}
+
+#ribbons_wrapper_actual scrollbarvertical sliderarrowdec
+{
+	width: 100%;
+	height: 8%;
+	margin-top: 8%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
+}
+
+#ribbons_wrapper_actual scrollbarvertical sliderarrowinc
+{
+	width: 100%;
+	height: 8%;
+	margin-bottom: -10%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
+}
+
+#ribbons_wrapper_actual scrollbarvertical sliderarrowdec:hover
+{
+	icon-image: arrow-dbl-up-h.png;
+}
+
+#ribbons_wrapper_actual scrollbarvertical sliderarrowinc:hover
+{
+	icon-image: arrow-dbl-down-h.png;
+}
+
+#ribbons_wrapper_actual scrollbarvertical sliderarrowdec:active
+{
+	icon-image: arrow-dbl-up-o.png;
+}
+
+#ribbons_wrapper_actual scrollbarvertical sliderarrowinc:active
+{
+	icon-image: arrow-dbl-down-o.png;
 }

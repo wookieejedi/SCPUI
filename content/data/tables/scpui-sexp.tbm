@@ -1,0 +1,38 @@
+#Lua SEXPs
+
+$Operator: grant-scpui-ribbon
+$Category: Change
+$Subcategory: Mission and Campaign
+$Minimum Arguments: 9
+$Return Type: Nothing
+$Description: Grants an SCPUI ribbon permanently to the player's ribbons save file. Must include at least one stripe color. The first stripe is always at position 0 regardless of the value provided.
+$Parameter:
+  +Description: The name of the ribbon
+  +Type: String
+$Parameter:
+  +Description: The name of the Custom String from Mission Specs to use as the ribbon's hover text
+  +Type: String
+$Parameter:
+  +Description: The ribbon's border color red value: 0-255
+  +Type: Number
+$Parameter:
+  +Description: The ribbon's border color green value: 0-255
+  +Type: Number
+$Parameter:
+  +Description: The ribbon's border color blue value: 0-255
+  +Type: Number
+$Repeat
+$Parameter:
+  +Description: The position of the stripe as a percentage 0-100 were 0 is full left and 100 is middle of the ribbon
+  +Type: Number
+$Parameter:
+  +Description: The ribbon's stripe color red value: 0-255
+  +Type: Number
+$Parameter:
+  +Description: The ribbon's stripe color green value: 0-255
+  +Type: Number
+$Parameter:
+  +Description: The ribbon's stripe color blue value: 0-255
+  +Type: Number
+
+#End

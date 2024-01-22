@@ -195,6 +195,16 @@ function utils.xstr(message, id)
   end
 end
 
+function utils.clamp(value, minimum, maximum)
+  if value < minimum then
+    return minimum
+  elseif value > maximum then
+    return maximum
+  else
+    return value
+  end
+end
+
 -- Call this as copy(someTable) and ignore the seen parameter. It's used internally.
 function utils.copy(obj, seen)
   if type(obj) ~= 'table' then return obj end

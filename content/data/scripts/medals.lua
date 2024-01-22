@@ -17,6 +17,7 @@ end
 function MedalsController:initialize(document)
 	
 	self.document = document
+	self.ribbonColumn = 1
 	
 	--This will reparse the medal info data in SCPUI's tables to make positioning medals
 	--easier. Basically this makes it so ctrl-shift-r will allow reflecting table data
@@ -50,7 +51,20 @@ function MedalsController:initialize(document)
 	
 	self.document:GetElementById("medals_text").inner_rml = self.playerName
 	
+	ScpuiSystem:loadRibbonsFromFile()
+	
+	table.sort(ScpuiSystem.PlayerRibbons, function(a, b)
+        return a.name < b.name
+    end)
+
+	self.ribbonCounts = {}
+	for i = 1, #ScpuiSystem.PlayerRibbons do
+		self:build_ribbon_div(i)
+	end
+	
 	topics.medals.initialize:send(self)
+	
+	self:change_view(false)
 
 end
 
@@ -199,6 +213,66 @@ function MedalsController:setupCountString(num)
 	return r_string
 end
 
+function MedalsController:build_ribbon_div(idx)
+	local ribbon = ScpuiSystem.PlayerRibbons[idx]
+	
+	if not self.ribbonCounts[ribbon.source] then
+		self.ribbonCounts[ribbon.source] = 1
+	else
+		self.ribbonCounts[ribbon.source] = self.ribbonCounts[ribbon.source] + 1
+	end
+	
+	-- Don't display more than 5 ribbons from a single game
+	if self.ribbonCounts[ribbon.source] > 5 then return end
+	
+	local img = ScpuiSystem:createRibbonImage(ribbon)
+	
+	local parent_id = "ribbon_column_" .. self.ribbonColumn
+	self.ribbonColumn = self.ribbonColumn + 1
+	if self.ribbonColumn > 5 then
+		self.ribbonColumn = 1
+	end
+	
+	local parent_el = self.document:GetElementById(parent_id)
+	
+	local ribbon_el = self.document:CreateElement("div")
+	ribbon_el.id = "ribbon_" .. idx
+	ribbon_el:SetClass("ribbon", true)
+	
+	--add mouseover listener
+	ribbon_el:AddEventListener("mouseover", function()
+		ScpuiSystem.drawMedalText.name = ribbon.description
+	end)
+	
+	ribbon_el:AddEventListener("mouseout", function()
+		ScpuiSystem.drawMedalText.name = nil
+	end)
+	
+	local img_el = self.document:CreateElement("img")
+	img_el:SetAttribute("src", img)
+	
+	local title_el = self.document:CreateElement("p")
+	title_el.inner_rml = ribbon.name
+	
+	ribbon_el:AppendChild(img_el)
+	ribbon_el:AppendChild(title_el)
+	parent_el:AppendChild(ribbon_el)
+end
+
+function MedalsController:change_view(toggle)
+	local medal_el = self.document:GetElementById("medals_wrapper")
+	local ribbon_el = self.document:GetElementById("ribbons_wrapper")
+	
+	medal_el:SetClass("hidden", toggle)
+	ribbon_el:SetClass("hidden", not toggle)
+	
+	local medal_btn_el = self.document:GetElementById("award_btn_1")
+	local ribbon_btn_el = self.document:GetElementById("award_btn_2")
+	
+	medal_btn_el:SetPseudoClass("checked", not toggle)
+	ribbon_btn_el:SetPseudoClass("checked", toggle)
+end
+
 function MedalsController:accept_pressed()
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
 end
@@ -225,8 +299,21 @@ function MedalsController:drawText()
 		--get the string width
 		local w = gr.getStringWidth(ScpuiSystem.drawMedalText.name)
 		
+		local draw = {}
+		draw.x = ScpuiSystem.drawMedalText.x - w
+		draw.y = ScpuiSystem.drawMedalText.y - 25
+		
+		if draw.x < 5 then
+			draw.x = 5
+		end
+		
 		--draw the string
-		gr.drawString(ScpuiSystem.drawMedalText.name, ScpuiSystem.drawMedalText.x - w, ScpuiSystem.drawMedalText.y - 15)
+		gr.setColor(255, 255, 0, 255)
+		gr.drawRectangle(draw.x-2, draw.y-2, draw.x + w + 6+2, draw.y + 20+2)
+		gr.setColor(0, 0, 0, 255)
+		gr.drawRectangle(draw.x, draw.y, draw.x + w + 6, draw.y + 20)
+		gr.setColor(255, 255, 255, 255)
+		gr.drawString(ScpuiSystem.drawMedalText.name, draw.x + 3, draw.y + 3)
 		
 		--reset the color
 		gr.setColor(r, g, b, a)

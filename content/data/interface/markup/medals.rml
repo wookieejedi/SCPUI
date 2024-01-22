@@ -12,6 +12,33 @@
 		</script>
 	</head>
 	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onmousemove="controller:mouse_move(element, event)" onunload="controller = nil">
+		<div id=top_panel_wrapper>
+			<div id=top_panel_b>
+				<div id=top_b_panel_wrapper>
+					<div id=bullet_cont>
+						<button id="award_btn_1" class="bullet button_1" onclick="controller:change_view(false)">
+							<span id="bullet_img" class="bullet button_img">
+								<img src="bullet-r.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_right">
+								<p>XSTR("Medals", -1)</p>
+							</span>
+						</button>
+					</div>
+					<div id=bullet_cont>
+						<button id="award_btn_2" class="bullet button_1" onclick="controller:change_view(true)">
+							<span id="bullet_img" class="bullet button_img">
+								<img src="bullet-r.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_right">
+								<p>XSTR("Ribbons", -1)</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="ops-panel-vert-tall-l.png"></img>
+			</div>
+		</div>
 		<div id=medals_wrapper>
 			<div id=medals_case>
 				<img src="medalcase.png"></img>
@@ -20,6 +47,21 @@
 				<div id=medals_text>
 				</div>
 			</div>
+		</div>
+		<div id=ribbons_wrapper>
+			<div id=ribbons_wrapper_actual>
+				<div id=ribbon_column_1 class="ribbon_column">
+				</div>
+				<div id=ribbon_column_2 class="ribbon_column">
+				</div>
+				<div id=ribbon_column_3 class="ribbon_column">
+				</div>
+				<div id=ribbon_column_4 class="ribbon_column">
+				</div>
+				<div id=ribbon_column_5 class="ribbon_column">
+				</div>
+			</div>
+			<img src="fiction-window.png"></img>
 		</div>
 		<div id=bottom_panel_wrapper>
 			<div id=bottom_panel_a>
@@ -37,9 +79,6 @@
 				</div>
 				<img src="bottom-panel-a.png"></img>
 			</div>
-		</div>
-		<div id=logo_wide>
-			<img src="logo-wide.png"></img>
 		</div>
 	</body>
 
