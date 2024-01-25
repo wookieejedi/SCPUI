@@ -66,12 +66,19 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
         dialog_doc                                       = context:LoadDocument("data/interface/markup/dialog.rml")
     end
 	
+	if properties.background_color then
+		dialog_doc:GetElementById("main_background").style["background-color"] = properties.background_color
+	end
+	
 	if string.len(properties.title_string) > 0 then
 		dialog_doc.title = properties.title_string
 	end
 
     dialog_doc:GetElementById("title_container").inner_rml = properties.title_string
-    dialog_doc:GetElementById("text_container").inner_rml  = properties.text_string
+	-- Put the dialog content into a <p> container so that scrolling works properly
+    local text_el = dialog_doc:CreateElement("p")
+	text_el.inner_rml = properties.text_string
+	dialog_doc:GetElementById("text_container"):AppendChild(text_el)
     dialog_doc:GetElementById("dialog_body"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
     
     if properties.input_choice then
@@ -203,6 +210,11 @@ function factory_mt:style(style)
     return self
 end
 
+function factory_mt:background(color)
+    self.background_color = color
+    return self
+end
+
 function factory_mt:show(context, abortCBTable)
     return async.promise(function(resolve, reject)
         show_dialog(context, self, resolve, reject, abortCBTable)
@@ -219,7 +231,8 @@ function module.new()
         text_string  = "",
         input_choice = false,
         escape_value = nil,
-        style_value = 1
+        style_value = 1,
+		background_color = nil
     }
     setmetatable(factory, factory_mt)
     return factory

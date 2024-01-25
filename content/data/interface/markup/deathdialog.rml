@@ -8,27 +8,29 @@
 		<link type="text/rcss" href="deathdialog.rcss"/>
 		<link type="text/rcss" href="custom.rcss"/>
 	</head>
-	<body id="dialog_body">
-		<div id="content">
-			<div id="title_container"></div>
-			<div id="text_container"></div>
+	<body id="main_background">
+		<div id="dialog_body">
+			<div id="content">
+				<div id="title_container"></div>
+				<div id="text_container"></div>
+			</div>
+			<button id="button_4">
+				<div id="button_4_text" class="button_text_dialog"></div>
+				<div class="button_image_dialog"></div>
+			</button>
+			<button id="button_3">
+				<div id="button_3_text" class="button_text_dialog"></div>
+				<div class="button_image_dialog"></div>
+			</button>
+			<button id="button_2">
+				<div id="button_2_text" class="button_text_dialog"></div>
+				<div class="button_image_dialog"></div>
+			</button>
+			<button id="button_1">
+				<div id="button_1_text" class="button_text_dialog"></div>
+				<div class="button_image_dialog"></div>
+			</button>
+			<div id="button_hack_fix"></div>
 		</div>
-	  <button id="button_4">
-		  <div id="button_4_text" class="button_text_dialog"></div>
-		  <div class="button_image_dialog"></div>
-	  </button>
-	  <button id="button_3">
-		  <div id="button_3_text" class="button_text_dialog"></div>
-		  <div class="button_image_dialog"></div>
-	  </button>
-	  <button id="button_2">
-		  <div id="button_2_text" class="button_text_dialog"></div>
-		  <div class="button_image_dialog"></div>
-	  </button>
-	  <button id="button_1">
-		  <div id="button_1_text" class="button_text_dialog"></div>
-		  <div class="button_image_dialog"></div>
-	  </button>
-	  <div id="button_hack_fix"></div>
 	</body>
 </rml>
