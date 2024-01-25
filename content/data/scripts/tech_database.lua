@@ -538,6 +538,10 @@ function TechDatabaseController:CreateEntryItem(entry, index, selectable, headin
 		li_el:AddEventListener("click", function(_, _, _)
 			self:SelectEntry(entry)
 		end)
+		li_el:AddEventListener("dblclick", function(_, _, _)
+			self:SelectEntry(entry)
+			self:BreakoutReader()
+		end)
 	end
 	self.visibleList[self.Counter] = entry
 	entry.key = li_el.id
@@ -585,7 +589,7 @@ function TechDatabaseController:SelectEntry(entry)
 		return
 	end
 
-	if entry.key ~= self.SelectedEntry then
+	if (self.SelectedEntry == nil) or (entry.key ~= self.SelectedEntry.key) then
 		self.document:GetElementById(entry.key):SetPseudoClass("checked", true)
 
 		self.SelectedIndex = entry.Index
@@ -599,12 +603,12 @@ function TechDatabaseController:SelectEntry(entry)
 		aniWrapper:RemoveChild(aniWrapper.first_child)
 	
 		if self.SelectedEntry then
-			local oldEntry = self.document:GetElementById(self.SelectedEntry)
+			local oldEntry = self.document:GetElementById(self.SelectedEntry.key)
 			if oldEntry then oldEntry:SetPseudoClass("checked", false) end
 		end
 		
 		local thisEntry = self.document:GetElementById(entry.key)
-		self.SelectedEntry = entry.key
+		self.SelectedEntry = entry
 		thisEntry:SetPseudoClass("checked", true)
 		
 		--Headings can be made selectable. If so, then custom code is required
@@ -679,6 +683,43 @@ function TechDatabaseController:SelectEntry(entry)
 	end	
 
 
+end
+
+function TechDatabaseController:Show(text, title, buttons)
+	--Create a simple dialog box with the text and title
+
+	currentDialog = true
+	ScpuiSystem.modelDraw.save = ScpuiSystem.modelDraw.class
+	ScpuiSystem.modelDraw.class = nil
+	
+	local dialog = dialogs.new()
+		dialog:title(title)
+		dialog:text(text)
+		dialog:escape("")
+		for i = 1, #buttons do
+			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
+		end
+		dialog:background("#00000080")
+		dialog:show(self.document.context)
+		:continueWith(function(response)
+			ScpuiSystem.modelDraw.class = ScpuiSystem.modelDraw.save
+			ScpuiSystem.modelDraw.save = nil
+    end)
+	-- Route input to our context until the user dismisses the dialog box.
+	ui.enableInput(self.document.context)
+end
+
+function TechDatabaseController:BreakoutReader()
+	local text = self.SelectedEntry.Description
+	local title = "<span style=\"color:white;\">" .. self.SelectedEntry.DisplayName .. "</span>"
+	local buttons = {}
+	buttons[1] = {
+		b_type = dialogs.BUTTON_TYPE_POSITIVE,
+		b_text = ba.XSTR("Close", -1),
+		b_value = "",
+		b_keypress = string.sub(ba.XSTR("Close", -1), 1, 1)
+	}
+	self:Show(text, title, buttons)
 end
 
 function TechDatabaseController:mouse_move(element, event)
@@ -818,7 +859,7 @@ end
 
 function TechDatabaseController:ClearEntry()
 
-	self.document:GetElementById(self.SelectedEntry):SetPseudoClass("checked", false)
+	self.document:GetElementById(self.SelectedEntry.key):SetPseudoClass("checked", false)
 	self.SelectedEntry = nil
 
 end

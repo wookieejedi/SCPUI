@@ -189,6 +189,19 @@
 				<div id=tech_desc>
 					<p></p>
 				</div>
+				<div id=breakout_button>
+					<div id=breakout_cont>
+						<button id="breakout_btn" class="techbuttons button_1" onclick="controller:BreakoutReader()">
+							<span id="breakout_img" class="techbuttons button_img">
+								<img src="oval.png" class="psuedo_img"></img>
+							</span>
+							<span id="breakout_button_text" class="pos button_text_right">
+								<p>XSTR("Read in window", -1)</p>
+							</span>
+						</button>
+					</div>
+					<img src="ops-panel-horz.png"></img>
+				</div>
 				<div id=tech_select>
 					<div id=button_wrapper>
 						<div id=ships_cont>
