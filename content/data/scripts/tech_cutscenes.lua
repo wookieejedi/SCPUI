@@ -30,16 +30,16 @@ function TechCutscenesController:initialize(document)
 	self.list = {}
 	
 	local cutsceneList = ui.TechRoom.Cutscenes
-	local i = 0
+	local i = 1
 	while (i ~= #cutsceneList) do
-		self.list[i+1] = {
+		self.list[i] = {
 			Name = cutsceneList[i].Name,
 			Filename = cutsceneList[i].Filename,
 			Description = cutsceneList[i].Description,
 			isVisible = cutsceneList[i].isVisible,
-			Index = i + 1
+			Index = i
 		}
-		topics.cutscenes.addParam:send({self.list[i+1], cutsceneList[i]})
+		topics.cutscenes.addParam:send({self.list[i], cutsceneList[i]})
 		i = i + 1
 	end
 	
