@@ -61,9 +61,10 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
     local dialog_doc = nil
     
     if properties.style_value == 2 then
-        dialog_doc                                       = context:LoadDocument("data/interface/markup/deathdialog.rml")
+        dialog_doc = context:LoadDocument("data/interface/markup/deathdialog.rml")
+		properties.click_escape = nil -- This is never allowed for death dialogs
     else
-        dialog_doc                                       = context:LoadDocument("data/interface/markup/dialog.rml")
+        dialog_doc = context:LoadDocument("data/interface/markup/dialog.rml")
     end
 	
 	if properties.background_color then
@@ -136,6 +137,15 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
 			end
 		end
 	end)
+	
+	if properties.click_escape and properties.escape_value then
+		bg_el = dialog_doc:GetElementById("click_detect")
+		
+		bg_el:AddEventListener("click", function(event, _, _)
+			finish_func(properties.escape_value)
+            ScpuiSystem:CloseDialog()
+        end)
+	end
     
     if abortCBTable ~= nil then
         abortCBTable.Abort = function()
@@ -205,6 +215,11 @@ function factory_mt:escape(escape)
     return self
 end
 
+function factory_mt:clickescape(clickescape)
+    self.click_escape = clickescape
+    return self
+end
+
 function factory_mt:style(style)
     self.style_value = style
     return self
@@ -231,6 +246,7 @@ function module.new()
         text_string  = "",
         input_choice = false,
         escape_value = nil,
+		click_escape = nil,
         style_value = 1,
 		background_color = nil
     }

@@ -696,6 +696,7 @@ function TechDatabaseController:Show(text, title, buttons)
 		dialog:title(title)
 		dialog:text(text)
 		dialog:escape("")
+		dialog:clickescape(true)
 		for i = 1, #buttons do
 			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end

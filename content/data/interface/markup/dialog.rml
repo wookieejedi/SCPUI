@@ -9,6 +9,8 @@
 		<link type="text/rcss" href="custom.rcss"/>
 	</head>
 	<body id="main_background">
+		<div id="click_detect">
+		</div>
 		<div id="dialog_body">
 			<div id="content">
 				<div id="title_container"></div>
