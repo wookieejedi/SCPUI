@@ -31,7 +31,7 @@ function TechCutscenesController:initialize(document)
 	
 	local cutsceneList = ui.TechRoom.Cutscenes
 	local i = 1
-	while (i ~= #cutsceneList) do
+	while (i <= #cutsceneList) do
 		self.list[i] = {
 			Name = cutsceneList[i].Name,
 			Filename = cutsceneList[i].Filename,
