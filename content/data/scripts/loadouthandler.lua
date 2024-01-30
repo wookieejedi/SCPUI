@@ -89,6 +89,9 @@ function LoadoutHandler:saveCurrentLoadout()
 		numShipClasses = #tb.ShipClasses,
 		numWepClasses = #tb.WeaponClasses
 	}
+	
+	topics.loadouts.saveLoadout:send(ScpuiSystem.savedLoadouts[key])
+	
 	self:saveLoadoutsToFile(ScpuiSystem.savedLoadouts)
 end
 
@@ -104,6 +107,9 @@ function LoadoutHandler:maybeApplySavedLoadout()
 		
 		--Check here that the number of ship & weapon classes at the time of save is equal to the number that exist now
 		if ScpuiSystem.savedLoadouts[key].numShipClasses == #tb.ShipClasses and ScpuiSystem.savedLoadouts[key].numWepClasses == #tb.WeaponClasses then
+			
+			topics.loadouts.loadLoadout:send(ScpuiSystem.savedLoadouts[key])
+			
 			ScpuiSystem.loadouts.shipPool = ScpuiSystem.savedLoadouts[key].shipPool
 			ScpuiSystem.loadouts.weaponPool = ScpuiSystem.savedLoadouts[key].weaponPool
 			ScpuiSystem.loadouts.slots = ScpuiSystem.savedLoadouts[key].slots

@@ -88,6 +88,8 @@ return {
   },
   loadouts = {
     initialize           = Topic(nil), --Runs arbitrary script and expects no return value
+	saveLoadout          = Topic(nil), --Runs arbitrary script and expects no return value. Sends the save data to be saved
+	loadLoadout          = Topic(nil), --Runs arbitrary script and expects no return value. Sends the loaded save data
     rejectSavedLoadout   = Topic(false), --Runs arbitrary script and expects a boolean return, true to abort applying saved loadout
     initPool             = Topic(nil), --Runs arbitrary script and expects no return value. Sends the ship slot
     emptyShipSlot        = Topic(nil), --Runs arbitrary script and expects no return value. Sends the ship slot
