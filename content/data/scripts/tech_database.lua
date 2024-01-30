@@ -617,9 +617,12 @@ function TechDatabaseController:SelectEntry(entry)
 			return
 		end
 		
+		--Set the description text
+		self.document:GetElementById("tech_desc").inner_rml = entry.Description or ''
+		self.document:GetElementById("tech_desc").scroll_top = 0
+		
 		--Decide if item is a weapon or a ship
 		if self.SelectedSection == "ships" then
-			self.document:GetElementById("tech_desc").inner_rml = entry.Description
 			
 			if self.first_run == false then
 				async.run(function()
@@ -636,7 +639,6 @@ function TechDatabaseController:SelectEntry(entry)
 			self:toggleSliders(true)
 
 		elseif self.SelectedSection == "weapons" then			
-			self.document:GetElementById("tech_desc").inner_rml = entry.Description
 			
 			if entry.Anim ~= "" and utils.animExists(entry.Anim) then
 				ScpuiSystem.modelDraw.class = nil
@@ -662,7 +664,6 @@ function TechDatabaseController:SelectEntry(entry)
 				self:toggleSliders(true)
 			end
 		elseif self.SelectedSection == "intel" then			
-			self.document:GetElementById("tech_desc").inner_rml = entry.Description or ''
 			self:toggleSliders(false)
 			
 			if entry.Anim then
