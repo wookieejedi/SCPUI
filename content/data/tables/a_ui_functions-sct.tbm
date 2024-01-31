@@ -159,6 +159,30 @@ function ScpuiSystem:makeElement(context, t, id)
 	return el
 end
 
+function ScpuiSystem:makeElementPanel(context, id, img)
+	if id == nil then
+		ba.error("SCPUI: ID is required to make an element panel!")
+	end
+	
+	local el = context.document:CreateElement("div")
+	el.id = id
+	
+	local img_el = ScpuiSystem:makeImg(context, img)
+	img_el.style.display = "block"
+	img_el.style.width = "100%"
+	img_el.style.height = "auto"
+	
+	local inner_el = ScpuiSystem:makeElement(context, "div", id .. "_inner")
+	inner_el.style.position = "absolute"
+	inner_el.style.top = "0"
+	inner_el.style.left = "0"
+	
+	el:AppendChild(inner_el)
+	el:AppendChild(img_el)
+	
+	return el
+end
+
 --Makes an image element
 function ScpuiSystem:makeImg(context, file, animated)
 	local t = "img"
