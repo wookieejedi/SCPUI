@@ -87,6 +87,7 @@ function PilotSelectController:initialize(document)
                 self:set_player_mode(nil, "single")
             end
         end
+        ui.PilotSelect.unloadPilot()
     end
 
 	if topics.pilotselect.startsound:send(self) then
@@ -262,8 +263,6 @@ function PilotSelectController:global_keydown(element, event)
 			--Catch all for customization
 			topics.pilotselect.globalKeypress:send({self, event})
 		end
-	else
-		ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 	end
 end
 

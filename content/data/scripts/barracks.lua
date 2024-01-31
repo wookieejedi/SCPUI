@@ -337,4 +337,13 @@ function BarracksScreenController:help_clicked()
     end
 end
 
+function BarracksScreenController:global_keydown(element, event)
+	if self.mode == PilotSelectController.MODE_BARRACKS then
+		if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+			event:StopPropagation()
+			ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+		end
+	end
+end
+
 return BarracksScreenController
