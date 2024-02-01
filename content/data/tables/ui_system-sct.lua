@@ -31,7 +31,8 @@ ScpuiSystem = {
 	logSection = 1,
 	render = true,
 	dialog = nil,
-	dataSaverMulti = 1
+	dataSaverMulti = 1,
+	missionLoaded = false
 }
 
 ScpuiOptionValues = {}
@@ -492,3 +493,14 @@ end, {}, function()
     return ScpuiSystem.render
 end)
 
+engine.addHook("On Load Screen", function()
+	ScpuiSystem.missionLoaded = true
+end, {}, function()
+	return false
+end)
+
+engine.addHook("On Mission End", function()
+	ScpuiSystem.missionLoaded = false
+end, {}, function()
+	return false
+end)

@@ -993,7 +993,7 @@ end
 
 function TechDatabaseController:unload()
 	ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
-    gr.freeAllModels()
+    ScpuiSystem:freeAllModels()
 end
 
 engine.addHook("On Frame", function()

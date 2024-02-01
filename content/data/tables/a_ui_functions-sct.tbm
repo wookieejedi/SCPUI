@@ -5,6 +5,12 @@ $On Game Init:
 
 --Misc functions for handling various UI-related tasks
 
+function ScpuiSystem:freeAllModels()
+	if ScpuiSystem.missionLoaded == false then
+		ba.warning("SCPUI is freeing all models!\n")
+		gr.freeAllModels()
+	end
+end
 function ScpuiSystem:pauseAllAudio(toggle)
 	local topics = require("ui_topics")
 	
