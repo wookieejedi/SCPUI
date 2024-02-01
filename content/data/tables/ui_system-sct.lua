@@ -185,6 +185,18 @@ function ScpuiSystem:getDef(state)
     return self.replacements[state]
 end
 
+function ScpuiSystem:cleanSelf()
+	ba.print("SCPUI is closing document " .. ScpuiSystem.currentDoc.markup .. "\n")
+	while ScpuiSystem.currentDoc.document:HasChildNodes() do
+		ScpuiSystem.currentDoc.document:RemoveChild(ScpuiSystem.currentDoc.document.first_child)
+		ba.print("SCPUI HAS KILLED A CHILD! But that's allowed in America.\n")
+	end
+
+    ScpuiSystem.currentDoc.document:Close()
+    ScpuiSystem.currentDoc.document = nil
+	ScpuiSystem.currentDoc = nil
+end
+
 function ScpuiSystem:stateStart()
 
 	if ba.MultiplayerMode then
@@ -202,10 +214,16 @@ function ScpuiSystem:stateStart()
     if not self:hasOverrideForState(getRocketUiHandle(state)) then
         return
     end
-
-    local def = self:getDef(getRocketUiHandle(state).Name)
-    def.document = self.context:LoadDocument(def.markup)
-    def.document:Show()
+	
+	--Make sure we're all cleaned up
+	if ScpuiSystem.currentDoc then
+		self:cleanSelf()
+	end
+	
+    ScpuiSystem.currentDoc = self:getDef(getRocketUiHandle(state).Name)
+    ba.print("SCPUI is loading document " .. ScpuiSystem.currentDoc.markup .. "\n")
+    ScpuiSystem.currentDoc.document = self.context:LoadDocument(ScpuiSystem.currentDoc.markup)
+    ScpuiSystem.currentDoc.document:Show()
 
     ui.enableInput(self.context)
 end
@@ -224,30 +242,22 @@ function ScpuiSystem:stateFrame()
     end)
 end
 
-function ScpuiSystem:stateEnd()
+function ScpuiSystem:stateEnd(substate)
 
 	--This allows for states to correctly return to the previous state even if has no rocket ui defined
 	ScpuiSystem.lastState = ScpuiSystem.currentState
 
-    if not self:hasOverrideForState(getRocketUiHandle(hv.OldState)) then
-        return
-    end
-
-    local def = self:getDef(getRocketUiHandle(hv.OldState).Name)
-	
-	--def.document:Close() seems to be bugged and can't reliably clean up all child elements.
-	--This is most noticeable on game exit when the issue cases a CTD.
-	--So let's just sweep the floor a little bit before we close the document to help it along.
-	while def.document:HasChildNodes() do
-		def.document:RemoveChild(def.document.first_child)
+	if not substate then
+		if not self:hasOverrideForState(getRocketUiHandle(hv.OldState)) then
+			return
+		end
 	end
 
-    def.document:Close()
-    def.document = nil
+    self:cleanSelf()
 
     ui.disableInput()
 	
-	if hv.OldState.Name == "GS_STATE_SCRIPTING" then
+	if not substate and hv.OldState.Name == "GS_STATE_SCRIPTING" then
 		ScpuiSystem.substate = "none"
 	end
 	
@@ -265,11 +275,14 @@ function getRocketUiHandle(state)
 end
 
 function ScpuiSystem:beginSubstate(state) 
-	local oldSubstate = ScpuiSystem.substate
+	ScpuiSystem.oldSubstate = ScpuiSystem.substate
 	ScpuiSystem.substate = state
 	--If we're already in GS_STATE_SCRIPTING then force loading the new scpui define
 	if ba.getCurrentGameState().Name == "GS_STATE_SCRIPTING" then
-		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.substate .. " in SCPUI SCRIPTING SUBSTATE " .. oldSubstate .. "\n")
+		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.substate .. " in SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.oldSubstate .. "\n")
+		--We don't actually change game states so we need to manually clean up
+		ScpuiSystem:stateEnd(true)
+		--Now we can start the new state
 		ScpuiSystem:stateStart()
 	else
 		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.substate .. "\n")
@@ -286,6 +299,9 @@ function ScpuiSystem:ReturnToState(state)
 		event = "GS_EVENT_START_BRIEFING"
 	elseif state.Name == "GS_STATE_VIEW_CUTSCENES" then
 		event = "GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"
+	elseif state.Name == "GS_STATE_SCRIPTING" then
+		ScpuiSystem:beginSubstate(ScpuiSystem.oldSubstate)
+		return
 	else
 		event = string.gsub(state.Name, "STATE", "EVENT")
 	end
