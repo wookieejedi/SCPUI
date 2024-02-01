@@ -7,7 +7,7 @@ $On Game Init:
 
 function ScpuiSystem:freeAllModels()
 	if ScpuiSystem.missionLoaded == false then
-		ba.warning("SCPUI is freeing all models!\n")
+		ba.print("SCPUI is freeing all models!\n")
 		gr.freeAllModels()
 	end
 end
