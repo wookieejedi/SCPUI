@@ -802,9 +802,9 @@ function TechDatabaseController:DrawModel()
 		local modelView = ScpuiSystem.modelDraw.element
 						
 		local modelLeft = modelView.offset_left + modelView.parent_node.offset_left + modelView.parent_node.parent_node.offset_left --This is pretty messy, but it's functional
-		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top - 7 --Does not include modelView.offset_top because that element's padding is set for anims also subtracts 7px for funsies
+		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + 2 --Does not include modelView.offset_top because that element's padding is set for anims
 		local modelWidth = modelView.offset_width
-		local modelHeight = modelView.offset_height
+		local modelHeight = modelView.offset_height + 10
 		
 		local calcX = (ScpuiSystem.modelDraw.sx - ScpuiSystem.modelDraw.mx) * -1
 		local calcY = (ScpuiSystem.modelDraw.sy - ScpuiSystem.modelDraw.my) * -1
