@@ -55,6 +55,11 @@ function datasaver:loadDataFromFile(source, persistent)
 		self.Loaded = true
 		self:backupSaveData()
 	end
+	
+	if ba.getCurrentPlayer():getName() == "" then
+		ba.warning('Cannot load data when there is no player selected!')
+		return
+	end
   
 	if not config[ba.getCurrentPlayer():getName()] then
 		config[ba.getCurrentPlayer():getName()] = {}
@@ -92,6 +97,11 @@ function datasaver:saveDataToFile(source, data, persistent)
 		if not config then
 			ba.error('Please ensure that ' .. filename .. ' exists in ' .. location .. ' and is valid JSON.')
 		end
+	end
+	
+	if ba.getCurrentPlayer():getName() == "" then
+		ba.warning('Cannot save data when there is no player selected!')
+		return
 	end
   
 	if not config[ba.getCurrentPlayer():getName()] then
