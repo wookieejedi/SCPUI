@@ -156,24 +156,8 @@
 				</div>
 				<div id=pilot_stats_text>
 				</div>
-				<div id=stats_scroll_wrapper>
-					<div id=stats_scroll_cont>
-						<button id="scroll_up_btn" class="stats_scroll_btns button_1">
-							<span id="scroll_up_img" class="stats_scroll_btns button_img">
-								<img src="arrow-dbl-up.png" class="psuedo_img"></img>
-							</span>
-						</button>
-					</div>
-					<div id=stats_scroll_cont>
-						<button id="scroll_down_btn" class="stats_scroll_btns button_1">
-							<span id="scroll_down_img" class="stats_scroll_btns button_img">
-								<img src="arrow-dbl-down.png" class="psuedo_img"></img>
-							</span>
-						</button>
-					</div>
-					<div class="tooltip">
-						<span class="tooltiptext">XSTR("View pilot stats", -1)</span>
-					</div>
+				<div class="tooltip">
+					<span class="tooltiptext">XSTR("View pilot stats", -1)</span>
 				</div>
 				<div id=medals_btn_wrapper>
 					<div id=medals_btn_cont>

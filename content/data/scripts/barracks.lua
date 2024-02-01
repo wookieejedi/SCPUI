@@ -120,14 +120,6 @@ function BarracksScreenController:add_empty_line(parent)
     parent:AppendChild(text_container)
 end
 
-local function compute_percentage(fract, total)
-    if total <= 0 then
-        return "0%"
-    end
-
-    return string.format("%.2f%%", (fract / total) * 100)
-end
-
 function BarracksScreenController:initialize_stats_text()
     local text_container     = self.document:GetElementById("pilot_stats_text")
 
@@ -144,18 +136,18 @@ function BarracksScreenController:initialize_stats_text()
     self:add_value_element(text_container, "Primary weapon hits:", stats.PrimaryShotsHit)
     self:add_value_element(text_container, "Primary friendly hits:", stats.PrimaryFriendlyHit)
     self:add_value_element(text_container, "Primary hit %:",
-                           compute_percentage(stats.PrimaryShotsHit, stats.PrimaryShotsFired))
+                           utils.compute_percentage(stats.PrimaryShotsHit, stats.PrimaryShotsFired))
     self:add_value_element(text_container, "Primary friendly hit %:",
-                           compute_percentage(stats.PrimaryFriendlyHit, stats.PrimaryShotsFired))
+                           utils.compute_percentage(stats.PrimaryFriendlyHit, stats.PrimaryShotsFired))
     self:add_empty_line(text_container)
 
     self:add_value_element(text_container, "Secondary weapon shots:", stats.SecondaryShotsFired)
     self:add_value_element(text_container, "Secondary weapon hits:", stats.SecondaryShotsHit)
     self:add_value_element(text_container, "Secondary friendly hits:", stats.SecondaryFriendlyHit)
     self:add_value_element(text_container, "Secondary hit %:",
-                           compute_percentage(stats.SecondaryShotsHit, stats.SecondaryShotsFired))
+                           utils.compute_percentage(stats.SecondaryShotsHit, stats.SecondaryShotsFired))
     self:add_value_element(text_container, "Secondary friendly hit %:",
-                           compute_percentage(stats.SecondaryFriendlyHit, stats.SecondaryShotsFired))
+                           utils.compute_percentage(stats.SecondaryFriendlyHit, stats.SecondaryShotsFired))
     self:add_empty_line(text_container)
 
     self:add_value_element(text_container, "Total kills:", stats.TotalKills)

@@ -216,6 +216,14 @@ function utils.copy(obj, seen)
   return res
 end
 
+function utils.compute_percentage(fract, total)
+    if total <= 0 then
+        return "0%"
+    end
+
+    return string.format("%.2f%%", (fract / total) * 100)
+end
+
 function utils.safeRand(min, max, exact)
     if (min == nil and max ~= nil) then
         return max
