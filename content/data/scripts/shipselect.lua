@@ -689,9 +689,9 @@ function ShipSelectController:drawSelectModel()
 		
 		--This is just a multipler to make the rendered model a little bigger
 		--renderSelectModel() has forced centering, so we need to calculate
-		--the screen size so we can move it slightly left and up while it
+		--the screen size so we can move it slightly left and up while we
 		--multiple it's size
-		local val = 0.3
+		local val = 0.15
 		local ratio = (gr.getScreenWidth() / gr.getScreenHeight()) * 2
 		
 		--Increase by percentage and move slightly left and up.
