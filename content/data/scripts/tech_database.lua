@@ -809,6 +809,8 @@ function TechDatabaseController:DrawModel()
 		local calcX = (ScpuiSystem.modelDraw.sx - ScpuiSystem.modelDraw.mx) * -1
 		local calcY = (ScpuiSystem.modelDraw.sy - ScpuiSystem.modelDraw.my) * -1
 		
+		local orient = ba.createOrientation(ScpuiSystem.modelDraw.angle, 0, ScpuiSystem.modelDraw.Rot)
+		
 		--Move model based on mouse coordinates
 		if ScpuiSystem.modelDraw.click then
 			local dx = calcX * 1
@@ -845,10 +847,7 @@ function TechDatabaseController:DrawModel()
 			local rvec = ba.createVector((cos_theta + (dydr*dydr)*cos_theta1), 1, 1)
 			
 			ScpuiSystem.modelDraw.clickOrient = ba.createOrientationFromVectors(fvec, uvec, rvec)
-		end
 		
-		local orient = ba.createOrientation(ScpuiSystem.modelDraw.angle, 0, ScpuiSystem.modelDraw.Rot)
-		if ScpuiSystem.modelDraw.click then
 			orient = ScpuiSystem.modelDraw.clickOrient * orient
 		end
 		
