@@ -134,6 +134,12 @@ function ScpuiSystem:ClearEntries(parent)
 	end
 end
 
+function ScpuiSystem:SetStyle(parent, attribute, value)
+	if parent ~= nil then
+		parent.style[attribute] = value
+	end
+end
+
 function ScpuiSystem:scroll_up(element)
 	element.scroll_top = element.scroll_top - 10
 end
