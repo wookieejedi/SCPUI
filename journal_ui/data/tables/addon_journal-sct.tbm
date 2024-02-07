@@ -87,7 +87,12 @@ $On Game Init:
 	  
 	  local button_text_el = message.document:CreateElement("span")
 	  button_text_el:SetClass("pos", true)
-	  button_text_el:SetClass("button_text_top", true)
+	  --button_text_el:SetClass("button_text_top", true)
+	  button_text_el.style.width = "120%"
+	  button_text_el.style.position = "absolute"
+	  button_text_el.style.top = "-50%"
+	  button_text_el.style.right = "0"
+	  button_text_el.style["text-align"] = "right"
 	  button_text_el.inner_rml = JournalUI:GetTitle()
 	
 	  if button_el then
