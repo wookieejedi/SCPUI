@@ -61,6 +61,15 @@ function BriefingController:initialize(document)
 		
 		ss_btn:SetClass("hidden", true)
 		ws_btn:SetClass("hidden", true)
+		
+		local text_el = self.document:CreateElement("div")
+		text_el.style.width = "10%"
+		text_el.style.position = "absolute"
+		text_el.style.color = "#606060"
+		text_el.style.top = "8%"
+		text_el.style.left = "5%"
+		text_el.inner_rml = ba.XSTR("Loadout selection not available", -1)
+		self.document:GetElementById("main_background"):AppendChild(text_el)
 	end
 		
 
