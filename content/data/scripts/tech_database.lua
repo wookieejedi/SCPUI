@@ -36,6 +36,18 @@ function TechDatabaseController:LoadData()
 	self.w_types = {}
 	self.i_types = {}
 	
+	--Load seen data and verify tables
+	self.seenData = self:loadSeenDataFromFile()
+	if self.seenData["ships"] == nil then
+		self.seenData["ships"] = {}
+	end
+	if self.seenData["weapons"] == nil then
+		self.seenData["weapons"] = {}
+	end
+	if self.seenData["intel"] == nil then
+		self.seenData["intel"] = {}
+	end
+	
 	topics.techdatabase.beginDataLoad:send(self)
 	
 	list = tb.ShipClasses
@@ -423,6 +435,20 @@ function TechDatabaseController:ReloadList()
 
 end
 
+function TechDatabaseController:isSeen(name)
+	if name ~= nil then
+		return self.seenData[self.SelectedSection][name]
+	else
+		return nil
+	end
+end
+
+function TechDatabaseController:setSeen(name)
+	if name ~= nil then
+		self.seenData[self.SelectedSection][name] = true
+	end
+end
+
 function TechDatabaseController:ChangeTechState(state)
 
 	if state == 1 then
@@ -508,6 +534,9 @@ function TechDatabaseController:ChangeSection(section)
 		local newbullet = self.document:GetElementById(self.SelectedSection.."_btn")
 		newbullet:SetPseudoClass("checked", true)
 		
+		--Scroll to the top of the list
+		self.document:GetElementById("tech_list").scroll_top = 0
+		
 	end
 	
 end
@@ -520,8 +549,16 @@ function TechDatabaseController:CreateEntryItem(entry, index, selectable, headin
 	entry.Heading = heading
 	
 	local li_el = self.document:CreateElement("li")
+	
+	local new_el = "<span style=\"color:red;margin-right:10;\">NEW!</span>"
+	local vis_name = "<span>" .. entry.DisplayName .. "</span>"
 
-	li_el.inner_rml = "<span>" .. entry.DisplayName .. "</span>"
+	--Maybe append "NEW!" to non-heading entries
+	if heading == false and not self:isSeen(entry.Name) then
+		vis_name = new_el .. vis_name
+	end
+	
+	li_el.inner_rml = vis_name
 	li_el.id = entry.Name
 
 	if heading == true then
@@ -604,7 +641,11 @@ function TechDatabaseController:SelectEntry(entry)
 	
 		if self.SelectedEntry then
 			local oldEntry = self.document:GetElementById(self.SelectedEntry.key)
-			if oldEntry then oldEntry:SetPseudoClass("checked", false) end
+			if oldEntry then
+				oldEntry:SetPseudoClass("checked", false)
+				oldEntry.inner_rml = "<span>" .. entry.Name .. "</span>"
+				self:setSeen(self.SelectedEntry.Name)
+			end
 		end
 		
 		local thisEntry = self.document:GetElementById(entry.key)
@@ -621,27 +662,23 @@ function TechDatabaseController:SelectEntry(entry)
 		self.document:GetElementById("tech_desc").inner_rml = entry.Description or ''
 		self.document:GetElementById("tech_desc").scroll_top = 0
 		
+		ScpuiSystem.modelDraw.class = nil
+		
 		--Decide if item is a weapon or a ship
 		if self.SelectedSection == "ships" then
-			
-			if self.first_run == false then
-				async.run(function()
-					async.await(async_util.wait_for(0.001))
-					ScpuiSystem.modelDraw.class = entry.Name
-					ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
-					self.first_run = true
-				end, async.OnFrameExecutor)
-			else
+
+			async.run(function()
+				async.await(async_util.wait_for(0.001))
 				ScpuiSystem.modelDraw.class = entry.Name
 				ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
-			end
+				self.first_run = true
+			end, async.OnFrameExecutor)
 			
 			self:toggleSliders(true)
 
 		elseif self.SelectedSection == "weapons" then			
 			
 			if entry.Anim ~= "" and utils.animExists(entry.Anim) then
-				ScpuiSystem.modelDraw.class = nil
 
 				local aniEl = self.document:CreateElement("ani")
 				aniEl:SetAttribute("src", entry.Anim)
@@ -650,24 +687,20 @@ function TechDatabaseController:SelectEntry(entry)
 				
 				self:toggleSliders(false)
 			else --If we don't have an anim, then draw the tech model
-				if self.first_run == false then
-					async.run(function()
-						async.await(async_util.wait_for(0.001))
-						ScpuiSystem.modelDraw.class = entry.Name
-						ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
-						self.first_run = true
-					end, async.OnFrameExecutor)
-				else
+			
+				async.run(function()
+					async.await(async_util.wait_for(0.001))
 					ScpuiSystem.modelDraw.class = entry.Name
 					ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
-				end
+					self.first_run = true
+				end, async.OnFrameExecutor)
+
 				self:toggleSliders(true)
 			end
 		elseif self.SelectedSection == "intel" then			
 			self:toggleSliders(false)
 			
 			if entry.Anim then
-				ScpuiSystem.modelDraw.class = nil
 
 				local aniEl = self.document:CreateElement("ani")
 				
@@ -990,8 +1023,82 @@ function TechDatabaseController:help_clicked(element)
     end
 end
 
+function TechDatabaseController:loadSeenDataFromFile()
+
+	local json = require('dkjson')
+  
+	local location = 'data/players'
+  
+	local file = nil
+	local config = {}
+  
+	if cf.fileExists('scpui_seen_tech.cfg') then
+		file = cf.openFile('scpui_seen_tech.cfg', 'r', location)
+		config = json.decode(file:read('*a'))
+		file:close()
+		if not config then
+			config = {}
+		end
+	end
+  
+	if not config[ba.getCurrentPlayer():getName()] then
+		config[ba.getCurrentPlayer():getName()] = {}
+	end
+	
+	local mod = ba.getModTitle()
+	
+	if mod == "" then
+		ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
+	end
+	
+	if not config[ba.getCurrentPlayer():getName()][mod] then
+		config[ba.getCurrentPlayer():getName()][mod] = {}
+	end
+	
+	return config[ba.getCurrentPlayer():getName()][mod]
+end
+
+function TechDatabaseController:saveSeenDataToFile(data)
+
+	local json = require('dkjson')
+  
+	local location = 'data/players'
+  
+	local file = nil
+	local config = {}
+  
+	if cf.fileExists('scpui_seen_tech.cfg') then
+		file = cf.openFile('scpui_seen_tech.cfg', 'r', location)
+		config = json.decode(file:read('*a'))
+		file:close()
+		if not config then
+			config = {}
+		end
+	end
+  
+	if not config[ba.getCurrentPlayer():getName()] then
+		config[ba.getCurrentPlayer():getName()] = {}
+	end
+	
+	local mod = ba.getModTitle()
+	
+	if mod == "" then
+		ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
+	end
+	
+	config[ba.getCurrentPlayer():getName()][mod] = data
+	
+	local utils = require('utils')
+	config = utils.cleanPilotsFromSaveData(config)
+  
+	file = cf.openFile('scpui_seen_tech.cfg', 'w', location)
+	file:write(json.encode(config))
+	file:close()
+end
+
 function TechDatabaseController:unload()
 	ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
+	self:saveSeenDataToFile(self.seenData)
     ScpuiSystem:freeAllModels()
 end
 
