@@ -191,6 +191,10 @@ end
 
 function JournalController:GetTextFromFile(file)
 
+	if ba.getCurrentLanguageExtension() ~= "" then
+		file = file .. "-" .. ba.getCurrentLanguageExtension()
+	end
+
     local thisFile = cf.openFile(file,"rb","data/fiction")
     local text = thisFile:read("*a")
     thisFile:close()
