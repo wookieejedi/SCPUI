@@ -121,8 +121,9 @@ function M.set_briefing_text(parent, brief_text, recommendation)
         local paragraph = document:CreateElement("p")
 
         if rml_mode then
-            -- In HTML mode, we just use the text unescaped as the inner RML
-            paragraph.inner_rml = line
+            -- In HTML mode, we just use the text unescaped as the inner RML after running
+			-- it through the keyword system
+            paragraph.inner_rml = ScpuiSystem:applyKeywordClasses(line)
         else
             add_line_elements(document, paragraph, ba.replaceVariables(line), defaultColorTag, colorTags)
         end

@@ -1,0 +1,104 @@
+#Conditional Hooks
+$Application: FS2_Open
+$On Game Init:
+[
+--Load up the options.tbl and tbms
+ScpuiSystem.Keywords = {}
+
+function ScpuiSystem:initKeywords()
+	local utils = require('utils')
+
+	if cf.fileExists('keywords.tbl') then
+		self:parseKeywords('keywords.tbl')
+	end
+
+	for _, v in ipairs(cf.listFiles("data/tables", "*-kwrd.tbm")) do
+		self:parseKeywords(v)
+	end
+	
+	-- Sort Keywords by length of Text, descending
+	table.sort(ScpuiSystem.Keywords, function(a, b) return #a.Text > #b.Text end)
+end
+
+function ScpuiSystem:parseKeywords(data)
+
+	parse.readFileText(data, "data/tables")
+
+	parse.requiredString("#Keywords")
+	
+	while parse.optionalString("$Text:") do
+		local entry = {}
+		
+		entry.Text = parse.getString()
+		entry.Styles = {}
+		local save = true
+		
+		--Warn if keyword has already been parsed
+		for _, v in pairs(ScpuiSystem.Keywords) do
+			if v.Text == entry.Text then
+				ba.warning("SCPUI Keyword '" .. entry.Text .. "' already exists. Skipping!")
+				save = false
+			end
+		end
+		
+		while parse.optionalString("+Class:") do
+			local style = parse.getString()
+			table.insert(entry.Styles, style)
+		end
+		
+		if save == true then
+			table.insert(ScpuiSystem.Keywords, entry)
+		end
+	end
+	
+	parse.requiredString("#End")
+
+	parse.stop()
+
+end
+
+function ScpuiSystem:applyKeywordClasses(inputText)
+	
+	-- This helper function checks if the match should be replaced or not
+    local function shouldReplace(matchStart, matchEnd)
+        -- Check if the match is already within a styled span by looking for '>' before and '<' after
+        local prefix = inputText:sub(1, matchStart - 1)
+        local suffix = inputText:sub(matchEnd + 1)
+
+        if prefix:find(">$") or suffix:find("^<") then
+            return false
+        else
+            return true
+        end
+    end
+
+    for _, entry in ipairs(ScpuiSystem.Keywords) do
+        local word = entry.Text
+        local styles = entry.Styles
+
+        -- Escape special characters in word for Lua pattern matching
+        local escapedWord = word:gsub("([^%w])", "%%%1")
+        
+        -- Create a pattern that matches the word with word boundaries
+        local pattern = "()(%f[%a])" .. escapedWord .. "(%f[%A])()"
+
+        -- Create the replacement style string
+        local styleString = table.concat(styles, " ")
+        
+        inputText = inputText:gsub(pattern, function(prePos, pre, post, postPos)
+            if shouldReplace(prePos, postPos - 1) then
+                return pre .. "<span class=\"" .. styleString .. "\">" .. word .. "</span>" .. post
+            else
+                -- Return the original match if it should not be replaced
+                return pre .. word .. post
+            end
+        end)
+    end
+    return inputText
+end
+
+ScpuiSystem:initKeywords()
+
+]
+
+#End
