@@ -41,10 +41,11 @@ function ScpuiSystem:parseKeywords(data)
 			end
 		end
 		
+		local styles = {}
 		while parse.optionalString("+Class:") do
-			local style = parse.getString()
-			table.insert(entry.Styles, style)
+			table.insert(styles, parse.getString())
 		end
+		entry.Styles = table.concat(styles, " ")
 		
 		if save == true then
 			table.insert(ScpuiSystem.Keywords, entry)
@@ -74,20 +75,16 @@ function ScpuiSystem:applyKeywordClasses(inputText)
 
     for _, entry in ipairs(ScpuiSystem.Keywords) do
         local word = entry.Text
-        local styles = entry.Styles
 
         -- Escape special characters in word for Lua pattern matching
         local escapedWord = word:gsub("([^%w])", "%%%1")
         
         -- Create a pattern that matches the word with word boundaries
         local pattern = "()(%f[%a])" .. escapedWord .. "(%f[%A])()"
-
-        -- Create the replacement style string
-        local styleString = table.concat(styles, " ")
         
         inputText = inputText:gsub(pattern, function(prePos, pre, post, postPos)
             if shouldReplace(prePos, postPos - 1) then
-                return pre .. "<span class=\"" .. styleString .. "\">" .. word .. "</span>" .. post
+                return pre .. "<span class=\"" .. entry.Styles .. "\">" .. word .. "</span>" .. post
             else
                 -- Return the original match if it should not be replaced
                 return pre .. word .. post
