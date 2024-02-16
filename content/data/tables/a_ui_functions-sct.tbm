@@ -127,6 +127,14 @@ function ScpuiSystem:getBriefingBackground(mission, stage)
 	return file
 end
 
+function ScpuiSystem:UncheckChildren(parent)
+	local el = parent.first_child
+	while el ~= nil do
+		el:SetPseudoClass("checked", false)
+		el = el.next_sibling
+	end
+end
+
 --Clears an element of all children
 function ScpuiSystem:ClearEntries(parent)
 	while parent:HasChildNodes() do

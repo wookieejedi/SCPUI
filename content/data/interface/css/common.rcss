@@ -261,6 +261,24 @@ selectbox option:hover
 	visibility: visible;
 }
 
+/*Selectable list items*/
+
+.list_element
+{
+	display: block;
+	color: #7b7b7b;
+	width: 90%;
+}
+.list_element:hover
+{
+	color: #abbbab;
+}
+.list_element:checked
+{
+	color: #6f92f5;
+
+}
+
 .bold
 {
 	font-weight: bold;
