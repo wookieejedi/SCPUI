@@ -7,6 +7,15 @@ body
 	color: #7b7b7b;
 }
 
+/* Fake horizontal rules can be used by creating a div with the "hr" class */
+.hr 
+{
+	height:1px;
+	background-color:#aaaaaa;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
 .general_bg
 {
 	background-decorator: image;
