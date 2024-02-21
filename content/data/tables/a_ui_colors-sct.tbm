@@ -24,32 +24,31 @@ function ScpuiSystem:parseKeywords(data)
 
 	parse.readFileText(data, "data/tables")
 
-	parse.requiredString("#Keywords")
+	parse.requiredString("#Default") --For now we only parse the Default section!
 	
-	while parse.optionalString("$Text:") do
-		local entry = {}
+	while parse.optionalString("$Style:") do
 		
-		entry.Text = parse.getString()
-		entry.Styles = {}
+		local style = parse.getString()
 		local save = true
 		
-		--Warn if keyword has already been parsed
-		for _, v in pairs(ScpuiSystem.Keywords) do
-			if v.Text == entry.Text then
-				ba.warning("SCPUI Keyword '" .. entry.Text .. "' already exists. Skipping!")
-				save = false
+		while parse.optionalString("+Text:") do
+			local entry = {}
+			entry.Style = style
+			entry.Text = parse.getString()
+			
+			--Warn if keyword has already been parsed
+			for _, v in pairs(ScpuiSystem.Keywords) do
+				if v.Text == entry.Text then
+					ba.warning("SCPUI Keyword '" .. entry.Text .. "' already exists. Skipping!")
+					save = false
+				end
+			end
+			
+			if save == true then
+				table.insert(ScpuiSystem.Keywords, entry)
 			end
 		end
 		
-		local styles = {}
-		while parse.optionalString("+Class:") do
-			table.insert(styles, parse.getString())
-		end
-		entry.Styles = table.concat(styles, " ")
-		
-		if save == true then
-			table.insert(ScpuiSystem.Keywords, entry)
-		end
 	end
 	
 	parse.requiredString("#End")
@@ -84,7 +83,7 @@ function ScpuiSystem:applyKeywordClasses(inputText)
         
         inputText = inputText:gsub(pattern, function(prePos, pre, post, postPos)
             if shouldReplace(prePos, postPos - 1) then
-                return pre .. "<span class=\"" .. entry.Styles .. "\">" .. word .. "</span>" .. post
+                return pre .. "<span class=\"" .. entry.Style .. "\">" .. word .. "</span>" .. post
             else
                 -- Return the original match if it should not be replaced
                 return pre .. word .. post
