@@ -126,7 +126,7 @@ div#stage_select
 div#arrow_cont
 {
 	float: right;
-	width: 5%;
+	width: 4.99%;
 	height: auto;
 	margin-right: 2%;
 	margin-bottom: 2%;
