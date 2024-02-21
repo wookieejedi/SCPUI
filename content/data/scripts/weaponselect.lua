@@ -946,6 +946,7 @@ end
 function WeaponSelectController:CopyToWing()
 	if self.enabled == true then
 		loadoutHandler:CopyToWing(self.currentShipSlot)
+		self:UpdateUiElements()
 	end
 end
 
