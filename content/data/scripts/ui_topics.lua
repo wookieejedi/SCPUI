@@ -150,6 +150,7 @@ return {
     initIntelData        = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context and the intel
     initSortFuncs        = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
     selectSection        = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+	selectEntry          = Topic(nil), --Runs arbitrary script when an entry is selected. Sends the context
     sortItems            = Topic(false), --Sends the context. Expects a boolean return for whether or not custom sort was sucessful
     sortCategories       = Topic(false), --Sends the context. Expects a boolean return for whether or not custom sort was sucessful
     setSortCat           = Topic(false), --Sends the context. Expects a boolean return for whether or not category was set

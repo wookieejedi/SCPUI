@@ -713,6 +713,8 @@ function TechDatabaseController:SelectEntry(entry)
 				--Do nothing because we have nothing to do!
 			end
 		end
+		
+		topics.techdatabase.selectEntry:send(self)
 
 	end	
 
