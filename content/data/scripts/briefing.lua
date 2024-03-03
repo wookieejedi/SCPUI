@@ -502,6 +502,8 @@ function BriefingController:skip_pressed()
 		ScpuiSystem.music_handle:close(true)
 	end
 	ScpuiSystem.music_handle = nil
+	
+	loadoutHandler:unloadAll()
     
 	if mn.isTraining() then
 		ui.Briefing.skipMission()
