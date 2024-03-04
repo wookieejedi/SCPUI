@@ -83,6 +83,7 @@ function LoadoutHandler:saveCurrentLoadout()
 	local key = self:getMissionKey()
 	
 	ScpuiSystem.savedLoadouts[key] = {
+		datetime = mn.getMissionModifiedDate(),
 		shipPool = ScpuiSystem.loadouts.shipPool,
 		weaponPool = ScpuiSystem.loadouts.weaponPool,
 		slots = ScpuiSystem.loadouts.slots,
@@ -104,6 +105,12 @@ function LoadoutHandler:maybeApplySavedLoadout()
 	local key = self:getMissionKey()
 	
 	if ScpuiSystem.savedLoadouts[key] ~= nil then
+	
+		--Check the mission datetime matches. If not, then discard the loadout
+		if mn.getMissionModifiedDate() ~= ScpuiSystem.savedLoadouts[key].datetime then
+			ScpuiSystem.savedLoadouts[key] = nil
+			return
+		end
 		
 		--Check here that the number of ship & weapon classes at the time of save is equal to the number that exist now
 		if ScpuiSystem.savedLoadouts[key].numShipClasses == #tb.ShipClasses and ScpuiSystem.savedLoadouts[key].numWepClasses == #tb.WeaponClasses then
