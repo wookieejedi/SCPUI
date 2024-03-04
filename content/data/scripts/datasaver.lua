@@ -75,6 +75,7 @@ end
 function datasaver:saveDataToFile(source, data, persistent)
 
 	local json = require('dkjson')
+	local location = nil
 	local filename = nil
 	local id = self:basicStringHash(ba.getModTitle())
   
