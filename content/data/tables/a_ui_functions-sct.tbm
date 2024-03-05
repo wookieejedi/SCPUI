@@ -46,7 +46,9 @@ function ScpuiSystem:maybePlayCutscene(scene)
 	if self.music_handle ~= nil then
 		self.music_handle:pause()
 	end
-	ui.maybePlayCutscene(scene, true, 0)
+	--Setting this to false so it doesn't try to restart music
+	--that SCPUI handles internally
+	ui.maybePlayCutscene(scene, false, 0)
 	if self.music_handle ~= nil then
 		self.music_handle:unpause()
 	end
