@@ -80,8 +80,10 @@ end
 
 function CampaignController:create_campaign_li(campaign)
     local li_el = self.document:CreateElement("li")
+	
+	local display = topics.campaign.listCampaign:send({campaign, self.fileNames[campaign]})
 
-    li_el.inner_rml = campaign
+    li_el.inner_rml = display
     li_el:SetClass("campaignlist_element", true)
     li_el:AddEventListener("click", function(_, _, _)
         self:selectCampaign(campaign)

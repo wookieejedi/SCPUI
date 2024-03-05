@@ -81,7 +81,8 @@ return {
     skip                 = Topic(nil) --Runs arbitrary script and expects no return value
   },
   campaign = {
-    initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
+    initialize           = Topic(nil), --Runs arbitrary script and expects no return value. Sends the document context
+	listCampaign         = Topic(function(x) return x[1] end) --Sends the campaign name string and filename string and expects a string returned
   },
   barracks = {
     initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
