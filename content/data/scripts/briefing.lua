@@ -238,6 +238,7 @@ function BriefingController:ChangeBriefState(state)
 end
 
 function BriefingController:go_to_stage(stage_idx)
+	local old_stage = self.current_stage or 0
     self:leaveStage()
 	
 	if ScpuiSystem.drawBrMap == nil then
@@ -267,6 +268,8 @@ function BriefingController:go_to_stage(stage_idx)
 	brief_bg_src:SetAttribute("src", brief_img)
 	local brief_bg_el = self.document:GetElementById("brief_grid_window")
 	brief_bg_el:ReplaceChild(brief_bg_src, brief_bg_el.last_child)
+	
+	ui.Briefing.runBriefingStageHook(old_stage, stage_idx)
 end
 
 function BriefingController:CutToStage()

@@ -75,7 +75,7 @@ function CommandBriefingController:go_to_stage(stage_idx)
         aniWrapper:RemoveChild(aniWrapper.first_child)
     end
 
-    ui.Briefing.runBriefingStageHook(old_stage, stage_idx)
+    --ui.Briefing.runBriefingStageHook(old_stage, stage_idx)
 end
 
 function CommandBriefingController:help_clicked()
