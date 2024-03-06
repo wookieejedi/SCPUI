@@ -2,95 +2,79 @@
 $Application: FS2_Open
 $On Game Init:
 [
---Load up the options.tbl and tbms
-ScpuiSystem.Keywords = {}
 
 function ScpuiSystem:initKeywords()
-	local utils = require('utils')
+  local utils = require('utils')
 
-	if cf.fileExists('keywords.tbl') then
-		self:parseKeywords('keywords.tbl')
-	end
+  local affixes = {prefixes = {''}, suffixes = {''}}
+  if cf.fileExists('keywords.tbl') then
+    affixes = self:parseKeywords('keywords.tbl', affixes)
+  end
 
-	for _, v in ipairs(cf.listFiles("data/tables", "*-kwrd.tbm")) do
-		self:parseKeywords(v)
-	end
-	
-	-- Sort Keywords by length of Text, descending
-	table.sort(ScpuiSystem.Keywords, function(a, b) return #a.Text > #b.Text end)
+  for _, v in ipairs(cf.listFiles("data/tables", "*-kwrd.tbm")) do
+    self:parseKeywords(v, affixes)
+  end
 end
 
-function ScpuiSystem:parseKeywords(data)
+function ScpuiSystem:parseKeywordAffixes(source)
+  local prefixes = {}
+  local suffixes = {}
+  for _, prefix in ipairs(source.prefixes) do
+    table.insert(prefixes, prefix)
+  end
+  for _, suffix in ipairs(source.suffixes) do
+    table.insert(suffixes, suffix)
+  end
+  while true do
+    if parse.optionalString("+Prefix:") then
+      table.insert(prefixes, parse.getString() .. ' ')
+    elseif parse.optionalString("+Immediate Prefix:") then
+      table.insert(prefixes, parse.getString())
+    elseif parse.optionalString("+Suffix:") then
+      table.insert(suffixes, ' ' .. parse.getString())
+    elseif parse.optionalString("+Immediate Suffix:") then
+      table.insert(suffixes, parse.getString())
+    else
+      return { prefixes = prefixes, suffixes = suffixes }
+    end
+  end
+end
 
-	parse.readFileText(data, "data/tables")
+function ScpuiSystem:parseKeywords(data, inheritedAffixes)
+  local keywordAlgorithm = require('keywordAlgorithm')
+  parse.readFileText(data, "data/tables")
+  parse.requiredString("#Default") --For now we only parse the Default section!
 
-	parse.requiredString("#Default") --For now we only parse the Default section!
-	
-	while parse.optionalString("$Style:") do
-		
-		local style = parse.getString()
-		local save = true
-		
-		while parse.optionalString("+Text:") do
-			local entry = {}
-			entry.Style = style
-			entry.Text = parse.getString()
-			
-			--Warn if keyword has already been parsed
-			for _, v in pairs(ScpuiSystem.Keywords) do
-				if v.Text == entry.Text then
-					ba.warning("SCPUI Keyword '" .. entry.Text .. "' already exists. Skipping!")
-					save = false
-				end
-			end
-			
-			if save == true then
-				table.insert(ScpuiSystem.Keywords, entry)
-			end
-		end
-		
-	end
-	
-	parse.requiredString("#End")
-
-	parse.stop()
-
+  local globalAffixes = self:parseKeywordAffixes(inheritedAffixes)
+  while parse.optionalString("$Style:") do
+    local any = false
+    local style = parse.getString()
+    local affixes = self:parseKeywordAffixes(globalAffixes)
+    while parse.optionalString("+Text:") do
+      any = true
+      local text = parse.getString()
+      for _, prefix in ipairs(affixes.prefixes) do
+        for _, suffix in ipairs(affixes.suffixes) do
+          local t = prefix .. text .. suffix
+          if not keywordAlgorithm.registerKeyword(t, style) then
+            parse.displayMessage("SCPUI Keyword '" .. t .. "' already exists. Skipping!")
+          end
+        end
+      end
+    end
+    if not any then
+      parse.displayMessage("Found '$Style: " .. style .. "' with no +Text: entries!")
+    end
+  end
+  
+  parse.requiredString("#End")
+  parse.stop()
+  return globalAffixes
 end
 
 function ScpuiSystem:applyKeywordClasses(inputText)
-	
-	-- This helper function checks if the match should be replaced or not
-    local function shouldReplace(matchStart, matchEnd)
-        -- Check if the match is already within a styled span by looking for '>' before and '<' after
-        local prefix = inputText:sub(1, matchStart - 1)
-        local suffix = inputText:sub(matchEnd + 1)
-
-        if prefix:find(">$") or suffix:find("^<") then
-            return false
-        else
-            return true
-        end
-    end
-
-    for _, entry in ipairs(ScpuiSystem.Keywords) do
-        local word = entry.Text
-
-        -- Escape special characters in word for Lua pattern matching
-        local escapedWord = word:gsub("([^%w])", "%%%1")
-        
-        -- Create a pattern that matches the word with word boundaries
-        local pattern = "()(%f[%a])" .. escapedWord .. "(%f[%A])()"
-        
-        inputText = inputText:gsub(pattern, function(prePos, pre, post, postPos)
-            if shouldReplace(prePos, postPos - 1) then
-                return pre .. "<span class=\"" .. entry.Style .. "\">" .. word .. "</span>" .. post
-            else
-                -- Return the original match if it should not be replaced
-                return pre .. word .. post
-            end
-        end)
-    end
-    return inputText
+  local keywordAlgorithm = require('keywordAlgorithm')
+  return keywordAlgorithm.colorize(inputText)
 end
 
 ScpuiSystem:initKeywords()
