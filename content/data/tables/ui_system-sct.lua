@@ -406,12 +406,14 @@ function ScpuiSystem:dialogEnd()
 	end
 
 	if hv.IsDeathPopup then
-		if self.DeathDialog ~= nil and self.DeathDialog.Abort ~= nil then
-			self.DeathDialog.Abort.Abort()
+		if self.DeathDialog and self.DeathDialog.Abort then
+			if self.DeathDialog.Abort.Abort then
+				self.DeathDialog.Abort.Abort()
+			end
 		end
 	else
-		if self.Dialog ~= nil and self.Dialog.Abort ~= nil then
-			if self.Dialog.Abort.Abort ~= nil then
+		if self.Dialog and self.Dialog.Abort then
+			if self.Dialog.Abort.Abort then
 				self.Dialog.Abort.Abort()
 			end
 		end

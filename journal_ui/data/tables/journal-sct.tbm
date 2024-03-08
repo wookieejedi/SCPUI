@@ -329,7 +329,7 @@ function JournalUI:LockEntry(section, ...)
 end
 
 function JournalUI:UnlockEntry(section, ...)
-
+  local unlocked = false
 	--load data
 	self:LoadData()
 	--get section
@@ -338,6 +338,7 @@ function JournalUI:UnlockEntry(section, ...)
 	for _, v in ipairs(arg) do
 		for _, entry in ipairs(self.SaveData[section] or {}) do
 			if string.lower(v[1] or v) == entry.Key then
+        unlocked = not entry.Visible
 				entry.Visible = true
 				break
 			end	
@@ -347,7 +348,7 @@ function JournalUI:UnlockEntry(section, ...)
 	self:SaveDataToFile(self.SaveData)
 	--unload
 	self:UnloadData()
-
+  return unlocked
 end
 
 function JournalUI:GetTitle()
