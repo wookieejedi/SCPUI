@@ -1000,14 +1000,12 @@ function LoadoutHandler:CopyToWing(sourceSlot)
 	local slots = {}
 	local wing, _ = self:GetWingSlot(sourceSlot)
 	
-	local count = 1
 	for i=1, self:GetNumSlots() do
 	
 		local w, s = self:GetWingSlot(i)
-	
+		
 		if w == wing then
-			slots[count] = i
-			count = count + 1
+			table.insert(slots, i)
 		end
 		
 	end
@@ -1016,6 +1014,7 @@ function LoadoutHandler:CopyToWing(sourceSlot)
 	local sourceShip = source.ShipClassIndex
 	--Now get the weapons that we will try to copy over
 	for j = 1, #slots, 1 do
+		
 		if slots[j] ~= sourceSlot then
 			local target = self:GetShipLoadout(slots[j])
 			local targetShip = target.ShipClassIndex
@@ -1032,10 +1031,10 @@ function LoadoutHandler:CopyToWing(sourceSlot)
 								local weapon = source.Weapons[i]
 								
 								--Return what's in the bank to the pool
-								self:EmptyWeaponBank(j, i)
+								self:EmptyWeaponBank(slots[j], i)
 								
 								--Maybe add the weapon
-								self:AddWeaponToBank(j, i, weapon)
+								self:AddWeaponToBank(slots[j], i, weapon)
 							end
 						end
 					end
