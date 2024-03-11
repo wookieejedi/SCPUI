@@ -159,12 +159,28 @@ function PXOController:SelectPlayer(player)
 	self.document:GetElementById(player.key):SetPseudoClass("checked", true)
 end
 
+function PXOController:GetPlayerChannel(player_name)
+	local channel = ui.MultiPXO.getPlayerChannel(player_name)
+	--ba.warning(channel)
+	if channel == "-1" or channel == "" or channel == "nil" then
+		async.run(function()
+			async.await(async_util.wait_for(0.01))
+			self:GetPlayerChannel(player_name)
+		end, async.OnFrameExecutor)
+	else
+		ba.warning(channel)
+	end
+end
+
+function PXOController:GetPlayerStats(player_name)
+	local stats = ui.MultiPXO.getPlayerStats(player_name)
+	ba.warning(stats.Score)
+end
+
 function PXOController:ShowPlayerStats(player)
 	self:SelectPlayer(player)
 	
-	--Testing! Gets player stats and the channel they are in
-	local stats = ui.MultiPXO.getPlayerStats(player.Name)
-	local response, channel = ui.MultiPXO.getPlayerChannel(player.Name)
+	self:GetPlayerChannel(player.Name)
 end
 
 function PXOController:CreatePlayerEntry(entry)
@@ -253,7 +269,7 @@ end
 function PXOController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
        self:exit()
-    elseif event.parameters.key_identifier == rocket.key_identifier.S then
+    elseif event.parameters.key_identifier == rocket.key_identifier.S then --TESTING!
 		if event.parameters.shift_key == 1 then
 			ui.MultiPXO.joinPrivateChannel("test")
 		end
@@ -337,7 +353,8 @@ function PXOController:updateLists()
 	
 	local txt = ""
 	for i = 1, #chat do
-		txt = txt .. chat[i] .. "<br></br>"
+		local line = chat[i].Callsign .. ": " .. chat[i].Message
+		txt = txt .. line .. "<br></br>"
 	end
 	self.chat_el.inner_rml = txt
 	
