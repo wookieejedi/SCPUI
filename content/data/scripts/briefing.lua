@@ -11,7 +11,11 @@ local BriefingController = class(AbstractBriefingController)
 ScpuiSystem.drawBrMap = nil
 
 function BriefingController:init()
-	ScpuiSystem:maybePlayCutscene(MOVIE_PRE_BRIEF)
+	if not ScpuiSystem.cutscenePlayed then
+		ScpuiSystem:maybePlayCutscene(MOVIE_PRE_BRIEF)
+	end
+	
+	ScpuiSystem.cutscenePlayed = true
     --- @type briefing_stage[]
     self.stages = {}
 	

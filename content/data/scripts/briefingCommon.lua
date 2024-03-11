@@ -78,6 +78,8 @@ function AbstractBriefingController:global_keydown(_, event)
 		ScpuiSystem.music_handle = nil
 		ScpuiSystem.current_played = nil
 		ScpuiSystem.music_started = nil
+		ScpuiSystem.drawBrMap = nil
+		ScpuiSystem.cutscenePlayed = nil
 		
 		if self.briefState == "briefing" then
 			loadoutHandler:saveCurrentLoadout()
@@ -207,6 +209,8 @@ function AbstractBriefingController:unload()
 		if self.Commit == true then
 			loadoutHandler:saveCurrentLoadout()
 			loadoutHandler:unloadAll()
+			ScpuiSystem.drawBrMap = nil
+			ScpuiSystem.cutscenePlayed = nil
 		end
 		ui.Briefing.closeBriefing()
 	end

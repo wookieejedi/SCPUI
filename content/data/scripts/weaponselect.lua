@@ -1084,6 +1084,8 @@ function WeaponSelectController:unload()
 	if self.Commit == false then
 		loadoutHandler:ResetFSO_API()
 		loadoutHandler:SaveInFSO_API()
+		ScpuiSystem.drawBrMap = nil
+		ScpuiSystem.cutscenePlayed = nil
 	end
 	
 	if self.Commit == true then

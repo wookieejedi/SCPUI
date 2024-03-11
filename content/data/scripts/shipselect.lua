@@ -653,6 +653,8 @@ function ShipSelectController:unload()
 	
 	if self.Commit == true then
 		loadoutHandler:unloadAll()
+		ScpuiSystem.drawBrMap = nil
+		ScpuiSystem.cutscenePlayed = nil
 	end
 end
 
