@@ -1,66 +1,71 @@
 {
-    "installed": true,
-    "id": "UITest",
-    "title": "Hi-Res Ui Test Mod",
-    "type": "mod",
-    "parent": "FS2",
-    "version": "1.0.0",
-    "stability": "stable",
-    "description": "",
-    "notes": "",
-    "logo": null,
-    "tile": null,
-    "banner": null,
-    "release_thread": null,
-    "videos": [],
-    "screenshots": [],
-    "attachments": [],
-    "first_release": null,
-    "last_update": null,
-    "cmdline": "-window -output_scripting -res 1280x720",
-    "mod_flag": [
-        "UITest",
-        "MVPS"
-    ],
-    "dev_mode": true,
-    "custom_build": null,
-    "packages": [
+  "mod_source": "nebula",
+  "installed": true,
+  "id": "UITest",
+  "title": "Hi-Res Ui Test Mod",
+  "type": "mod",
+  "parent": "FS2",
+  "version": "1.0.0",
+  "private": false,
+  "stability": "stable",
+  "description": "",
+  "notes": null,
+  "logo": null,
+  "tile": null,
+  "banner": null,
+  "release_thread": null,
+  "videos": [],
+  "screenshots": [],
+  "attachments": [],
+  "first_release": null,
+  "last_update": null,
+  "cmdline": "-window -output_scripting -res 1280x720",
+  "mod_flag": [
+    "UITest",
+    "MVPS"
+  ],
+  "dev_mode": true,
+  "custom_build": null,
+  "owners": null,
+  "packages": [
+    {
+      "name": "Content",
+      "notes": "",
+      "status": "required",
+      "dependencies": [
         {
-            "name": "Content",
-            "notes": "",
-            "status": "required",
-            "dependencies": [
-                {
-                    "id": "FSO",
-                    "version": ">=23.3.0-20240103",
-                    "packages": []
-                },
-                {
-                    "id": "MVPS",
-                    "version": null,
-                    "packages": []
-                }
-            ],
-            "environment": null,
-            "folder": "content",
-            "is_vp": false,
-            "files": [],
-            "filelist": [],
-            "executables": [],
-            "check_notes": ""
+          "id": "FSO",
+          "version": ">=23.3.0-20240103",
+          "packages": []
         },
         {
-            "name": "journal_ui",
-            "notes": "Adds the optional Journal FV UI screen",
-            "status": "optional",
-            "dependencies": [],
-            "environment": null,
-            "folder": "journal_ui",
-            "is_vp": false,
-            "files": [],
-            "filelist": [],
-            "executables": [],
-            "check_notes": ""
+          "id": "MVPS",
+          "version": null,
+          "packages": []
         }
-    ]
+      ],
+      "environment": null,
+      "folder": "content",
+      "is_vp": false,
+      "files": null,
+      "filelist": null,
+      "executables": [],
+      "check_notes": null,
+      "isEnabled": true
+    },
+    {
+      "name": "journal_ui",
+      "notes": "Adds the optional Journal FV UI screen",
+      "status": "optional",
+      "dependencies": [],
+      "environment": null,
+      "folder": "journal_ui",
+      "is_vp": false,
+      "files": null,
+      "filelist": null,
+      "executables": [],
+      "check_notes": null,
+      "isEnabled": true
+    }
+  ]
 }
