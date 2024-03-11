@@ -123,7 +123,7 @@ function M.set_briefing_text(parent, brief_text, recommendation)
         if rml_mode then
             -- In HTML mode, we just use the text unescaped as the inner RML after running
 			-- it through the keyword system
-            paragraph.inner_rml = ScpuiSystem:applyKeywordClasses(line)
+            paragraph.inner_rml = ScpuiSystem:applyKeywordClasses(ba.replaceVariables(line))
         else
             add_line_elements(document, paragraph, ba.replaceVariables(line), defaultColorTag, colorTags)
         end

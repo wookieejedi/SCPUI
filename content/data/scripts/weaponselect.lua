@@ -558,6 +558,7 @@ function WeaponSelectController:ClearWeaponSlots()
 	for i, v in pairs(ScpuiSystem.modelDraw.banks) do
 		v:SetClass("slot_3d", false)
 		v:SetClass("button_3", false)
+		v:SetClass("weapon_locked", false)
 	end
 	
 	for i, v in pairs(self.secondaryAmountEls) do

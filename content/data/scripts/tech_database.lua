@@ -643,7 +643,7 @@ function TechDatabaseController:SelectEntry(entry)
 			local oldEntry = self.document:GetElementById(self.SelectedEntry.key)
 			if oldEntry then
 				oldEntry:SetPseudoClass("checked", false)
-				oldEntry.inner_rml = "<span>" .. self.SelectedEntry.Name .. "</span>"
+				oldEntry.inner_rml = "<span>" .. self.SelectedEntry.DisplayName .. "</span>"
 				self:setSeen(self.SelectedEntry.Name)
 			end
 		end
