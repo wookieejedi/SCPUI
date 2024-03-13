@@ -65,6 +65,9 @@ function RedAlertController:blink()
 end
 
 function RedAlertController:commit_pressed()
+	if not topics.mission.commit:send(self) then
+		return
+	end
 	loadoutHandler:unloadAll()
 	topics.redalert.commit:send(self)
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_ENTER_GAME"])

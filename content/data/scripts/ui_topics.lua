@@ -180,6 +180,9 @@ return {
   },
   deathpopup = {
     setText              = Topic('') --Runs arbitrary script and expects no return value. Sends the context and expects a string return
+  },
+  mission = { --All UIs where mission can be committed to!
+    commit               = Topic(true) --Whether or not to continue to with the Commit press. Sends the context and expects boolean return
   }
 }
 

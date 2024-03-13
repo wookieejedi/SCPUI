@@ -552,6 +552,10 @@ function ShipSelectController:reset_pressed(element)
 end
 
 function ShipSelectController:accept_pressed()
+
+	if not topics.mission.commit:send(self) then
+		return
+	end
     
 	--Apply the loadout
 	loadoutHandler:SendAllToFSO_API()

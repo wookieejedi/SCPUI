@@ -439,6 +439,10 @@ end
 
 function BriefingController:acceptPressed()
 
+	if not topics.mission.commit:send(self) then
+		return
+	end
+
 	--Apply the loadout
 	loadoutHandler:SendAllToFSO_API()
     

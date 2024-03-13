@@ -989,6 +989,10 @@ end
 
 function WeaponSelectController:accept_pressed()
 
+	if not topics.mission.commit:send(self) then
+		return
+	end
+
 	--Apply the loadout
 	loadoutHandler:SendAllToFSO_API()
     
