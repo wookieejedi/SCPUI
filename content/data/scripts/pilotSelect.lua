@@ -94,21 +94,26 @@ function PilotSelectController:initialize(document)
 		ui.MainHall.startAmbientSound()
 	end
 
-    if ui.PilotSelect.WarningCount > 10 or ui.PilotSelect.ErrorCount > 0 then
-        local text    = string.format(ba.XSTR("The currently active mod has generated %d warnings and/or errors during"
-                                                      .. "program startup.  These could have been caused by anything from incorrectly formated table files to"
-                                                      .. " corrupt models.  While FreeSpace Open will attempt to compensate for these issues, it cannot"
-                                                      .. " guarantee a trouble-free gameplay experience.  Source Code Project staff cannot provide assistance"
-                                                      .. " or support for these problems, as they are caused by the mod's data files, not FreeSpace Open's"
-                                                      .. " source code.", -1),
-                                      ui.PilotSelect.WarningCount + ui.PilotSelect.ErrorCount)
-        local builder = dialogs.new()
-        builder:title(ba.XSTR("Warning!", -1))
-        builder:text(text)
-		builder:escape(false)
-        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), false, "o")
-        builder:show(self.document.context)
-    end
+	--Only show this warning on first boot
+	if not ScpuiSystem.WarningCountShown then
+		if ui.PilotSelect.WarningCount > 10 or ui.PilotSelect.ErrorCount > 0 then
+			local text    = string.format(ba.XSTR("The currently active mod has generated %d warnings and/or errors during"
+														  .. "program startup.  These could have been caused by anything from incorrectly formated table files to"
+														  .. " corrupt models.  While FreeSpace Open will attempt to compensate for these issues, it cannot"
+														  .. " guarantee a trouble-free gameplay experience.  Source Code Project staff cannot provide assistance"
+														  .. " or support for these problems, as they are caused by the mod's data files, not FreeSpace Open's"
+														  .. " source code.", -1),
+										  ui.PilotSelect.WarningCount + ui.PilotSelect.ErrorCount)
+			local builder = dialogs.new()
+			builder:title(ba.XSTR("Warning!", -1))
+			builder:text(text)
+			builder:escape(false)
+			builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), false, "o")
+			builder:show(self.document.context)
+		end
+	end
+	
+	ScpuiSystem.WarningCountShown = true
 
     if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
         if ui.PilotSelect.isAutoselect() then
