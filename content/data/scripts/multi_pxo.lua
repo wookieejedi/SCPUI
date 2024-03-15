@@ -160,7 +160,8 @@ function PXOController:SelectPlayer(player)
 end
 
 function PXOController:GetPlayerChannel(player_name)
-	local response, channel =  = ui.MultiPXO.getPlayerChannel(player_name)
+	local response, channel = ui.MultiPXO.getPlayerChannel(player_name)
+	--ba.warning(channel)
 end
 
 function PXOController:GetPlayerStats(player_name)
