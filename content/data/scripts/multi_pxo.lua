@@ -160,16 +160,7 @@ function PXOController:SelectPlayer(player)
 end
 
 function PXOController:GetPlayerChannel(player_name)
-	local channel = ui.MultiPXO.getPlayerChannel(player_name)
-	--ba.warning(channel)
-	if channel == "-1" or channel == "" or channel == "nil" then
-		async.run(function()
-			async.await(async_util.wait_for(0.01))
-			self:GetPlayerChannel(player_name)
-		end, async.OnFrameExecutor)
-	else
-		ba.warning(channel)
-	end
+	local response, channel =  = ui.MultiPXO.getPlayerChannel(player_name)
 end
 
 function PXOController:GetPlayerStats(player_name)
