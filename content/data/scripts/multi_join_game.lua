@@ -24,6 +24,7 @@ function JoinGameController:initialize(document)
 	
 	self.games_list_el = self.document:GetElementById("games_list_ul")
 	self.common_text_el = self.document:GetElementById("common_text")
+	self.status_text_el = self.document:GetElementById("status_text")
 	
 	ScpuiSystem:ClearEntries(self.games_list_el)
 	
@@ -39,11 +40,40 @@ function JoinGameController:initialize(document)
 
 end
 
-function JoinGameController:CreatePlayerEntry(entry)
+function JoinGameController:CreateGameEntry(entry)
 	
 	local li_el = self.document:CreateElement("li")
+	
+	local status_el = self.document:CreateElement("div")
+	status_el:SetClass("game_status", true)
+	status_el:SetClass("game_item", true)
+	status_el.inner_rml = entry.Status
+	li_el:AppendChild(status_el)
+	
+	local type_el = self.document:CreateElement("div")
+	type_el:SetClass("game_type", true)
+	type_el:SetClass("game_item", true)
+	type_el.inner_rml = entry.Type
+	li_el:AppendChild(type_el)
+	
+	local server_el = self.document:CreateElement("div")
+	server_el:SetClass("game_server", true)
+	server_el:SetClass("game_item", true)
+	server_el.inner_rml = entry.Server
+	li_el:AppendChild(server_el)
+	
+	local players_el = self.document:CreateElement("div")
+	players_el:SetClass("game_players", true)
+	players_el:SetClass("game_item", true)
+	players_el.inner_rml = entry.Players
+	li_el:AppendChild(players_el)
+	
+	local ping_el = self.document:CreateElement("div")
+	ping_el:SetClass("game_ping", true)
+	ping_el:SetClass("game_item", true)
+	ping_el.inner_rml = entry.Ping .. "ms"
+	li_el:AppendChild(ping_el)
 
-	li_el.inner_rml = "<span>" .. entry.Status .. entry.Server .. entry.Mission .. "</span>"
 	li_el.id = entry.Server .. entry.InternalID
 	li_el:SetClass("list_element", true)
 	li_el:SetClass("button_1", true)
@@ -52,6 +82,7 @@ function JoinGameController:CreatePlayerEntry(entry)
 	end)
 	li_el:AddEventListener("dblclick", function(_, _, _)
 		self:SelectGame(entry)
+		ui.MultiJoinGame:sendJoinRequest()
 	end)
 	entry.key = li_el.id
 	
@@ -61,11 +92,16 @@ function JoinGameController:CreatePlayerEntry(entry)
 end
 
 function JoinGameController:SelectGame(game)
+	if self.selected_game then
+		self.selected_game:SetPseudoClass("checked", false)
+	end
+	self.selected_game = self.document:GetElementById(game.key)
+	self.selected_game:SetPseudoClass("checked", true)
 	ui.MultiJoinGame.ActiveGames[game.Index]:setSelected()
 end
 
 function JoinGameController:addGame(game)
-	self.games_list_el:AppendChild(self:CreatePlayerEntry(game))
+	self.games_list_el:AppendChild(self:CreateGameEntry(game))
 	table.insert(self.gamesList, game.InternalID)
 end
 
@@ -147,8 +183,24 @@ function JoinGameController:help_pressed()
 	--show help overlay
 end
 
-function JoinGameController:options_pressed()
+function JoinGameController:create_pressed()
 	ui.MultiJoinGame:createGame()
+end
+
+function JoinGameController:observer_pressed()
+	ui.MultiJoinGame:sendJoinRequest(true)
+end
+
+function JoinGameController:cancel_pressed()
+	self:exit()
+end
+
+function JoinGameController:refresh_pressed()
+	ui.MultiJoinGame:refresh()
+end
+
+function JoinGameController:options_pressed()
+	ba.postGameEvent(ba.GameEvents["GS_EVENT_OPTIONS_MENU"])
 end
 
 function JoinGameController:exit_pressed()
@@ -213,7 +265,9 @@ function JoinGameController:updateLists()
 		end
 	end
 	
-	self.document:GetElementById("status_text").inner_rml = ui.MultiJoinGame.StatusText
+	--maybe need to only update this when it's changed.. but for now this is fine
+	self.common_text_el.inner_rml = ui.MultiJoinGame.InfoText
+	self.status_text_el.inner_rml = ui.MultiJoinGame.StatusText
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))

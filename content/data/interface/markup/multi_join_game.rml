@@ -13,9 +13,66 @@
 	</head>
 	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
 		<div id=games_list_wrapper>
+			<div id=games_list_header>
+				<div class="game_status game_item">XSTR("Status", -1)</div>
+				<div class="game_type game_item">XSTR("Type", -1)</div>
+				<div class="game_server game_item">XSTR("Server", -1)</div>
+				<div class="game_players game_item">XSTR("Players", -1)</div>
+				<div class="game_ping game_item">XSTR("Ping", -1)</div>
+			</div>
 			<div id=games_list>
 				<ul id=games_list_ul>
 				</ul>
+			</div>
+			<div id=refresh_container>
+				<div id=refresh_wrapper>
+					<div id=refresh_cont>
+						<button id="refresh_btn" class="refresh button_1" onclick="controller:refresh_pressed()">
+							<span id="refresh_img" class="refresh button_img">
+								<img src="replay.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_right">
+								<p>XSTR("Refresh", -1)</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="ops-panel-horz.png"></img>
+			</div>
+			<div id=buttons_container>
+				<div id=btns_wrapper>
+					<div id=observer_cont>
+						<button id="observer_btn" class="observer button_1" onclick="controller:observer_pressed()">
+							<span id="observer_img" class="observer button_img">
+								<img src="detail.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_bot">
+								<p>XSTR("Join as Observer", -1)</p>
+							</span>
+						</button>
+					</div>
+					<div id=create_cont>
+						<button id="create_btn" class="create button_1" onclick="controller:create_pressed()">
+							<span id="create_img" class="create button_img">
+								<img src="star.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_bot">
+								<p>XSTR("Create Game", -1)</p>
+							</span>
+						</button>
+					</div>
+					<div id=cancel_cont>
+						<button id="cancel_btn" class="cancel button_1" onclick="controller:cancel_pressed()">
+							<span id="cancel_img" class="cancel button_img">
+								<img src="decline.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_bot">
+								<p>XSTR("Cancel", -1)</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="ops-panel-horz.png"></img>
 			</div>
 			<img src="fiction-window.png"></img>
 		</div>

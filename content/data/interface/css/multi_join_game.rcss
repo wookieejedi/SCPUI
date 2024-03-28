@@ -13,7 +13,7 @@ body
 {
 	display: block;
 	color: #7b7b7b;
-	width: 90%;
+	width: 100%;
 }
 .list_element:hover
 {
@@ -33,11 +33,11 @@ body
 
 #games_list_wrapper
 {
-	width: 60%;
+	width: 70%;
 	height: 60%;
 	position: absolute;
-	top: 20%;
-	right: 10%;
+	top: 6%;
+	right: 15%;
 }
 
 div#games_list_wrapper img
@@ -47,21 +47,259 @@ div#games_list_wrapper img
 	height: 100%;
 }
 
-#games_list
+#games_list_header
 {
 	width: 94%;
-	height: 92%;
+	height: 5%;
 	position: absolute;
 	top: 5%;
 	left: 2%;
+}
+
+#games_list
+{
+	width: 94%;
+	height: 87%;
+	position: absolute;
+	top: 10%;
+	left: 2%;
 	overflow: scroll;
+}
+
+.game_item
+{
+	width: 15%;
+	float: left;
+}
+
+.game_status
+{
+	width: 11%;
+}
+
+.game_type
+{
+	width: 8%;
+}
+
+.game_server
+{
+	width: 50%;
+}
+
+/*Refresh Buttons*/
+
+div#refresh_container
+{
+	position:absolute;
+	bottom: -5%;
+	left: 4%;
+	width: 15%;
+	height: 8%;
+}
+
+
+div#refresh_container img
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+div#refresh_wrapper
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.button_text_right
+{
+	text-align: center;
+}
+
+div#refresh_cont
+{
+	position:relative;
+	float: left;
+	width: 30%;
+	height: 90%;
+	margin-left: 5%;
+}
+
+.refresh
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	
+}
+
+#refresh_img
+{
+	background-decorator: image;
+	background-image: replay.png;
+	
+}
+button#refresh_btn:hover #refresh_img
+{
+	background-decorator: image;
+	background-image: replay-pos-h.png;
+}
+
+button#refresh_btn:active #refresh_img
+{
+	background-decorator: image;
+	background-image: replay-pos-o.png;
+}
+
+/*Control Buttons*/
+
+div#buttons_container
+{
+	position:absolute;
+	bottom: -10%;
+	right: 4%;
+	width: 26%;
+	height: 13%;
+}
+
+
+div#buttons_container img
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+div#btns_wrapper
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.button_text_bot
+{
+	text-align: center;
+}
+
+/*Cancel Button*/
+
+div#cancel_cont
+{
+	position:relative;
+	float: left;
+	width: 30%;
+	height: 90%;
+
+}
+
+.cancel
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	
+}
+
+#cancel_img
+{
+	background-decorator: image;
+	background-image: decline.png;
+	
+}
+button#cancel_btn:hover #cancel_img
+{
+	background-decorator: image;
+	background-image: decline-h.png;
+}
+
+button#cancel_btn:active #cancel_img
+{
+	background-decorator: image;
+	background-image: decline-o.png;
+}
+
+/*Create Button*/
+
+div#create_cont
+{
+	position:relative;
+	float: left;
+	width: 30%;
+	height: 90%;
+
+}
+
+.create
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	
+}
+
+#create_img
+{
+	background-decorator: image;
+	background-image: star.png;
+	
+}
+button#create_btn:hover #create_img
+{
+	background-decorator: image;
+	background-image: star-pos-h.png;
+}
+
+button#create_btn:active #create_img
+{
+	background-decorator: image;
+	background-image: star-pos-o.png;
+}
+
+/*Observer Button*/
+
+div#observer_cont
+{
+	position:relative;
+	float: left;
+	width: 30%;
+	height: 90%;
+
+}
+
+.observer
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	
+}
+
+#observer_img
+{
+	background-decorator: image;
+	background-image: detail.png;
+	
+}
+button#observer_btn:hover #observer_img
+{
+	background-decorator: image;
+	background-image: detail-h.png;
+}
+
+button#observer_btn:active #observer_img
+{
+	background-decorator: image;
+	background-image: detail-o.png;
 }
 
 #status_text
 {
 	width: 40%;
 	position: absolute;
-	bottom: 0;
+	bottom: 30%;
 	left: 30%;
 	text-align: center;
 }
@@ -70,8 +308,8 @@ div#games_list_wrapper img
 
 div#common_text_wrapper
 {
-	width: 5%;
-	height: 13%;
+	width: 50%;
+	height: 25%;
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -86,11 +324,12 @@ div#common_text_wrapper img
 
 div#common_text
 {
-	width: 100%;
-	height: auto;
+	width: 94%;
+	height: 92%;
 	position: absolute;
-	top: 0;
-	left: 0;
+	top: 1%;
+	left: 5%;
+	overflow: scroll;
 }
 
 /*Bottom Panel Elements*/
@@ -304,7 +543,7 @@ button#options_btn:active #options_img
 {
 	width: 100%;
 	height: 9%;
-	margin-top: -3%;
+	margin-top: -8%;
 	mouseover-sound: 17;
 	click-sound: 0;
 	icon-decorator: image;
@@ -338,6 +577,79 @@ button#options_btn:active #options_img
 }
 
 #games_list scrollbarvertical sliderarrowinc:active
+{
+	icon-image: arrow-dbl-down-o.png;
+}
+
+/*Common Text Scrollbar*/
+
+#common_text scrollbarvertical
+{
+	scrollchange-sound: 9;
+	width: 6%;
+	position: absolute;
+	left: -6%;
+	z-index: 5;
+}
+
+#common_text scrollbarvertical slidertrack
+{
+	display: none;
+}
+
+#common_text scrollbarvertical sliderbar
+{
+	display: none;
+}
+
+#common_text scrollbarvertical sliderbar:hover
+{
+	display: none;
+}
+
+#common_text scrollbarvertical sliderbar:active
+{
+	display: none;
+}
+
+#common_text scrollbarvertical sliderarrowdec
+{
+	width: 100%;
+	height: 23%;
+	margin-top: 44%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
+}
+
+#common_text scrollbarvertical sliderarrowinc
+{
+	width: 100%;
+	height: 23%;
+	margin-bottom: -4%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
+}
+
+#common_text scrollbarvertical sliderarrowdec:hover
+{
+	icon-image: arrow-dbl-up-h.png;
+}
+
+#common_text scrollbarvertical sliderarrowinc:hover
+{
+	icon-image: arrow-dbl-down-h.png;
+}
+
+#common_text scrollbarvertical sliderarrowdec:active
+{
+	icon-image: arrow-dbl-up-o.png;
+}
+
+#common_text scrollbarvertical sliderarrowinc:active
 {
 	icon-image: arrow-dbl-down-o.png;
 }
