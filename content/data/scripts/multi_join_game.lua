@@ -36,6 +36,20 @@ function JoinGameController:initialize(document)
 	
 	self:updateLists()
 	
+	self.network = 1
+	
+	--If we're in local only mode
+	local options = opt.Options
+	for _, v in ipairs(options) do
+		if v.Key == "Multi.TogglePXO" then
+			if v.Value.Display == "Off" then
+				self.network = 2
+			end
+			break
+		end
+	end
+			
+	
 	--topics.multijoingame.initialize:send(self)
 
 end
@@ -127,8 +141,13 @@ end
 function JoinGameController:exit()
 	ui.MultiJoinGame.closeMultiJoin()
 	ScpuiSystem.MultiJoinReady = false
-	ba.postGameEvent(ba.GameEvents["GS_EVENT_PXO"])
-	--Go back to mainhall if not in pxo options!
+	
+	--Go back to mainhall if not in pxo!
+	if self.network == 2 then
+		ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+	else
+		ba.postGameEvent(ba.GameEvents["GS_EVENT_PXO"])
+	end
 end
 
 function JoinGameController:dialog_response(response)

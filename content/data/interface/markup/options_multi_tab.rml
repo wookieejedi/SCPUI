@@ -35,7 +35,7 @@
     </div>
     <div class="btn_panel_general">
         <div id="large_panel_text" class="ops_left_header">
-            <p>XSTR("FS2NetD Login", -1)</p>
+            <p>XSTR("PXO Login", -1)</p>
         </div>
         <div id=network_select_wrapper>
             <div id="network_select">
@@ -55,7 +55,7 @@
                             <img src="round.png" class="psuedo_img"></img>
                         </div>
                         <div class="pos button_text_right">
-                            <p>XSTR("FS2NetD", -1)</p>
+                            <p>XSTR("PXO", -1)</p>
                         </div>
                     </button>
                 </div>
