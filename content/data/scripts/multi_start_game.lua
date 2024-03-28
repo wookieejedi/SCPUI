@@ -214,7 +214,26 @@ function JoinGameController:rank_changed()
 	
 	local rank = select_el.options[select_el.selection - 1].value
 	
+	local player_rank = ba.getCurrentPlayer().Stats.Rank.Index
+	
 	local rank_idx = self:get_rank_index(rank)
+	
+	if self.game_type == MULTI_GAME_TYPE_RANK_ABOVE then
+		if player_rank < rank_idx then
+			select_el.selection = player_rank
+			--Maybe show a popup warning that they can't choose a rank above their own!
+			rank_idx = player_rank
+		end
+	end
+	
+	if self.game_type == MULTI_GAME_TYPE_RANK_BELOW then
+		if player_rank > rank_idx then
+			select_el.selection = player_rank
+			--Maybe show a popup warning that they can't choose a rank below their own!
+			rank_idx = player_rank
+		end
+	end
+	
 	if rank_idx then
 		self.selected_rank = rank_idx
 	end
