@@ -9,88 +9,380 @@ body
 	padding-top:8%;
 }
 
-.list_element
+#create_game_title
 {
-	display: block;
-	color: #7b7b7b;
-	width: 90%;
-}
-.list_element:hover
-{
-	color: #abbbab;
-}
-.list_element:checked
-{
-	color: #6f92f5;
-
+	margin: 4%;
 }
 
-.list_element:active
+#form_wrapper
 {
-	color: #a5b6e6;
-
-}
-
-#games_list_wrapper
-{
-	width: 60%;
+	width: 80%;
 	height: 60%;
 	position: absolute;
-	top: 20%;
-	right: 10%;
+	top: 8%;
+	left: 5%;
 }
 
-div#games_list_wrapper img
+div#form_wrapper img
 {
 	display: block;
 	width: 100%;
 	height: 100%;
 }
 
-#games_list
+#game_title_wrapper
 {
-	width: 94%;
-	height: 92%;
-	position: absolute;
-	top: 5%;
-	left: 2%;
-	overflow: scroll;
+	width: 80%;
+	height: 30%;
 }
 
-#status_text
+#game_title_img
 {
-	width: 40%;
+	width: 4%;
+	height: 60%;
+}
+
+#game_title_header
+{
+	position: relative;
+	top: 2%;
+	left: 5%;
+}
+
+#game_title_input
+{
+	position: relative;
+	top: -13%;
+	left: 4%;
+	width: 60%;
+	height: 25%;
+}
+
+#title_input
+{
 	position: absolute;
-	bottom: 0;
-	left: 30%;
+	top: 2%;
+	left: 2%;
+	width: 95.5%;
+	height: 88%;
+	background-decorator: image;
+	background-image: input-box.png;
+	border-width: 1px;
+	border-color: #676767;
+	z-index: 10;
+}
+
+#game_type_wrapper
+{
+	width: 80%;
+	height: 50%;
+}
+
+#game_type_img
+{
+	width: 4%;
+	height: 80%;
+}
+
+#game_type_header
+{
+	position: relative;
+	top: -2%;
+	left: 0%;
+}
+
+#game_type_input
+{
+	position: relative;
+	top: -30%;
+	left: 4%;
+	width: 60%;
+	height: 15%;
+}
+
+#password_input
+{
+	position: absolute;
+	top: 2%;
+	left: 2%;
+	width: 95.5%;
+	height: 88%;
+	background-decorator: image;
+	background-image: input-box.png;
+	border-width: 1px;
+	border-color: #676767;
+	z-index: 10;
+}
+
+/*Game Type Buttons*/
+
+div#game_type_buttons
+{
+	position:relative;
+	top: -45%;
+	left: -0.5%;
+	width: 10%;
+	height: 6%;
+}
+
+
+div#game_type_buttons img
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.button_text_right
+{
 	text-align: center;
 }
 
-/*Common Text*/
-
-div#common_text_wrapper
+.button_text_right p
 {
-	width: 5%;
-	height: 13%;
-	position: absolute;
-	bottom: 0;
-	left: 0;
+	margin-top: -90%;
 }
 
-div#common_text_wrapper img
+div#open_cont
+{
+	position:relative;
+	width: 30%;
+	height: 90%;
+	margin-left: 5%;
+}
+
+.open
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	
+}
+
+#open_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+	
+}
+button#open_btn:hover #open_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#open_btn:checked #open_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#open_btn:active #open_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+div#password_cont
+{
+	position:relative;
+	width: 30%;
+	height: 90%;
+	margin-left: 5%;
+}
+
+.password
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	
+}
+
+.wide_text p
+{
+	width: 500%;
+	margin-top: -100%;
+}
+
+#password_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+	
+}
+button#password_btn:hover #password_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#password_btn:checked #password_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#password_btn:active #password_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+div#rank_above_cont
+{
+	position:relative;
+	width: 30%;
+	height: 90%;
+	margin-left: 5%;
+	margin-top: 130%;
+}
+
+.rank_above
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	
+}
+
+#rank_above_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+	
+}
+button#rank_above_btn:hover #rank_above_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#rank_above_btn:checked #rank_above_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#rank_above_btn:active #rank_above_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+div#rank_below_cont
+{
+	position:relative;
+	width: 30%;
+	height: 90%;
+	margin-left: 5%;
+}
+
+.rank_below
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	
+}
+
+#rank_below_img
+{
+	background-decorator: image;
+	background-image: bullet-r.png;
+	
+}
+button#rank_below_btn:hover #rank_below_img
+{
+	background-decorator: image;
+	background-image: bullet-r-h.png;
+}
+
+button#rank_below_btn:checked #rank_below_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+button#rank_below_btn:active #rank_below_img
+{
+	background-decorator: image;
+	background-image: bullet-r-o.png;
+}
+
+/*Dropdown Selector*/
+
+div#dropdown_template
+{
+	position: absolute;
+	bottom: 20%;
+	left: 5%;
+	width: 30%;
+}
+
+div#dropdown_template img
 {
 	display: block;
 	width: 100%;
 	height: auto;
 }
 
-div#common_text
+div#horz_panel_wrapper
+{
+	position: absolute;
+	bottom: 6%;
+	padding-right: 8%;
+}
+
+#horz_panel_wrapper .button_text_left p
 {
 	width: 100%;
+	margin-left: -100%;
+	margin-top: -85%;
+}
+
+.btn_panel_horz img
+{
+	display: block;
+	width: 100%;
 	height: auto;
+
+}
+
+.title_panel_horz
+{
+	width: 67%;
+	height: auto;
+	position: relative;
+	border-bottom-width: 2px;
+	border-bottom-color: grey;
+}
+
+#dropdown_cont
+{
+	width: 100%;
+}
+
+/*Locking Elements*/
+
+#password_lock
+{
 	position: absolute;
-	top: 0;
-	left: 0;
+	top: 43%;
+	left: 4%;
+	width: 60%;
+	height: 8%;
+	z-index: 99;
+}
+
+#rank_lock
+{
+	position: absolute;
+	top: 65%;
+	left: 4%;
+	width: 40%;
+	height: 17%;
+	z-index: 99;
 }
 
 /*Bottom Panel Elements*/
@@ -260,84 +552,4 @@ button#options_btn:active #options_img
 {
 	background-decorator: image;
 	background-image: diamonds-o.png;
-}
-
-/*Games List Scrollbar*/
-
-#games_list scrollbarvertical
-{
-	scrollchange-sound: 9;
-	width: 4%;
-	position: absolute;
-	right: -2%;
-	z-index: 5;
-}
-
-#games_list scrollbarvertical slidertrack
-{
-	background-decorator: image;
-	background-image: scroll-bar-line.png;
-	width: 8%;
-	margin-left: 46%;
-}
-
-#games_list scrollbarvertical sliderbar
-{
-	width: 65%;
-	height: 5%;
-	background-decorator: image;
-	background-image: scroll-button.png;
-	margin-left: 20%;
-}
-
-#games_list scrollbarvertical sliderbar:hover
-{
-	background-image: scroll-button-h.png;
-}
-
-#games_list scrollbarvertical sliderbar:active
-{
-	background-image: scroll-button-o.png;
-}
-
-#games_list scrollbarvertical sliderarrowdec
-{
-	width: 100%;
-	height: 9%;
-	margin-top: -3%;
-	mouseover-sound: 17;
-	click-sound: 0;
-	icon-decorator: image;
-	icon-image: arrow-dbl-up.png;
-}
-
-#games_list scrollbarvertical sliderarrowinc
-{
-	width: 100%;
-	height: 9%;
-	margin-bottom: -1%;
-	mouseover-sound: 17;
-	click-sound: 0;
-	icon-decorator: image;
-	icon-image: arrow-dbl-down.png;
-}
-
-#games_list scrollbarvertical sliderarrowdec:hover
-{
-	icon-image: arrow-dbl-up-h.png;
-}
-
-#games_list scrollbarvertical sliderarrowinc:hover
-{
-	icon-image: arrow-dbl-down-h.png;
-}
-
-#games_list scrollbarvertical sliderarrowdec:active
-{
-	icon-image: arrow-dbl-up-o.png;
-}
-
-#games_list scrollbarvertical sliderarrowinc:active
-{
-	icon-image: arrow-dbl-down-o.png;
 }

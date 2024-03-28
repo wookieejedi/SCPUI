@@ -15,23 +15,62 @@ function JoinGameController:initialize(document)
 	
 	self.document = document
 	
+	self.missionTitle = ba.getCurrentPlayer():getName() .. "'s game"
+	self.password = ""
+	self.selected_rank = 1
+	self.game_type = MULTI_GAME_TYPE_OPEN
+	
 	---Load background choice
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	
-	self.games_list_el = self.document:GetElementById("games_list_ul")
-	self.common_text_el = self.document:GetElementById("common_text")
+	self.title_input_el = self.document:GetElementById("title_input")
+	self.title_input_el:SetAttribute("value", self.missionTitle)
 	
-	ScpuiSystem:ClearEntries(self.games_list_el)
+	self.password_input_el = self.document:GetElementById("password_input")
 	
 	ui.MultiStartGame.initMultiStart()
+	
+	self:buildRankList()
+	
+	self.document:GetElementById("open_btn"):SetPseudoClass("checked", true)
 	
 	self:updateLists()
 	
 	--topics.multijoingame.initialize:send(self)
 
+end
+
+function JoinGameController:buildRankList()
+	local select_el = Element.As.ElementFormControlDataSelect(self.document:GetElementById("dropdown_cont").first_child)
+	
+	ScpuiSystem:clearDropdown(select_el)
+	
+	for i = 1, #ui.Medals.Ranks_List do
+		local rank = ui.Medals.Ranks_List[i].Name
+		select_el:Add(rank, rank, i)
+	end
+	
+	if #ui.Medals.Ranks_List > 0 then
+		select_el.selection = 1
+	end
+end
+
+function JoinGameController:uncheckButtons()
+	self.document:GetElementById("open_btn"):SetPseudoClass("checked", false)
+	self.document:GetElementById("password_btn"):SetPseudoClass("checked", false)
+	self.document:GetElementById("rank_above_btn"):SetPseudoClass("checked", false)
+	self.document:GetElementById("rank_below_btn"):SetPseudoClass("checked", false)
+end
+
+function JoinGameController:lockPassword(lock)
+	self.document:GetElementById("password_lock"):SetClass("hidden", not lock)
+end
+
+function JoinGameController:lockRank(lock)
+	self.document:GetElementById("rank_lock"):SetClass("hidden", not lock)
 end
 
 function JoinGameController:exit()
@@ -85,8 +124,19 @@ function JoinGameController:Show(text, title, input, buttons)
 end
 
 function JoinGameController:join_pressed()
-	ui.MultiStartGame.setName("Test Name")
-	ui.MultiStartGame.setGameType(MULTI_GAME_TYPE_PASSWORD, "1234")
+	ui.MultiStartGame.setName(self.missionTitle)
+	
+	local arg = nil
+	
+	if self.game_type == MULTI_GAME_TYPE_PASSWORD then
+		arg = self.password
+	end
+	
+	if self.game_type == MULTI_GAME_TYPE_RANK_ABOVE or self.game_type == MULTI_GAME_TYPE_RANK_BELOW then
+		arg = self.selected_rank
+	end
+	
+	ui.MultiStartGame.setGameType(self.game_type, arg)
 	ui.MultiStartGame.closeMultiStart()
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_MULTI_HOST_SETUP"])
 end
@@ -95,13 +145,51 @@ function JoinGameController:help_pressed()
 	--show help overlay
 end
 
+function JoinGameController:open_pressed()
+	self:uncheckButtons()
+	self.document:GetElementById("open_btn"):SetPseudoClass("checked", true)
+	self:lockPassword(true)
+	self:lockRank(true)
+	
+	self.game_type = MULTI_GAME_TYPE_OPEN
+end
+
+function JoinGameController:password_pressed()
+	self:uncheckButtons()
+	self.document:GetElementById("password_btn"):SetPseudoClass("checked", true)
+	self:lockPassword(false)
+	self:lockRank(true)
+	
+	self.game_type = MULTI_GAME_TYPE_PASSWORD
+end
+
+function JoinGameController:rank_above_pressed()
+	self:uncheckButtons()
+	self.document:GetElementById("rank_above_btn"):SetPseudoClass("checked", true)
+	self:lockPassword(true)
+	self:lockRank(false)
+	
+	self.game_type = MULTI_GAME_TYPE_RANK_ABOVE
+end
+
+function JoinGameController:rank_below_pressed()
+	self:uncheckButtons()
+	self.document:GetElementById("rank_below_btn"):SetPseudoClass("checked", true)
+	self:lockPassword(true)
+	self:lockRank(false)
+	
+	self.game_type = MULTI_GAME_TYPE_RANK_BELOW
+end
+
 function JoinGameController:options_pressed()
-	ui.MultiJoinGame:createGame()
+	ba.postGameEvent(ba.GameEvents["GS_EVENT_OPTIONS_MENU"])
 end
 
 function JoinGameController:exit_pressed()
 	self:exit()
 end
+
+
 
 function JoinGameController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
@@ -111,6 +199,49 @@ end
 
 function JoinGameController:InputFocusLost()
 	--do nothing
+end
+
+function JoinGameController:get_rank_index(rank_name)
+	for i = 1, #ui.Medals.Ranks_List do
+		if ui.Medals.Ranks_List[i].Name == rank_name then
+			return i
+		end
+	end
+end
+
+function JoinGameController:rank_changed()
+	local select_el = Element.As.ElementFormControlDataSelect(self.document:GetElementById("dropdown_cont").first_child)
+	
+	local rank = select_el.options[select_el.selection - 1].value
+	
+	local rank_idx = self:get_rank_index(rank)
+	if rank_idx then
+		self.selected_rank = rank_idx
+	end
+end
+
+function JoinGameController:title_keyup(element, event)
+    if event.parameters.key_identifier ~= rocket.key_identifier.ESCAPE then
+        return
+    end
+end
+
+function JoinGameController:title_input_change(event)
+    --local stringValue = event.parameters.value:gsub("^%s*(.-)%s*$", "%1")
+	--self.title_input_el:SetAttribute("value", stringValue)
+	self.missionTitle = event.parameters.value
+end
+
+function JoinGameController:password_keyup(element, event)
+    if event.parameters.key_identifier ~= rocket.key_identifier.ESCAPE then
+        return
+    end
+end
+
+function JoinGameController:password_input_change(event)
+    local stringValue = event.parameters.value:gsub("^%s*(.-)%s*$", "%1")
+	self.password_input_el:SetAttribute("value", stringValue)
+	self.password = stringValue
 end
 
 function JoinGameController:updateLists()
