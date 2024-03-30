@@ -506,7 +506,7 @@ function PXOController:InputChange(event)
 		local val = self.input_id:GetAttribute("value")
 		self.submittedValue = val
 	else
-		submit_id = self.document:GetElementById("submit_btn")
+		local submit_id = self.document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
 		self:sendChat()
 	end
