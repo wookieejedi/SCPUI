@@ -89,6 +89,12 @@ $State: GS_STATE_MULTI_JOIN_GAME
 $State: GS_STATE_MULTI_START_GAME
 	+Markup: data/interface/markup/multi_start_game.rml
 
+$State: GS_STATE_MULTI_HOST_SETUP
+	+Markup: data/interface/markup/multi_host_setup.rml
+
+$State: GS_STATE_MULTI_HOST_OPTIONS
+	+Markup: data/interface/markup/multi_host_options.rml
+
 #Background Replacement
 
 ;$Campaign Background:

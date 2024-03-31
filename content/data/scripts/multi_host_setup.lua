@@ -33,26 +33,48 @@ function HostSetupController:initialize(document)
 	self.common_text_el = self.document:GetElementById("common_text")
 	--self.status_text_el = self.document:GetElementById("status_text")
 	
-	ui.MultiHostSetup.initMultiHostSetup()
+	if not ScpuiSystem.MultiHostSetup then
+		ui.MultiHostSetup.initMultiHostSetup()
+		ScpuiSystem.MultiHostSetup = true
+		ScpuiSystem.HostFilter = nil
+		ScpuiSystem.HostList = "missions"
+	end
+	
+	self.netgame = ui.MultiHostSetup.getNetGame()
 	
 	self:buildFilters()
 	
-	self.document:GetElementById("missions_btn"):SetPseudoClass("checked", true)
-	self.list_type = "missions"
-	
-	self.filter = nil
+	if ScpuiSystem.HostList == "missions" then
+		self.document:GetElementById("missions_btn"):SetPseudoClass("checked", true)
+	else
+		self.document:GetElementById("campaigns_btn"):SetPseudoClass("checked", true)
+	end
 	
 	self.selectedPlayer= nil
 	self.selectedMission = nil
 	
 	self.submittedValue = ""
 	
-	self.closed = false
-	self.squadwar = false
-	
 	self:updateLists()
 	
-	self.netgame = ui.MultiHostSetup.getNetGame()
+	self.closed = self.netgame.Closed
+	if self.netgame.Type == MULTI_TYPE_SQUADWAR then
+		self.squadwar = true
+	else
+		self.squadwar = false
+	end
+	
+	if self.closed then
+		self.document:GetElementById("close_btn"):SetPseudoClass("checked", true)
+	else
+		self.document:GetElementById("close_btn"):SetPseudoClass("checked", false)
+	end
+	
+	if self.squadwar then
+		self.document:GetElementById("squadwar_btn"):SetPseudoClass("checked", true)
+	else
+		self.document:GetElementById("squadwar_btn"):SetPseudoClass("checked", false)
+	end
 	
 	--topics.multijoingame.initialize:send(self)
 
@@ -73,6 +95,7 @@ end
 
 function HostSetupController:exit(quit)
 	ui.MultiHostSetup.closeMultiHostSetup(quit)
+	ScpuiSystem.MultiHostSetup = nil
 end
 
 function HostSetupController:dialog_response(response)
@@ -135,6 +158,7 @@ end
 
 function HostSetupController:commit_pressed()
 	ui.MultiHostSetup.closeMultiHostSetup(true)
+	ScpuiSystem.MultiHostSetup = nil
 end
 
 function HostSetupController:host_options_pressed()
@@ -144,13 +168,13 @@ end
 function HostSetupController:missions_pressed()
 	self.document:GetElementById("campaigns_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("missions_btn"):SetPseudoClass("checked", true)
-	self.list_type = "missions"
+	ScpuiSystem.HostList = "missions"
 end
 
 function HostSetupController:campaigns_pressed()
 	self.document:GetElementById("missions_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("campaigns_btn"):SetPseudoClass("checked", true)
-	self.list_type = "campaigns"
+	ScpuiSystem.HostList = "campaigns"
 end
 
 function HostSetupController:team_1_pressed()
@@ -265,6 +289,7 @@ function HostSetupController:kick_pressed()
 end
 
 function HostSetupController:close_pressed()
+	--TODO: If not host then hide this button
 	if self.closed == true then
 		self.netgame.Closed = false
 	else
@@ -324,13 +349,13 @@ function HostSetupController:filter_changed()
 	local val = select_el.options[select_el.selection - 1].value
 	
 	if val == "Co-op" then
-		self.filter = MULTI_TYPE_COOP
+		ScpuiSystem.HostFilter = MULTI_TYPE_COOP
 	elseif val == "Team" then
-		self.filter = MULTI_TYPE_TEAM
+		ScpuiSystem.HostFilter = MULTI_TYPE_TEAM
 	elseif val == "Dogfight" then
-		self.filter = MULTI_TYPE_DOGFIGHT
+		ScpuiSystem.HostFilter = MULTI_TYPE_DOGFIGHT
 	else
-		self.filter = nil
+		ScpuiSystem.HostFilter = nil
 	end
 	
 	self.missionList = {} -- list of mission files + ids only
@@ -421,6 +446,10 @@ end
 function HostSetupController:addMission(mission)
 	self.missions_list_el:AppendChild(self:CreateMissionEntry(mission))
 	table.insert(self.missionList, mission.InternalID)
+	
+	if mission.Filename == self.netgame.MissionFilename then
+		self:SelectMission(mission)
+	end
 end
 
 function HostSetupController:removeMission(idx)
@@ -567,7 +596,7 @@ function HostSetupController:updateLists()
 	
 	local list = ui.MultiHostSetup.NetMissions
 	
-	if self.list_type ~= "missions" then
+	if ScpuiSystem.HostList ~= "missions" then
 		list = ui.MultiHostSetup.NetCampaigns
 	end
 	
@@ -585,8 +614,8 @@ function HostSetupController:updateLists()
 		for i = 1, #list do
 			local int_id = list[i].Filename .. "_" .. i
 			local add_entry = true
-			if self.filter then
-				if list[i].Type == self.filter then
+			if ScpuiSystem.HostFilter then
+				if list[i].Type == ScpuiSystem.HostFilter then
 					add_entry = true
 				else
 					add_entry = false

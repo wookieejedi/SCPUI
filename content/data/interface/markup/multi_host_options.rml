@@ -1,0 +1,159 @@
+<rml>
+	<head>
+		<title>Host Options</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="fontsizes.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="scrollbars.rcss"/>
+		<link type="text/rcss" href="multi_host_options.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
+		<script>
+			controller = require("multi_host_options")()
+		</script>
+	</head>
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
+		<div id=mission_wrapper>
+			<div id=mission_list>
+				<div id=options_column_1>
+					<div id="ai_orders_selector" class="btn_panel_horz">
+						<div id="horz_panel_text" class="ops_left_header">
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("AI Orders", -1)</span>
+						</div>
+						<div id=horz_panel_wrapper>
+							<div id=ai_orders_cont>
+								<dataselect class="dropdown_dataselect_el" fields="display" valuefield="serialized" onchange="controller:ai_orders_changed()">
+								</dataselect>
+							</div>
+						</div>
+						<img src="ops-panel-horz.png"></img>
+					</div>
+					<div id="end_mission_selector" class="btn_panel_horz">
+						<div id="horz_panel_text" class="ops_left_header">
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("End Mission", -1)</span>
+						</div>
+						<div id=horz_panel_wrapper>
+							<div id=end_mission_cont>
+								<dataselect class="dropdown_dataselect_el" fields="display" valuefield="serialized" onchange="controller:end_mission_changed()">
+								</dataselect>
+							</div>
+						</div>
+						<img src="ops-panel-horz.png"></img>
+					</div>
+					<div id="difficulty_selector" class="btn_panel_horz">
+						<div id="horz_panel_text" class="ops_left_header">
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("Difficulty", -1)</span>
+						</div>
+						<div id=horz_panel_wrapper>
+							<div id=difficulty_cont>
+								<dataselect class="dropdown_dataselect_el" fields="display" valuefield="serialized" onchange="controller:difficulty_changed()">
+								</dataselect>
+							</div>
+						</div>
+						<img src="ops-panel-horz.png"></img>
+					</div>
+					<div id=host_modifies_wrapper>
+						<div id="horz_panel_text" class="ops_left_header">
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("Host Modifies Ships", -1)</span>
+						</div>
+						<div id=host_modifies_cont>
+							<button id="host_modifies_btn" class="host_modifies button_1" onclick="controller:host_modifies_pressed()">
+								<span id="host_modifies_img" class="host_modifies button_img">
+									<img src="round.png" class="psuedo_img"></img>
+								</span>
+								<span class="pos button_text_right_sw">
+									<p>XSTR("Enable/Disable", -1)</p>
+								</span>
+							</button>
+						</div>
+						<img src="ops-panel-horz.png"></img>
+					</div>
+					<div id=time_limit_wrapper>
+						<div id="horz_panel_text" class="ops_left_header">
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("Time Limit (minutes)", -1)</span>
+						</div>
+						<div id=input_cont>
+							<div id=user_input_wrapper>
+								<input id=time_limit_input class="user_input" type="text" maxlength="30" onblur="controller:InputFocusLost()" onchange="controller:time_limit_input_change(event)" onkeyup="controller:time_limit_keyup(element, event)"></input>
+							</div>
+						</div>
+						<img src="ops-panel-horz.png"></img>
+					</div>
+					<div id=respawn_limit_wrapper>
+						<div id="horz_panel_text" class="ops_left_header">
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("Respawn Limit", -1)</span>
+						</div>
+						<div id=input_cont>
+							<div id=user_input_wrapper>
+								<input id=respawn_limit_input class="user_input" type="text" maxlength="30" onblur="controller:InputFocusLost()" onchange="controller:respawn_limit_input_change(event)" onkeyup="controller:respawn_limit_keyup(element, event)"></input>
+							</div>
+						</div>
+						<img src="ops-panel-horz.png"></img>
+					</div>
+					<div id=kill_limit_wrapper>
+						<div id="horz_panel_text" class="ops_left_header">
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("Kill Limit", -1)</span>
+						</div>
+						<div id=input_cont>
+							<div id=user_input_wrapper>
+								<input id=kill_limit_input class="user_input" type="text" maxlength="30" onblur="controller:InputFocusLost()" onchange="controller:kill_limit_input_change(event)" onkeyup="controller:kill_limit_keyup(element, event)"></input>
+							</div>
+						</div>
+						<img src="ops-panel-horz.png"></img>
+					</div>
+					<div id=observers_limit_wrapper>
+						<div id="horz_panel_text" class="ops_left_header">
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("Observers Limit", -1)</span>
+						</div>
+						<div id=input_cont>
+							<div id=user_input_wrapper>
+								<input id=observers_limit_input class="user_input" type="text" maxlength="30" onblur="controller:InputFocusLost()" onchange="controller:observers_limit_input_change(event)" onkeyup="controller:observers_limit_keyup(element, event)"></input>
+							</div>
+						</div>
+						<img src="ops-panel-horz.png"></img>
+					</div>
+				</div>
+				<div id=options_column_2>
+				</div>
+			</div>
+			<img src="mission-sim-window.png"></img>
+		</div>
+		<div id=chat_wrapper>
+			<div id=chat_window>
+			</div>
+			<input id=chat_input type="text" maxlength="512" onblur="controller:InputFocusLost()"
+				onchange="controller:InputChange(event)"></input>
+			<div id=submit_btn_wrapper>
+				<div id=submit_cont>
+					<button id="submit_btn" class="submit button_1" onclick="controller:submit_pressed()">
+						<span id="submit_img" class="submit button_img">
+							<img src="select.png" class="psuedo_img"></img>
+						</span>
+						<span class="pos button_text_special">
+							<p>XSTR("Submit", -1)</p>
+						</span>
+					</button>
+				</div>
+				<img src="ops-panel-horz.png"></img>
+			</div>
+			<img src="fiction-window.png"></img>
+		</div>
+		<div id=bottom_panel_wrapper>
+			<div id=bottom_panel_a>
+				<div id=a_panel_wrapper>
+					<div id=accept_cont>
+						<button id="accept_btn" class="accept button_1" onclick="controller:commit_pressed(element)">
+							<span id="accept_img" class="accept button_img">
+								<img src="select.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>XSTR("Exit", -1)</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-a.png"></img>
+			</div>
+		</div>
+	</body>
+
+</rml>
