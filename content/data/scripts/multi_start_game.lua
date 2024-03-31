@@ -73,10 +73,9 @@ function JoinGameController:lockRank(lock)
 	self.document:GetElementById("rank_lock"):SetClass("hidden", not lock)
 end
 
-function JoinGameController:exit()
-	ui.MultiStartGame.closeMultiStart()
+function JoinGameController:exit(continue)
+	ui.MultiStartGame.closeMultiStart(false)
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_MULTI_JOIN_GAME"])
-	--Go back to mainhall if not in pxo options!
 end
 
 function JoinGameController:dialog_response(response)
