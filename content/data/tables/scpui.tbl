@@ -95,6 +95,9 @@ $State: GS_STATE_MULTI_HOST_SETUP
 $State: GS_STATE_MULTI_HOST_OPTIONS
 	+Markup: data/interface/markup/multi_host_options.rml
 
+$State: GS_STATE_MULTI_CLIENT_SETUP
+	+Markup: data/interface/markup/multi_client_setup.rml
+
 #Background Replacement
 
 ;$Campaign Background:
