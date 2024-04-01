@@ -651,14 +651,12 @@ XLoadingScreen:Init()
 $On Load Screen:
 [
 	
-	if not ba.MultiplayerMode then
-		if not XLoadingScreen.Drawing then
-			XLoadingScreen:InitDraw(string.lower(mn.getMissionFilename()))
-		end
-		
-		if XLoadingScreen.Drawing then
-			XLoadingScreen:Draw(hv.Progress)
-		end
+	if not XLoadingScreen.Drawing then
+		XLoadingScreen:InitDraw(string.lower(mn.getMissionFilename()))
+	end
+	
+	if XLoadingScreen.Drawing then
+		XLoadingScreen:Draw(hv.Progress)
 	end
 ]
 
