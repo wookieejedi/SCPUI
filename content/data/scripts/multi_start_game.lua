@@ -136,7 +136,7 @@ function JoinGameController:join_pressed()
 	end
 	
 	ui.MultiStartGame.setGameType(self.game_type, arg)
-	ui.MultiStartGame.closeMultiStart()
+	ui.MultiStartGame.closeMultiStart(true)
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_MULTI_HOST_SETUP"])
 end
 
