@@ -265,7 +265,7 @@ end
 function JoinGameController:updateLists()
 	ui.MultiStartGame.runNetwork()
 	
-	--self.document:GetElementById("status_text").inner_rml = ui.MultiJoinGame.StatusText
+	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))

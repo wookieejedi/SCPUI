@@ -35,7 +35,7 @@ function HostOptionsController:initialize(document)
 	self.kill_limit_input_el = self.document:GetElementById("kill_limit_input")
 	self.observers_limit_input_el = self.document:GetElementById("observers_limit_input")
 	
-	self.netgame = ui.MultiHostSetup.getNetGame()
+	self.netgame = ui.MultiGeneral.getNetGame()
 	
 	self:buildDropdowns()
 	
@@ -304,7 +304,7 @@ end
 function HostOptionsController:updateLists()
 	ui.MultiHostSetup.runNetwork()
 	
-	--self.document:GetElementById("status_text").inner_rml = ui.MultiJoinGame.StatusText
+	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))

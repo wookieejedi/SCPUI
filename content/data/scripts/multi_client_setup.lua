@@ -34,7 +34,7 @@ function ClientSetupController:initialize(document)
 	
 	ui.MultiClientSetup.initMultiClientSetup()
 	
-	self.netgame = ui.MultiHostSetup.getNetGame()
+	self.netgame = ui.MultiGeneral.getNetGame()
 	
 	self.selectedPlayer= nil
 	
@@ -378,7 +378,7 @@ end
 function ClientSetupController:updateLists()
 	ui.MultiClientSetup.runNetwork()
 	
-	if #ui.MultiHostSetup.NetPlayers == 0 then
+	if #ui.MultiGeneral.NetPlayers == 0 then
 		ScpuiSystem:ClearEntries(self.players_list_el)
 		self.players_list_el.inner_rml = "Loading Players..."
 		self.cleared = true
@@ -388,19 +388,19 @@ function ClientSetupController:updateLists()
 			self.cleared = nil
 		end
 		-- check for new players
-		for i = 1, #ui.MultiHostSetup.NetPlayers do
-			if ui.MultiHostSetup.NetPlayers[i]:isValid() then
-				local int_id = ui.MultiHostSetup.NetPlayers[i].Name .. "_" .. i
+		for i = 1, #ui.MultiGeneral.NetPlayers do
+			if ui.MultiGeneral.NetPlayers[i]:isValid() then
+				local int_id = ui.MultiGeneral.NetPlayers[i].Name .. "_" .. i
 				if not utils.table.contains(self.playerList, int_id) then
 					local entry = {
-						Name = ui.MultiHostSetup.NetPlayers[i].Name,
-						Team = ui.MultiHostSetup.NetPlayers[i].Team,
-						Host = ui.MultiHostSetup.NetPlayers[i].Host,
-						Observer = ui.MultiHostSetup.NetPlayers[i].Observer,
-						Captain = ui.MultiHostSetup.NetPlayers[i].Captain,
+						Name = ui.MultiGeneral.NetPlayers[i].Name,
+						Team = ui.MultiGeneral.NetPlayers[i].Team,
+						Host = ui.MultiGeneral.NetPlayers[i].Host,
+						Observer = ui.MultiGeneral.NetPlayers[i].Observer,
+						Captain = ui.MultiGeneral.NetPlayers[i].Captain,
 						InternalID = int_id,
 						Index = i,
-						Entry = ui.MultiHostSetup.NetPlayers[i]
+						Entry = ui.MultiGeneral.NetPlayers[i]
 					}
 					self:addPlayer(entry)
 				end
@@ -411,8 +411,8 @@ function ClientSetupController:updateLists()
 		local players = {}
 		
 		-- create a simple table to use for comparing
-		for i = 1, #ui.MultiHostSetup.NetPlayers do
-			table.insert(players, ui.MultiHostSetup.NetPlayers[i].Name .. "_" .. i)
+		for i = 1, #ui.MultiGeneral.NetPlayers do
+			table.insert(players, ui.MultiGeneral.NetPlayers[i].Name .. "_" .. i)
 		end
 		
 		for i = 1, #self.playerList do
@@ -443,7 +443,7 @@ function ClientSetupController:updateLists()
 	
 	self:check_squadwar()
 	
-	--self.document:GetElementById("status_text").inner_rml = ui.MultiJoinGame.StatusText
+	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))

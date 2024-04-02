@@ -285,8 +285,8 @@ function JoinGameController:updateLists()
 	end
 	
 	--maybe need to only update this when it's changed.. but for now this is fine
-	self.common_text_el.inner_rml = ui.MultiJoinGame.InfoText
-	self.status_text_el.inner_rml = ui.MultiJoinGame.StatusText
+	self.common_text_el.inner_rml = ui.MultiGeneral.InfoText
+	self.status_text_el.inner_rml = ui.MultiGeneral.StatusText
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))
