@@ -30,6 +30,7 @@ function HostSetupController:initialize(document)
 	self.missions_list_el = self.document:GetElementById("mission_list_ul")
 	self.players_list_el = self.document:GetElementById("players_list_ul")
 	self.chat_el = self.document:GetElementById("chat_window")
+	self.input_id = self.document:GetElementById("chat_input")
 	self.common_text_el = self.document:GetElementById("common_text")
 	--self.status_text_el = self.document:GetElementById("status_text")
 	
@@ -321,7 +322,7 @@ end
 
 function HostSetupController:sendChat()
 	if string.len(self.submittedValue) > 0 then
-		--ui.MultiPXO.sendChat(self.submittedValue)
+		ui.MultiGeneral.sendChat(self.submittedValue)
 		self.input_id:SetAttribute("value", "")
 		self.submittedValue = ""
 	end
@@ -593,6 +594,19 @@ end
 
 function HostSetupController:updateLists()
 	ui.MultiHostSetup.runNetwork()
+	local chat = ui.MultiGeneral.getChat()
+	
+	local txt = ""
+	for i = 1, #chat do
+		local line = ""
+		if chat[i].Callsign ~= "" then
+			line = chat[i].Callsign .. ": " .. chat[i].Message
+		else
+			line = chat[i].Message
+		end
+		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
+	end
+	self.chat_el.inner_rml = txt
 	
 	local list = ui.MultiHostSetup.NetMissions
 	

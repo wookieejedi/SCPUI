@@ -29,6 +29,8 @@ function ClientSetupController:initialize(document)
 	
 	self.players_list_el = self.document:GetElementById("players_list_ul")
 	self.chat_el = self.document:GetElementById("chat_window")
+	self.chat_el = self.document:GetElementById("chat_window")
+	self.input_id = self.document:GetElementById("chat_input")
 	self.common_text_el = self.document:GetElementById("common_text")
 	--self.status_text_el = self.document:GetElementById("status_text")
 	
@@ -230,7 +232,7 @@ end
 
 function ClientSetupController:sendChat()
 	if string.len(self.submittedValue) > 0 then
-		--ui.MultiPXO.sendChat(self.submittedValue)
+		ui.MultiGeneral.sendChat(self.submittedValue)
 		self.input_id:SetAttribute("value", "")
 		self.submittedValue = ""
 	end
@@ -377,6 +379,19 @@ end
 
 function ClientSetupController:updateLists()
 	ui.MultiClientSetup.runNetwork()
+	local chat = ui.MultiGeneral.getChat()
+	
+	local txt = ""
+	for i = 1, #chat do
+		local line = ""
+		if chat[i].Callsign ~= "" then
+			line = chat[i].Callsign .. ": " .. chat[i].Message
+		else
+			line = chat[i].Message
+		end
+		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
+	end
+	self.chat_el.inner_rml = txt
 	
 	if #ui.MultiGeneral.NetPlayers == 0 then
 		ScpuiSystem:ClearEntries(self.players_list_el)

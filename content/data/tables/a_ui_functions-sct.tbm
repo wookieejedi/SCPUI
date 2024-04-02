@@ -5,6 +5,12 @@ $On Game Init:
 
 --Misc functions for handling various UI-related tasks
 
+function ScpuiSystem:replaceAngleBrackets(inputString)
+    local result = string.gsub(inputString, "<", "&lt;")
+    result = string.gsub(result, ">", "&gt;")
+    return result
+end
+
 function ScpuiSystem:freeAllModels()
 	if ScpuiSystem.missionLoaded == false then
 		ba.print("SCPUI is freeing all models!\n")

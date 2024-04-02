@@ -28,6 +28,7 @@ function HostOptionsController:initialize(document)
 	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
 	
 	self.chat_el = self.document:GetElementById("chat_window")
+	self.input_id = self.document:GetElementById("chat_input")
 	--self.status_text_el = self.document:GetElementById("status_text")
 	
 	self.time_limit_input_el = self.document:GetElementById("time_limit_input")
@@ -190,14 +191,35 @@ end
 
 function HostOptionsController:sendChat()
 	if string.len(self.submittedValue) > 0 then
-		--ui.MultiPXO.sendChat(self.submittedValue)
+		ui.MultiGeneral.sendChat(self.submittedValue)
 		self.input_id:SetAttribute("value", "")
 		self.submittedValue = ""
 	end
 end
 
-function HostOptionsController:InputFocusLost()
+function HostSetupController:sendChat()
+	if string.len(self.submittedValue) > 0 then
+		ui.MultiGeneral.sendChat(self.submittedValue)
+		self.input_id:SetAttribute("value", "")
+		self.submittedValue = ""
+	end
+end
+
+function HostSetupController:InputFocusLost()
 	--do nothing
+end
+
+function HostSetupController:InputChange(event)
+
+	if event.parameters.linebreak ~= 1 then
+		local val = self.input_id:GetAttribute("value")
+		self.submittedValue = val
+	else
+		local submit_id = self.document:GetElementById("submit_btn")
+		ui.playElementSound(submit_id, "click")
+		self:sendChat()
+	end
+
 end
 
 function HostOptionsController:TrimInput(val)
@@ -303,6 +325,19 @@ end
 
 function HostOptionsController:updateLists()
 	ui.MultiHostSetup.runNetwork()
+	local chat = ui.MultiGeneral.getChat()
+	
+	local txt = ""
+	for i = 1, #chat do
+		local line = ""
+		if chat[i].Callsign ~= "" then
+			line = chat[i].Callsign .. ": " .. chat[i].Message
+		else
+			line = chat[i].Message
+		end
+		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
+	end
+	self.chat_el.inner_rml = txt
 	
 	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	

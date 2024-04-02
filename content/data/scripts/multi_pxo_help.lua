@@ -23,7 +23,7 @@ function PXOHelpController:initialize(document)
 	local text = ui.MultiPXO.getHelpText()
 	local fullHelp = ""
 	for i = 1, #text do
-		fullHelp = fullHelp .. self:replaceAngleBrackets(text[i]) .. "<br/>"
+		fullHelp = fullHelp .. ScpuiSystem:replaceAngleBrackets(text[i]) .. "<br/>"
 	end
 	self.help_el = self.document:GetElementById("help_div")
 	self.help_el.inner_rml = fullHelp
@@ -32,12 +32,6 @@ function PXOHelpController:initialize(document)
 	
 	--topics.multipxo.initialize:send(self)
 
-end
-
-function PXOHelpController:replaceAngleBrackets(inputString)
-    local result = string.gsub(inputString, "<", "[")
-    result = string.gsub(result, ">", "]")
-    return result
 end
 
 function PXOHelpController:exit()
