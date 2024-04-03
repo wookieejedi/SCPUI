@@ -737,6 +737,7 @@ function HostSetupController:updateLists()
 	end
 	
 	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
+	self.common_text_el.inner_rml = ui.MultiGeneral.InfoText
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))

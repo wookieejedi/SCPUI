@@ -458,6 +458,8 @@ function ClientSetupController:updateLists()
 	
 	self:check_squadwar()
 	
+	self.common_text_el.inner_rml = ui.MultiGeneral.InfoText
+	
 	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	
 	async.run(function()
