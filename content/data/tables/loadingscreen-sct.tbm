@@ -640,6 +640,7 @@ function XLoadingScreen:Exit()
 		self.AnimFrames = nil
 		self.UsedImage = nil
 		self.LastProgress = nil
+		ScpuiSystem.render = true
 	end
 
 end
@@ -656,36 +657,12 @@ $On Load Screen:
 	end
 	
 	if XLoadingScreen.Drawing then
+		ScpuiSystem.render = false
 		XLoadingScreen:Draw(hv.Progress)
 	end
 ]
 
-$State: GS_STATE_MAIN_MENU
-$On State Start:
-[
-	XLoadingScreen:Exit()
-]
-
-$State: GS_STATE_GAME_PLAY
-$On Gameplay Start:
-[
-	XLoadingScreen:Exit()
-]
-
-$State: GS_STATE_BRIEFING
-$On State Start:
-[
-	XLoadingScreen:Exit()
-]
-
-$State: GS_STATE_CMD_BRIEF
-$On State Start:
-[
-	XLoadingScreen:Exit()
-]
-
-$State: GS_STATE_LOOP_BRIEF
-$On State Start:
+$On Load Complete:
 [
 	XLoadingScreen:Exit()
 ]
