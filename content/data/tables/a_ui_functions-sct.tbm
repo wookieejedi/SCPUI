@@ -43,15 +43,20 @@ function ScpuiSystem:getAbsoluteTop(element)
 end
 
 function ScpuiSystem:maybePlayCutscene(scene)
-	if self.music_handle ~= nil then
-		self.music_handle:pause()
+	local topics = require("ui_topics")
+	topics.playcutscene.start:send(self)
+	if ScpuiSystem.music_handle ~= nil then
+		ScpuiSystem.music_handle:pause()
 	end
 	--Setting this to false so it doesn't try to restart music
 	--that SCPUI handles internally
+	ScpuiSystem.render = false
 	ui.maybePlayCutscene(scene, false, 0)
-	if self.music_handle ~= nil then
-		self.music_handle:unpause()
+	ScpuiSystem.render = true
+	if ScpuiSystem.music_handle ~= nil then
+		ScpuiSystem.music_handle:unpause()
 	end
+	topics.playcutscene.finish:send(self)
 end
 
 function ScpuiSystem:getFontSize(val, default)

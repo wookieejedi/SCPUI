@@ -52,6 +52,10 @@ return {
     globalKeypress           = Topic(nil), --Runs arbitrary script and expects no return value. Sends the document context and the event
     unload                   = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
   },
+  playcutscene = {
+    start           = Topic(nil), --Runs arbitrary script and expects no return value. Sends the document context
+	finish          = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
+  },
   briefcommon = {
     initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
   },

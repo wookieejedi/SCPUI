@@ -30,6 +30,7 @@ function DebriefingController:initialize(document)
 			topics.debrief.skip:send()
             self:close()
             ui.Debriefing.acceptMission()
+			ScpuiSystem:maybePlayCutscene(MOVIE_POST_DEBRIEF)
             return
         end
         self:startMusic()
@@ -373,6 +374,7 @@ function DebriefingController:dialog_response(response)
             
             self:close()
             ui.Debriefing.acceptMission()
+			ScpuiSystem:maybePlayCutscene(MOVIE_POST_DEBRIEF)
         end, 
         acceptquit = function()
         
@@ -380,6 +382,7 @@ function DebriefingController:dialog_response(response)
             
             self:close()
             ui.Debriefing.acceptMission(false)
+			ScpuiSystem:maybePlayCutscene(MOVIE_POST_DEBRIEF)
             mn.unloadMission(true)
             ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
         end,
@@ -407,6 +410,7 @@ function DebriefingController:dialog_response(response)
         
             self:close()
             ui.Debriefing.acceptMission(false)
+			ScpuiSystem:maybePlayCutscene(MOVIE_POST_DEBRIEF)
             ui.Briefing.skipMission()
         end,
         optout = function()
@@ -609,6 +613,7 @@ function DebriefingController:accept_pressed()
     
         self:close()
         ui.Debriefing.acceptMission()
+		ScpuiSystem:maybePlayCutscene(MOVIE_POST_DEBRIEF)
     end
 end
 
@@ -690,6 +695,7 @@ function DebriefingController:close()
         ScpuiSystem.music_handle:close(false)
         ScpuiSystem.music_handle = nil
     end
+	self:unload()
     ScpuiSystem.debriefInit = false
 end
 
