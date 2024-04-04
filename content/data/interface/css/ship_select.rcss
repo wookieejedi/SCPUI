@@ -113,7 +113,7 @@ div#ship_scroll_wrapper
 
 div#ship_icon_list
 {
-	width: 50%;
+	width: 78%;
 	height: 99%;
 	padding-left: 15%;
 	padding-right: 2%;
@@ -132,7 +132,7 @@ div#ship_icon_list .icon
 
 .select_item
 {
-	width: 150%;
+	width: 100%;
 }
 
 .amount

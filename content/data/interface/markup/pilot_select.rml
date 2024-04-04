@@ -17,7 +17,7 @@
 				<p>XSTR("Choose Pilot", -1)</p>
 			</div>
 			<div id=pilotlist>
-				<input id=pilot_name_input class="hidden" type="text" onblur="controller:callsign_input_focus_lost()"
+				<input id=pilot_name_input class="hidden" type="text" maxlength="28" onblur="controller:callsign_input_focus_lost()"
 						onchange="controller:callsign_input_change(event)"
 						onkeyup="controller:callsign_keyup(element, event)"></input>
 				<ul id=pilotlist_ul>

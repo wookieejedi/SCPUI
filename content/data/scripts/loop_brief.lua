@@ -28,6 +28,8 @@ function LoopBriefController:initialize(document)
 	
 	local color_text = rocket_utils.set_briefing_text(text_el, loop.Text)
 	
+	ba.print("SCPUI got loop briefing audio filename as " .. loop.AudioFilename)
+	
 	if loop.AudioFilename then
 		self.voice_handle = ad.openAudioStream(loop.AudioFilename, AUDIOSTREAM_VOICE)
 		self.voice_handle:play(ad.MasterVoiceVolume)

@@ -355,3 +355,12 @@ selectbox option:hover
 	color: rgb(126,6,128);
 }
 
+.pink
+{
+	color: rgb(228, 190, 190);
+}
+
+.grey
+{
+	color: rgb(160, 160, 160);
+}

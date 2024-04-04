@@ -423,8 +423,8 @@ div#awards_wrapper img
 
 div#medal_image_wrapper
 {
-	width: 93%;
-	height: 83%;
+	width: 83%;
+	height: 73%;
 	margin-top: 1.1%;
 	position: absolute;
 	top: 1%;
