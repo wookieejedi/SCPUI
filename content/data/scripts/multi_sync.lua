@@ -34,7 +34,6 @@ function MultiSyncController:initialize(document)
 	
 	self.players_list_el = self.document:GetElementById("players_list_ul")
 	self.chat_el = self.document:GetElementById("chat_window")
-	self.chat_el = self.document:GetElementById("chat_window")
 	self.input_id = self.document:GetElementById("chat_input")
 	self.common_text_el = self.document:GetElementById("common_text")
 	--self.status_text_el = self.document:GetElementById("status_text")

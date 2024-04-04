@@ -195,7 +195,7 @@ div#bottom_panel_wrapper
 
 div#bottom_panel_a
 {
-	width: 35%;
+	width: 34%;
 	height: auto;
 	position: relative;
 	float: right;
@@ -248,7 +248,7 @@ button#launch_btn:active #launch_img
 
 div#bottom_panel_b
 {
-	width: 35%;
+	width: 33%;
 	height: auto;
 	position: relative;
 	float: left;
@@ -261,19 +261,10 @@ div#bottom_panel_b img
 	height: auto;
 }
 
-div#bottom_panel_b
+div#b_panel_wrapper
 {
-	width: 35%;
-	height: auto;
-	position: relative;
-	float: right;
-}
-
-div#bottom_panel_b img
-{
-	display: block;
-	width: 100%;
-	height: auto;
+	position: absolute;
+	bottom: 0;
 }
 
 div#accept_cont
@@ -310,7 +301,7 @@ button#accept_btn:active #accept_img
 
 div#bottom_panel_c
 {
-	width: 35%;
+	width: 33%;
 	height: auto;
 	position: relative;
 	float: left;
@@ -323,24 +314,7 @@ div#bottom_panel_c img
 	height: auto;
 }
 
-div#bottom_panel_c
-{
-	width: 35%;
-	height: auto;
-	position: relative;
-	float: right;
-}
-
-div#bottom_panel_c img
-{
-	display: block;
-	width: 100%;
-	height: auto;
-}
-
-/*Kick Button*/
-
-div#b_panel_wrapper
+div#c_panel_wrapper
 {
 	position: absolute;
 	bottom: 0;
