@@ -75,6 +75,8 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 		Icon = {}
 	}
 	
+	local o_clr = gr.getColor(true)
+	
 	--Create a texture and then draw to it, save the output
 	if gen3d then
 		
@@ -105,19 +107,45 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 			modelDetails.bank = 40
 			modelDetails.zoom = 0.4
 		end
+		
+		icon_details.Width = modelDetails.width
+		icon_details.Height = modelDetails.height
 
 		local tex_h = gr.createTexture(modelDetails.width, modelDetails.height)
 		gr.setTarget(tex_h)
-		for j = 1, 6, 1 do
-			gr.clearScreen(0,0,0,0)
-			model_h:renderTechModel(0, 0, modelDetails.width, modelDetails.height, modelDetails.heading, modelDetails.pitch, modelDetails.bank, modelDetails.zoom, false)
-			icon_details.Icon[j] = gr.screenToBlob()
+		gr.clearScreen(0,0,0,0)
+		model_h:renderTechModel(0, 0, modelDetails.width, modelDetails.height, modelDetails.heading, modelDetails.pitch, modelDetails.bank, modelDetails.zoom, false)
+		local blob = gr.screenToBlob()
+		
+		for j = 1, 5, 1 do -- 1 through 5 are the plain ship for now
+			icon_details.Icon[j] = blob
 		end
-		icon_details.Width = modelDetails.width
-		icon_details.Height = modelDetails.height
+		
+		function colorize(color, loop, monochrome, index)
+			gr.setTarget() --Have to clear the target between textures
+			local tex_i = gr.createTexture(modelDetails.width, modelDetails.height)
+			gr.setTarget(tex_i)
+			gr.clearScreen(0,0,0,0)
+			--Draw the normal version first to have a solid base.. this is pretty hacky, but what are ya gonna do about it?
+			gr.drawImage(tex_h, 0, 0, modelDetails.width, modelDetails.height, 0, 0, 1, 1, 2, false)
+			gr.setColor(color)
+			for l = 1, loop do -- Now draw the monochrome on top 4 times to "colorize" the image
+				gr.drawImage(tex_h, 0, 0, modelDetails.width, modelDetails.height, 0, 0, 1, 1, 2, monochrome)
+			end
+			icon_details.Icon[index] = gr.screenToBlob()
+			tex_i:destroyRenderTarget()
+			tex_i:unload()
+		end
+		
+		colorize(gr.createColor(255, 255, 255, 0.2), 1, true, 2) --Full color mouseover
+		colorize(gr.createColor(255, 255, 255, 0.5), 1, true, 3) --Full color highlighted
+		colorize(gr.createColor(255, 165, 0), 4, true, 4) --Orange for items being dragged
+		colorize(gr.createColor(128, 128, 128), 4, true, 5) --Grey for locked
+		colorize(gr.createColor(225, 225, 225), 4, true, 6) --Grey highlighted
 		
 		--clean up
 		gr.setTarget()
+		gr.setColor(o_clr)
 		tex_h:destroyRenderTarget()
 		tex_h:unload()
 	else

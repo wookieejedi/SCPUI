@@ -163,10 +163,10 @@ function WeaponSelectController:BuildWings()
 					ba.error("Could not find " .. tb.ShipClasses[shipIndex].Name .. " in the loadout!")
 				end
 				if slotInfo.isPlayer then
+					slotIcon = entry.GeneratedIcon[1]
+				elseif slotInfo.isWeaponLocked then
 					slotIcon = entry.GeneratedIcon[4]
 				elseif slotInfo.isShipLocked then
-					slotIcon = entry.GeneratedIcon[6]
-				elseif slotInfo.isWeaponLocked then
 					slotIcon = entry.GeneratedIcon[6]
 				else
 					slotIcon = entry.GeneratedIcon[1]
@@ -273,17 +273,17 @@ function WeaponSelectController:ChangeIconAvailability(shipIndex)
 		if tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(v.Index) then
 			iconEl:SetClass("drag", true)
 			if self.icon3d then
-				iconEl:SetClass("available", true)
-				iconEl:SetClass("locked", false)
+				--iconEl:SetClass("available", true)
+				--iconEl:SetClass("locked", false)
 			end
 			iconEl:SetAttribute("src", v.GeneratedIcon[1])
 		else
 			iconEl:SetClass("drag", false)
 			if self.icon3d then
-				iconEl:SetClass("available", false)
-				iconEl:SetClass("locked", true)
+				--iconEl:SetClass("available", false)
+				--iconEl:SetClass("locked", true)
 			end
-			iconEl:SetAttribute("src", v.GeneratedIcon[4])
+			iconEl:SetAttribute("src", v.GeneratedIcon[6])
 		end
 	end
 	
@@ -292,17 +292,17 @@ function WeaponSelectController:ChangeIconAvailability(shipIndex)
 		if tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(v.Index) then
 			iconEl:SetClass("drag", true)
 			if self.icon3d then
-				iconEl:SetClass("available", true)
-				iconEl:SetClass("locked", false)
+				--iconEl:SetClass("available", true)
+				--iconEl:SetClass("locked", false)
 			end
 			iconEl:SetAttribute("src", v.GeneratedIcon[1])
 		else
 			iconEl:SetClass("drag", false)
 			if self.icon3d then
-				iconEl:SetClass("available", false)
-				iconEl:SetClass("locked", true)
+				--iconEl:SetClass("available", false)
+				--iconEl:SetClass("locked", true)
 			end
-			iconEl:SetAttribute("src", v.GeneratedIcon[4])
+			iconEl:SetAttribute("src", v.GeneratedIcon[6])
 		end
 	end
 
@@ -474,22 +474,18 @@ function WeaponSelectController:HighlightShip(slot)
 		if thisEntry ~= nil then
 			local icon = nil
 			if slot == i then
-				if ship.isPlayer then
-					icon = thisEntry.GeneratedIcon[4]
+				if ship.isWeaponLocked then
+					icon = thisEntry.GeneratedIcon[6] -- could be 4 (orange)
 				elseif ship.isShipLocked then
-					icon = thisEntry.GeneratedIcon[5]
-				elseif ship.isWeaponLocked then
-					icon = thisEntry.GeneratedIcon[5]
+					icon = thisEntry.GeneratedIcon[6]
 				else
 					icon = thisEntry.GeneratedIcon[3]
 				end
 			else
-				if ship.isPlayer then
-					icon = thisEntry.GeneratedIcon[4]
+				if ship.isWeaponLocked then
+					icon = thisEntry.GeneratedIcon[5] -- could be 4 (orange)
 				elseif ship.isShipLocked then
-					icon = thisEntry.GeneratedIcon[6]
-				elseif ship.isWeaponLocked then
-					icon = thisEntry.GeneratedIcon[6]
+					icon = thisEntry.GeneratedIcon[5]
 				else
 					icon = thisEntry.GeneratedIcon[1]
 				end
@@ -643,11 +639,13 @@ function WeaponSelectController:BuildSlot(parentEl, bank)
 	
 	local slotIcon = nil
 	if weapon > 0 then
-		slotIcon = loadoutHandler:GetWeaponInfo(weapon).GeneratedIcon[1]
-		--slotIcon = tb.WeaponClasses[weapon].SelectIconFilename
 		if ship.isWeaponLocked == false then
+			slotIcon = loadoutHandler:GetWeaponInfo(weapon).GeneratedIcon[1]
 			slotImg:SetClass("drag", true)
+		else
+			slotIcon = loadoutHandler:GetWeaponInfo(weapon).GeneratedIcon[4]
 		end
+		--slotIcon = tb.WeaponClasses[weapon].SelectIconFilename
 		slotImg:SetClass("button_3", true)
 		slotImg:SetAttribute("src", slotIcon)
 		parentEl:AppendChild(slotImg)
@@ -728,11 +726,7 @@ function WeaponSelectController:ApplyWeaponToSlot(parentEl, slot, bank, weapon)
 
 	local entry = loadoutHandler:GetWeaponInfo(weapon)
 	local slotIcon = nil
-	if entry.Name == self.SelectedEntry then
-		slotIcon = entry.GeneratedIcon[3]
-	else
-		slotIcon = entry.GeneratedIcon[1]
-	end
+	slotIcon = entry.GeneratedIcon[1]
 	if parentEl.first_child == nil then
 		local slotEl = self.document:CreateElement("img")
 		parentEl:AppendChild(slotEl)

@@ -139,10 +139,8 @@ function ShipSelectController:BuildWings()
 				if entry == nil then
 					ba.error("Could not find " .. tb.ShipClasses[shipIndex].Name .. " in the loadout!")
 				end
-				if slotInfo.isPlayer then
-					slotIcon = entry.GeneratedIcon[4]
-				elseif slotInfo.isShipLocked then
-					slotIcon = entry.GeneratedIcon[6]
+				if slotInfo.isShipLocked then
+					slotIcon = entry.GeneratedIcon[5]
 				else
 					slotIcon = entry.GeneratedIcon[1]
 				end
@@ -189,7 +187,7 @@ function ShipSelectController:BuildWings()
 					--Add click detection
 					slotEl:SetClass("button_3", true)
 					slotEl:AddEventListener("click", function(_, _, _)
-						self:SelectEntry(thisEntry)
+						self:SelectEntry(thisEntry, index)
 					end)
 				else
 					--Add dragover detection
@@ -241,18 +239,21 @@ function ShipSelectController:CreateEntryItem(entry, idx)
 	iconWrapper:AppendChild(iconEl)
 	--iconWrapper:ReplaceChild(iconEl, iconWrapper.first_child)
 	li_el.id = entry.Name
+	entry.key = li_el.id
 
 	--iconEl:SetClass("shiplist_element", true)
-	iconEl:SetClass("button_3", true)
 	iconEl:SetClass("icon", true)
-	iconEl:SetClass("drag", true)
+	iconEl:SetClass("button_3", true)
 	iconEl:AddEventListener("click", function(_, _, _)
 		self:SelectEntry(entry)
 	end)
-	iconEl:AddEventListener("dragend", function(_, _, _)
-		self:DragPoolEnd(iconEl, entry, entry.Index)
-	end)
-	entry.key = li_el.id
+	
+	if topics.shipselect.poolentry:send({self, iconEl, entry}) then
+		iconEl:SetClass("drag", true)
+		iconEl:AddEventListener("dragend", function(_, _, _)
+			self:DragPoolEnd(iconEl, entry, entry.Index)
+		end)
+	end
 
 	return li_el
 end
@@ -268,9 +269,13 @@ function ShipSelectController:CreateEntries(list)
 	end
 end
 
-function ShipSelectController:HighlightShip(entry)
+function ShipSelectController:HighlightShip(entry, slot)
 
 	local list = loadoutHandler:GetShipList()
+	
+	if not slot then
+		slot = -1
+	end
 
 	for i, v in pairs(list) do
 		local iconEl = self.document:GetElementById(v.key).first_child.first_child.next_sibling
@@ -291,23 +296,19 @@ function ShipSelectController:HighlightShip(entry)
 		local ship = loadoutHandler:GetShipLoadout(i)
 		local element = self.document:GetElementById("slot_" .. i)
 		local shipIndex = ship.ShipClassIndex
-		if shipIndex > 0 then
-			local thisEntry = loadoutHandler:GetShipInfo(shipIndex)
-			if ship.Name == entry.Name then
-				if not ship.isPlayer then
-					if ship.isShipLocked then
-						element.first_child:SetAttribute("src", thisEntry.GeneratedIcon[5])
-					else
-						element.first_child:SetAttribute("src", thisEntry.GeneratedIcon[3])
-					end
+		local thisEntry = loadoutHandler:GetShipInfo(shipIndex)
+		if thisEntry ~= nil then
+			if slot == i then
+				if ship.isShipLocked then
+					element.first_child:SetAttribute("src", thisEntry.GeneratedIcon[6])
+				else
+					element.first_child:SetAttribute("src", thisEntry.GeneratedIcon[3])
 				end
 			else
-				if not ship.isPlayer then
-					if ship.isShipLocked then
-						element.first_child:SetAttribute("src", thisEntry.GeneratedIcon[6])
-					else
-						element.first_child:SetAttribute("src", thisEntry.GeneratedIcon[1])
-					end
+				if ship.isShipLocked then
+					element.first_child:SetAttribute("src", thisEntry.GeneratedIcon[5])
+				else
+					element.first_child:SetAttribute("src", thisEntry.GeneratedIcon[1])
 				end
 			end
 		end
@@ -315,13 +316,15 @@ function ShipSelectController:HighlightShip(entry)
 				
 end
 
-function ShipSelectController:SelectEntry(entry)
+function ShipSelectController:SelectEntry(entry, slot)
+
+	--No issue to just re-highlight things
+	--This allows all ship slots to highlight themselves when clicked
+	self:HighlightShip(entry, slot)
 
 	if entry.key ~= self.SelectedEntry then
 		
 		self.SelectedEntry = entry.key
-		
-		self:HighlightShip(entry)
 		
 		self:BuildInfo(entry)
 		
