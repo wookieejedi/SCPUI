@@ -50,6 +50,7 @@ return {
     retKeypress              = Topic(true), --Whether or not to use the default action on RETURN keydown. Sends the document context and expects boolean return
     delKeypress              = Topic(true), --Whether or not to use the default action on DELETE keydown. Sends the document context and expects boolean return
     globalKeypress           = Topic(nil), --Runs arbitrary script and expects no return value. Sends the document context and the event
+	commit                   = Topic(nil), --Runs arbitrary script and expects no return value. Sends the document context
     unload                   = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
   },
   playcutscene = {

@@ -169,6 +169,8 @@ end
 
 function PilotSelectController:commit_pressed()
     local button = self.document:GetElementById("playercommit_btn")
+	
+	topics.pilotselect.commit:send(self)
 
     if self.selection == nil then
         ui.playElementSound(button, "click", "error")
