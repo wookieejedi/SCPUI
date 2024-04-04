@@ -37,6 +37,19 @@ function utils.parseCustomXSTR(text)
 
 end
 
+--Parses a comma separated list into a table of values
+function utils.parseCommaSeparatedList(inputString)
+    local result = {}
+    -- Split the string by comma
+    for value in inputString:gmatch("[^,]+") do
+        -- Trim leading and trailing whitespace from each value
+        local trimmedValue = value:match("^%s*(.-)%s*$")
+        table.insert(result, trimmedValue)
+    end
+
+    return result
+end
+
 --Translates an XSTR from Custom data if it's formated like so:
 -- +Val: NAME "string", #
 --and returns translated string
