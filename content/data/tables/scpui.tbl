@@ -101,6 +101,9 @@ $State: GS_STATE_MULTI_CLIENT_SETUP
 $State: GS_STATE_MULTI_MISSION_SYNC
 	+Markup: data/interface/markup/multi_sync.rml
 
+$State: GS_STATE_MULTI_PAUSED
+    +Markup: data/interface/markup/multi_paused.rml
+
 #Background Replacement
 
 ;$Campaign Background:
