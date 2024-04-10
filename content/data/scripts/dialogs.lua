@@ -13,13 +13,13 @@ module.BUTTON_TYPE_NEUTRAL  = 3
 module.BUTTON_MAPPING       = {
     [module.BUTTON_TYPE_POSITIVE] = "button_positive",
     [module.BUTTON_TYPE_NEGATIVE] = "button_negative",
-    [module.BUTTON_TYPE_NEUTRAL] = "button_neutral"
+    [module.BUTTON_TYPE_NEUTRAL]  = "button_neutral"
 }
 
 module.BUTTON_TEXT_MAPPING       = {
     [module.BUTTON_TYPE_POSITIVE] = "pos",
     [module.BUTTON_TYPE_NEGATIVE] = "neg",
-    [module.BUTTON_TYPE_NEUTRAL] = "pos"
+    [module.BUTTON_TYPE_NEUTRAL]  = "pos"
 }
 
 local function underline(haystack, needle)
@@ -40,59 +40,59 @@ local function text_with_keypress(string, keypress)
 end
 
 local function initialize_buttons(document, properties, finish_func)
-		for i, v in ipairs(properties.buttons) do
-		    local button_id = 'button_' .. tostring(i)
-				local button = document:GetElementById(button_id)
+    for i, v in ipairs(properties.buttons) do
+        local button_id = 'button_' .. tostring(i)
+            local button = document:GetElementById(button_id)
         button:SetClass(module.BUTTON_MAPPING[v.type], true)
-		button:SetClass("button_1", true)
-		button:SetClass("button_img", true)
+        button:SetClass("button_1", true)
+        button:SetClass("button_img", true)
         button:AddEventListener("click", function(_, _, _)
-			local val = v.value
-			if properties.input_choice then
-				val = document:GetElementById("dialog_input"):GetAttribute("value")
-			end
-            if finish_func then finish_func(val) end
-            document:Close()
-        end)
-		    local button_text_id = button_id .. '_text'
-				local button_text = document:GetElementById(button_text_id)
-				button_text.inner_rml = text_with_keypress(v.text, v.keypress)
-				button_text:SetClass(module.BUTTON_TEXT_MAPPING[v.type], true)
-		end
+        local val = v.value
+        if properties.input_choice then
+            val = document:GetElementById("dialog_input"):GetAttribute("value")
+        end
+        if finish_func then finish_func(val) end
+        document:Close()
+    end)
+        local button_text_id = button_id .. '_text'
+            local button_text = document:GetElementById(button_text_id)
+            button_text.inner_rml = text_with_keypress(v.text, v.keypress)
+            button_text:SetClass(module.BUTTON_TEXT_MAPPING[v.type], true)
+    end
 end
 
 local function show_dialog(context, properties, finish_func, reject, abortCBTable)
     local dialog_doc = nil
-    
+
     if properties.style_value == 2 then
         dialog_doc = context:LoadDocument("data/interface/markup/deathdialog.rml")
-		properties.click_escape = nil -- This is never allowed for death dialogs
+        properties.click_escape = nil -- This is never allowed for death dialogs
     else
         dialog_doc = context:LoadDocument("data/interface/markup/dialog.rml")
     end
-	
-	if properties.background_color then
-		dialog_doc:GetElementById("main_background").style["background-color"] = properties.background_color
-	end
-	
-	if string.len(properties.title_string) > 0 then
-		dialog_doc.title = properties.title_string
-	end
+
+    if properties.background_color then
+        dialog_doc:GetElementById("main_background").style["background-color"] = properties.background_color
+    end
+
+    if string.len(properties.title_string) > 0 then
+        dialog_doc.title = properties.title_string
+    end
 
     dialog_doc:GetElementById("title_container").inner_rml = properties.title_string
-	-- Put the dialog content into a <p> container so that scrolling works properly
+    -- Put the dialog content into a <p> container so that scrolling works properly
     local text_el = dialog_doc:CreateElement("p")
-	text_el.inner_rml = properties.text_string
-	dialog_doc:GetElementById("text_container"):AppendChild(text_el)
+    text_el.inner_rml = properties.text_string
+    dialog_doc:GetElementById("text_container"):AppendChild(text_el)
     dialog_doc:GetElementById("dialog_body"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
-    
+
     if properties.input_choice then
         local input_el = dialog_doc:CreateElement("input")
         dialog_doc:GetElementById("text_container"):AppendChild(input_el)
         input_el.type = "text"
         input_el.maxlength = 32
-		input_el.id = "dialog_input"
-        
+        input_el.id = "dialog_input"
+
         input_el:AddEventListener("change", function(event, _, _)
             if event.parameters.linebreak == 1 then
                 finish_func(event.parameters.value)
@@ -102,10 +102,10 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
     end
 
     if #properties.buttons > 0 then
-    
+
         --verify that all key shortcuts are unique
         local keys = {}
-        
+
         for i = 1, #properties.buttons, 1 do
             if properties.buttons[i].keypress ~= nil then
                 if #keys == 0 then
@@ -121,41 +121,41 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
                 end
             end
         end
-    
+
         initialize_buttons(dialog_doc, properties, finish_func)
     end
-    
-	dialog_doc:AddEventListener("keydown", function(event, _, _)
-		if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-			if properties.escape_value ~= nil then
-				finish_func(properties.escape_value)
-				ScpuiSystem:CloseDialog()
-			end
-		end
-		for i = 1, #properties.buttons, 1 do
-			if properties.buttons[i].keypress ~= nil then
-				thisKey = string.upper(properties.buttons[i].keypress)
-				if event.parameters.key_identifier == rocket.key_identifier[thisKey] then
-					local val = properties.buttons[i].value
-					if properties.input_choice then
-						val = dialog_doc:GetElementById("dialog_input"):GetAttribute("value")
-					end
-					finish_func(val)
-					ScpuiSystem:CloseDialog()
-				end
-			end
-		end
-	end)
-	
-	if properties.click_escape and properties.escape_value then
-		bg_el = dialog_doc:GetElementById("click_detect")
-		
-		bg_el:AddEventListener("click", function(event, _, _)
-			finish_func(properties.escape_value)
+
+    dialog_doc:AddEventListener("keydown", function(event, _, _)
+        if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+            if properties.escape_value ~= nil then
+                finish_func(properties.escape_value)
+                ScpuiSystem:CloseDialog()
+            end
+        end
+        for i = 1, #properties.buttons, 1 do
+            if properties.buttons[i].keypress ~= nil then
+                thisKey = string.upper(properties.buttons[i].keypress)
+                if event.parameters.key_identifier == rocket.key_identifier[thisKey] then
+                    local val = properties.buttons[i].value
+                    if properties.input_choice then
+                        val = dialog_doc:GetElementById("dialog_input"):GetAttribute("value")
+                    end
+                    finish_func(val)
+                    ScpuiSystem:CloseDialog()
+                end
+            end
+        end
+    end)
+
+    if properties.click_escape and properties.escape_value then
+        bg_el = dialog_doc:GetElementById("click_detect")
+
+        bg_el:AddEventListener("click", function(event, _, _)
+            finish_func(properties.escape_value)
             ScpuiSystem:CloseDialog()
         end)
-	end
-    
+    end
+
     if abortCBTable ~= nil then
         abortCBTable.Abort = function()
             ScpuiSystem:CloseDialog()
@@ -164,13 +164,13 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
     end
 
     dialog_doc:Show(DocumentFocus.FOCUS) -- MODAL would be better than FOCUS but then the debugger cannot be used anymore
-	
-	if ScpuiSystem.dialog ~= nil then
-		ba.print("SCPUI got command to close a dialog while creating a dialog! This is unusual!\n")
-		ScpuiSystem:CloseDialog()
-	end
-	
-	ScpuiSystem.dialog = dialog_doc
+
+    if ScpuiSystem.dialog ~= nil then
+        ba.print("SCPUI got command to close a dialog while creating a dialog! This is unusual!\n")
+        ScpuiSystem:CloseDialog()
+    end
+
+    ScpuiSystem.dialog = dialog_doc
 end
 
 
@@ -255,9 +255,9 @@ function module.new()
         text_string  = "",
         input_choice = false,
         escape_value = nil,
-		click_escape = nil,
+        click_escape = nil,
         style_value = 1,
-		background_color = nil
+        background_color = nil
     }
     setmetatable(factory, factory_mt)
     return factory
