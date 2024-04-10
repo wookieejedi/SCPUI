@@ -274,6 +274,18 @@ function MultiSyncController:getPlayerIndexByID(id)
 	return -1
 end
 
+function MultiSyncController:countdownBegins()
+	if self.countdownStarted then
+		return
+	end
+	
+	local aniEl = self.document:CreateElement("ani")
+    aniEl:SetAttribute("src", "countdown.png")
+	self.document:GetElementById("countdown"):AppendChild(aniEl)
+	ui.disableInput() --Probably need to still allow chat.. but :shrug:
+	self.countdownStarted = true
+end
+
 function MultiSyncController:updateLists()
 	ui.MultiSync.runNetwork()
 	local chat = ui.MultiGeneral.getChat()
@@ -375,6 +387,10 @@ function MultiSyncController:updateLists()
 	
 	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	self.common_text_el.inner_rml = ui.MultiGeneral.InfoText
+	
+	if self.countdown and self.countdown > 0 then
+		self:countdownBegins()
+	end
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))

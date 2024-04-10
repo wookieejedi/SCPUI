@@ -12,6 +12,8 @@
 		</script>
 	</head>
 	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
+		<div id=countdown>
+		</div>
 		<div id=players_wrapper>
 			<div id=players_div>
 				<ul id=players_list_ul>
