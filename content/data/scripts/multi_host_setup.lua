@@ -607,6 +607,7 @@ function HostSetupController:updateLists()
 		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
 	end
 	self.chat_el.inner_rml = txt
+	self.chat_el.scroll_top = self.chat_el.scroll_height
 	
 	local list = ui.MultiHostSetup.NetMissions
 	
@@ -737,7 +738,7 @@ function HostSetupController:updateLists()
 	end
 	
 	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
-	self.common_text_el.inner_rml = ui.MultiGeneral.InfoText
+	self.common_text_el.inner_rml = string.gsub(ui.MultiGeneral.InfoText,"\n","<br></br>")
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))

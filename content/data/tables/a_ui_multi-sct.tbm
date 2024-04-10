@@ -1,0 +1,18 @@
+#Conditional Hooks
+$Application: FS2_Open
+$On Game Init:
+[
+
+--Common multi functions
+
+function ScpuiSystem:initMultiCommon(context)
+	local game = ui.MultiGeneral.getNetGame()
+	
+	if game:isValid() then
+		--
+	end
+end
+
+]
+
+#End

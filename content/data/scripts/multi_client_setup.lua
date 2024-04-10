@@ -392,6 +392,7 @@ function ClientSetupController:updateLists()
 		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
 	end
 	self.chat_el.inner_rml = txt
+	self.chat_el.scroll_top = self.chat_el.scroll_height
 	
 	if #ui.MultiGeneral.NetPlayers == 0 then
 		ScpuiSystem:ClearEntries(self.players_list_el)
@@ -458,7 +459,7 @@ function ClientSetupController:updateLists()
 	
 	self:check_squadwar()
 	
-	self.common_text_el.inner_rml = ui.MultiGeneral.InfoText
+	self.common_text_el.inner_rml = string.gsub(ui.MultiGeneral.InfoText,"\n","<br></br>")
 	
 	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	

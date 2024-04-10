@@ -449,6 +449,16 @@ function ScpuiSystem:CloseDialog()
 		ScpuiSystem.dialog:Close()
 		ScpuiSystem.dialog = nil
 	end
+	
+	local state = hv.NewState or ba.getCurrentGameState()
+	
+	--If we're going back to an SCPUI state, then give it control
+	--Otherwise cede control back to FSO
+    if self:hasOverrideForState(getRocketUiHandle(state)) then
+		ui.enableInput(self.context)
+    else
+		ui.disableInput()
+	end
 end
 
 ScpuiSystem:init()

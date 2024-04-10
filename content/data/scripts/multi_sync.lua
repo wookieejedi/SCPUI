@@ -301,6 +301,7 @@ function MultiSyncController:updateLists()
 		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
 	end
 	self.chat_el.inner_rml = txt
+	self.chat_el.scroll_top = self.chat_el.scroll_height
 	
 	if #ui.MultiGeneral.NetPlayers == 0 then
 		ScpuiSystem:ClearEntries(self.players_list_el)
@@ -386,7 +387,7 @@ function MultiSyncController:updateLists()
 	self.countdown = ui.MultiSync:getCountdownTime()
 	
 	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
-	self.common_text_el.inner_rml = ui.MultiGeneral.InfoText
+	self.common_text_el.inner_rml = string.gsub(ui.MultiGeneral.InfoText,"\n","<br></br>")
 	
 	if self.countdown and self.countdown > 0 then
 		self:countdownBegins()

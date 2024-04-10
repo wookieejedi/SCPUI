@@ -338,6 +338,7 @@ function HostOptionsController:updateLists()
 		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
 	end
 	self.chat_el.inner_rml = txt
+	self.chat_el.scroll_top = self.chat_el.scroll_height
 	
 	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	

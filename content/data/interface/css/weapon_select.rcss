@@ -608,6 +608,53 @@ button#reset_btn:active #reset_img
 	background-image: default-o.png;
 }
 
+/*Lock Button*/
+
+div#c_panel_wrapper_multi
+{
+	position: absolute;
+	bottom: 0;
+}
+
+div#lock_cont
+{
+	width: 80%;
+	height: auto;
+
+}
+
+.lock
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#lock_img
+{
+	background-decorator: image;
+	background-image: star.png;
+	margin-left: 15%;
+}
+button#lock_btn:hover #lock_img
+{
+	background-decorator: image;
+	background-image: star-neg-h.png;
+}
+
+button#lock_btn:checked #lock_img
+{
+	background-decorator: image;
+	background-image: star-neg-o.png;
+}
+
+button#lock_btn:active #lock_img
+{
+	background-decorator: image;
+	background-image: star-neg-o.png;
+}
+
 /*Copy To Wing Button*/
 
 div#copy_to_wing_wrapper
@@ -957,4 +1004,175 @@ div#bottom_panel_c .tooltip
 {
 	width: 75%;
 	left: -50%;
+}
+
+/*MULTI ONLY*/
+
+/*Chat Window*/
+#chat_wrapper
+{
+	width: 40%;
+	height: 15%;
+	position: absolute;
+	top: 2%;
+	right: 15%;
+	z-index: 50;
+}
+
+div#chat_wrapper img
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+#chat_window
+{
+	width: 94%;
+	height: 81%;
+	position: absolute;
+	top: 5%;
+	left: 2%;
+	overflow: scroll;
+}
+
+#chat_input
+{
+	position:absolute;
+	bottom: 0%;
+	left: 0%;
+	height: 15%;
+	width: 68%%;
+	/*font-size: 1em;*/
+	background-decorator: image;
+	background-image: input-box.png;
+	border-width: 1px;
+	border-color: #676767;
+	line-height: 0.9em;
+}
+
+/*Submit Button*/
+
+div#submit_cont
+{
+	position:absolute;
+	bottom: 2%;
+	right: 20%;
+	width: 8%;
+	height: 18%;
+
+}
+
+.submit
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	
+}
+
+#submit_img
+{
+	background-decorator: image;
+	background-image: select.png;
+	
+}
+button#submit_btn:hover #submit_img
+{
+	background-decorator: image;
+	background-image: select-pos-h.png;
+}
+
+button#submit_btn:active #submit_img
+{
+	background-decorator: image;
+	background-image: select-pos-o.png;
+}
+
+.button_text_special
+{
+	text-align: left;
+}
+
+.button_text_special p
+{
+	display: block;
+	margin-left: 100%;
+	margin-top: -80%;
+	position: absolute;
+}
+
+/*Chat Window Scrollbar*/
+
+#chat_window scrollbarvertical
+{
+	scrollchange-sound: 9;
+	width: 6%;
+	position: absolute;
+	right: -1%;
+	z-index: 5;
+}
+
+#chat_window scrollbarvertical slidertrack
+{
+	display: none;
+}
+
+#chat_window scrollbarvertical sliderbar
+{
+	display: none;
+}
+
+#chat_window scrollbarvertical sliderbar:hover
+{
+	background-image: scroll-button-h.png;
+	display: none;
+}
+
+#chat_window scrollbarvertical sliderbar:active
+{
+	background-image: scroll-button-o.png;
+	display: none;
+}
+
+#chat_window scrollbarvertical sliderarrowdec
+{
+	width: 100%;
+	height: 20%;
+	margin-top: 8%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
+}
+
+#chat_window scrollbarvertical sliderarrowinc
+{
+	width: 100%;
+	height: 20%;
+	margin-bottom: 48%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
+}
+
+#chat_window scrollbarvertical sliderarrowdec:hover
+{
+	icon-image: arrow-dbl-up-h.png;
+}
+
+#chat_window scrollbarvertical sliderarrowinc:hover
+{
+	icon-image: arrow-dbl-down-h.png;
+}
+
+#chat_window scrollbarvertical sliderarrowdec:active
+{
+	icon-image: arrow-dbl-up-o.png;
+}
+
+#chat_window scrollbarvertical sliderarrowinc:active
+{
+	icon-image: arrow-dbl-down-o.png;
 }

@@ -43,6 +43,9 @@ function WeaponSelectController:initialize(document)
 	---Load background choice
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
+	self.chat_el = self.document:GetElementById("chat_window")
+	self.input_id = self.document:GetElementById("chat_input")
+	
 	self.weapon3d, self.weaponEffect, self.icon3d = ui.ShipWepSelect.get3dWeaponChoices()
 	
 	self.overhead3d, self.overheadEffect = ui.ShipWepSelect.get3dOverheadChoices()
@@ -75,6 +78,14 @@ function WeaponSelectController:initialize(document)
 	self.SelectedShip = nil
 	
 	self.enabled = self:BuildWings()
+	
+	if ScpuiSystem:inMultiGame() then
+		self.document:GetElementById("chat_wrapper"):SetClass("hidden", false)
+		self.document:GetElementById("c_panel_wrapper_multi"):SetClass("hidden", false)
+		self.document:GetElementById("c_panel_wrapper"):SetClass("hidden", true)
+		self.document:GetElementById("copy_to_wing_panel"):SetClass("hidden", true)
+		self:updateLists()
+	end
 	
 	topics.weaponselect.initialize:send(self)
 	
@@ -232,7 +243,7 @@ function WeaponSelectController:SelectInitialItems()
 	if selectSlot > 0 then
 		local ship = loadoutHandler:GetShipLoadout(selectSlot)
 
-		self:SelectShip(ship.ShipClassIndex, ship.Name, 1)
+		self:SelectShip(ship.ShipClassIndex, ship.Name, selectSlot)
 		
 		if loadoutHandler:GetNumPrimaryWeapons() > 0 then
 			self:SelectEntry(loadoutHandler:GetPrimaryWeaponList()[1])
@@ -630,8 +641,8 @@ function WeaponSelectController:BuildSlot(parentEl, bank)
 	end
 	
 	--Get the weapon currently loaded in the slot
-	local weapon = ship.Weapons[bank]
-	local amount = ship.Amounts[bank]
+	local weapon = ship.Weapons[bank] or 0
+	local amount = ship.Amounts[bank] or 0
 	if amount < 1 then amount = "" end
 	if bank > 3 then
 		self.secondaryAmountEls[bank - 3].inner_rml = amount
@@ -990,8 +1001,21 @@ function WeaponSelectController:accept_pressed()
 	--Apply the loadout
 	loadoutHandler:SendAllToFSO_API()
     
-	local errorValue = ui.Briefing.commitToMission()
-	local text = ""
+	local errorValue = ui.Briefing.commitToMission(true)
+	
+	if errorValue == COMMIT_SUCCESS then
+		--Save to the player file
+		self.Commit = true
+		loadoutHandler:SaveInFSO_API()
+		--Cleanup
+		text = nil
+		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+			ScpuiSystem.music_handle:close(true)
+		end
+		ScpuiSystem.music_handle = nil
+		ScpuiSystem.current_played = nil
+	end
+	--[[local text = ""
 	
 	--General Fail
 	if errorValue == 1 then
@@ -1042,7 +1066,7 @@ function WeaponSelectController:accept_pressed()
 		}
 		
 		self:Show(text, title, buttons)
-	end
+	end]]--
 
 end
 
@@ -1210,6 +1234,67 @@ function WeaponSelectController:drawOverheadModel()
 		
 	end
 
+end
+
+function WeaponSelectController:lock_pressed()
+	ui.MultiGeneral.getNetGame().Locked = true
+end
+
+function WeaponSelectController:submit_pressed()
+	if self.submittedValue then
+		self:sendChat()
+	end
+end
+
+function WeaponSelectController:sendChat()
+	if string.len(self.submittedValue) > 0 then
+		ui.MultiGeneral.sendChat(self.submittedValue)
+		self.input_id:SetAttribute("value", "")
+		self.submittedValue = ""
+	end
+end
+
+function WeaponSelectController:InputFocusLost()
+	--do nothing
+end
+
+function WeaponSelectController:InputChange(event)
+	if event.parameters.linebreak ~= 1 then
+		local val = self.input_id:GetAttribute("value")
+		self.submittedValue = val
+	else
+		local submit_id = self.document:GetElementById("submit_btn")
+		ui.playElementSound(submit_id, "click")
+		self:sendChat()
+	end
+end
+
+function WeaponSelectController:updateLists()
+	local chat = ui.MultiGeneral.getChat()
+	
+	local txt = ""
+	for i = 1, #chat do
+		local line = ""
+		if chat[i].Callsign ~= "" then
+			line = chat[i].Callsign .. ": " .. chat[i].Message
+		else
+			line = chat[i].Message
+		end
+		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
+	end
+	self.chat_el.inner_rml = txt
+	self.chat_el.scroll_top = self.chat_el.scroll_height
+	
+	if ui.MultiGeneral.getNetGame().Locked == true then
+		self.document:GetElementById("lock_btn"):SetPseudoClass("checked", true)
+	else
+		self.document:GetElementById("lock_btn"):SetPseudoClass("checked", false)
+	end
+	
+	async.run(function()
+        async.await(async_util.wait_for(0.01))
+        self:updateLists()
+    end, async.OnFrameExecutor)
 end
 
 engine.addHook("On Frame", function()

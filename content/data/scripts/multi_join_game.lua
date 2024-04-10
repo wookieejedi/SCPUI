@@ -285,7 +285,7 @@ function JoinGameController:updateLists()
 	end
 	
 	--maybe need to only update this when it's changed.. but for now this is fine
-	self.common_text_el.inner_rml = ui.MultiGeneral.InfoText
+	self.common_text_el.inner_rml = string.gsub(ui.MultiGeneral.InfoText,"\n","<br></br>")
 	self.status_text_el.inner_rml = ui.MultiGeneral.StatusText
 	
 	async.run(function()

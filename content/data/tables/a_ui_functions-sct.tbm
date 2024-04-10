@@ -5,6 +5,16 @@ $On Game Init:
 
 --Misc functions for handling various UI-related tasks
 
+function ScpuiSystem:inMultiGame()
+	local game = ui.MultiGeneral.getNetGame()
+	
+	if game:isValid() then
+		return true
+	end
+	
+	return false
+end
+
 function ScpuiSystem:replaceAngleBrackets(inputString)
     local result = string.gsub(inputString, "<", "&lt;")
     result = string.gsub(result, ">", "&gt;")

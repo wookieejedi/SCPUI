@@ -169,7 +169,7 @@ function LoadoutHandler:getSlots()
 		
 		local wing, wingSlot = self:GetWingSlot(i)
 		
-		data.Name = ui.ShipWepSelect.Loadout_Wings[wing].Name .. " " .. wingSlot
+		data.Name = ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].Callsign
 		data.WingName = ui.ShipWepSelect.Loadout_Wings[wing].Name
 		data.Wing = wing
 		data.WingSlot = wingSlot
@@ -862,11 +862,11 @@ function LoadoutHandler:EmptyWeaponBank(slot, bank, onlyEmpty)
 	local amount = ship.Amounts[bank]
 	
 	if amount == nil then
-		ba.warning("Trying to empty weapon bank for slot " .. slot .. ", bank " .. bank .. ", but amount was nil!")
+		ba.print("LOADOUT HANDLER: Trying to empty weapon bank for slot " .. slot .. ", bank " .. bank .. ", but amount was nil!")
 		return
 	end
 	if weapon == nil then
-		ba.warning("Trying to empty weapon bank for slot " .. slot .. ", bank " .. bank .. ", but weapon was nil!")
+		ba.print("LOADOUT HANDLER: Trying to empty weapon bank for slot " .. slot .. ", bank " .. bank .. ", but weapon was nil!")
 		return
 	end
 	

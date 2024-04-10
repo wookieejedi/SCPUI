@@ -111,6 +111,7 @@ function MultiPausedController:updateLists()
 		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
 	end
 	self.chat_el.inner_rml = txt
+	self.chat_el.scroll_top = self.chat_el.scroll_height
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))

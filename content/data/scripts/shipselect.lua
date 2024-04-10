@@ -29,6 +29,9 @@ function ShipSelectController:initialize(document)
 	---Load background choice
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
+	self.chat_el = self.document:GetElementById("chat_window")
+	self.input_id = self.document:GetElementById("chat_input")
+	
 	self.ship3d, self.shipEffect, self.icon3d = ui.ShipWepSelect.get3dShipChoices()
 	
 	--Get all the required weapons
@@ -55,6 +58,13 @@ function ShipSelectController:initialize(document)
 	
 	self.enabled = self:BuildWings()
 	
+	if ScpuiSystem:inMultiGame() then
+		self.document:GetElementById("chat_wrapper"):SetClass("hidden", false)
+		self.document:GetElementById("c_panel_wrapper_multi"):SetClass("hidden", false)
+		self.document:GetElementById("c_panel_wrapper"):SetClass("hidden", true)
+		self:updateLists()
+	end
+	
 	topics.shipselect.initialize:send(self)
 	
 	--Only create entries if there are any to create
@@ -63,7 +73,7 @@ function ShipSelectController:initialize(document)
 	end
 	
 	if loadoutHandler:GetNumShips() > 0 and self.enabled == true then
-		self:SelectEntry(loadoutHandler:GetShipList()[1])
+		self:SelectEntry(loadoutHandler:GetShipList()[1], 1)
 	end
 	
 	self:startMusic()
@@ -187,7 +197,7 @@ function ShipSelectController:BuildWings()
 					--Add click detection
 					slotEl:SetClass("button_3", true)
 					slotEl:AddEventListener("click", function(_, _, _)
-						self:SelectEntry(thisEntry, index)
+						self:ClickOnSlot(thisEntry, index)
 					end)
 				else
 					--Add dragover detection
@@ -214,7 +224,7 @@ function ShipSelectController:ReloadList()
 	self:CreateEntries(loadoutHandler:GetShipList())
 	self:BuildWings()
 	if loadoutHandler:GetShipInfo(1) then
-		self:SelectEntry(loadoutHandler:GetShipInfo(1))
+		self:SelectEntry(loadoutHandler:GetShipInfo(1), 1)
 	end
 end
 
@@ -272,10 +282,6 @@ end
 function ShipSelectController:HighlightShip(entry, slot)
 
 	local list = loadoutHandler:GetShipList()
-	
-	if not slot then
-		slot = -1
-	end
 
 	for i, v in pairs(list) do
 		local iconEl = self.document:GetElementById(v.key).first_child.first_child.next_sibling
@@ -290,6 +296,11 @@ function ShipSelectController:HighlightShip(entry, slot)
 			end
 			iconEl:SetAttribute("src", v.GeneratedIcon[1])
 		end
+	end
+	
+	-- No ship slot to highlight!
+	if slot == nil then
+		return
 	end
 
 	for i = 1, loadoutHandler:GetNumSlots() do
@@ -419,6 +430,14 @@ function ShipSelectController:UpdateSlotImage(element, img)
 	element:SetClass("button_3", true)
 end
 
+function ShipSelectController:ClickOnSlot(entry, slot)
+	local currentSlot = loadoutHandler:GetShipLoadout(slot)
+	
+	if currentSlot.ShipClassIndex > 0 then
+		self:SelectEntry(entry, slot)
+	end
+end
+
 function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
 	if (self.replace ~= nil) and (self.activeSlot > 0) then
 		--Get the pool amount of the ship we're dragging
@@ -518,7 +537,6 @@ function ShipSelectController:DragSlotEnd(element, entry, slot)
 		element:SetClass("drag", false)
 		
 		element.first_child:SetAttribute("src", loadoutHandler:getEmptyWingSlot()[2])
-		loadoutHandler:ReturnShipToPool(slot)
 		loadoutHandler:TakeShipFromSlot(slot)
 	end
 end
@@ -563,34 +581,9 @@ function ShipSelectController:accept_pressed()
 	--Apply the loadout
 	loadoutHandler:SendAllToFSO_API()
 	
-	local errorValue = ui.Briefing.commitToMission()
-	local text = ""
+	local errorValue = ui.Briefing.commitToMission(true)
 	
-	--General Fail
-	if errorValue == 1 then
-		text = ba.XSTR("An error has occured", -1)
-	--A player ship has no weapons
-	elseif errorValue == 2 then
-		text = ba.XSTR("Player ship has no weapons", 461)
-	--The required weapon was not loaded on a ship
-	elseif errorValue == 3 then
-		text = ba.XSTR("The " .. self.requiredWeps[1] .. " is required for this mission, but it has not been added to any ship loadout.", 1624)
-	--Two or more required weapons were not loaded on a ship
-	elseif errorValue == 4 then
-		local WepsString = ""
-		for i = 1, #self.requiredWeps, 1 do
-			WepsString = WepsString .. self.requiredWeps[i] .. "\n"
-		end
-		text = ba.XSTR("The following weapons are required for this mission, but at least one of them has not been added to any ship loadout:\n\n" .. WepsString, 1625)
-	--There is a gap in a ship's weapon banks
-	elseif errorValue == 5 then
-		text = ba.XSTR("At least one ship has an empty weapon bank before a full weapon bank.\n\nAll weapon banks must have weapons assigned, or if there are any gaps, they must be at the bottom of the set of banks.", 1642)
-	--A player has no weapons
-	elseif errorValue == 6 then
-		local player = ba.getCurrentPlayer():getName()
-		text = ba.XSTR("Player " .. player .. " must select a place in player wing", 462)
-	--Success!
-	else
+	if errorValue == COMMIT_SUCCESS then
 		--Save to the player file
 		self.Commit = true
 		loadoutHandler:SaveInFSO_API()
@@ -601,20 +594,6 @@ function ShipSelectController:accept_pressed()
 		end
 		ScpuiSystem.music_handle = nil
 		ScpuiSystem.current_played = nil
-	end
-
-	if text ~= nil then
-		text = string.gsub(text,"\n","<br></br>")
-		local title = ""
-		local buttons = {}
-		buttons[1] = {
-			b_type = dialogs.BUTTON_TYPE_POSITIVE,
-			b_text = ba.XSTR("Okay", -1),
-			b_value = "",
-			b_keypress = string.sub(ba.XSTR("Ok", -1), 1, 1)
-		}
-		
-		self:Show(text, title, buttons)
 	end
 
 end
@@ -715,6 +694,67 @@ function ShipSelectController:drawSelectModel()
 		
 	end
 
+end
+
+function ShipSelectController:lock_pressed()
+	ui.MultiGeneral.getNetGame().Locked = true
+end
+
+function ShipSelectController:submit_pressed()
+	if self.submittedValue then
+		self:sendChat()
+	end
+end
+
+function ShipSelectController:sendChat()
+	if string.len(self.submittedValue) > 0 then
+		ui.MultiGeneral.sendChat(self.submittedValue)
+		self.input_id:SetAttribute("value", "")
+		self.submittedValue = ""
+	end
+end
+
+function ShipSelectController:InputFocusLost()
+	--do nothing
+end
+
+function ShipSelectController:InputChange(event)
+	if event.parameters.linebreak ~= 1 then
+		local val = self.input_id:GetAttribute("value")
+		self.submittedValue = val
+	else
+		local submit_id = self.document:GetElementById("submit_btn")
+		ui.playElementSound(submit_id, "click")
+		self:sendChat()
+	end
+end
+
+function ShipSelectController:updateLists()
+	local chat = ui.MultiGeneral.getChat()
+	
+	local txt = ""
+	for i = 1, #chat do
+		local line = ""
+		if chat[i].Callsign ~= "" then
+			line = chat[i].Callsign .. ": " .. chat[i].Message
+		else
+			line = chat[i].Message
+		end
+		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
+	end
+	self.chat_el.inner_rml = txt
+	self.chat_el.scroll_top = self.chat_el.scroll_height
+	
+	if ui.MultiGeneral.getNetGame().Locked == true then
+		self.document:GetElementById("lock_btn"):SetPseudoClass("checked", true)
+	else
+		self.document:GetElementById("lock_btn"):SetPseudoClass("checked", false)
+	end
+	
+	async.run(function()
+        async.await(async_util.wait_for(0.01))
+        self:updateLists()
+    end, async.OnFrameExecutor)
 end
 
 engine.addHook("On Frame", function()
