@@ -160,6 +160,12 @@ function ShipSelectController:BuildWings()
 			slotImg:SetAttribute("src", slotIcon)
 			slotEl:AppendChild(slotImg)
 			
+			local slotName = self.document:CreateElement("div")
+			slotName.inner_rml = slotInfo.Name
+			slotName.id = "callsign_" .. slotNum
+			slotName:SetClass("slot_name", true)
+			slotEl:AppendChild(slotName)
+			
 			--This is here so that the event listeners use the correct slot index!
 			local index = slotNum
 			
@@ -439,6 +445,11 @@ function ShipSelectController:ClickOnSlot(entry, slot)
 end
 
 function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
+	--No changes if wing positions are not locked!
+	if ScpuiSystem:inMultiGame() and ui.MultiGeneral.getNetGame().Locked == false then
+		return
+	end
+	
 	if (self.replace ~= nil) and (self.activeSlot > 0) then
 		--Get the pool amount of the ship we're dragging
 		local count = loadoutHandler:GetShipPoolAmount(shipIndex)
@@ -487,6 +498,11 @@ function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
 end
 
 function ShipSelectController:DragSlotEnd(element, entry, slot)
+	--No changes if wing positions are not locked!
+	if ScpuiSystem:inMultiGame() and ui.MultiGeneral.getNetGame().Locked == false then
+		return
+	end
+	
 	if (self.replace ~= nil) and (self.activeSlot > 0) then
 		local targetSlot = loadoutHandler:GetShipLoadout(self.activeSlot)
 		local currentSlot = loadoutHandler:GetShipLoadout(slot)

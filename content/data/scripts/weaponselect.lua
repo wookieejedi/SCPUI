@@ -188,6 +188,12 @@ function WeaponSelectController:BuildWings()
 			slotImg:SetAttribute("src", slotIcon)
 			slotEl:AppendChild(slotImg)
 			
+			local slotName = self.document:CreateElement("div")
+			slotName.inner_rml = slotInfo.Name
+			slotName.id = "callsign_" .. slotNum
+			slotName:SetClass("slot_name", true)
+			slotEl:AppendChild(slotName)
+			
 			--This is here so that the event listeners use the correct slot index!
 			local index = slotNum
 			local callsign = slotInfo.Name
@@ -800,6 +806,11 @@ function WeaponSelectController:UpdateSecondaryCount(bank)
 end
 
 function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
+	--No changes if wing positions are not locked!
+	if ScpuiSystem:inMultiGame() and ui.MultiGeneral.getNetGame().Locked == false then
+		return
+	end
+	
 	if (self.replace ~= nil) and (self.activeSlot > 0) then
 		
 		--Get the slot information: ship, weapon, and amount
@@ -870,6 +881,11 @@ function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 end
 
 function WeaponSelectController:DragSlotEnd(element, slot)
+	--No changes if wing positions are not locked!
+	if ScpuiSystem:inMultiGame() and ui.MultiGeneral.getNetGame().Locked == false then
+		return
+	end
+	
 	if (self.replace ~= nil) and (self.activeSlot > -1) then
 	
 		local dropSlot = self.activeSlot

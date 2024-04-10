@@ -166,6 +166,8 @@ function BriefingController:initialize(document)
 	briefView:ReplaceChild(aniEl, briefView.first_child)
 	
 	if ScpuiSystem:inMultiGame() then
+		ui.MainHall.stopMusic(true) -- In multi we're coming from the Multi Sync UI so we need to stop these manually
+		ui.MainHall.stopAmbientSound()
 		self.document:GetElementById("chat_wrapper"):SetClass("hidden", false)
 		--self.document:GetElementById("c_panel_wrapper_multi"):SetClass("hidden", false)
 		self.document:GetElementById("bottom_panel_c"):SetClass("hidden", false)

@@ -319,8 +319,8 @@ div#wings_wrapper
 
 .wing_name
 {
-	height: 15%;
 	text-align: center;
+	margin-top: 7%;
 }
 
 .wing_slot
@@ -362,6 +362,11 @@ div#wings_wrapper
 	margin-top: 32.5%;
 	margin-left: 33.5%;
 	margin-right: 33.5%;
+}
+
+.slot_name
+{
+	text-align: center;
 }
 
 .highlighted
