@@ -41,6 +41,7 @@ function HostOptionsController:initialize(document)
 	self:buildDropdowns()
 	
 	self:updateLists()
+	ui.MultiGeneral.setPlayerState()
 	
 	if self.netgame.HostModifiesShips then
 		self.hostModifies = true

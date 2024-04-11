@@ -203,6 +203,11 @@ div#wings_wrapper
 	height:31%;
 }
 
+div:drag
+{
+	color: rgba(0,0,0,0);
+}
+
 .wing_slot img
 {
 	width: 100%;
@@ -219,6 +224,12 @@ div#wings_wrapper
 {
 	margin-left: 33.5%;
 	margin-right: 33.5%;
+}
+
+.wing_one:drag
+{
+	margin-left: 0;
+	margin-right: 0;
 }
 
 .wing_two

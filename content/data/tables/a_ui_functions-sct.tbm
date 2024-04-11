@@ -58,6 +58,13 @@ function ScpuiSystem:getAbsoluteTop(element)
 	return val
 end
 
+function ScpuiSystem:stopMusic()
+	if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+		ScpuiSystem.music_handle:close(true)
+	end
+	ScpuiSystem.music_handle = nil
+end
+
 function ScpuiSystem:maybePlayCutscene(scene)
 	local topics = require("ui_topics")
 	topics.playcutscene.start:send(self)

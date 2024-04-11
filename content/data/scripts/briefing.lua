@@ -51,10 +51,7 @@ function BriefingController:initialize(document)
 	
 	if mn.hasNoBriefing() then
 		self.Commit = true
-		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-			ScpuiSystem.music_handle:close(true)
-		end
-		ScpuiSystem.music_handle = nil
+		ScpuiSystem:stopMusic()
 		ScpuiSystem.current_played = nil
 		ui.Briefing.commitToMission()
 	end
@@ -172,6 +169,7 @@ function BriefingController:initialize(document)
 		--self.document:GetElementById("c_panel_wrapper_multi"):SetClass("hidden", false)
 		self.document:GetElementById("bottom_panel_c"):SetClass("hidden", false)
 		self:updateLists()
+		ui.MultiGeneral.setPlayerState()
 	end
 	
 	topics.briefing.initialize:send(self)
@@ -471,10 +469,7 @@ function BriefingController:acceptPressed()
 			ScpuiSystem.drawBrMap.tex = nil
 			ScpuiSystem.drawBrMap = nil
 		end
-		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-			ScpuiSystem.music_handle:close(true)
-		end
-		ScpuiSystem.music_handle = nil
+		ScpuiSystem:stopMusic()
 		ScpuiSystem.current_played = nil
 	end
 
@@ -482,10 +477,7 @@ end
 
 function BriefingController:skip_pressed()
 
-	if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-		ScpuiSystem.music_handle:close(true)
-	end
-	ScpuiSystem.music_handle = nil
+	ScpuiSystem:stopMusic()
 	
 	loadoutHandler:unloadAll()
     

@@ -41,6 +41,7 @@ function PXOController:initialize(document)
 	ScpuiSystem.MultiReady = true
 	
 	self:updateLists()
+	ui.MultiGeneral.setPlayerState()
 	
 	--topics.multipxo.initialize:send(self)
 

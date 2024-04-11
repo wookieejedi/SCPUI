@@ -35,6 +35,7 @@ function JoinGameController:initialize(document)
 	ScpuiSystem.MultiJoinReady = true
 	
 	self:updateLists()
+	ui.MultiGeneral.setPlayerState()
 	
 	self.network = 1
 	

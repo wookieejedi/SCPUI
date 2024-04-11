@@ -43,6 +43,7 @@ function ClientSetupController:initialize(document)
 	self.submittedValue = ""
 	
 	self:updateLists()
+	ui.MultiGeneral.setPlayerState()
 	
 	--topics.multijoingame.initialize:send(self)
 

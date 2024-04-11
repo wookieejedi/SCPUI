@@ -57,6 +57,7 @@ function HostSetupController:initialize(document)
 	self.submittedValue = ""
 	
 	self:updateLists()
+	ui.MultiGeneral.setPlayerState()
 	
 	self.closed = self.netgame.Closed
 	if self.netgame.Type == MULTI_TYPE_SQUADWAR then

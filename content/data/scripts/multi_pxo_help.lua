@@ -29,6 +29,7 @@ function PXOHelpController:initialize(document)
 	self.help_el.inner_rml = fullHelp
 	
 	self:updateLists()
+	ui.MultiGeneral.setPlayerState()
 	
 	--topics.multipxo.initialize:send(self)
 

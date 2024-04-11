@@ -47,6 +47,7 @@ function MultiSyncController:initialize(document)
 	self.submittedValue = ""
 	
 	self:updateLists()
+	ui.MultiGeneral.setPlayerState()
 	
 	--topics.multijoingame.initialize:send(self)
 
@@ -288,6 +289,7 @@ end
 
 function MultiSyncController:updateLists()
 	ui.MultiSync.runNetwork()
+	
 	local chat = ui.MultiGeneral.getChat()
 	
 	local txt = ""

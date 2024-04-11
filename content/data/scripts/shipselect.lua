@@ -17,6 +17,8 @@ function ShipSelectController:init()
 	ScpuiSystem.modelDraw = {}
 	self.help_shown = false
 	self.enabled = false
+	self.ships = {}
+	self.activeSlots = {}
 end
 
 function ShipSelectController:initialize(document)
@@ -58,11 +60,16 @@ function ShipSelectController:initialize(document)
 	
 	self.enabled = self:BuildWings()
 	
+	for i = 1, loadoutHandler:GetNumSlots() do
+		table.insert(self.ships, 0)
+	end
+	
 	if ScpuiSystem:inMultiGame() then
 		self.document:GetElementById("chat_wrapper"):SetClass("hidden", false)
 		self.document:GetElementById("c_panel_wrapper_multi"):SetClass("hidden", false)
 		self.document:GetElementById("c_panel_wrapper"):SetClass("hidden", true)
 		self:updateLists()
+		ui.MultiGeneral.setPlayerState()
 	end
 	
 	topics.shipselect.initialize:send(self)
@@ -73,7 +80,7 @@ function ShipSelectController:initialize(document)
 	end
 	
 	if loadoutHandler:GetNumShips() > 0 and self.enabled == true then
-		self:SelectEntry(loadoutHandler:GetShipList()[1], 1)
+		self:SelectEntry(loadoutHandler:GetShipList()[1])
 	end
 	
 	self:startMusic()
@@ -119,6 +126,9 @@ function ShipSelectController:BuildWings()
 		--Now we add the actual wing slots
 		for j = 1, loadoutHandler:GetNumWingSlots(i), 1 do
 			local slotInfo = loadoutHandler:GetShipLoadout(slotNum)
+			
+			--This is really only used for multi to limit how often icons are changed
+			self.ships[slotNum] = slotInfo.ShipClassIndex
 
 			local slotEl = self.document:CreateElement("div")
 			slotEl:SetClass("wing_slot", true)
@@ -147,7 +157,10 @@ function ShipSelectController:BuildWings()
 			if shipIndex > 0 then
 				local entry = loadoutHandler:GetShipInfo(shipIndex)
 				if entry == nil then
-					ba.error("Could not find " .. tb.ShipClasses[shipIndex].Name .. " in the loadout!")
+					--This reeeeaaaaallly shouldn't happen, but it is for some multi missions
+					ba.warning("Could not find " .. tb.ShipClasses[shipIndex].Name .. " in the loadout! Appending!")
+					loadoutHandler:AppendToShipInfo(shipIndex)
+					entry = loadoutHandler:GetShipInfo(shipIndex)
 				end
 				if slotInfo.isShipLocked then
 					slotIcon = entry.GeneratedIcon[5]
@@ -169,49 +182,9 @@ function ShipSelectController:BuildWings()
 			--This is here so that the event listeners use the correct slot index!
 			local index = slotNum
 			
-			slotEl.id = "slot_" .. slotNum
+			slotEl.id = "slot_" .. index
 
-			if not slotInfo.isDisabled then
-				if shipIndex > 0 then
-					local thisEntry = loadoutHandler:GetShipInfo(shipIndex)
-					if thisEntry == nil then
-						ba.warning("Ship Info did not exist! How? Who knows! Get Mjn!")
-						thisEntry = loadoutHandler:AppendToShipInfo(shipIndex)
-					end
-					
-					if not slotInfo.isShipLocked then
-						--Add dragover detection
-						slotEl:AddEventListener("dragdrop", function(_, _, _)
-							self:DragOver(slotEl, index)
-						end)
-						
-						--Add drag detection
-						slotEl:SetClass("drag", true)
-						slotEl:AddEventListener("dragend", function(_, _, _)
-							self:DragSlotEnd(slotEl, thisEntry, index)
-						end)
-						
-						if self.icon3d then
-							slotEl:SetClass("available", true)
-						end
-					else
-						if self.icon3d then
-							slotEl:SetClass("locked", true)
-						end
-					end
-					
-					--Add click detection
-					slotEl:SetClass("button_3", true)
-					slotEl:AddEventListener("click", function(_, _, _)
-						self:ClickOnSlot(thisEntry, index)
-					end)
-				else
-					--Add dragover detection
-					slotEl:AddEventListener("dragdrop", function(_, _, _)
-						self:DragOver(slotEl, index)
-					end)
-				end
-			end
+			self:ActivateSlot(index)
 			
 			slotNum = slotNum + 1
 		end
@@ -219,6 +192,72 @@ function ShipSelectController:BuildWings()
 	
 	return true
 
+end
+
+function ShipSelectController:ActivateSlot(slot)
+	local slotInfo = loadoutHandler:GetShipLoadout(slot)
+	
+	--Don't activate disabled slots
+	if slotInfo.isDisabled == true then
+		return
+	end
+	
+	--Don't activate already active slots
+	local utils = require("utils")
+	if utils.table.contains(self.activeSlots, slot) then
+		return
+	end
+	
+	table.insert(self.activeSlots, slot)
+	
+	local element = self.document:GetElementById("slot_" .. slot)
+	
+	--Abort if the slot was never created
+	if not element then
+		return
+	end
+	
+	--Add dragover detection
+	element:AddEventListener("dragdrop", function(_, _, _)
+		self:DragOver(element, slot)
+	end)
+
+	if slotInfo.ShipClassIndex > 0 then
+		local thisEntry = loadoutHandler:GetShipInfo(slotInfo.ShipClassIndex)
+		if thisEntry == nil then
+			ba.warning("Ship Info did not exist! How? Who knows! Get Mjn!")
+			thisEntry = loadoutHandler:AppendToShipInfo(slotInfo.ShipClassIndex)
+		end
+		
+		if not slotInfo.isShipLocked then
+			
+			--Add drag detection
+			element:SetClass("drag", true)
+			element:AddEventListener("dragend", function(_, _, _)
+				self:DragSlotEnd(element, thisEntry, slot)
+			end)
+			
+			element:AddEventListener("dragstart", function(event, _, _)
+				--This is supposed to be the dragged element, but it's userdata
+				--and I don't know how to access it! librocket documention sucks ass
+				--event.parameters.drag_element
+			end)
+			
+			if self.icon3d then
+				element:SetClass("available", true)
+			end
+		else
+			if self.icon3d then
+				element:SetClass("locked", true)
+			end
+		end
+		
+		--Add click detection
+		element:SetClass("button_3", true)
+		element:AddEventListener("click", function(_, _, _)
+			self:ClickOnSlot(thisEntry, slot)
+		end)
+	end
 end
 
 function ShipSelectController:ReloadList()
@@ -230,7 +269,7 @@ function ShipSelectController:ReloadList()
 	self:CreateEntries(loadoutHandler:GetShipList())
 	self:BuildWings()
 	if loadoutHandler:GetShipInfo(1) then
-		self:SelectEntry(loadoutHandler:GetShipInfo(1), 1)
+		self:SelectEntry(loadoutHandler:GetShipInfo(1))
 	end
 end
 
@@ -422,25 +461,87 @@ function ShipSelectController:DragOver(element, slot)
 	self.activeSlot = slot
 end
 
+function ShipSelectController:UpdateSlot(slot)
+	local slotInfo = loadoutHandler:GetShipLoadout(slot)
+	
+	local replace_el = self.document:GetElementById("slot_" .. slot)
+	
+	--If the slot doesn't exist then bail
+	if not replace_el then
+		return
+	end
+	
+	self:ActivateSlot(slot)
+	
+	replace_el.first_child.next_sibling.inner_rml = slotInfo.Name
+	
+	if self.ships[slot] == slotInfo.ShipClassIndex then
+		return
+	end
+	
+	self.ships[slot] = slotInfo.ShipClassIndex
+	
+	local slotIcon = loadoutHandler:getEmptyWingSlot()[2]
+	if slotInfo.isDisabled then
+		slotIcon = loadoutHandler:getEmptyWingSlot()[1]
+	end
+	
+	--Get the current ship in this slot
+	local shipIndex = slotInfo.ShipClassIndex
+	if shipIndex > 0 then
+		local entry = loadoutHandler:GetShipInfo(shipIndex)
+		if entry == nil then
+			ba.error("Could not find " .. tb.ShipClasses[shipIndex].Name .. " in the loadout!")
+		end
+		if slotInfo.isShipLocked then
+			slotIcon = entry.GeneratedIcon[5]
+		else
+			slotIcon = entry.GeneratedIcon[1]
+		end
+	end
+	
+	self:UpdateSlotImage(replace_el, slotIcon)
+end
+
+function ShipSelectController:UpdateSlots()
+	for i = 1, loadoutHandler:GetNumSlots() do
+		self:UpdateSlot(i)
+	end
+end
+
+function ShipSelectController:UpdatePool()
+	local list = loadoutHandler:GetShipList()
+	
+	for i, v in pairs(list) do
+		self:UpdatePoolCount(v.Name, loadoutHandler:GetShipPoolAmount(v.Index))
+	end
+end
+
 function ShipSelectController:UpdatePoolCount(id, count)
-	local countEl = self.document:GetElementById(id).first_child.first_child
+	local parent = self.document:GetElementById(id)
+	if not parent then
+		return
+	end
+	local countEl = parent.first_child.first_child
 	countEl.inner_rml = count
 end
 
 function ShipSelectController:UpdateSlotImage(element, img)
 	local imgEl = self.document:CreateElement("img")
 	imgEl:SetAttribute("src", img)
-	self.document:GetElementById(element.id):RemoveChild(element.first_child)
-	self.document:GetElementById(element.id):AppendChild(imgEl)
+
+	element:RemoveChild(element.first_child)
+	element:InsertBefore(imgEl, element.first_child)
 	element:SetClass("drag", true)
 	element:SetClass("button_3", true)
 end
 
+--entry is unreliable...?
 function ShipSelectController:ClickOnSlot(entry, slot)
 	local currentSlot = loadoutHandler:GetShipLoadout(slot)
 	
 	if currentSlot.ShipClassIndex > 0 then
-		self:SelectEntry(entry, slot)
+		self:SelectEntry(loadoutHandler:GetShipInfo(currentSlot.ShipClassIndex), slot)
 	end
 end
 
@@ -451,6 +552,11 @@ function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
 	end
 	
 	if (self.replace ~= nil) and (self.activeSlot > 0) then
+		if ScpuiSystem:inMultiGame() then
+			ui.ShipWepSelect.sendShipRequestPacket(2, 0, shipIndex, self.activeSlot, shipIndex)
+			return
+		end
+	
 		--Get the pool amount of the ship we're dragging
 		local count = loadoutHandler:GetShipPoolAmount(shipIndex)
 		
@@ -483,9 +589,6 @@ function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
 			
 			local replace_el = self.document:GetElementById(self.replace.id)
 			self:UpdateSlotImage(replace_el, element:GetAttribute("src"))
-			replace_el:AddEventListener("click", function(_, _, _)
-				self:SelectEntry(entry)
-			end)
 			
 			loadoutHandler:SetFilled(self.activeSlot, true)
 			
@@ -503,9 +606,14 @@ function ShipSelectController:DragSlotEnd(element, entry, slot)
 		return
 	end
 	
-	if (self.replace ~= nil) and (self.activeSlot > 0) then
+	if (self.replace ~= nil) and (self.activeSlot > 0) then		
 		local targetSlot = loadoutHandler:GetShipLoadout(self.activeSlot)
 		local currentSlot = loadoutHandler:GetShipLoadout(slot)
+		
+		if ScpuiSystem:inMultiGame() then
+			ui.ShipWepSelect.sendShipRequestPacket(0, 0, slot, self.activeSlot, currentSlot.ShipClassIndex)
+			return
+		end
 		
 		--If the target slot already has this ship, then abort!
 		if targetSlot.ShipClassIndex == currentSlot.ShipClassIndex then
@@ -522,9 +630,6 @@ function ShipSelectController:DragSlotEnd(element, entry, slot)
 		
 		local replace_el = self.document:GetElementById(self.replace.id)
 		self:UpdateSlotImage(replace_el, element.first_child:GetAttribute("src"))
-		replace_el:AddEventListener("click", function(_, _, _)
-			self:SelectEntry(entry)
-		end)
 		
 		element.first_child:SetAttribute("src", loadoutHandler:getEmptyWingSlot()[2])
 		element:SetClass("drag", false)
@@ -540,8 +645,13 @@ function ShipSelectController:DragSlotEnd(element, entry, slot)
 		self.replace = nil
 		
 	--If we're dragging into the pool
-	elseif (self.replace ~= nil) and (self.activeSlot == 0) then	
+	elseif (self.replace ~= nil) and (self.activeSlot == 0) then			
 		local sourceSlot = loadoutHandler:GetShipLoadout(slot)
+		
+		if ScpuiSystem:inMultiGame() then
+			ui.ShipWepSelect.sendShipRequestPacket(0, 2, slot, sourceSlot.ShipClassIndex, sourceSlot.ShipClassIndex)
+			return
+		end
 		
 		--If the target slot has a ship in it then return it
 		if sourceSlot.ShipClassIndex > 0 then
@@ -632,10 +742,6 @@ end
 
 function ShipSelectController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-			ScpuiSystem.music_handle:close(true)
-		end
-		ScpuiSystem.music_handle = nil
 		ScpuiSystem.current_played = nil
         event:StopPropagation()
 
@@ -657,6 +763,7 @@ function ShipSelectController:unload()
 		loadoutHandler:unloadAll()
 		ScpuiSystem.drawBrMap = nil
 		ScpuiSystem.cutscenePlayed = nil
+		ScpuiSystem:stopMusic()
 	end
 end
 
@@ -766,6 +873,11 @@ function ShipSelectController:updateLists()
 	else
 		self.document:GetElementById("lock_btn"):SetPseudoClass("checked", false)
 	end
+	
+	--Update the loadout from the network
+	loadoutHandler:update()
+	self:UpdatePool()
+	self:UpdateSlots()
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))

@@ -85,6 +85,7 @@ function WeaponSelectController:initialize(document)
 		self.document:GetElementById("c_panel_wrapper"):SetClass("hidden", true)
 		self.document:GetElementById("copy_to_wing_panel"):SetClass("hidden", true)
 		self:updateLists()
+		ui.MultiGeneral.setPlayerState()
 	end
 	
 	topics.weaponselect.initialize:send(self)
@@ -1104,10 +1105,6 @@ end
 
 function WeaponSelectController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-			ScpuiSystem.music_handle:close(true)
-		end
-		ScpuiSystem.music_handle = nil
 		ScpuiSystem.current_played = nil
         event:StopPropagation()
 
@@ -1120,15 +1117,11 @@ function WeaponSelectController:unload()
 	loadoutHandler:saveCurrentLoadout()
 	ScpuiSystem.modelDraw.class = nil
 	
-	if self.Commit == false then
-		loadoutHandler:ResetFSO_API()
-		loadoutHandler:SaveInFSO_API()
+	if self.Commit == true then
 		ScpuiSystem.drawBrMap = nil
 		ScpuiSystem.cutscenePlayed = nil
-	end
-	
-	if self.Commit == true then
 		loadoutHandler:unloadAll()
+		ScpuiSystem:stopMusic()
 	end
 	
 end

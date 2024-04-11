@@ -34,6 +34,10 @@ function LoadoutHandler:init()
 	end
 end
 
+function LoadoutHandler:update()
+	self:getLoadout()
+end
+
 function LoadoutHandler:unloadAll()
 	ScpuiSystem.loadouts = nil
 	ScpuiSystem.savedLoadouts = nil
@@ -80,6 +84,10 @@ end
 
 function LoadoutHandler:saveCurrentLoadout()
 	
+	if ScpuiSystem.inMultiGame() then
+		return
+	end
+	
 	local key = self:getMissionKey()
 	
 	ScpuiSystem.savedLoadouts[key] = {
@@ -97,6 +105,10 @@ function LoadoutHandler:saveCurrentLoadout()
 end
 
 function LoadoutHandler:maybeApplySavedLoadout()
+
+	if ScpuiSystem.inMultiGame() then
+		return
+	end
 
 	if topics.loadouts.rejectSavedLoadout:send() == true then
 		return
@@ -170,6 +182,14 @@ function LoadoutHandler:getSlots()
 		local wing, wingSlot = self:GetWingSlot(i)
 		
 		data.Name = ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].Callsign
+		--In multi non-player ships get called "ai"
+		if ScpuiSystem:inMultiGame() and not ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isPlayer then
+			if ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isPlayerAllowed then
+				data.Name = "&lt;AI&gt;"
+			else
+				data.Name = "AI"
+			end
+		end
 		data.WingName = ui.ShipWepSelect.Loadout_Wings[wing].Name
 		data.Wing = wing
 		data.WingSlot = wingSlot
@@ -1061,7 +1081,7 @@ function LoadoutHandler:SendShipToFSO_API(ship, slot, logging)
 		if ship.ShipClassIndex > 0 then
 			ui.ShipWepSelect.Loadout_Wings[ship.Wing][ship.WingSlot].isFilled = true
 			if logging then
-				ba.print("LOADOUT HANDLER: Setting filled ship to class '" .. ship.Name .. "'\n")
+				ba.print("LOADOUT HANDLER: Setting filled ship to class '" .. tb.ShipClasses[ship.ShipClassIndex].Name .. "'\n")
 			end
 		else
 			ui.ShipWepSelect.Loadout_Wings[ship.Wing][ship.WingSlot].isFilled = false

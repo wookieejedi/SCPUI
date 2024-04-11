@@ -38,6 +38,7 @@ function JoinGameController:initialize(document)
 	self.document:GetElementById("open_btn"):SetPseudoClass("checked", true)
 	
 	self:updateLists()
+	ui.MultiGeneral.setPlayerState()
 	
 	--topics.multijoingame.initialize:send(self)
 
