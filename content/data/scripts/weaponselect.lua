@@ -13,6 +13,10 @@ function WeaponSelectController:init()
 	ScpuiSystem.modelDraw = {}
 	self.help_shown = false
 	self.enabled = false
+	self.ships = {}
+	self.banks = {}
+	self.activeSlots = {}
+	self.currentShipIndex = nil
 end
 
 function WeaponSelectController:initialize(document)
@@ -78,6 +82,10 @@ function WeaponSelectController:initialize(document)
 	self.SelectedShip = nil
 	
 	self.enabled = self:BuildWings()
+	
+	for i = 1, loadoutHandler:GetNumSlots() do
+		table.insert(self.ships, 0)
+	end
 	
 	if ScpuiSystem:inMultiGame() then
 		self.document:GetElementById("chat_wrapper"):SetClass("hidden", false)
@@ -145,6 +153,9 @@ function WeaponSelectController:BuildWings()
 		for j = 1, loadoutHandler:GetNumWingSlots(i), 1 do
 			local slotInfo = loadoutHandler:GetShipLoadout(slotNum)
 			
+			--This is really only used for multi to limit how often icons are changed
+			self.ships[slotNum] = slotInfo.ShipClassIndex
+			
 			local slotEl = self.document:CreateElement("div")
 			slotEl:SetClass("wing_slot", true)
 			slotsEl:AppendChild(slotEl)
@@ -172,7 +183,10 @@ function WeaponSelectController:BuildWings()
 			if shipIndex > 0 then
 				local entry = loadoutHandler:GetShipInfo(shipIndex)
 				if entry == nil then
-					ba.error("Could not find " .. tb.ShipClasses[shipIndex].Name .. " in the loadout!")
+					--This reeeeaaaaallly shouldn't happen, but it is for some multi missions
+					ba.warning("Could not find " .. tb.ShipClasses[shipIndex].Name .. " in the loadout! Appending!")
+					loadoutHandler:AppendToShipInfo(shipIndex)
+					entry = loadoutHandler:GetShipInfo(shipIndex)
 				end
 				if slotInfo.isPlayer then
 					slotIcon = entry.GeneratedIcon[1]
@@ -197,37 +211,10 @@ function WeaponSelectController:BuildWings()
 			
 			--This is here so that the event listeners use the correct slot index!
 			local index = slotNum
-			local callsign = slotInfo.Name
 			
 			slotEl.id = "slot_" .. slotNum
 
-			if not slotInfo.isDisabled then
-				if shipIndex > 0 then
-					local thisEntry = loadoutHandler:GetShipInfo(shipIndex)
-					if thisEntry == nil then
-						ba.warning("Ship Info did not exist! How? Who knows! Get Mjn!")
-						thisEntry = loadoutHandler:AppendToShipInfo(shipIndex)
-					end
-					
-					--Add click detection
-					slotEl:SetClass("button_3", true)
-					slotEl:AddEventListener("click", function(_, _, _)
-						self:SelectShip(shipIndex, callsign, index)
-					end)
-					
-					if self.icon3d then
-						if not slotInfo.isShipLocked then
-							slotEl:SetClass("available", true)
-						elseif slotInfo.isWeaponLocked then
-							slotEl:SetClass("locked", true)
-						else
-							slotEl:SetClass("available", true)
-						end
-					end
-				else
-					--do nothing
-				end
-			end
+			self:ActivateSlot(index)
 			
 			slotNum = slotNum + 1
 		end
@@ -235,6 +222,49 @@ function WeaponSelectController:BuildWings()
 	
 	return true
 
+end
+
+function WeaponSelectController:ActivateSlot(slot)
+	local slotInfo = loadoutHandler:GetShipLoadout(slot)
+	
+	--Don't activate disabled slots
+	if slotInfo.isDisabled == true then
+		return
+	end
+	
+	--Don't activate already active slots
+	local utils = require("utils")
+	if utils.table.contains(self.activeSlots, slot) then
+		return
+	end
+	
+	table.insert(self.activeSlots, slot)
+	
+	local element = self.document:GetElementById("slot_" .. slot)
+	
+	--Abort if the slot was never created
+	if not element then
+		return
+	end
+
+	if slotInfo.ShipClassIndex > 0 then
+		if not slotInfo.isShipLocked then
+			
+			if self.icon3d then
+				element:SetClass("available", true)
+			end
+		else
+			if self.icon3d then
+				element:SetClass("locked", true)
+			end
+		end
+		
+		--Add click detection
+		element:SetClass("button_3", true)
+		element:AddEventListener("click", function(_, _, _)
+			self:ClickOnSlot(slot)
+		end)
+	end
 end
 
 function WeaponSelectController:SelectInitialItems()
@@ -518,12 +548,19 @@ function WeaponSelectController:HighlightShip(slot)
 				
 end
 
+function WeaponSelectController:ClickOnSlot(slot)
+	local shipInfo = loadoutHandler:GetShipLoadout(slot)
+	
+	self:SelectShip(shipInfo.ShipClassIndex, shipInfo.Name, slot)
+end
+
 function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 
 	if callsign ~= self.SelectedShip then
 		
 		self.SelectedShip = callsign
 		self.currentShipSlot = slot
+		self.currentShipIndex = shipIndex
 		
 		self.document:GetElementById("ship_name").inner_rml = callsign
 		
@@ -569,6 +606,10 @@ function WeaponSelectController:ClearWeaponSlots()
 	ScpuiSystem:ClearEntries(ScpuiSystem.modelDraw.banks.bank6)
 	ScpuiSystem:ClearEntries(ScpuiSystem.modelDraw.banks.bank7)
 	
+	for i = 1, loadoutHandler:GetMaxBanks() do
+		table.insert(self.banks, 0)
+	end
+	
 	for i, v in pairs(ScpuiSystem.modelDraw.banks) do
 		v:SetClass("slot_3d", false)
 		v:SetClass("button_3", false)
@@ -582,7 +623,13 @@ end
 
 function WeaponSelectController:BuildWeaponSlots(ship)
 
-	self:ClearWeaponSlots()
+	if not ship then
+		return
+	end
+
+	if self.currentShipIndex ~= ship then
+		self:ClearWeaponSlots()
+	end
 
 	if tb.ShipClasses[ship].numPrimaryBanks > 0 then
 		self:BuildSlot(ScpuiSystem.modelDraw.banks.bank1, 1)
@@ -636,8 +683,6 @@ function WeaponSelectController:BuildWeaponSlots(ship)
 end
 
 function WeaponSelectController:BuildSlot(parentEl, bank)
-	local slotImg = self.document:CreateElement("img")
-	
 	local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
 	
 	--Maybe show slot as locked
@@ -654,6 +699,16 @@ function WeaponSelectController:BuildSlot(parentEl, bank)
 	if bank > 3 then
 		self.secondaryAmountEls[bank - 3].inner_rml = amount
 	end
+	
+	if self.banks[bank] == weapon then
+		return
+	end
+	
+	self.banks[bank] = weapon
+	
+	ScpuiSystem:ClearEntries(parentEl)
+	
+	local slotImg = self.document:CreateElement("img")
 	
 	local slotIcon = nil
 	if weapon > 0 then
@@ -761,6 +816,54 @@ function WeaponSelectController:EmptySlot(element, slot)
 	end
 end
 
+function WeaponSelectController:UpdateShipSlot(slot)
+	local slotInfo = loadoutHandler:GetShipLoadout(slot)
+	
+	local replace_el = self.document:GetElementById("slot_" .. slot)
+	
+	--If the slot doesn't exist then bail
+	if not replace_el then
+		return
+	end
+	
+	self:ActivateSlot(slot)
+	
+	replace_el.first_child.next_sibling.inner_rml = slotInfo.Name
+	
+	if self.ships[slot] == slotInfo.ShipClassIndex then
+		return
+	end
+	
+	self.ships[slot] = slotInfo.ShipClassIndex
+	
+	local slotIcon = loadoutHandler:getEmptyWingSlot()[2]
+	if slotInfo.isDisabled then
+		slotIcon = loadoutHandler:getEmptyWingSlot()[1]
+	end
+	
+	--Get the current ship in this slot
+	local shipIndex = slotInfo.ShipClassIndex
+	if shipIndex > 0 then
+		local entry = loadoutHandler:GetShipInfo(shipIndex)
+		if entry == nil then
+			ba.error("Could not find " .. tb.ShipClasses[shipIndex].Name .. " in the loadout!")
+		end
+		if slotInfo.isShipLocked then
+			slotIcon = entry.GeneratedIcon[5]
+		else
+			slotIcon = entry.GeneratedIcon[1]
+		end
+	end
+	
+	self:UpdateSlotImage(replace_el, slotIcon)
+end
+
+function WeaponSelectController:UpdateShipSlots()
+	for i = 1, loadoutHandler:GetNumSlots() do
+		self:UpdateShipSlot(i)
+	end
+end
+
 function WeaponSelectController:UpdateAllPoolCounts()
 	local primaryList = loadoutHandler:GetPrimaryWeaponList()
 	for i = 1, #primaryList do
@@ -770,6 +873,15 @@ function WeaponSelectController:UpdateAllPoolCounts()
 	for i = 1, #secondaryList do
 		self:UpdatePoolCount(secondaryList[i])
 	end
+end
+
+function WeaponSelectController:UpdateSlotImage(element, img)
+	local imgEl = self.document:CreateElement("img")
+	imgEl:SetAttribute("src", img)
+
+	element:RemoveChild(element.first_child)
+	element:InsertBefore(imgEl, element.first_child)
+	element:SetClass("button_3", true)
 end
 
 function WeaponSelectController:UpdatePoolCount(data)
@@ -782,7 +894,11 @@ end
 
 function WeaponSelectController:UpdateUiElements()
 	self:UpdateAllPoolCounts()
+	if self.currentShipSlot == nil then
+		return
+	end
 	self:UpdateAllSecondaryCounts()
+	self:BuildWeaponSlots(loadoutHandler:GetShipLoadout(self.currentShipSlot).ShipClassIndex)
 	self:refreshOverheadSlot()
 end
 
@@ -819,6 +935,12 @@ function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 		local shipIdx = ship.ShipClassIndex 
 		local slotWeapon = ship.Weapons[self.activeSlot]
 		local slotAmount = ship.Amounts[self.activeSlot]
+		
+		if ScpuiSystem:inMultiGame() then
+			ui.ShipWepSelect.sendWeaponRequestPacket(0, self.activeSlot, weaponIndex, 0, self.currentShipSlot)
+			self.replace = nil
+			return
+		end
 	
 		--Get the amount of the weapon we're dragging
 		local count = loadoutHandler:GetWeaponPoolAmount(weaponIndex)
@@ -896,6 +1018,16 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 		local shipIdx = ship.ShipClassIndex 
 		local slotWeapon = ship.Weapons[slot]
 		local slotAmount = ship.Amounts[slot]
+		
+		if ScpuiSystem:inMultiGame() then
+			local wepIdx = slotWeapon
+			if dropSlot > 0 then
+				wepIdx = 0
+			end
+			ui.ShipWepSelect.sendWeaponRequestPacket(slot, self.activeSlot, 0, wepIdx, self.currentShipSlot)
+			self.replace = nil
+			return
+		end
 		
 		--If the ship is weapon locked then abort!
 		if ship.isWeaponLocked then
@@ -1032,58 +1164,6 @@ function WeaponSelectController:accept_pressed()
 		ScpuiSystem.music_handle = nil
 		ScpuiSystem.current_played = nil
 	end
-	--[[local text = ""
-	
-	--General Fail
-	if errorValue == 1 then
-		text = ba.XSTR("An error has occured", -1)
-	--A player ship has no weapons
-	elseif errorValue == 2 then
-		text = ba.XSTR("Player ship has no weapons", 461)
-	--The required weapon was not loaded on a ship
-	elseif errorValue == 3 then
-		text = ba.XSTR("The " .. self.requiredWeps[1] .. " is required for this mission, but it has not been added to any ship loadout.", 1624)
-	--Two or more required weapons were not loaded on a ship
-	elseif errorValue == 4 then
-		local WepsString = ""
-		for i = 1, #self.requiredWeps, 1 do
-			WepsString = WepsString .. self.requiredWeps[i] .. "\n"
-		end
-		text = ba.XSTR("The following weapons are required for this mission, but at least one of them has not been added to any ship loadout:\n\n" .. WepsString, 1625)
-	--There is a gap in a ship's weapon banks
-	elseif errorValue == 5 then
-		text = ba.XSTR("At least one ship has an empty weapon bank before a full weapon bank.\n\nAll weapon banks must have weapons assigned, or if there are any gaps, they must be at the bottom of the set of banks.", 1642)
-	--A player has no weapons
-	elseif errorValue == 6 then
-		local player = ba.getCurrentPlayer():getName()
-		text = ba.XSTR("Player " .. player .. " must select a place in player wing", 462)
-	--Success!
-	else
-		--Save to the player file
-		self.Commit = true
-		loadoutHandler:SaveInFSO_API()
-		--Cleanup
-		text = nil
-		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-			ScpuiSystem.music_handle:close(true)
-		end
-		ScpuiSystem.music_handle = nil
-		ScpuiSystem.current_played = nil
-	end
-
-	if text ~= nil then
-		text = string.gsub(text,"\n","<br></br>")
-		local title = ""
-		local buttons = {}
-		buttons[1] = {
-			b_type = dialogs.BUTTON_TYPE_POSITIVE,
-			b_text = ba.XSTR("Okay", -1),
-			b_value = "",
-			b_keypress = string.sub(ba.XSTR("Ok", -1), 1, 1)
-		}
-		
-		self:Show(text, title, buttons)
-	end]]--
 
 end
 
@@ -1299,6 +1379,10 @@ function WeaponSelectController:updateLists()
 	else
 		self.document:GetElementById("lock_btn"):SetPseudoClass("checked", false)
 	end
+	
+	loadoutHandler:update()
+	self:UpdateShipSlots()
+	self:UpdateUiElements()
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))

@@ -203,9 +203,17 @@ div#wings_wrapper
 	height:31%;
 }
 
+/*This is dumb.. but I want to hide the callsign during ship dragging, but not during player dragging*/
+/*and getting the dragged element via lua is buggy...*/
+
 div:drag
 {
 	color: rgba(0,0,0,0);
+}
+
+#callsign_drag:drag
+{
+	color: rgba(255, 255, 255, 255);
 }
 
 .wing_slot img

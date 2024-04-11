@@ -183,6 +183,10 @@ function ShipSelectController:BuildWings()
 			local index = slotNum
 			
 			slotEl.id = "slot_" .. index
+			
+			if ScpuiSystem.inMultiGame() then
+				self:ActivateNameDrag(slotName, index)
+			end
 
 			self:ActivateSlot(index)
 			
@@ -192,6 +196,22 @@ function ShipSelectController:BuildWings()
 	
 	return true
 
+end
+
+function ShipSelectController:ActivateNameDrag(name_el, slot)
+	name_el:SetClass("drag", true)
+	name_el:SetClass("available", true)
+	name_el:SetClass("name_slot", true)
+	name_el.id = "callsign_drag"
+	
+	--Add dragover detection
+	name_el:AddEventListener("dragdrop", function(_, _, _)
+		self:DragNameOver(name_el, slot)
+	end)
+	
+	name_el:AddEventListener("dragend", function(_, _, _)
+		self:DragNameEnd(name_el, slot)
+	end)
 end
 
 function ShipSelectController:ActivateSlot(slot)
@@ -217,6 +237,14 @@ function ShipSelectController:ActivateSlot(slot)
 		return
 	end
 	
+	--If we're in multi and we're activating then we need to deactivate name dragging
+	if ScpuiSystem.inMultiGame() then
+		local name_el = element.first_child.next_sibling
+		name_el:SetClass("drag", false)
+		name_el:SetClass("available", false)
+		name_el.id = "callsign_" .. slot
+	end
+	
 	--Add dragover detection
 	element:AddEventListener("dragdrop", function(_, _, _)
 		self:DragOver(element, slot)
@@ -238,9 +266,8 @@ function ShipSelectController:ActivateSlot(slot)
 			end)
 			
 			element:AddEventListener("dragstart", function(event, _, _)
-				--This is supposed to be the dragged element, but it's userdata
-				--and I don't know how to access it! librocket documention sucks ass
-				--event.parameters.drag_element
+				local el = Element.As.Element(event.parameters.drag_element)
+				ba.warning(el.id)
 			end)
 			
 			if self.icon3d then
@@ -461,6 +488,11 @@ function ShipSelectController:DragOver(element, slot)
 	self.activeSlot = slot
 end
 
+function ShipSelectController:DragNameOver(element, slot)
+	self.NameReplace = element
+	self.NameActiveSlot = slot
+end
+
 function ShipSelectController:UpdateSlot(slot)
 	local slotInfo = loadoutHandler:GetShipLoadout(slot)
 	
@@ -554,6 +586,7 @@ function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
 	if (self.replace ~= nil) and (self.activeSlot > 0) then
 		if ScpuiSystem:inMultiGame() then
 			ui.ShipWepSelect.sendShipRequestPacket(2, 0, shipIndex, self.activeSlot, shipIndex)
+			self.replace = nil
 			return
 		end
 	
@@ -612,6 +645,7 @@ function ShipSelectController:DragSlotEnd(element, entry, slot)
 		
 		if ScpuiSystem:inMultiGame() then
 			ui.ShipWepSelect.sendShipRequestPacket(0, 0, slot, self.activeSlot, currentSlot.ShipClassIndex)
+			self.replace = nil
 			return
 		end
 		
@@ -650,6 +684,7 @@ function ShipSelectController:DragSlotEnd(element, entry, slot)
 		
 		if ScpuiSystem:inMultiGame() then
 			ui.ShipWepSelect.sendShipRequestPacket(0, 2, slot, sourceSlot.ShipClassIndex, sourceSlot.ShipClassIndex)
+			self.replace = nil
 			return
 		end
 		
@@ -664,6 +699,24 @@ function ShipSelectController:DragSlotEnd(element, entry, slot)
 		
 		element.first_child:SetAttribute("src", loadoutHandler:getEmptyWingSlot()[2])
 		loadoutHandler:TakeShipFromSlot(slot)
+		
+		self.replace = nil
+	end
+end
+
+function ShipSelectController:DragNameEnd(element, slot)
+	--No changes if not in multi
+	if not ScpuiSystem:inMultiGame() then
+		return
+	end
+	--No changes if wing positions are locked!
+	if ui.MultiGeneral.getNetGame().Locked == true then
+		return
+	end
+	
+	if (self.NameReplace ~= nil) and (self.NameActiveSlot > 0) then		
+		ui.ShipWepSelect.sendShipRequestPacket(1, 1, slot, self.NameActiveSlot, -1)
+		self.NameReplace = nil
 	end
 end
 
