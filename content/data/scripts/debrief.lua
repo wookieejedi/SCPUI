@@ -47,7 +47,7 @@ function DebriefingController:initialize(document)
     self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
     
     ---Load the desired font size from the save file
-    self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+    self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
     
     self.document:GetElementById("mission_name").inner_rml = mn.getMissionTitle()
     self.document:GetElementById("awards_wrapper"):SetClass("hidden", true)

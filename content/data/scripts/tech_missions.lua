@@ -32,7 +32,7 @@ function TechMissionsController:initialize(document)
 	topics.simulator.initialize:send(self)
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	self:Show("Building missions list...", "Mission Simulator")
 	

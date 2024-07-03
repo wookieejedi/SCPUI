@@ -12,7 +12,7 @@ local renderCategory = engine.createTracingCategory("RenderRocket", true)
 
 ScpuiSystem = {
 	active = true,
-	numFontSizes = 20,
+	numFontSizes = 40,
     replacements = {},
 	backgrounds = {},
 	briefBackgrounds = {},

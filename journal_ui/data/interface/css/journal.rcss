@@ -33,7 +33,6 @@ div#journaltext
 	margin-top: 2%;
 	margin-left: 7%;
 	margin-right: 5%;
-	color: white;
 	overflow: scroll;
 	height: 95%;
 	text-align: justify;
@@ -61,7 +60,7 @@ div #piccaption
 div#journal_wrapper
 {
 	margin: auto;
-	width: 80%;
+	width: 70%;
 	height: auto;
 	position: relative;
 }
@@ -85,7 +84,7 @@ div#journal_content img
 div#journal_list
 {
 	margin-top: 1%;
-	width: 60%;
+	width: 80%;
 	height: auto;
 	/*overflow: scroll;*/
 	position: relative;
@@ -167,7 +166,7 @@ div#top_b_panel_wrapper
 
 .button_text_right p
 {
-	margin-top: -25%;
+	margin-top: -35%;
 	width: 400%;
 	margin-left: 100%;
 }

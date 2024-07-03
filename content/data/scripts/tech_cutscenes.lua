@@ -17,7 +17,7 @@ function TechCutscenesController:initialize(document)
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	self.document:GetElementById("tech_btn_1"):SetPseudoClass("checked", false)
 	self.document:GetElementById("tech_btn_2"):SetPseudoClass("checked", false)

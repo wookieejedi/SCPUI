@@ -65,7 +65,7 @@ function WeaponSelectController:initialize(document)
 	
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	self.document:GetElementById("brief_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("s_select_btn"):SetPseudoClass("checked", false)

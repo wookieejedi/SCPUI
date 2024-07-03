@@ -27,8 +27,8 @@ function ControlConfigController:initialize(document)
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
-	self.document:GetElementById("conflict_warning"):SetClass(("h1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.document:GetElementById("conflict_warning"):SetClass("h1", true)
 	
 	ui.ControlConfig.initControlConfig()
 	

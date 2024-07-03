@@ -4,632 +4,238 @@
 * ScpuiSystem.numFontSizes in ui_system-sct.lua
 */
 
-.p1-0
+.p1
+{
+	font-size: 1em;
+}
+
+.p2
+{
+	font-size: 1.5em;
+}
+
+.s1
 {
 	font-size: 0.5em;
 }
 
-.p1-1
-{
-	font-size: 0.6em;
-}
-
-.p1-2
-{
-	font-size: 0.7em;
-}
-
-.p1-3
-{
-	font-size: 0.8em;
-}
-
-.p1-4
-{
-	font-size: 0.9em;
-}
-
-.p1-5
-{
-	font-size: 1em;
-}
-
-.p1-6
-{
-	font-size: 1.1em;
-}
-
-.p1-7
-{
-	font-size: 1.2em;
-}
-
-.p1-8
-{
-	font-size: 1.3em;
-}
-
-.p1-9
-{
-	font-size: 1.4em;
-}
-
-.p1-10
-{
-	font-size: 1.5em;
-}
-
-.p1-11
-{
-	font-size: 1.6em;
-}
-
-.p1-12
-{
-	font-size: 1.7em;
-}
-
-.p1-13
-{
-	font-size: 1.8em;
-}
-
-.p1-14
-{
-	font-size: 1.9em;
-}
-
-.p1-15
+.h1
 {
 	font-size: 2em;
 }
 
-.p1-16
-{
-	font-size: 2.1em;
-}
-
-.p1-17
-{
-	font-size: 2.2em;
-}
-
-.p1-18
-{
-	font-size: 2.3em;
-}
-
-.p1-19
-{
-	font-size: 2.4em;
-}
-
-.p1-20
-{
-	font-size: 2.5em;
-}
-
-.p2-0
-{
-	font-size: 0.6em;
-}
-
-.p2-1
-{
-	font-size: 0.7em;
-}
-
-.p2-2
-{
-	font-size: 0.8em;
-}
-
-.p2-3
-{
-	font-size: 0.9em;
-}
-
-.p2-4
-{
-	font-size: 1em;
-}
-
-.p2-5
-{
-	font-size: 1.1em;
-}
-
-.p2-6
-{
-	font-size: 1.2em;
-}
-
-.p2-7
-{
-	font-size: 1.3em;
-}
-
-.p2-8
-{
-	font-size: 1.4em;
-}
-
-.p2-9
-{
-	font-size: 1.5em;
-}
-
-.p2-10
-{
-	font-size: 1.6em;
-}
-
-.p2-11
-{
-	font-size: 1.7em;
-}
-
-.p2-12
-{
-	font-size: 1.8em;
-}
-
-.p2-13
-{
-	font-size: 1.9em;
-}
-
-.p2-14
-{
-	font-size: 2em;
-}
-
-.p2-15
-{
-	font-size: 2.1em;
-}
-
-.p2-16
-{
-	font-size: 2.2em;
-}
-
-.p2-17
-{
-	font-size: 2.3em;
-}
-
-.p2-18
-{
-	font-size: 2.4em;
-}
-
-.p2-19
-{
-	font-size: 2.5em;
-}
-
-.p2-20
-{
-	font-size: 2.6em;
-}
-
-.s1-0
-{
-	font-size: 0.2em;
-}
-
-.s1-1
-{
-	font-size: 0.3em;
-}
-
-.s1-2
-{
-	font-size: 0.4em;
-}
-
-.s1-3
-{
-	font-size: 0.5em;
-}
-
-.s1-4
-{
-	font-size: 0.6em;
-}
-
-.s1-5
-{
-	font-size: 0.7em;
-}
-
-.s1-6
-{
-	font-size: 0.8em;
-}
-
-.s1-7
-{
-	font-size: 0.9em;
-}
-
-.s1-8
-{
-	font-size: 1em;
-}
-
-.s1-9
-{
-	font-size: 1.1em;
-}
-
-.s1-10
-{
-	font-size: 1.5em;
-}
-
-.s1-11
-{
-	font-size: 1.6em;
-}
-
-.s1-12
-{
-	font-size: 1.7em;
-}
-
-.s1-13
-{
-	font-size: 1.8em;
-}
-
-.s1-14
-{
-	font-size: 1.9em;
-}
-
-.s1-15
-{
-	font-size: 2em;
-}
-
-.s1-16
-{
-	font-size: 2.1em;
-}
-
-.s1-17
-{
-	font-size: 2.2em;
-}
-
-.s1-18
-{
-	font-size: 2.3em;
-}
-
-.s1-19
-{
-	font-size: 2.4em;
-}
-
-.s1-20
-{
-	font-size: 2.5em;
-}
-
-.h1-0
-{
-	font-size: 1.2em;
-}
-
-.h1-1
-{
-	font-size: 1.3em;
-}
-
-.h1-2
-{
-	font-size: 1.4em;
-}
-
-.h1-3
-{
-	font-size: 1.5em;
-}
-
-.h1-4
-{
-	font-size: 1.6em;
-}
-
-.h1-5
-{
-	font-size: 1.7em;
-}
-
-.h1-6
-{
-	font-size: 1.8em;
-}
-
-.h1-7
-{
-	font-size: 1.9em;
-}
-
-.h1-8
-{
-	font-size: 2em;
-}
-
-.h1-9
-{
-	font-size: 2.1em;
-}
-
-.h1-10
-{
-	font-size: 2.2em;
-}
-
-.h1-11
-{
-	font-size: 2.3em;
-}
-
-.h1-12
-{
-	font-size: 2.4em;
-}
-
-.h1-13
-{
-	font-size: 2.5em;
-}
-
-.h1-14
-{
-	font-size: 2.6em;
-}
-
-.h1-15
-{
-	font-size: 2.7em;
-}
-
-.h1-16
-{
-	font-size: 2.8em;
-}
-
-.h1-17
-{
-	font-size: 2.9em;
-}
-
-.h1-18
+.h2
 {
 	font-size: 3em;
 }
 
-.h1-19
-{
-	font-size: 3.1em;
-}
-
-.h1-20
-{
-	font-size: 3.2em;
-}
-
-.h2-0
-{
-	font-size: 2.0em;
-}
-
-.h2-1
-{
-	font-size: 2.1em;
-}
-
-.h2-2
-{
-	font-size: 2.2em;
-}
-
-.h2-3
-{
-	font-size: 2.3em;
-}
-
-.h2-4
-{
-	font-size: 2.4em;
-}
-
-.h2-5
-{
-	font-size: 2.5em;
-}
-
-.h2-6
-{
-	font-size: 2.6em;
-}
-
-.h2-7
-{
-	font-size: 2.7em;
-}
-
-.h2-8
-{
-	font-size: 2.8em;
-}
-
-.h2-9
-{
-	font-size: 2.9em;
-}
-
-.h2-10
-{
-	font-size: 3em;
-}
-
-.h2-11
-{
-	font-size: 3.1em;
-}
-
-.h2-12
-{
-	font-size: 3.2em;
-}
-
-.h2-13
-{
-	font-size: 3.3em;
-}
-
-.h2-14
-{
-	font-size: 3.4em;
-}
-
-.h2-15
-{
-	font-size: 3.5em;
-}
-
-.h2-16
-{
-	font-size: 3.6em;
-}
-
-.h2-17
-{
-	font-size: 3.7em;
-}
-
-.h2-18
-{
-	font-size: 3.8em;
-}
-
-.h2-19
-{
-	font-size: 3.9em;
-}
-
-.h2-20
+.h3
 {
 	font-size: 4em;
 }
 
-.h3-0
+/***RECORD SCRATCH*** Yeah. That's me. Fourty classes just for font sizes. You're probably wondering how I got here.
+Well, it's really not that long of a story. FSO crashes when directly setting font sizes too much,
+but it does fine when done via a class swap. So that's what we're doing. Whenever a new UI is loaded
+up, we set the root font size to one of these classes. I know, I know. It's pretty ugly. But sometimes
+that's what you have to do in a 30 year old game engine. Ok, back to the CSS now.*/
+
+.base_font1
 {
-	font-size: 4.0em;
+  font-size: 1px;
 }
 
-.h3-1
+.base_font2
 {
-	font-size: 4.1em;
+  font-size: 2px;
 }
 
-.h3-2
+.base_font3
 {
-	font-size: 4.2em;
+  font-size: 3px;
 }
 
-.h3-3
+.base_font4
 {
-	font-size: 4.3em;
+  font-size: 4px;
 }
 
-.h3-4
+.base_font5
 {
-	font-size: 4.4em;
+	font-size: 5px;
 }
 
-.h3-5
+.base_font6
 {
-	font-size: 4.5em;
+	font-size: 6px;
 }
 
-.h3-6
+.base_font7
 {
-	font-size: 4.6em;
+	font-size: 7px;
 }
 
-.h3-7
+.base_font8
 {
-	font-size: 4.7em;
+	font-size: 8px;
 }
 
-.h3-8
+.base_font9
 {
-	font-size: 4.8em;
+	font-size: 9px;
 }
 
-.h3-9
+.base_font10
 {
-	font-size: 4.9em;
+	font-size: 10px;
 }
 
-.h3-10
+.base_font11
 {
-	font-size: 5em;
+	font-size: 11px;
 }
 
-.h3-11
+.base_font12
 {
-	font-size: 5.1em;
+	font-size: 12px;
 }
 
-.h3-12
+.base_font13
 {
-	font-size: 5.2em;
+	font-size: 13px;
 }
 
-.h3-13
+.base_font14
 {
-	font-size: 5.3em;
+	font-size: 14px;
 }
 
-.h3-14
+.base_font15
 {
-	font-size: 5.4em;
+	font-size: 15px;
 }
 
-.h3-15
+.base_font16
 {
-	font-size: 5.5em;
+	font-size: 16px;
 }
 
-.h3-16
+.base_font17
 {
-	font-size: 5.6em;
+	font-size: 17px;
 }
 
-.h3-17
+.base_font18
 {
-	font-size: 5.7em;
+	font-size: 18px;
 }
 
-.h3-18
+.base_font19
 {
-	font-size: 5.8em;
+	font-size: 19px;
 }
 
-.h3-19
+.base_font20
 {
-	font-size: 5.9em;
+	font-size: 20px;
 }
 
-.h3-20
+.base_font21
 {
-	font-size: 6em;
+  font-size: 21px;
+}
+
+.base_font22
+{
+  font-size: 22px;
+}
+
+.base_font23
+{
+  font-size: 23px;
+}
+
+.base_font24
+{
+  font-size: 24px;
+}
+
+.base_font25
+{
+  font-size: 25px;
+}
+
+.base_font26
+{
+  font-size: 26px;
+}
+
+.base_font27
+{
+  font-size: 27px;
+}
+
+.base_font28
+{
+  font-size: 28px;
+}
+
+.base_font29
+{
+  font-size: 29px;
+}
+
+.base_font30
+{
+  font-size: 30px;
+}
+
+.base_font31
+{
+  font-size: 31px;
+}
+
+.base_font32
+{
+  font-size: 32px;
+}
+
+.base_font33
+{
+  font-size: 33px;
+}
+
+.base_font34
+{
+  font-size: 34px;
+}
+
+.base_font35
+{
+  font-size: 35px;
+}
+
+.base_font36
+{
+  font-size: 36px;
+}
+
+.base_font37
+{
+  font-size: 37px;
+}
+
+.base_font38
+{
+  font-size: 38px;
+}
+
+.base_font39
+{
+  font-size: 39px;
+}
+
+.base_font40
+{
+  font-size: 40px;
 }

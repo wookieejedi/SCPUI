@@ -645,14 +645,14 @@ function OptionsController:init_range_element(element, value_el, option, change_
     end)
 	
 	--This is a special case just for Font_Multiplier to allow live update
-	if Key == "Font_Multiplier" then
+	if Key == "Font_Adjustment" then
 		element:AddEventListener("click", function(event, _, _)
 			range_el.value = customOptions[Key].currentValue
-			fontChoice = "p1-" .. ScpuiSystem:getFontSize(customOptions[Key].currentValue)
+			fontChoice = "base_font" .. ScpuiSystem:getFontPixelSize(customOptions[Key].currentValue)
 			
 			--Clear all possible font classes
-			for i = 0, ScpuiSystem.numFontSizes do
-				local class = "p1-" .. i
+			for i = 1, ScpuiSystem.numFontSizes do
+				local class = "base_font" .. i
 				self.document:GetElementById("main_background"):SetClass(class, false)
 			end
 			
@@ -716,7 +716,7 @@ function OptionsController:createHeaderOptionElement(option, parent_id)
     title_el.inner_rml = option.Title
 
 	---Load the desired font size from the save file
-	self.document:GetElementById(actual_el.id):SetClass("p2-" .. ScpuiSystem:getFontSize(), true)
+	self.document:GetElementById(actual_el.id):SetClass("p2", true)
 
     return actual_el
 end
@@ -836,18 +836,18 @@ end
 
 function OptionsController:initialize_basic_options()
 	--Create the font size selector option
-	local fontOption = {
-		Title = utils.xstr({"Font Size Multiplier", -1}),
-		Description = utils.xstr({"Multiplies the font size", -1}),
-		Key = "Font_Multiplier",
+	local fontAdjustment = {
+		Title = utils.xstr({"Font Size Adjustment", -1}),
+		Description = utils.xstr({"Increases or decreases the font size", -1}),
+		Key = "Font_Adjustment",
 		Type = "Range",
 		Category = "Custom",
 		Min = 0,
 		Max = 1,
-		Value = 0.25
+		Value = 0.5
 	}
-	local font_el = self:createCustomOptionElement(fontOption, "font_size_selector")
-	self:AddOptionTooltip(fontOption, font_el)
+	local font_adjust_el = self:createCustomOptionElement(fontAdjustment, "font_size_selector")
+	self:AddOptionTooltip(fontAdjustment, font_adjust_el)
 	
     for _, option in ipairs(self.category_options.basic) do
         local key = option.Key
@@ -1096,7 +1096,7 @@ function OptionsController:initialize(document)
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
     -- Persist current changes since we might discard them in this screen
     opt.persistChanges()

@@ -19,8 +19,7 @@ function JournalController:initialize(document)
     self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
     
     ---Load the desired font size from the save file
-    self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
-    self.document:GetElementById("journaltext"):SetClass(("p2-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
     self:registerEventHandlers()
     
@@ -156,7 +155,7 @@ function JournalController:SelectEntry(key)
                     self.document:GetElementById("journaltext").inner_rml = "<p>" ..  self:journal_text_to_rml(text) .."</p>"
                     
                     if image and caption then
-                        self.document:GetElementById("journaltext").inner_rml = "<div id=journalpic><img src=\"" .. image .."\"></img><div class=\"s1-" .. ScpuiSystem:getFontSize() .. "\" id=piccaption><p>" .. caption .. "</p></div></div>" .. self.document:GetElementById("journaltext").inner_rml
+                        self.document:GetElementById("journaltext").inner_rml = "<div id=journalpic><img src=\"" .. image .."\"></img><div class=\"s1\" id=piccaption><p>" .. caption .. "</p></div></div>" .. self.document:GetElementById("journaltext").inner_rml
                     elseif image then
                         self.document:GetElementById("journaltext").inner_rml = "<div id=journalpic><img src=\"" .. image .."\"></img></div>" .. self.document:GetElementById("journaltext").inner_rml
                     end
