@@ -83,7 +83,7 @@ function AbstractBriefingController:global_keydown(_, event)
 		
 		if self.briefState == "briefing" then
 			loadoutHandler:saveCurrentLoadout()
-			loadoutHandler:unloadAll()
+			loadoutHandler:unloadAll(false)
 		end
         event:StopPropagation()
 		
@@ -208,7 +208,7 @@ function AbstractBriefingController:unload()
 	if self.briefState == "briefing" then
 		if self.Commit == true then
 			loadoutHandler:saveCurrentLoadout()
-			loadoutHandler:unloadAll()
+			loadoutHandler:unloadAll(true)
 			ScpuiSystem.drawBrMap = nil
 			ScpuiSystem.cutscenePlayed = nil
 		end

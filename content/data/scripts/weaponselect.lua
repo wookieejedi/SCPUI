@@ -1103,7 +1103,7 @@ function WeaponSelectController:unload()
 	end
 	
 	if self.Commit == true then
-		loadoutHandler:unloadAll()
+		loadoutHandler:unloadAll(true)
 	end
 	
 end

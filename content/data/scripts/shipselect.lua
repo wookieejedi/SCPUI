@@ -541,7 +541,6 @@ function ShipSelectController:DragSlotEnd(element, entry, slot)
 		element:SetClass("drag", false)
 		
 		element.first_child:SetAttribute("src", loadoutHandler:getEmptyWingSlot()[2])
-		loadoutHandler:ReturnShipToPool(slot)
 		loadoutHandler:TakeShipFromSlot(slot)
 	end
 end
@@ -682,7 +681,7 @@ function ShipSelectController:unload()
 	ScpuiSystem.modelDraw.class = nil
 	
 	if self.Commit == true then
-		loadoutHandler:unloadAll()
+		loadoutHandler:unloadAll(true)
 		ScpuiSystem.drawBrMap = nil
 		ScpuiSystem.cutscenePlayed = nil
 	end

@@ -103,7 +103,8 @@ return {
     returnShipSlot       = Topic(nil), --Runs arbitrary script and expects no return value. Sends the ship slot
     initWeaponInfo       = Topic(nil), --Runs arbitrary script and expects no return value. Sends the weapon data as a table
     initShipInfo         = Topic(nil), --Runs arbitrary script and expects no return value. Sends the ship data as a table
-    copyShipSlot         = Topic(nil) --Runs arbitrary script and expects no return value. Sends the source ship slot and the target ship slot
+    copyShipSlot         = Topic(nil), --Runs arbitrary script and expects no return value. Sends the source ship slot and the target ship slot
+	unload               = Topic(nil) --Runs arbitrary script and expects no return value. Sends a boolean whether or not the mission is being committed to or canceled
   },
   medals = {
     initialize  = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context

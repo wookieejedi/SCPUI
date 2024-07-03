@@ -34,12 +34,14 @@ function LoadoutHandler:init()
 	end
 end
 
-function LoadoutHandler:unloadAll()
+function LoadoutHandler:unloadAll(missionCommit)
 	ScpuiSystem.loadouts = nil
 	ScpuiSystem.savedLoadouts = nil
 	ScpuiSystem.backupLoadout = nil
 	
 	ScpuiSystem.selectInit = nil
+	
+	topics.loadouts.unload:send(missionCommit)
 end
 
 function LoadoutHandler:getSavedLoadouts()
@@ -120,6 +122,8 @@ function LoadoutHandler:maybeApplySavedLoadout()
 			ScpuiSystem.loadouts.shipPool = ScpuiSystem.savedLoadouts[key].shipPool
 			ScpuiSystem.loadouts.weaponPool = ScpuiSystem.savedLoadouts[key].weaponPool
 			ScpuiSystem.loadouts.slots = ScpuiSystem.savedLoadouts[key].slots
+			
+			ba.print("LOADOUT HANDLER: Applying saved loadout for mission " .. key .. "\n")
 		else
 			--If the class counts don't match then the saved loadout is invalid. Might as well clear it.
 			ScpuiSystem.savedLoadouts[key] = nil
@@ -129,8 +133,8 @@ function LoadoutHandler:maybeApplySavedLoadout()
 end
 
 function LoadoutHandler:getLoadout()	
-	ScpuiSystem.loadouts.shipPool = self:getPool(ui.ShipWepSelect.Ship_Pool)
-	ScpuiSystem.loadouts.weaponPool = self:getPool(ui.ShipWepSelect.Weapon_Pool)
+	ScpuiSystem.loadouts.shipPool = self:getPool(ui.ShipWepSelect.Ship_Pool, true)
+	ScpuiSystem.loadouts.weaponPool = self:getPool(ui.ShipWepSelect.Weapon_Pool, false)
 	ScpuiSystem.loadouts.slots = self:getSlots()
 end
 
@@ -147,9 +151,16 @@ function LoadoutHandler:cleanLoadoutShips()
 	end
 end
 
-function LoadoutHandler:getPool(pool)
+function LoadoutHandler:getPool(pool, shipPool)
 	data = {}
 	for i = 1, #pool do
+		if pool[i] > 0 then
+			if shipPool == true then
+				ba.print("LOADOUT HANDLER: Ship pool item " .. tb.ShipClasses[i].Name .. " to amount " .. pool[i] .. "\n")
+			else
+				ba.print("LOADOUT HANDLER: Weapon pool item " .. tb.WeaponClasses[i].Name .. " to amount " .. pool[i] .. "\n")
+			end
+		end
 		data[i] = pool[i]
 	end
 	return data
@@ -162,10 +173,12 @@ function LoadoutHandler:getSlots()
 	local slots = {}
 	
 	for i = 1, #ui.ShipWepSelect.Loadout_Ships do
+		ba.print('LOADOUT HANDLER: Parsing ship slot ' .. i .. '\n')
 		local data = {}
 		data.Weapons = self:parseWeapons(i)
 		data.Amounts = self:parseAmounts(i)
 		data.ShipClassIndex = ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex
+		ba.print('LOADOUT HANDLER: Ship is ' .. tb.ShipClasses[data.ShipClassIndex].Name .. '\n')
 		
 		local wing, wingSlot = self:GetWingSlot(i)
 		
@@ -191,6 +204,7 @@ function LoadoutHandler:parseWeapons(ship)
 	for i=1, #ui.ShipWepSelect.Loadout_Ships[ship].Weapons do
 		if ui.ShipWepSelect.Loadout_Ships[ship].ShipClassIndex > 0 then
 			data[i] = ui.ShipWepSelect.Loadout_Ships[ship].Weapons[i]
+			ba.print('LOADOUT HANDLER: Weapon in bank ' .. i .. ' is ' .. tb.WeaponClasses[data[i]].Name .. '\n')
 		else
 			data[i] = -1
 		end
@@ -205,6 +219,7 @@ function LoadoutHandler:parseAmounts(ship)
 	for i=1, #ui.ShipWepSelect.Loadout_Ships[ship].Amounts do
 		if ui.ShipWepSelect.Loadout_Ships[ship].ShipClassIndex > 0 then
 			data[i] = ui.ShipWepSelect.Loadout_Ships[ship].Amounts[i]
+			ba.print('LOADOUT HANDLER: Amount in bank ' .. i .. ' is ' .. data[i] .. '\n')
 		else
 			data[i] = -1
 		end
@@ -232,7 +247,7 @@ end
 function LoadoutHandler:generateShipInfo()
 	local shipList = tb.ShipClasses
 	local i = 1
-	while (i ~= #shipList) do
+	while (i <= #shipList) do
 		if self:GetShipPoolAmount(i) > 0 then
 			if rocketUiIcons[shipList[i].Name] == nil then
 				ba.warning("No generated icon was found for " .. shipList[i].Name .. "! Generating one now.")
@@ -416,6 +431,7 @@ function LoadoutHandler:generateEmptySlotFrames()
 	--clean up
 	gr.setColor(saveColor)
 	gr.setTarget()
+	gr.setLineWidth(1)
 	imag_h:unload()
 	tex_h:unload()
 
@@ -862,11 +878,11 @@ function LoadoutHandler:EmptyWeaponBank(slot, bank, onlyEmpty)
 	local amount = ship.Amounts[bank]
 	
 	if amount == nil then
-		ba.warning("Trying to empty weapon bank for slot " .. slot .. ", bank " .. bank .. ", but amount was nil!")
+		ba.print("LOADOUT HANDLER: Trying to empty weapon bank for slot " .. slot .. ", bank " .. bank .. ", but amount was nil!")
 		return
 	end
 	if weapon == nil then
-		ba.warning("Trying to empty weapon bank for slot " .. slot .. ", bank " .. bank .. ", but weapon was nil!")
+		ba.print("LOADOUT HANDLER: Trying to empty weapon bank for slot " .. slot .. ", bank " .. bank .. ", but weapon was nil!")
 		return
 	end
 	

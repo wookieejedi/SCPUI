@@ -68,13 +68,14 @@ function RedAlertController:commit_pressed()
 	if not topics.mission.commit:send(self) then
 		return
 	end
-	loadoutHandler:unloadAll()
+	loadoutHandler:unloadAll(true)
 	topics.redalert.commit:send(self)
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_ENTER_GAME"])
 end
 
 function RedAlertController:replay_pressed()
     if ui.RedAlert.replayPreviousMission() and mn.isInCampaign() then
+		loadoutHandler:unloadAll(false)
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_GAME"])
 	end
 end
@@ -89,7 +90,7 @@ function RedAlertController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         --self.music_handle:stop()
 		event:StopPropagation()
-		loadoutHandler:unloadAll()
+		loadoutHandler:unloadAll(false)
 		
 		mn.unloadMission(true)
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
