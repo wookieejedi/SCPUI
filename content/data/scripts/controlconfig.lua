@@ -36,6 +36,7 @@ function ControlConfigController:initialize(document)
 	self.document:GetElementById("new_lock"):SetClass("hidden", false)
 	
 	topics.controlconfig.initialize:send(self)
+	self:maybeShowDialogs()
 	
 	self:changeSection(0)
 end
@@ -165,31 +166,59 @@ function ControlConfigController:getPresetInput(presetType)
 		b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
 	}
 	
-	self:Show(text, title, true, buttons)
+	self.nextDialog = {}
+	self.nextDialog.text = text
+	self.nextDialog.title = title
+	self.nextDialog.input = true
+	self.nextDialog.buttons = buttons
+	
+	--self:Show(text, title, true, buttons)
 end
 
 function ControlConfigController:newPreset(name)
 
-	if ui.ControlConfig.createPreset(name) then
-		self:initPresets()
-		self:changeSection(self.currentTab)
+	if not name then
+		return
 	else
-		local text = "An identical preset already exists!"
-		local title = ""
-		local buttons = {}
-		buttons[1] = {
-			b_type = dialogs.BUTTON_TYPE_POSITIVE,
-			b_text = ba.XSTR("Okay", -1),
-			b_value = "",
-			b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
-		}
+		--Make sure preset names have no spaces and aren't longer than 28 characters
+		local name = name:gsub("%s+", "")
+		if #name > 28 then
+			name = name:sub(1, 28)
+		end
 		
-		self:Show(text, title, false, buttons)
+		if ui.ControlConfig.createPreset(name) then
+			self:initPresets()
+			self:changeSection(self.currentTab)
+		else
+			local text = "An identical preset already exists!"
+			local title = ""
+			local buttons = {}
+			buttons[1] = {
+				b_type = dialogs.BUTTON_TYPE_POSITIVE,
+				b_text = ba.XSTR("Okay", -1),
+				b_value = "",
+				b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
+			}
+			
+			self.nextDialog = {}
+			self.nextDialog.text = text
+			self.nextDialog.title = title
+			self.nextDialog.input = false
+			self.nextDialog.buttons = buttons
+			
+			--self:Show(text, title, false, buttons)
+		end
 	end
 	
 end
 
 function ControlConfigController:clonePreset(name)
+
+	--Make sure preset names have no spaces and aren't longer than 28 characters
+	local name = name:gsub("%s+", "")
+	if #name > 28 then
+		name = name:sub(1, 28)
+	end
 
 	local preset = ui.ControlConfig.ControlPresets[self.currentPreset]
 	
@@ -207,7 +236,13 @@ function ControlConfigController:clonePreset(name)
 			b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
 		}
 		
-		self:Show(text, title, false, buttons)
+		self.nextDialog = {}
+		self.nextDialog.text = text
+		self.nextDialog.title = title
+		self.nextDialog.input = false
+		self.nextDialog.buttons = buttons
+		
+		--self:Show(text, title, false, buttons)
 	end
 	
 end
@@ -232,7 +267,13 @@ function ControlConfigController:verifyDelete()
 		b_keypress = string.sub(ba.XSTR("No", -1), 1, 1)
 	}
 	
-	self:Show(text, title, false, buttons)
+	self.nextDialog = {}
+	self.nextDialog.text = text
+	self.nextDialog.title = title
+	self.nextDialog.input = false
+	self.nextDialog.buttons = buttons
+	
+	--self:Show(text, title, false, buttons)
 end
 
 function ControlConfigController:deletePreset()
@@ -631,7 +672,13 @@ function ControlConfigController:clearAll()
 		b_keypress = string.sub(ba.XSTR("No", -1), 1, 1)
 	}
 	
-	self:Show(text, title, false, buttons)
+	self.nextDialog = {}
+	self.nextDialog.text = text
+	self.nextDialog.title = title
+	self.nextDialog.input = false
+	self.nextDialog.buttons = buttons
+	
+	--self:Show(text, title, false, buttons)
 
 end
 
@@ -684,7 +731,13 @@ function ControlConfigController:Exit(element)
 			b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
 		}
 		
-		self:Show(text, title, false, buttons)
+		self.nextDialog = {}
+		self.nextDialog.text = text
+		self.nextDialog.title = title
+		self.nextDialog.input = false
+		self.nextDialog.buttons = buttons
+		
+		--self:Show(text, title, false, buttons)
 	end
 	if ui.ControlConfig.getCurrentPreset() == nil then
 		self.promptControl = 4
@@ -706,7 +759,13 @@ function ControlConfigController:Exit(element)
 			b_keypress = string.sub(ba.XSTR("No", -1), 1, 1)
 		}
 		
-		self:Show(text, title, false, buttons)
+		self.nextDialog = {}
+		self.nextDialog.text = text
+		self.nextDialog.title = title
+		self.nextDialog.input = false
+		self.nextDialog.buttons = buttons
+		
+		--self:Show(text, title, false, buttons)
 	end
 	
 	if continue then
@@ -725,7 +784,13 @@ function ControlConfigController:Exit(element)
 				b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
 			}
 			
-			self:Show(text, title, false, buttons)
+			self.nextDialog = {}
+			self.nextDialog.text = text
+			self.nextDialog.title = title
+			self.nextDialog.input = false
+			self.nextDialog.buttons = buttons
+			
+			--self:Show(text, title, false, buttons)
 		end
 	end
 
@@ -770,6 +835,17 @@ function ControlConfigController:searchForBind()
 		end
     end, async.OnFrameExecutor)
 	
+end
+
+function ControlConfigController:maybeShowDialogs()
+	async.run(function()
+        async.await(async_util.wait_for(0.01))
+		if self.nextDialog ~= nil then
+			self:Show(self.nextDialog.text, self.nextDialog.title, self.nextDialog.input, self.nextDialog.buttons)
+			self.nextDialog = nil
+		end
+        self:maybeShowDialogs()
+    end, async.OnFrameExecutor)
 end
 
 function ControlConfigController:Show(text, title, input, buttons)
@@ -842,7 +918,7 @@ function ControlConfigController:BindKey(idx, item)
 		local status = 0
     
         while (status == 0) do 
-			status = ui.ControlConfig.ControlConfigs[idx]:detectKeypress(item)
+			status = ui.ControlConfig.ControlConfigs[idx]:detectKeypress(item + 1)
 			async.await(async.yield())
 		end
         
@@ -860,7 +936,12 @@ function ControlConfigController:BindKey(idx, item)
 				b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
 			}
 			
-			self:Show(text, title, false, buttons)
+			self.nextDialog = {}
+			self.nextDialog.text = text
+			self.nextDialog.title = title
+			self.nextDialog.input = false
+			self.nextDialog.buttons = buttons
+			--self:Show(text, title, false, buttons)
 		end
 		self:changeSection(self.currentTab)
 		self:SelectBind(idx, item)
