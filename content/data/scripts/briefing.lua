@@ -311,7 +311,7 @@ function BriefingController:drawMap()
 	local g = 144
 	local b = 160
 	local a = 255
-	gr.setLineWidth(2.0)
+	gr.setLineWidth(2)
 	
 	if ScpuiSystem.drawBrMap.draw == true then
 		if ScpuiOptionValues.Brief_Render_Option == nil then
@@ -412,6 +412,7 @@ function BriefingController:drawMap()
 		
 		--reset the color
 		gr.setColor(prev_c.r, prev_c.g, prev_c.b, prev_c.a)
+		gr.setLineWidth(1)
 	end
 
 end

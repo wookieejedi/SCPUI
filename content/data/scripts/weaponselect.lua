@@ -683,17 +683,21 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	local desc_el = self.document:CreateElement("p")
 	desc_el.inner_rml = entry.Description
+	desc_el:SetClass("white", true)
 	
 	local stats1_el = self.document:CreateElement("p")
-	stats1_el.inner_rml = ba.XSTR("Velocity", -1) .. ": " .. entry.Velocity .. "m/s " .. ba.XSTR("Range", -1) .. ": " .. entry.Range .. "m"
+	stats1_el.inner_rml = ba.XSTR("Velocity", -1) .. ": " .. entry.Velocity .. "m/s, " .. ba.XSTR("Range", -1) .. ": " .. entry.Range .. "m"
+	stats1_el:SetClass("green", true)
 	
 	local stats2_el = self.document:CreateElement("p")
 	stats2_el:SetClass("info", true)
 	stats2_el.inner_rml = ba.XSTR("Damage", -1) .. ": " .. hull .. " " .. ba.XSTR("Hull", -1) .. ", " .. shield .. " " .. ba.XSTR("Shield", -1) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", -1)
+	stats2_el:SetClass("red", true)
 	
 	local stats3_el = self.document:CreateElement("p")
 	stats3_el:SetClass("info", true)
-	stats3_el.inner_rml = ba.XSTR("Power Use", -1) .. ": " .. power .. ba.XSTR("W", -1) .. " " .. ba.XSTR("ROF", -1) .. ": " .. rof .. "/s"
+	stats3_el.inner_rml = ba.XSTR("Power Use", -1) .. ": " .. power .. ba.XSTR("W", -1) .. ", " .. ba.XSTR("ROF", -1) .. ": " .. rof .. "/s"
+	stats3_el:SetClass("blue", true)
 	
 	infoEl:AppendChild(desc_el)
 	infoEl:AppendChild(stats1_el)
