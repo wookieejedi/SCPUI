@@ -17,6 +17,7 @@ function ShipSelectController:init()
 	ScpuiSystem.modelDraw = {}
 	self.help_shown = false
 	self.enabled = false
+	self.selectedShip = ''
 end
 
 function ShipSelectController:initialize(document)
@@ -187,7 +188,7 @@ function ShipSelectController:BuildWings()
 					--Add click detection
 					slotEl:SetClass("button_3", true)
 					slotEl:AddEventListener("click", function(_, _, _)
-						self:SelectEntry(thisEntry, index)
+						self:ClickOnSlot(thisEntry, index)
 					end)
 				else
 					--Add dragover detection
@@ -269,6 +270,19 @@ function ShipSelectController:CreateEntries(list)
 	end
 end
 
+function ShipSelectController:BreakoutReader()
+	local text = topics.ships.description:send(tb.ShipClasses[self.selectedShip])
+	local title = "<span style=\"color:white;\">" .. topics.ships.name:send(tb.ShipClasses[self.selectedShip]) .. "</span>"
+	local buttons = {}
+	buttons[1] = {
+		b_type = dialogs.BUTTON_TYPE_POSITIVE,
+		b_text = ba.XSTR("Close", -1),
+		b_value = "",
+		b_keypress = string.sub(ba.XSTR("Close", -1), 1, 1)
+	}
+	self:Show(text, title, buttons)
+end
+
 function ShipSelectController:HighlightShip(entry, slot)
 
 	local list = loadoutHandler:GetShipList()
@@ -325,6 +339,7 @@ function ShipSelectController:SelectEntry(entry, slot)
 	if entry.key ~= self.SelectedEntry then
 		
 		self.SelectedEntry = entry.key
+		self.selectedShip = entry.Name
 		
 		self:BuildInfo(entry)
 		
@@ -417,6 +432,14 @@ function ShipSelectController:UpdateSlotImage(element, img)
 	self.document:GetElementById(element.id):AppendChild(imgEl)
 	element:SetClass("drag", true)
 	element:SetClass("button_3", true)
+end
+
+function ShipSelectController:ClickOnSlot(entry, slot)
+	local currentSlot = loadoutHandler:GetShipLoadout(slot)
+	
+	if currentSlot.ShipClassIndex > 0 then
+		self:SelectEntry(entry, slot)
+	end
 end
 
 function ShipSelectController:DragPoolEnd(element, entry, shipIndex)

@@ -13,6 +13,7 @@ function WeaponSelectController:init()
 	ScpuiSystem.modelDraw = {}
 	self.help_shown = false
 	self.enabled = false
+	self.selectedWeapon = ''
 end
 
 function WeaponSelectController:initialize(document)
@@ -232,7 +233,7 @@ function WeaponSelectController:SelectInitialItems()
 	if selectSlot > 0 then
 		local ship = loadoutHandler:GetShipLoadout(selectSlot)
 
-		self:SelectShip(ship.ShipClassIndex, ship.Name, 1)
+		self:SelectShip(ship.ShipClassIndex, ship.Name, selectSlot)
 		
 		if loadoutHandler:GetNumPrimaryWeapons() > 0 then
 			self:SelectEntry(loadoutHandler:GetPrimaryWeaponList()[1])
@@ -365,12 +366,26 @@ function WeaponSelectController:CreateEntries(list)
 	end
 end
 
+function WeaponSelectController:BreakoutReader()
+	local text = topics.weapons.description:send(tb.WeaponClasses[self.selectedWeapon])
+	local title = "<span style=\"color:white;\">" .. topics.weapons.name:send(tb.WeaponClasses[self.selectedWeapon]) .. "</span>"
+	local buttons = {}
+	buttons[1] = {
+		b_type = dialogs.BUTTON_TYPE_POSITIVE,
+		b_text = ba.XSTR("Close", -1),
+		b_value = "",
+		b_keypress = string.sub(ba.XSTR("Close", -1), 1, 1)
+	}
+	self:Show(text, title, buttons)
+end
+
 function WeaponSelectController:SelectEntry(entry, slot)
 	if entry ~= nil then
 		ScpuiSystem.modelDraw.Hover = slot
 		if entry.key ~= self.SelectedEntry then
 			
 			self.SelectedEntry = entry.key
+			self.selectedWeapon = entry.Name
 			
 			self:HighlightWeapon()
 			
@@ -630,8 +645,8 @@ function WeaponSelectController:BuildSlot(parentEl, bank)
 	end
 	
 	--Get the weapon currently loaded in the slot
-	local weapon = ship.Weapons[bank]
-	local amount = ship.Amounts[bank]
+	local weapon = ship.Weapons[bank] or 0
+	local amount = ship.Amounts[bank] or 0
 	if amount < 1 then amount = "" end
 	if bank > 3 then
 		self.secondaryAmountEls[bank - 3].inner_rml = amount

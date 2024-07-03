@@ -103,6 +103,19 @@
 				<div id=weapon_stats>
 				</div>
 			</div>
+			<div id=breakout_button>
+				<div id=breakout_cont>
+					<button id="breakout_btn" class="breakout button_1" onclick="controller:BreakoutReader()">
+						<span id="breakout_img" class="breakout button_img">
+							<img src="oval.png" class="psuedo_img"></img>
+						</span>
+						<span id="breakout_button_text" class="pos">
+							<p>XSTR("Read Description", -1)</p>
+						</span>
+					</button>
+				</div>
+				<img src="ops-panel-horz.png"></img>
+			</div>
 			<img src="select-window-right.png"></img>
 		</div>
 		<div id=copy_to_wing_panel>
