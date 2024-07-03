@@ -75,6 +75,7 @@ end
 
 function RedAlertController:replay_pressed()
     if ui.RedAlert.replayPreviousMission() and mn.isInCampaign() then
+		XLoadingScreen:Exit() --Reset the loading screen. This needs to be done more officially later when loading screen is ported to SCPUI
 		loadoutHandler:unloadAll(false)
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_GAME"])
 	end

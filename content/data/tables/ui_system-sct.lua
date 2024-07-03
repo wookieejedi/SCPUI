@@ -442,6 +442,92 @@ function ScpuiSystem:CloseDialog()
 		ScpuiSystem.dialog:Close()
 		ScpuiSystem.dialog = nil
 	end
+	
+	local state = hv.NewState or ba.getCurrentGameState()
+	
+	--If we're going back to an SCPUI state, then give it control
+	--Otherwise cede control back to FSO
+	if self:hasOverrideForState(getRocketUiHandle(state)) then
+		ui.enableInput(self.context)
+	else
+		ui.disableInput()
+	end
+end
+
+function ScpuiSystem:loadStart()
+
+	if ScpuiSystem.loadScreenInit then
+		return
+	end
+
+	if ba.MultiplayerMode then
+		ScpuiSystem.render = not ScpuiSystem.disableInMulti
+	else
+		ScpuiSystem.render = true
+	end
+	
+	if not self:hasOverrideForState({Name = "LOAD_SCREEN"}) then
+		return
+	end
+	
+	ScpuiSystem.loadDoc = self:getDef("LOAD_SCREEN")
+	ba.print("SCPUI is loading document " .. ScpuiSystem.loadDoc.markup .. "\n")
+	ScpuiSystem.loadDoc.document = self.context:LoadDocument(ScpuiSystem.loadDoc.markup)
+	ScpuiSystem.loadDoc.document:Show(DocumentFocus.FOCUS)
+
+	--ui.enableInput(self.context)
+	
+	ScpuiSystem.loadProgress = 0
+	ScpuiSystem.loadScreenInit = true
+end
+
+function ScpuiSystem:loadFrame()
+	if ScpuiSystem.loadScreenInit == nil then
+		return
+	end
+	
+	ScpuiSystem.loadProgress = hv.Progress
+	
+	--ba.warning(hv.Progress)
+
+	-- Add some tracing scopes here to see how long this stuff takes
+	updateCategory:trace(function()
+		self.context:Update()
+	end)
+	renderCategory:trace(function()
+		self.context:Render()
+	end)
+end
+
+function ScpuiSystem:loadEnd(substate)
+
+	if ScpuiSystem.loadScreenInit == nil then
+		return
+	end
+
+	self:CloseLoadScreen()
+
+	--ui.disableInput()
+	ScpuiSystem.loadProgress = nil
+	ScpuiSystem.loadScreenInit = nil
+end
+
+function ScpuiSystem:CloseLoadScreen()
+	if ScpuiSystem.loadDoc ~= nil then
+		ba.print("SCPUI is closing loading screen\n")
+		ScpuiSystem.loadDoc.document:Close()
+		ScpuiSystem.loadDoc = nil
+	end
+	
+	local state = hv.NewState or ba.getCurrentGameState()
+	
+	--If we're going back to an SCPUI state, then give it control
+	--Otherwise cede control back to FSO
+	if self:hasOverrideForState(getRocketUiHandle(state)) then
+		ui.enableInput(self.context)
+	else
+		ui.disableInput()
+	end
 end
 
 ScpuiSystem:init()
@@ -487,6 +573,26 @@ engine.addHook("On Dialog Close", function()
 end, {}, function()
 	return ScpuiSystem.render
 end)
+
+--[[engine.addHook("On Load Screen", function()
+	ScpuiSystem:loadStart()
+end, {}, function()
+	return ScpuiSystem:hasOverrideForState({Name = "LOAD_SCREEN"})
+end)
+
+engine.addHook("On Load Screen", function()
+	ScpuiSystem:loadFrame()
+end, {}, function()
+	return ScpuiSystem:hasOverrideForState({Name = "LOAD_SCREEN"})
+end)
+
+engine.addHook("On Load Complete", function()
+	ScpuiSystem:loadEnd()
+end, {}, function()
+	return ScpuiSystem:hasOverrideForState({Name = "LOAD_SCREEN"})
+end)]]--
+
+--Helpers
 
 engine.addHook("On Load Screen", function()
 	ScpuiSystem.missionLoaded = true

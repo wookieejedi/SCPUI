@@ -57,6 +57,10 @@ return {
     start           = Topic(nil), --Runs arbitrary script and expects no return value. Sends the document context
 	finish          = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
   },
+  loadscreen = {
+    initialize           = Topic(nil), --Runs arbitrary script and expects no return value. Sends the UI context.
+    load_bar             = Topic('LoadingBar') --Expects an image file returned, replaces the loading screen bar. Should be an animation.
+  },
   briefcommon = {
     initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
   },
