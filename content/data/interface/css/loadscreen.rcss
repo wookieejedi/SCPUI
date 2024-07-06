@@ -1,0 +1,32 @@
+body
+{
+	z-index: bottom;
+	z-index: -1;
+	color: white;
+}
+
+div#title
+{
+	width: 30%;
+	margin: auto;
+	position: absolute;
+	top: 43%;
+	left: 0;
+	text-align: center;
+}
+
+div#loadingbar
+{
+	width: 50%;
+	margin: auto;
+	position: absolute;
+	top: 90%;
+	left: 0;
+}
+
+div#loadingbar img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
