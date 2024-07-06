@@ -5,6 +5,23 @@ body
 	color: white;
 }
 
+div#logo_wide
+{
+	position: absolute;
+	top: 6%;
+	margin: auto;
+	width: 70%;
+	height: auto;
+	overflow: hidden;
+}
+
+div#logo_wide img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
 div#title
 {
 	width: 30%;
