@@ -198,7 +198,7 @@ function HostOptionsController:sendChat()
 	end
 end
 
-function HostSetupController:sendChat()
+function HostOptionsController:sendChat()
 	if string.len(self.submittedValue) > 0 then
 		ui.MultiGeneral.sendChat(self.submittedValue)
 		self.input_id:SetAttribute("value", "")
@@ -206,11 +206,11 @@ function HostSetupController:sendChat()
 	end
 end
 
-function HostSetupController:InputFocusLost()
+function HostOptionsController:InputFocusLost()
 	--do nothing
 end
 
-function HostSetupController:InputChange(event)
+function HostOptionsController:InputChange(event)
 
 	if event.parameters.linebreak ~= 1 then
 		local val = self.input_id:GetAttribute("value")

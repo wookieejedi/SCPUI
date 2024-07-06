@@ -1,0 +1,5 @@
+.loadscreen_default
+{
+	background-decorator: image;
+	background-image: FS2_Load_BG.png;
+}

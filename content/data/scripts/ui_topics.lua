@@ -194,7 +194,7 @@ return {
   },
   mission = { --All UIs where mission can be committed to!
     commit               = Topic(true) --Whether or not to continue to with the Commit press. Sends the context and expects boolean return
-  }
+  },
   multiclientsetup = {
     initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
   },
