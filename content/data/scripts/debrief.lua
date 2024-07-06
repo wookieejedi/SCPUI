@@ -45,6 +45,9 @@ function DebriefingController:initialize(document)
     
     ---Load background choice
     self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	
+	self.chat_el = self.document:GetElementById("chat_window")
+	self.input_id = self.document:GetElementById("chat_input")
     
     ---Load the desired font size from the save file
     self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)

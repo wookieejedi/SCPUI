@@ -1,0 +1,51 @@
+<rml>
+	<head>
+		<title>Game Paused</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="fontsizes.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="multi_paused.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
+		<script>
+			controller = require("multi_paused")()
+		</script>
+	</head>
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload(); controller = nil">
+		<div id=screenrender>
+		</div>
+		<div id=content>
+			<div id=chat_wrapper>
+				<div id=pauser_name>
+				</div>
+				<div id=chat_window>
+				</div>
+				<input id=chat_input type="text" maxlength="512" onblur="controller:InputFocusLost()"
+					onchange="controller:InputChange(event)"></input>
+				<div id=btns_wrapper>
+					<div id=submit_cont>
+						<button id="submit_btn" class="submit button_1" onclick="controller:submit_pressed()">
+							<span id="submit_img" class="submit button_img">
+								<img src="select.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_bot">
+								<p>XSTR("Submit", -1)</p>
+							</span>
+						</button>
+					</div>
+					<div id=exit_cont>
+						<button id="exit_btn" class="exit button_1" onclick="controller:exit_pressed()">
+							<span id="exit_img" class="exit button_img">
+								<img src="exit.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_bot">
+								<p>XSTR("End Mission", -1)</p>
+							</span>
+						</button>
+					</div>
+					<img src="ops-panel-horz.png"></img>
+				</div>
+				<img src="fiction-window.png"></img>
+			</div>
+		</div>
+	</body>
+</rml>

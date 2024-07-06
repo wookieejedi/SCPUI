@@ -574,7 +574,7 @@ end, {}, function()
 	return ScpuiSystem.render
 end)
 
---[[engine.addHook("On Load Screen", function()
+engine.addHook("On Load Screen", function()
 	ScpuiSystem:loadStart()
 end, {}, function()
 	return ScpuiSystem:hasOverrideForState({Name = "LOAD_SCREEN"})
@@ -590,7 +590,7 @@ engine.addHook("On Load Complete", function()
 	ScpuiSystem:loadEnd()
 end, {}, function()
 	return ScpuiSystem:hasOverrideForState({Name = "LOAD_SCREEN"})
-end)]]--
+end)
 
 --Helpers
 

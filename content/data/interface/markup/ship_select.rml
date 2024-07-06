@@ -12,6 +12,23 @@
 		</script>
 	</head>
 	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload(); controller = nil">
+		<div id=chat_wrapper class="hidden">
+			<div id=chat_window>
+			</div>
+			<input id=chat_input type="text" maxlength="512" onblur="controller:InputFocusLost()"
+				onchange="controller:InputChange(event)"></input>
+			<div id=submit_cont>
+				<button id="submit_btn" class="submit button_1" onclick="controller:submit_pressed()">
+					<span id="submit_img" class="submit button_img">
+						<img src="select.png" class="psuedo_img"></img>
+					</span>
+					<span class="pos button_text_special">
+						<p>XSTR("Submit", -1)</p>
+					</span>
+				</button>
+			</div>
+			<img src="c-brief-text-window.png"></img>
+		</div>
 		<div id=top_panel_wrapper>
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
@@ -103,6 +120,18 @@
 							</span>
 							<span class="pos button_text_top">
 								<p>XSTR("Reset", -1)</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<div id=c_panel_wrapper_multi class="hidden">
+					<div id=reset_cont>
+						<button id="lock_btn" class="lock button_1" onclick="controller:lock_pressed(element)">
+							<span id="lock_img" class="lock button_img">
+								<img src="star.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_top">
+								<p>XSTR("Ships Locked", -1)</p>
 							</span>
 						</button>
 					</div>

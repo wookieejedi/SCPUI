@@ -1,6 +1,6 @@
 #Settings
 
-$Disable during Multiplayer: true
+$Disable during Multiplayer: false
 
 #State Replacement
 
@@ -83,8 +83,30 @@ $State: GS_STATE_PXO
 $State: GS_STATE_PXO_HELP
     +Markup: data/interface/markup/multi_pxo_help.rml
 
+$State: GS_STATE_MULTI_JOIN_GAME
+	+Markup: data/interface/markup/multi_join_game.rml
+
+$State: GS_STATE_MULTI_START_GAME
+	+Markup: data/interface/markup/multi_start_game.rml
+
+$State: GS_STATE_MULTI_HOST_SETUP
+	+Markup: data/interface/markup/multi_host_setup.rml
+
+$State: GS_STATE_MULTI_HOST_OPTIONS
+	+Markup: data/interface/markup/multi_host_options.rml
+
+$State: GS_STATE_MULTI_CLIENT_SETUP
+	+Markup: data/interface/markup/multi_client_setup.rml
+
+$State: GS_STATE_MULTI_MISSION_SYNC
+	+Markup: data/interface/markup/multi_sync.rml
+
+$State: GS_STATE_MULTI_PAUSED
+    +Markup: data/interface/markup/multi_paused.rml
+
 $State: LOAD_SCREEN
 	+Markup: data/interface/markup/loadscreen.rml
+
 
 #Background Replacement
 

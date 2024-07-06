@@ -194,6 +194,33 @@ return {
   },
   mission = { --All UIs where mission can be committed to!
     commit               = Topic(true) --Whether or not to continue to with the Commit press. Sends the context and expects boolean return
-  }
+  },
+  multiclientsetup = {
+    initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
+  multihostoptions = {
+    initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
+  multihostsetup = {
+    initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
+  multijoingame = {
+    initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
+  multipaused = {
+    initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
+  multipxo = {
+    initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
+  multipxohelp = {
+    initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
+  multistartgame = {
+    initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
+  multisync = {
+    initialize           = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+  },
 }
 

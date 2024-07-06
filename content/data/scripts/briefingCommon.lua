@@ -72,10 +72,7 @@ end
 
 function AbstractBriefingController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-			ScpuiSystem.music_handle:close(true)
-		end
-		ScpuiSystem.music_handle = nil
+		ScpuiSystem:stopMusic()
 		ScpuiSystem.current_played = nil
 		ScpuiSystem.music_started = nil
 		ScpuiSystem.drawBrMap = nil

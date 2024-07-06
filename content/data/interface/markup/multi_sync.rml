@@ -1,0 +1,100 @@
+<rml>
+	<head>
+		<title>Client Setup</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="fontsizes.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="scrollbars.rcss"/>
+		<link type="text/rcss" href="multi_sync.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
+		<script>
+			controller = require("multi_sync")()
+		</script>
+	</head>
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
+		<div id=countdown>
+		</div>
+		<div id=players_wrapper>
+			<div id=players_div>
+				<ul id=players_list_ul>
+				</ul>
+			</div>
+			<div id=player_team_lock>
+			</div>
+			<img src="tech-room-list-window-l.png"></img>
+		</div>
+		<div id=chat_wrapper>
+			<div id=chat_window>
+			</div>
+			<input id=chat_input type="text" maxlength="512" onblur="controller:InputFocusLost()"
+				onchange="controller:InputChange(event)"></input>
+			<div id=submit_btn_wrapper>
+				<div id=submit_cont>
+					<button id="submit_btn" class="submit button_1" onclick="controller:submit_pressed()">
+						<span id="submit_img" class="submit button_img">
+							<img src="select.png" class="psuedo_img"></img>
+						</span>
+						<span class="pos button_text_special">
+							<p>XSTR("Submit", -1)</p>
+						</span>
+					</button>
+				</div>
+				<img src="ops-panel-horz.png"></img>
+			</div>
+			<img src="fiction-window.png"></img>
+		</div>
+		<div id=common_text_wrapper>
+			<div id=common_text>
+			</div>
+			<img src="credits-text-window.png"></img>
+		</div>
+		<div id=bottom_panel_wrapper>
+			<div id=bottom_panel_a>
+				<div id=a_panel_wrapper>
+					<div id=launch_cont>
+						<button id="launch_btn" class="launch button_1" onclick="controller:launch_pressed(element)">
+							<span id="launch_img" class="launch button_img">
+								<img src="select.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>XSTR("Launch", -1)</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-a.png"></img>
+			</div>
+			<div id=bottom_panel_b>
+				<div id=b_panel_wrapper>
+					<div id=accept_cont>
+						<button id="accept_btn" class="accept button_1" onclick="controller:exit_pressed(element)">
+							<span id="accept_img" class="accept button_img">
+								<img src="decline.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>XSTR("Cancel", -1)</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-e.png"></img>
+			</div>
+			<div id=bottom_panel_c>
+				<div id=c_panel_wrapper>
+					<div id=kick_cont>
+						<button id="kick_btn" class="kick button_1" onclick="controller:kick_pressed(element)">
+							<span id="kick_img" class="accept button_img">
+								<img src="cancel.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>XSTR("Kick", -1)</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-e.png"></img>
+			</div>
+		</div>
+	</body>
+
+</rml>

@@ -1,0 +1,249 @@
+body
+{
+	z-index: bottom;
+	z-index: -1;
+}
+
+#content
+{
+	position: relative;
+}
+
+div#content
+{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 3;
+}
+
+div#screenrender
+{
+	position: relative;
+	z-index: -2;
+}
+
+/*Chat Window*/
+#chat_wrapper
+{
+	width: 60%;
+	height: 60%;
+	position: absolute;
+	top: 10%;
+	left: 20%;
+}
+
+div#chat_wrapper img
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+#chat_window
+{
+	width: 96.7%;
+	height: 93%;
+	position: absolute;
+	top: 7%;
+	left: 2%;
+	overflow: scroll;
+}
+
+#chat_input
+{
+	position:absolute;
+	bottom: -7%;
+	left: 0%;
+	height: 7%;
+	width: 75%%;
+	/*font-size: 1em;*/
+	background-decorator: image;
+	background-image: input-box.png;
+	border-width: 1px;
+	border-color: #676767;
+	line-height: 0.9em;
+}
+
+/*Submit Button*/
+
+div#btns_wrapper
+{
+	position:absolute;
+	bottom: -7%;
+	right: 4%;
+	width: 20%;
+	height: 7%;
+}
+
+
+div#submit_btn_wrapper img
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+div#submit_cont
+{
+	position:absolute;
+	top: 2%;
+	left: 2%;
+	width: 30%;
+	height: 90%;
+
+}
+
+.submit
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	
+}
+
+#submit_img
+{
+	background-decorator: image;
+	background-image: select.png;
+	
+}
+button#submit_btn:hover #submit_img
+{
+	background-decorator: image;
+	background-image: select-pos-h.png;
+}
+
+button#submit_btn:active #submit_img
+{
+	background-decorator: image;
+	background-image: select-pos-o.png;
+}
+
+/*Exit Button*/
+
+
+div#exit_btn_wrapper img
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+div#exit_cont
+{
+	position:absolute;
+	top: 2%;
+	right: 2%;
+	width: 30%;
+	height: 90%;
+
+}
+
+.exit
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	
+}
+
+#exit_img
+{
+	background-decorator: image;
+	background-image: exit.png;
+	
+}
+button#exit_btn:hover #exit_img
+{
+	background-decorator: image;
+	background-image: exit-neg-h.png;
+}
+
+button#exit_btn:active #exit_img
+{
+	background-decorator: image;
+	background-image: exit-neg-o.png;
+}
+
+/*Chat Window Scrollbar*/
+
+#chat_window scrollbarvertical
+{
+	scrollchange-sound: 9;
+	width: 4%;
+	position: absolute;
+	right: -1.5%;
+	z-index: 5;
+}
+
+#chat_window scrollbarvertical slidertrack
+{
+	background-decorator: image;
+	background-image: scroll-bar-line.png;
+	width: 8%;
+	margin-left: 46%;
+}
+
+#chat_window scrollbarvertical sliderbar
+{
+	width: 65%;
+	height: 5%;
+	background-decorator: image;
+	background-image: scroll-button.png;
+	margin-left: 20%;
+}
+
+#chat_window scrollbarvertical sliderbar:hover
+{
+	background-image: scroll-button-h.png;
+}
+
+#chat_window scrollbarvertical sliderbar:active
+{
+	background-image: scroll-button-o.png;
+}
+
+#chat_window scrollbarvertical sliderarrowdec
+{
+	width: 100%;
+	height: 9%;
+	margin-top: -3%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
+}
+
+#chat_window scrollbarvertical sliderarrowinc
+{
+	width: 100%;
+	height: 9%;
+	margin-bottom: -3%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
+}
+
+#chat_window scrollbarvertical sliderarrowdec:hover
+{
+	icon-image: arrow-dbl-up-h.png;
+}
+
+#chat_window scrollbarvertical sliderarrowinc:hover
+{
+	icon-image: arrow-dbl-down-h.png;
+}
+
+#chat_window scrollbarvertical sliderarrowdec:active
+{
+	icon-image: arrow-dbl-up-o.png;
+}
+
+#chat_window scrollbarvertical sliderarrowinc:active
+{
+	icon-image: arrow-dbl-down-o.png;
+}

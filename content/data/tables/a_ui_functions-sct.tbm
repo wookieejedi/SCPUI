@@ -5,6 +5,22 @@ $On Game Init:
 
 --Misc functions for handling various UI-related tasks
 
+function ScpuiSystem:inMultiGame()
+	local game = ui.MultiGeneral.getNetGame()
+	
+	if game:isValid() then
+		return true
+	end
+	
+	return false
+end
+
+function ScpuiSystem:replaceAngleBrackets(inputString)
+    local result = string.gsub(inputString, "<", "&lt;")
+    result = string.gsub(result, ">", "&gt;")
+    return result
+end
+
 function ScpuiSystem:freeAllModels()
 	if ScpuiSystem.missionLoaded == false then
 		ba.print("SCPUI is freeing all models!\n")
@@ -40,6 +56,13 @@ function ScpuiSystem:getAbsoluteTop(element)
 	end
 	
 	return val
+end
+
+function ScpuiSystem:stopMusic()
+	if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
+		ScpuiSystem.music_handle:close(true)
+	end
+	ScpuiSystem.music_handle = nil
 end
 
 function ScpuiSystem:maybePlayCutscene(scene)

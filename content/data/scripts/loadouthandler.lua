@@ -34,6 +34,10 @@ function LoadoutHandler:init()
 	end
 end
 
+function LoadoutHandler:update()
+	self:getLoadout()
+end
+
 function LoadoutHandler:unloadAll(missionCommit)
 	ScpuiSystem.loadouts = nil
 	ScpuiSystem.savedLoadouts = nil

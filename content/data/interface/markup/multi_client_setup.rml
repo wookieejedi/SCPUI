@@ -1,0 +1,119 @@
+<rml>
+	<head>
+		<title>Client Setup</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="fontsizes.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="scrollbars.rcss"/>
+		<link type="text/rcss" href="multi_client_setup.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
+		<script>
+			controller = require("multi_client_setup")()
+		</script>
+	</head>
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
+		<div id=squadwar_wrapper>
+			<div id=squadwar_cont>
+				<button id="squadwar_btn" class="squadwar button_1" onclick="controller:squadwar_pressed()">
+					<span id="squadwar_img" class="squadwar button_img">
+						<img src="round.png" class="psuedo_img"></img>
+					</span>
+					<span class="pos button_text_right_sw">
+						<p>XSTR("Squadwar", -1)</p>
+					</span>
+				</button>
+			</div>
+			<img src="ops-panel-horz.png"></img>
+		</div>
+		<div id=squadwar_lock>
+		</div>
+		<div id=players_wrapper>
+			<div id=players_div>
+				<ul id=players_list_ul>
+				</ul>
+			</div>
+			<div id=player_team_wrapper>
+				<div id=team_1_cont>
+					<button id="team_1_btn" class="team_1 button_1" onclick="controller:team_1_pressed()">
+						<span id="team_1_img" class="team_1 button_img">
+							<img src="oval.png" class="psuedo_img"></img>
+						</span>
+						<span class="pos button_text_top_team">
+							<p>XSTR("Team 1", -1)</p>
+						</span>
+					</button>
+				</div>
+				<div id=team_2_cont>
+					<button id="team_2_btn" class="team_2 button_1" onclick="controller:team_2_pressed()">
+						<span id="team_2_img" class="team_2 button_img">
+							<img src="oval.png" class="psuedo_img"></img>
+						</span>
+						<span class="pos button_text_top_team">
+							<p>XSTR("Team 2", -1)</p>
+						</span>
+					</button>
+				</div>
+				<img src="ops-panel-horz.png"></img>
+			</div>
+			<div id=player_team_lock>
+			</div>
+			<div id=player_btns_wrapper>
+				<div id=pilot_info_cont>
+					<button id="pilot_info_btn" class="pilot_info button_1" onclick="controller:pilot_info_pressed()">
+						<span id="pilot_info_img" class="pilot_info button_img">
+							<img src="create-pilot.png" class="psuedo_img"></img>
+						</span>
+						<span class="pos button_text_right_sw">
+							<p>XSTR("Pilot Info", -1)</p>
+						</span>
+					</button>
+				</div>
+				<img src="ops-panel-horz.png"></img>
+			</div>
+			<img src="tech-room-list-window-l.png"></img>
+		</div>
+		<div id=chat_wrapper>
+			<div id=chat_window>
+			</div>
+			<input id=chat_input type="text" maxlength="512" onblur="controller:InputFocusLost()"
+				onchange="controller:InputChange(event)"></input>
+			<div id=submit_btn_wrapper>
+				<div id=submit_cont>
+					<button id="submit_btn" class="submit button_1" onclick="controller:submit_pressed()">
+						<span id="submit_img" class="submit button_img">
+							<img src="select.png" class="psuedo_img"></img>
+						</span>
+						<span class="pos button_text_special">
+							<p>XSTR("Submit", -1)</p>
+						</span>
+					</button>
+				</div>
+				<img src="ops-panel-horz.png"></img>
+			</div>
+			<img src="fiction-window.png"></img>
+		</div>
+		<div id=common_text_wrapper>
+			<div id=common_text>
+			</div>
+			<img src="credits-text-window.png"></img>
+		</div>
+		<div id=bottom_panel_wrapper>
+			<div id=bottom_panel_a>
+				<div id=a_panel_wrapper>
+					<div id=accept_cont>
+						<button id="accept_btn" class="accept button_1" onclick="controller:exit_pressed(element)">
+							<span id="accept_img" class="accept button_img">
+								<img src="decline.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>XSTR("Cancel", -1)</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-a.png"></img>
+			</div>
+		</div>
+	</body>
+
+</rml>

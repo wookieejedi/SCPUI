@@ -51,10 +51,7 @@ function BriefingController:initialize(document)
 	
 	if mn.hasNoBriefing() then
 		self.Commit = true
-		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-			ScpuiSystem.music_handle:close(true)
-		end
-		ScpuiSystem.music_handle = nil
+		ScpuiSystem:stopMusic()
 		ScpuiSystem.current_played = nil
 		ui.Briefing.commitToMission()
 	end
@@ -79,6 +76,9 @@ function BriefingController:initialize(document)
 
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	
+	self.chat_el = self.document:GetElementById("chat_window")
+	self.input_id = self.document:GetElementById("chat_input")
 	
 	--Get all the required weapons
 	j = 1
@@ -161,6 +161,16 @@ function BriefingController:initialize(document)
 	local aniEl = self.document:CreateElement("img")
     aniEl:SetAttribute("src", ScpuiSystem.drawBrMap.url)
 	briefView:ReplaceChild(aniEl, briefView.first_child)
+	
+	if ScpuiSystem:inMultiGame() then
+		ui.MainHall.stopMusic(true) -- In multi we're coming from the Multi Sync UI so we need to stop these manually
+		ui.MainHall.stopAmbientSound()
+		self.document:GetElementById("chat_wrapper"):SetClass("hidden", false)
+		--self.document:GetElementById("c_panel_wrapper_multi"):SetClass("hidden", false)
+		self.document:GetElementById("bottom_panel_c"):SetClass("hidden", false)
+		self:updateLists()
+		ui.MultiGeneral.setPlayerState()
+	end
 	
 	topics.briefing.initialize:send(self)
 
@@ -447,34 +457,9 @@ function BriefingController:acceptPressed()
 	--Apply the loadout
 	loadoutHandler:SendAllToFSO_API()
     
-	local errorValue = ui.Briefing.commitToMission()
-	local text = ""
+	local errorValue = ui.Briefing.commitToMission(true)
 	
-	--General Fail
-	if errorValue == 1 then
-		text = ba.XSTR("An error has occured", -1)
-	--A player ship has no weapons
-	elseif errorValue == 2 then
-		text = ba.XSTR("Player ship has no weapons", 461)
-	--The required weapon was not loaded on a ship
-	elseif errorValue == 3 then
-		text = ba.XSTR("The " .. self.requiredWeps[1] .. " is required for this mission, but it has not been added to any ship loadout.", 1624)
-	--Two or more required weapons were not loaded on a ship
-	elseif errorValue == 4 then
-		local WepsString = ""
-		for i = 1, #self.requiredWeps, 1 do
-			WepsString = WepsString .. self.requiredWeps[i] .. "\n"
-		end
-		text = ba.XSTR("The following weapons are required for this mission, but at least one of them has not been added to any ship loadout:\n\n" .. WepsString, 1625)
-	--There is a gap in a ship's weapon banks
-	elseif errorValue == 5 then
-		text = ba.XSTR("At least one ship has an empty weapon bank before a full weapon bank.\n\nAll weapon banks must have weapons assigned, or if there are any gaps, they must be at the bottom of the set of banks.", 1642)
-	--A player has no weapons
-	elseif errorValue == 6 then
-		local player = ba.getCurrentPlayer():getName()
-		text = ba.XSTR("Player " .. player .. " must select a place in player wing", 462)
-	--Success!
-	else
+	if errorValue == COMMIT_SUCCESS then
 		--Save to the player file
 		self.Commit = true
 		loadoutHandler:SaveInFSO_API()
@@ -485,35 +470,15 @@ function BriefingController:acceptPressed()
 			ScpuiSystem.drawBrMap.tex = nil
 			ScpuiSystem.drawBrMap = nil
 		end
-		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-			ScpuiSystem.music_handle:close(true)
-		end
-		ScpuiSystem.music_handle = nil
+		ScpuiSystem:stopMusic()
 		ScpuiSystem.current_played = nil
-	end
-
-	if text ~= nil then
-		text = string.gsub(text,"\n","<br></br>")
-		local title = ""
-		local buttons = {}
-		buttons[1] = {
-			b_type = dialogs.BUTTON_TYPE_POSITIVE,
-			b_text = ba.XSTR("Okay", -1),
-			b_value = "",
-			b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
-		}
-		
-		self:Show(text, title, buttons)
 	end
 
 end
 
 function BriefingController:skip_pressed()
 
-	if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-		ScpuiSystem.music_handle:close(true)
-	end
-	ScpuiSystem.music_handle = nil
+	ScpuiSystem:stopMusic()
 	
 	loadoutHandler:unloadAll(false)
     
@@ -579,6 +544,67 @@ function BriefingController:help_clicked()
     for _, v in ipairs(help_texts) do
         v:SetPseudoClass("shown", self.help_shown)
     end
+end
+
+function BriefingController:lock_pressed()
+	ui.MultiGeneral.getNetGame().Locked = true
+end
+
+function BriefingController:submit_pressed()
+	if self.submittedValue then
+		self:sendChat()
+	end
+end
+
+function BriefingController:sendChat()
+	if string.len(self.submittedValue) > 0 then
+		ui.MultiGeneral.sendChat(self.submittedValue)
+		self.input_id:SetAttribute("value", "")
+		self.submittedValue = ""
+	end
+end
+
+function BriefingController:InputFocusLost()
+	--do nothing
+end
+
+function BriefingController:InputChange(event)
+	if event.parameters.linebreak ~= 1 then
+		local val = self.input_id:GetAttribute("value")
+		self.submittedValue = val
+	else
+		local submit_id = self.document:GetElementById("submit_btn")
+		ui.playElementSound(submit_id, "click")
+		self:sendChat()
+	end
+end
+
+function BriefingController:updateLists()
+	local chat = ui.MultiGeneral.getChat()
+	
+	local txt = ""
+	for i = 1, #chat do
+		local line = ""
+		if chat[i].Callsign ~= "" then
+			line = chat[i].Callsign .. ": " .. chat[i].Message
+		else
+			line = chat[i].Message
+		end
+		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
+	end
+	self.chat_el.inner_rml = txt
+	self.chat_el.scroll_top = self.chat_el.scroll_height
+	
+	if ui.MultiGeneral.getNetGame().Locked == true then
+		self.document:GetElementById("lock_btn"):SetPseudoClass("checked", true)
+	else
+		self.document:GetElementById("lock_btn"):SetPseudoClass("checked", false)
+	end
+	
+	async.run(function()
+        async.await(async_util.wait_for(0.01))
+        self:updateLists()
+    end, async.OnFrameExecutor)
 end
 
 engine.addHook("On Frame", function()

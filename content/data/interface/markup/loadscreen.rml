@@ -13,6 +13,9 @@
 		</script>
 	</head>
 	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload()">
+		<div id=logo_wide>
+			<img src="logo-wide.png"></img>
+		</div>
 		<div id=title class="p2">
 		</div>
 		<div id=loadingbar>
