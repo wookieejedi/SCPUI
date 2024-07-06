@@ -370,7 +370,9 @@ function PilotSelectController:create_player(element)
         ui.playElementSound(element, "click", "error")
         return
     end
-
+	
+	self.selectedPilot = nil
+	
     self:begin_callsign_input(function(callsign)
         self:actual_pilot_create(element, callsign)
     end)
@@ -441,6 +443,8 @@ function PilotSelectController:delete_player(element)
         self.elements[pilot] = nil
 
         tblUtil.iremove_el(self.pilots, pilot)
+		
+		self:select_first()
     end)
 end
 

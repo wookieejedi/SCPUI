@@ -219,15 +219,19 @@ end
 function BarracksScreenController:medals_button_clicked()
     if self.selectedPilot ~= nil then
         ba.savePlayer(self.selectedPilot) -- Save the player in case there were changes
+		ui.Barracks.acceptPilot(self.selectedPilot, false)
     end
-    ba.postGameEvent(ba.GameEvents['GS_EVENT_VIEW_MEDALS'])
+	
+	ba.postGameEvent(ba.GameEvents['GS_EVENT_VIEW_MEDALS'])
 end
 
 function BarracksScreenController:options_button_clicked()
     if self.selectedPilot ~= nil then
         ba.savePlayer(self.selectedPilot) -- Save the player in case there were changes
+		ui.Barracks.acceptPilot(self.selectedPilot, false)
     end
-    ba.postGameEvent(ba.GameEvents['GS_EVENT_OPTIONS_MENU'])
+	
+	ba.postGameEvent(ba.GameEvents['GS_EVENT_OPTIONS_MENU'])
 end
 
 function BarracksScreenController:set_player_mode(element, mode)
@@ -332,6 +336,9 @@ end
 function BarracksScreenController:global_keydown(element, event)
 	if self.mode == PilotSelectController.MODE_BARRACKS then
 		if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+			if self.selectedPilot ~= nil then
+				ui.Barracks.acceptPilot(self.selectedPilot, false)
+			end
 			event:StopPropagation()
 			ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 		end
