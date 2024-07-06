@@ -24,10 +24,10 @@ function PilotSelectController:initialize(document)
     self.document  = document
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize(nil, 9)), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
-		self.document:GetElementById("copyright_info"):SetClass(("s1-" .. ScpuiSystem:getFontSize(nil, 9)), true)
+		self.document:GetElementById("copyright_info"):SetClass("s2", true)
 	end
 
     local pilot_ul = document:GetElementById("pilotlist_ul")

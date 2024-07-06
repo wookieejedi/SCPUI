@@ -50,7 +50,7 @@ function HudConfigController:initialize(document)
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	hud_el = self.document:GetElementById("hud_drawn_content")
 	
@@ -217,6 +217,12 @@ end
 function HudConfigController:savePreset(name)
 
 	local continue = true
+	
+	--Make sure preset names have no spaces and aren't longer than 28 characters
+	local name = name:gsub("%s+", "")
+	if #name > 28 then
+		name = name:sub(1, 28)
+	end
 
 	for i = 1, #ui.HudConfig.GaugePresets do
 		local entry = ui.HudConfig.GaugePresets[i]

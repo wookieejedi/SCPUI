@@ -274,6 +274,61 @@ div:drag
 	border-color: grey;
 }
 
+div#breakout_button
+{
+	position: absolute;
+	bottom: -11.5%;
+	right: 5%;
+	width: 45%;
+}
+
+div#breakout_cont
+{
+	float: left;
+	width: 33%;
+	height: auto;
+	margin-left: 2%;
+	margin-top: 0%;
+}
+
+span#breakout_button_text p
+{
+	margin-top: -9%;
+	margin-left: 100%;
+	width: 250%;
+}
+
+.breakout
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+#breakout_img
+{
+	background-decorator: image;
+	background-image: oval.png;
+}
+
+button#breakout_btn:hover #breakout_img
+{
+	background-decorator: image;
+	background-image: oval-h.png;
+}
+
+button#breakout_btn:active #breakout_img
+{
+	background-decorator: image;
+	background-image: oval-o.png;
+}
+
+button#breakout_btn:checked #breakout_img
+{
+	background-decorator: image;
+	background-image: oval-o.png;
+}
+
 /*Top Panel Elements*/
 
 div#top_panel_wrapper

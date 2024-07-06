@@ -75,7 +75,7 @@ function BriefingController:initialize(document)
 		
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	self.chat_el = self.document:GetElementById("chat_window")
 	self.input_id = self.document:GetElementById("chat_input")
@@ -321,7 +321,7 @@ function BriefingController:drawMap()
 	local g = 144
 	local b = 160
 	local a = 255
-	gr.setLineWidth(2.0)
+	gr.setLineWidth(2)
 	
 	if ScpuiSystem.drawBrMap.draw == true then
 		if ScpuiOptionValues.Brief_Render_Option == nil then
@@ -422,6 +422,7 @@ function BriefingController:drawMap()
 		
 		--reset the color
 		gr.setColor(prev_c.r, prev_c.g, prev_c.b, prev_c.a)
+		gr.setLineWidth(1)
 	end
 
 end
@@ -479,7 +480,7 @@ function BriefingController:skip_pressed()
 
 	ScpuiSystem:stopMusic()
 	
-	loadoutHandler:unloadAll()
+	loadoutHandler:unloadAll(false)
     
 	if mn.isTraining() then
 		ui.Briefing.skipMission()

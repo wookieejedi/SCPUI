@@ -50,7 +50,7 @@ function DebriefingController:initialize(document)
 	self.input_id = self.document:GetElementById("chat_input")
     
     ---Load the desired font size from the save file
-    self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+    self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
     
     self.document:GetElementById("mission_name").inner_rml = mn.getMissionTitle()
     self.document:GetElementById("awards_wrapper"):SetClass("hidden", true)
@@ -128,6 +128,13 @@ function DebriefingController:initialize(document)
 end
 
 function DebriefingController:PlayVoice()
+	if self.selectedSection ~= 1 then
+		return
+	end
+	-- If we've played all the audio then don't play any more!
+	if self.audioPlaying == numStages then
+		return
+	end
     async.run(function()
         -- First, wait until the text has been shown fully
         async.await(async_util.wait_for(1.0))
@@ -138,6 +145,10 @@ function DebriefingController:PlayVoice()
                 self.audioPlaying = self.audioPlaying + 1
                 local file = self.stages[self.audioPlaying].AudioFilename
                 if #file > 0 and string.lower(file) ~= "none" then
+					--If a voice is already playing then close it and start a new one
+					if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
+						self.current_voice_handle:close(false)
+					end
                     self.current_voice_handle = ad.openAudioStream(file, AUDIOSTREAM_VOICE)
                     self.current_voice_handle:play(ad.MasterVoiceVolume)
                 end
@@ -336,7 +347,6 @@ end
 
 function DebriefingController:ClearText()
     self.document:GetElementById("debrief_text").inner_rml = ""
-    self.audioPlaying = 0
 end
 
 function DebriefingController:startMusic()
@@ -512,6 +522,7 @@ function DebriefingController:debrief_pressed(element)
         self.document:GetElementById("stage_select"):SetPseudoClass("hidden", true)
         
         self:ClearText()
+		self.audioPlaying = 0
         self:BuildText()
         self:PlayVoice()
         
@@ -703,6 +714,7 @@ function DebriefingController:close()
 end
 
 function DebriefingController:unload()
+	self.selectedSection = 0
     if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
         self.current_voice_handle:close(false)
     end

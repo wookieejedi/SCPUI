@@ -31,7 +31,7 @@ function MultiPausedController:initialize(document)
 	self.document:GetElementById("pauser_name").inner_rml = self.pauser
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	self.chat_el = self.document:GetElementById("chat_window")
 	self.input_id = self.document:GetElementById("chat_input")

@@ -28,7 +28,7 @@ function MedalsController:initialize(document)
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	self.playerMedals = ba.getCurrentPlayer().Stats.Medals
 	self.playerRank = ba.getCurrentPlayer().Stats.Rank.Name

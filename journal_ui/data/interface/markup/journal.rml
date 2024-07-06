@@ -40,7 +40,7 @@
 		<div id=journal_wrapper>
 			<div id=journal_content>
 				<div id=journaltext>
-					<p style="text-align:center;font-size:24px;color:grey;margin-top:25%;">XSTR("Please make a selection below.", -1)</p>
+					<p class="h2" style="text-align:center;color:grey;margin-top:25%;">XSTR("Please make a selection below.", -1)</p>
 					<div id=journalpic>
 					</div>
 				</div>

@@ -17,6 +17,7 @@ function WeaponSelectController:init()
 	self.banks = {}
 	self.activeSlots = {}
 	self.currentShipIndex = nil
+	self.selectedWeapon = ''
 end
 
 function WeaponSelectController:initialize(document)
@@ -72,7 +73,7 @@ function WeaponSelectController:initialize(document)
 	
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	self.document:GetElementById("brief_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("s_select_btn"):SetPseudoClass("checked", false)
@@ -413,12 +414,26 @@ function WeaponSelectController:CreateEntries(list)
 	end
 end
 
+function WeaponSelectController:BreakoutReader()
+	local text = topics.weapons.description:send(tb.WeaponClasses[self.selectedWeapon])
+	local title = "<span style=\"color:white;\">" .. topics.weapons.name:send(tb.WeaponClasses[self.selectedWeapon]) .. "</span>"
+	local buttons = {}
+	buttons[1] = {
+		b_type = dialogs.BUTTON_TYPE_POSITIVE,
+		b_text = ba.XSTR("Close", -1),
+		b_value = "",
+		b_keypress = string.sub(ba.XSTR("Close", -1), 1, 1)
+	}
+	self:Show(text, title, buttons)
+end
+
 function WeaponSelectController:SelectEntry(entry, slot)
 	if entry ~= nil then
 		ScpuiSystem.modelDraw.Hover = slot
 		if entry.key ~= self.SelectedEntry then
 			
 			self.SelectedEntry = entry.key
+			self.selectedWeapon = entry.Name
 			
 			self:HighlightWeapon()
 			
@@ -1200,7 +1215,7 @@ function WeaponSelectController:unload()
 	if self.Commit == true then
 		ScpuiSystem.drawBrMap = nil
 		ScpuiSystem.cutscenePlayed = nil
-		loadoutHandler:unloadAll()
+		loadoutHandler:unloadAll(true)
 		ScpuiSystem:stopMusic()
 	end
 	

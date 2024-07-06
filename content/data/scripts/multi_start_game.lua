@@ -24,7 +24,7 @@ function JoinGameController:initialize(document)
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	self.title_input_el = self.document:GetElementById("title_input")
 	self.title_input_el:SetAttribute("value", self.missionTitle)

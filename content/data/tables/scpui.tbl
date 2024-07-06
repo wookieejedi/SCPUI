@@ -104,6 +104,10 @@ $State: GS_STATE_MULTI_MISSION_SYNC
 $State: GS_STATE_MULTI_PAUSED
     +Markup: data/interface/markup/multi_paused.rml
 
+$State: LOAD_SCREEN
+	+Markup: data/interface/markup/loadscreen.rml
+
+
 #Background Replacement
 
 ;$Campaign Background:

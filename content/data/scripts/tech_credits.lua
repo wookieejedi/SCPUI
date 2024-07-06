@@ -21,7 +21,7 @@ function TechCreditsController:initialize(document)
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	ui.TechRoom.buildCredits()
 	
@@ -40,7 +40,7 @@ function TechCreditsController:initialize(document)
 	--a line, and do some math. Add that number of line breaks before and after!
 	local creditsHeight = text_el.offset_height
 	local lineHeight = self.document:GetElementById("bullet_img").next_sibling.offset_height
-	local numBreaks = (math.ceil((creditsHeight / lineHeight) + ((10 - ScpuiSystem:getFontSize()) * 1.3)))
+	local numBreaks = (math.ceil((creditsHeight / lineHeight) + ((10 - ScpuiSystem:getFontPixelSize()) * 1.3)))
 	local creditsBookend = ""
 	
 	while(numBreaks > 0) do

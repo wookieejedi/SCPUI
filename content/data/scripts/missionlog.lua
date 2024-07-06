@@ -8,13 +8,13 @@ end
 
 function MissionlogController:initialize(document)
 
-    self.document = document
+	self.document = document
 
 	---Load background choice
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	if mn.isInMission() then
 		ScpuiSystem:pauseAllAudio(true)
@@ -72,9 +72,9 @@ function MissionlogController:initMessageLog()
 	for logs = 1, #ui.MissionLog.Log_Messages do
 		local entry = ui.MissionLog.Log_Messages[logs]
 		
-		local textString = entry.Text .. ":"
+		-- Escape any HTML meta-characters
+		local textString = entry.Text:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;")
 		local textElements = {}
-		--ba.warning(textString)
 		local count = 1
 		for i in string.gmatch(textString, "(.-):") do
 			textElements[count] = i
@@ -331,7 +331,7 @@ end
 
 function MissionlogController:DecrementSection(element)
 
-    if self.currentSection == 1 then
+	if self.currentSection == 1 then
 		self:ChangeSection(self.numSections)
 	else
 		self:ChangeSection(self.currentSection - 1)
@@ -341,7 +341,7 @@ end
 
 function MissionlogController:IncrementSection(element)
 
-    if self.currentSection == self.numSections then
+	if self.currentSection == self.numSections then
 		self:ChangeSection(1)
 	else
 		self:ChangeSection(self.currentSection + 1)
@@ -351,7 +351,7 @@ end
 
 function MissionlogController:Exit(element)
 
-    ui.playElementSound(element, "click", "success")
+	ui.playElementSound(element, "click", "success")
 	if mn.isInMission() then
 		ScpuiSystem:pauseAllAudio(false)
 		ui.PauseScreen.closePause()
@@ -361,14 +361,14 @@ function MissionlogController:Exit(element)
 end
 
 function MissionlogController:global_keydown(_, event)
-    if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-        event:StopPropagation()
+	if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
+		event:StopPropagation()
 		if mn.isInMission() then
 			ScpuiSystem:pauseAllAudio(false)
 			ui.PauseScreen.closePause()
 		end
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
-    end
+	end
 end
 
 return MissionlogController

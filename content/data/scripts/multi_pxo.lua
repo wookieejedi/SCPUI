@@ -24,7 +24,7 @@ function PXOController:initialize(document)
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	self.players_el = self.document:GetElementById("players_list_ul")
 	self.channels_el = self.document:GetElementById("channels_list_ul")

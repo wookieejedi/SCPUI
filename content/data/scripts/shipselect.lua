@@ -19,6 +19,7 @@ function ShipSelectController:init()
 	self.enabled = false
 	self.ships = {}
 	self.activeSlots = {}
+	self.selectedShip = ''
 end
 
 function ShipSelectController:initialize(document)
@@ -50,7 +51,7 @@ function ShipSelectController:initialize(document)
 	aniWrapper:ReplaceChild(self.aniEl, aniWrapper.first_child)
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	self.document:GetElementById("brief_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("s_select_btn"):SetPseudoClass("checked", true)
@@ -351,6 +352,19 @@ function ShipSelectController:CreateEntries(list)
 	end
 end
 
+function ShipSelectController:BreakoutReader()
+	local text = topics.ships.description:send(tb.ShipClasses[self.selectedShip])
+	local title = "<span style=\"color:white;\">" .. topics.ships.name:send(tb.ShipClasses[self.selectedShip]) .. "</span>"
+	local buttons = {}
+	buttons[1] = {
+		b_type = dialogs.BUTTON_TYPE_POSITIVE,
+		b_text = ba.XSTR("Close", -1),
+		b_value = "",
+		b_keypress = string.sub(ba.XSTR("Close", -1), 1, 1)
+	}
+	self:Show(text, title, buttons)
+end
+
 function ShipSelectController:HighlightShip(entry, slot)
 
 	local list = loadoutHandler:GetShipList()
@@ -408,6 +422,7 @@ function ShipSelectController:SelectEntry(entry, slot)
 	if entry.key ~= self.SelectedEntry then
 		
 		self.SelectedEntry = entry.key
+		self.selectedShip = entry.Name
 		
 		self:BuildInfo(entry)
 		
@@ -813,7 +828,7 @@ function ShipSelectController:unload()
 	ScpuiSystem.modelDraw.class = nil
 	
 	if self.Commit == true then
-		loadoutHandler:unloadAll()
+		loadoutHandler:unloadAll(true)
 		ScpuiSystem.drawBrMap = nil
 		ScpuiSystem.cutscenePlayed = nil
 		ScpuiSystem:stopMusic()

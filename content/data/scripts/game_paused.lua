@@ -26,7 +26,7 @@ function GamePausedController:initialize(document)
 	end
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("h2-" .. ScpuiSystem:getFontSize()), true)
+	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	local main_bg = self.document:GetElementById("screenrender")
 	local imgEl = self.document:CreateElement("img")

@@ -52,7 +52,8 @@ local function initialize_buttons(document, properties, finish_func)
             val = document:GetElementById("dialog_input"):GetAttribute("value")
         end
         if finish_func then finish_func(val) end
-        document:Close()
+        --document:Close()
+		ScpuiSystem:CloseDialog()
     end)
         local button_text_id = button_id .. '_text'
             local button_text = document:GetElementById(button_text_id)
@@ -84,7 +85,7 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
     local text_el = dialog_doc:CreateElement("p")
     text_el.inner_rml = properties.text_string
     dialog_doc:GetElementById("text_container"):AppendChild(text_el)
-    dialog_doc:GetElementById("dialog_body"):SetClass(("p1-" .. ScpuiSystem:getFontSize()), true)
+    dialog_doc:GetElementById("dialog_body"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
     if properties.input_choice then
         local input_el = dialog_doc:CreateElement("input")
@@ -134,7 +135,7 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
         end
         for i = 1, #properties.buttons, 1 do
             if properties.buttons[i].keypress ~= nil then
-                thisKey = string.upper(properties.buttons[i].keypress)
+                local thisKey = string.upper(properties.buttons[i].keypress)
                 if event.parameters.key_identifier == rocket.key_identifier[thisKey] then
                     local val = properties.buttons[i].value
                     if properties.input_choice then

@@ -12,8 +12,8 @@ local renderCategory = engine.createTracingCategory("RenderRocket", true)
 
 ScpuiSystem = {
 	active = true,
-	numFontSizes = 20,
-    replacements = {},
+	numFontSizes = 40,
+	replacements = {},
 	backgrounds = {},
 	briefBackgrounds = {},
 	preloadCoroutines = {},
@@ -53,11 +53,11 @@ ScpuiSystem.context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWi
 
 function ScpuiSystem:init()
 	if cf.fileExists("scpui.tbl", "", true) then
-        self:parseTable("scpui.tbl")
-    end
-    for _, v in ipairs(cf.listFiles("data/tables", "*-ui.tbm")) do
-        self:parseTable(v)
-    end
+		self:parseTable("scpui.tbl")
+	end
+	for _, v in ipairs(cf.listFiles("data/tables", "*-ui.tbm")) do
+		self:parseTable(v)
+	end
 end
 
 function ScpuiSystem:parseTable(data)
@@ -183,7 +183,7 @@ function ScpuiSystem:getDef(state)
 	if self.render == false then
 		return nil
 	end
-    return self.replacements[state]
+	return self.replacements[state]
 end
 
 function ScpuiSystem:cleanSelf()
@@ -193,8 +193,8 @@ function ScpuiSystem:cleanSelf()
 		ba.print("SCPUI HAS KILLED A CHILD! But that's allowed in America.\n")
 	end
 
-    ScpuiSystem.currentDoc.document:Close()
-    ScpuiSystem.currentDoc.document = nil
+	ScpuiSystem.currentDoc.document:Close()
+	ScpuiSystem.currentDoc.document = nil
 	ScpuiSystem.currentDoc = nil
 end
 
@@ -212,35 +212,35 @@ function ScpuiSystem:stateStart()
 	--If hv.NewState is nil then use the Current Game State; This allows for Script UIs to jump from substate to substate
 	local state = hv.NewState or ba.getCurrentGameState()
 	
-    if not self:hasOverrideForState(getRocketUiHandle(state)) then
-        return
-    end
+	if not self:hasOverrideForState(getRocketUiHandle(state)) then
+		return
+	end
 	
 	--Make sure we're all cleaned up
 	if ScpuiSystem.currentDoc then
 		self:cleanSelf()
 	end
 	
-    ScpuiSystem.currentDoc = self:getDef(getRocketUiHandle(state).Name)
-    ba.print("SCPUI is loading document " .. ScpuiSystem.currentDoc.markup .. "\n")
-    ScpuiSystem.currentDoc.document = self.context:LoadDocument(ScpuiSystem.currentDoc.markup)
-    ScpuiSystem.currentDoc.document:Show()
+	ScpuiSystem.currentDoc = self:getDef(getRocketUiHandle(state).Name)
+	ba.print("SCPUI is loading document " .. ScpuiSystem.currentDoc.markup .. "\n")
+	ScpuiSystem.currentDoc.document = self.context:LoadDocument(ScpuiSystem.currentDoc.markup)
+	ScpuiSystem.currentDoc.document:Show()
 
-    ui.enableInput(self.context)
+	ui.enableInput(self.context)
 end
 
 function ScpuiSystem:stateFrame()
-    if not self:hasOverrideForCurrentState() then
-        return
-    end
+	if not self:hasOverrideForCurrentState() then
+		return
+	end
 
-    -- Add some tracing scopes here to see how long this stuff takes
-    updateCategory:trace(function()
-        self.context:Update()
-    end)
-    renderCategory:trace(function()
-        self.context:Render()
-    end)
+	-- Add some tracing scopes here to see how long this stuff takes
+	updateCategory:trace(function()
+		self.context:Update()
+	end)
+	renderCategory:trace(function()
+		self.context:Render()
+	end)
 end
 
 function ScpuiSystem:stateEnd(substate)
@@ -254,9 +254,9 @@ function ScpuiSystem:stateEnd(substate)
 		end
 	end
 
-    self:cleanSelf()
+	self:cleanSelf()
 
-    ui.disableInput()
+	ui.disableInput()
 	
 	if not substate and hv.OldState.Name == "GS_STATE_SCRIPTING" then
 		ScpuiSystem.substate = "none"
@@ -268,11 +268,11 @@ function ScpuiSystem:stateEnd(substate)
 end
 
 function getRocketUiHandle(state)
-    if state.Name == "GS_STATE_SCRIPTING" then
-        return {Name = ScpuiSystem.substate}
-    else
-        return state
-    end
+	if state.Name == "GS_STATE_SCRIPTING" then
+		return {Name = ScpuiSystem.substate}
+	else
+		return state
+	end
 end
 
 function ScpuiSystem:beginSubstate(state) 
@@ -312,25 +312,23 @@ function ScpuiSystem:ReturnToState(state)
 end
 
 function ScpuiSystem:hasOverrideForState(state)
-    return self:getDef(state.Name) ~= nil
+	return self:getDef(state.Name) ~= nil
 end
 
 function ScpuiSystem:hasOverrideForCurrentState()
-    return self:hasOverrideForState(getRocketUiHandle(ba.getCurrentGameState()))
+	return self:hasOverrideForState(getRocketUiHandle(ba.getCurrentGameState()))
 end
 
 function ScpuiSystem:dialogStart()
-    ui.enableInput(self.context)
-    
-    local dialogs = require('dialogs')
+	local dialogs = require('dialogs')
 	if hv.IsDeathPopup then
 		self.DeathDialog = { Abort = {}, Submit = nil }
 	else
 		self.Dialog = { Abort = {}, Submit = nil }
 	end
-    local dialog = dialogs.new()
-        dialog:title(hv.Title)
-        dialog:text(hv.Text)
+	local dialog = dialogs.new()
+		dialog:title(hv.Title)
+		dialog:text(hv.Text)
 		dialog:input(hv.IsInputPopup)
 
 		if hv.IsDeathPopup then
@@ -339,18 +337,18 @@ function ScpuiSystem:dialogStart()
 		else
 			dialog:escape(-1) --Assuming that all non-death built-in popups can be cancelled safely with a negative response!
 		end
-    
-    for i, button in ipairs(hv.Choices) do
-        local positivity = nil
-        if button.Positivity == 0 then
-            positivity = dialogs.BUTTON_TYPE_NEUTRAL
-        elseif button.Positivity == 1 then
-            positivity = dialogs.BUTTON_TYPE_POSITIVE
-        elseif button.Positivity == -1 then
-            positivity = dialogs.BUTTON_TYPE_NEGATIVE
-        end
-        dialog:button(positivity, button.Text, i - 1, button.Shortcut)
-    end
+	
+	for i, button in ipairs(hv.Choices) do
+		local positivity = nil
+		if button.Positivity == 0 then
+			positivity = dialogs.BUTTON_TYPE_NEUTRAL
+		elseif button.Positivity == 1 then
+			positivity = dialogs.BUTTON_TYPE_POSITIVE
+		elseif button.Positivity == -1 then
+			positivity = dialogs.BUTTON_TYPE_NEGATIVE
+		end
+		dialog:button(positivity, button.Text, i - 1, button.Shortcut)
+	end
 	
 	if hv.IsDeathPopup then
 		dialog:show(self.context, self.DialogAbort)
@@ -363,29 +361,28 @@ function ScpuiSystem:dialogStart()
 				self.Dialog.Submit = response
 			end)
 	end
+	ui.enableInput(self.context)
 end
 
 function ScpuiSystem:dialogFrame()
-    -- Add some tracing scopes here to see how long this stuff takes
-    updateCategory:trace(function()
+	-- Add some tracing scopes here to see how long this stuff takes
+	updateCategory:trace(function()
 		if hv.Freeze ~= nil and hv.Freeze ~= true then
 			self.context:Update()
 		end
-    end)
-    renderCategory:trace(function()
-        self.context:Render()
-    end)
-	
-	--So that the skip mission popup can re-enable the death popup on dialog end
-	if self.Reenable ~= nil and self.Reenable == true then
-		ui.enableInput(self.context)
-		self.Reenable = nil
-	end
-		
-    
+	end)
+	renderCategory:trace(function()
+		self.context:Render()
+	end)
+
 	if hv.IsDeathPopup then
-		if self.DeathDialog.Submit ~= nil then
-			local submit = self.DeathDialog.Submit
+		local submit = self.DeathDialog.Submit
+		if submit == nil and not ScpuiSystem.dialog then
+			-- We aren't showing a death popup when we should be, which is a softlock;
+			-- default to 0 (Quickstart Mission) to get to a state we can proceed from
+			submit = 0
+		end
+		if submit ~= nil then
 			self.DeathDialog = nil
 			hv.Submit(submit)
 		end
@@ -399,12 +396,8 @@ function ScpuiSystem:dialogFrame()
 end
 
 function ScpuiSystem:dialogEnd()
-    ui.disableInput(self.context)
+	ui.disableInput(self.context)
 	
-	if not hv.IsDeathPopup then
-		self.Reenable = true
-	end
-
 	if hv.IsDeathPopup then
 		if self.DeathDialog and self.DeathDialog.Abort then
 			if self.DeathDialog.Abort.Abort then
@@ -454,9 +447,85 @@ function ScpuiSystem:CloseDialog()
 	
 	--If we're going back to an SCPUI state, then give it control
 	--Otherwise cede control back to FSO
-    if self:hasOverrideForState(getRocketUiHandle(state)) then
+	if self:hasOverrideForState(getRocketUiHandle(state)) then
 		ui.enableInput(self.context)
-    else
+	else
+		ui.disableInput()
+	end
+end
+
+function ScpuiSystem:loadStart()
+
+	if ScpuiSystem.loadScreenInit then
+		return
+	end
+
+	if ba.MultiplayerMode then
+		ScpuiSystem.render = not ScpuiSystem.disableInMulti
+	else
+		ScpuiSystem.render = true
+	end
+	
+	if not self:hasOverrideForState({Name = "LOAD_SCREEN"}) then
+		return
+	end
+	
+	ScpuiSystem.loadDoc = self:getDef("LOAD_SCREEN")
+	ba.print("SCPUI is loading document " .. ScpuiSystem.loadDoc.markup .. "\n")
+	ScpuiSystem.loadDoc.document = self.context:LoadDocument(ScpuiSystem.loadDoc.markup)
+	ScpuiSystem.loadDoc.document:Show(DocumentFocus.FOCUS)
+
+	--ui.enableInput(self.context)
+	
+	ScpuiSystem.loadProgress = 0
+	ScpuiSystem.loadScreenInit = true
+end
+
+function ScpuiSystem:loadFrame()
+	if ScpuiSystem.loadScreenInit == nil then
+		return
+	end
+	
+	ScpuiSystem.loadProgress = hv.Progress
+	
+	--ba.warning(hv.Progress)
+
+	-- Add some tracing scopes here to see how long this stuff takes
+	updateCategory:trace(function()
+		self.context:Update()
+	end)
+	renderCategory:trace(function()
+		self.context:Render()
+	end)
+end
+
+function ScpuiSystem:loadEnd(substate)
+
+	if ScpuiSystem.loadScreenInit == nil then
+		return
+	end
+
+	self:CloseLoadScreen()
+
+	--ui.disableInput()
+	ScpuiSystem.loadProgress = nil
+	ScpuiSystem.loadScreenInit = nil
+end
+
+function ScpuiSystem:CloseLoadScreen()
+	if ScpuiSystem.loadDoc ~= nil then
+		ba.print("SCPUI is closing loading screen\n")
+		ScpuiSystem.loadDoc.document:Close()
+		ScpuiSystem.loadDoc = nil
+	end
+	
+	local state = hv.NewState or ba.getCurrentGameState()
+	
+	--If we're going back to an SCPUI state, then give it control
+	--Otherwise cede control back to FSO
+	if self:hasOverrideForState(getRocketUiHandle(state)) then
+		ui.enableInput(self.context)
+	else
 		ui.disableInput()
 	end
 end
@@ -466,19 +535,19 @@ ScpuiSystem:init()
 engine.addHook("On State Start", function()
 	ScpuiSystem:stateStart()
 end, {}, function()
-    return ScpuiSystem:hasOverrideForState(getRocketUiHandle(hv.NewState))
+	return ScpuiSystem:hasOverrideForState(getRocketUiHandle(hv.NewState))
 end)
 
 engine.addHook("On Frame", function()
 	ScpuiSystem:stateFrame()
 end, {}, function()
-    return ScpuiSystem:hasOverrideForCurrentState()
+	return ScpuiSystem:hasOverrideForCurrentState()
 end)
 
 engine.addHook("On State End", function()
 	ScpuiSystem:stateEnd()
 end, {}, function()
-    return ScpuiSystem:hasOverrideForState(getRocketUiHandle(hv.OldState))
+	return ScpuiSystem:hasOverrideForState(getRocketUiHandle(hv.OldState))
 end)
 
 engine.addHook("On Dialog Init", function()
@@ -486,7 +555,7 @@ engine.addHook("On Dialog Init", function()
 		ScpuiSystem:dialogStart()
 	end
 end, {}, function()
-    return ScpuiSystem.render
+	return ScpuiSystem.render
 end)
 
 engine.addHook("On Dialog Frame", function()
@@ -494,7 +563,7 @@ engine.addHook("On Dialog Frame", function()
 		ScpuiSystem:dialogFrame()
 	end
 end, {}, function()
-    return ScpuiSystem.render
+	return ScpuiSystem.render
 end)
 
 engine.addHook("On Dialog Close", function()
@@ -502,8 +571,28 @@ engine.addHook("On Dialog Close", function()
 		ScpuiSystem:dialogEnd()
 	end
 end, {}, function()
-    return ScpuiSystem.render
+	return ScpuiSystem.render
 end)
+
+--[[engine.addHook("On Load Screen", function()
+	ScpuiSystem:loadStart()
+end, {}, function()
+	return ScpuiSystem:hasOverrideForState({Name = "LOAD_SCREEN"})
+end)
+
+engine.addHook("On Load Screen", function()
+	ScpuiSystem:loadFrame()
+end, {}, function()
+	return ScpuiSystem:hasOverrideForState({Name = "LOAD_SCREEN"})
+end)
+
+engine.addHook("On Load Complete", function()
+	ScpuiSystem:loadEnd()
+end, {}, function()
+	return ScpuiSystem:hasOverrideForState({Name = "LOAD_SCREEN"})
+end)]]--
+
+--Helpers
 
 engine.addHook("On Load Screen", function()
 	ScpuiSystem.missionLoaded = true
