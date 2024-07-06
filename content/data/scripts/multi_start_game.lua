@@ -40,7 +40,7 @@ function JoinGameController:initialize(document)
 	self:updateLists()
 	ui.MultiGeneral.setPlayerState()
 	
-	--topics.multijoingame.initialize:send(self)
+	topics.multistartgame.initialize:send(self)
 
 end
 

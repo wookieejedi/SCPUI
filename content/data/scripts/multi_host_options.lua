@@ -59,7 +59,7 @@ function HostOptionsController:initialize(document)
 	self.respawn_limit_input_el:SetAttribute("value", self.netgame.KillLimit)
 	self.observers_limit_input_el:SetAttribute("value", self.netgame.ObserverLimit)
 	
-	--topics.multijoingame.initialize:send(self)
+	topics.multihostoptions.initialize:send(self)
 
 end
 

@@ -31,7 +31,7 @@ function PXOHelpController:initialize(document)
 	self:updateLists()
 	ui.MultiGeneral.setPlayerState()
 	
-	--topics.multipxo.initialize:send(self)
+	topics.multipxohelp.initialize:send(self)
 
 end
 

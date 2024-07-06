@@ -47,7 +47,7 @@ function MultiPausedController:initialize(document)
 	self:updateLists()
 	ui.MultiGeneral.setPlayerState()
 	
-	--topics.gamepaused.initialize:send(self)
+	topics.multipaused.initialize:send(self)
 	
 end
 

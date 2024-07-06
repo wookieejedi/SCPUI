@@ -43,7 +43,7 @@ function PXOController:initialize(document)
 	self:updateLists()
 	ui.MultiGeneral.setPlayerState()
 	
-	--topics.multipxo.initialize:send(self)
+	topics.multipxo.initialize:send(self)
 
 end
 

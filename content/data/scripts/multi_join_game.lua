@@ -51,7 +51,7 @@ function JoinGameController:initialize(document)
 	end
 			
 	
-	--topics.multijoingame.initialize:send(self)
+	topics.multijoingame.initialize:send(self)
 
 end
 

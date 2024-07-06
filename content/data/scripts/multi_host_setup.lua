@@ -78,7 +78,7 @@ function HostSetupController:initialize(document)
 		self.document:GetElementById("squadwar_btn"):SetPseudoClass("checked", false)
 	end
 	
-	--topics.multijoingame.initialize:send(self)
+	topics.multihostsetup.initialize:send(self)
 
 end
 

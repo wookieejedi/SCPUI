@@ -45,7 +45,7 @@ function ClientSetupController:initialize(document)
 	self:updateLists()
 	ui.MultiGeneral.setPlayerState()
 	
-	--topics.multijoingame.initialize:send(self)
+	topics.multiclientsetup.initialize:send(self)
 
 end
 
