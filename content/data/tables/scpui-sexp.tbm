@@ -11,7 +11,7 @@ $Parameter:
   +Type: String
 $Parameter:
   +Description: The name of the Custom String from Mission Specs to use as the ribbon's hover text
-  +Type: String
+  +Type: custom_string
 $Parameter:
   +Description: The ribbon's border color red value: 0-255
   +Type: Number
