@@ -23,7 +23,6 @@ function DebriefingController:initialize(document)
     self.document = document
     self.selectedSection = 1
     self.audioPlaying = 0
-	self.audioFinished = false
     
     if not ScpuiSystem.debriefInit then
         ui.Debriefing.initDebriefing()
@@ -46,6 +45,9 @@ function DebriefingController:initialize(document)
     
     ---Load background choice
     self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	
+	self.chat_el = self.document:GetElementById("chat_window")
+	self.input_id = self.document:GetElementById("chat_input")
     
     ---Load the desired font size from the save file
     self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
@@ -59,15 +61,15 @@ function DebriefingController:initialize(document)
     local badgeStage, badgeName, badgeFile = ui.Debriefing.getEarnedBadge()
     local medalName, medalFile = ui.Debriefing.getEarnedMedal()
     
-    self.numStages = 0
+    local numStages = 0
     self.audioPlaying = 0
     
     local traitorStage = ui.Debriefing.getTraitor()
     
     if not traitorStage then
         if promoName then
-            self.numStages = self.numStages + 1
-            self.stages[self.numStages] = promoStage
+            numStages = numStages + 1
+            self.stages[numStages] = promoStage
             self.document:GetElementById("awards_wrapper"):SetClass("hidden", false)
             local awards_el = self.document:GetElementById("medal_image_wrapper")
             local imgEl = self.document:CreateElement("img")
@@ -78,8 +80,8 @@ function DebriefingController:initialize(document)
         end
         
         if badgeName then
-            self.numStages = self.numStages + 1
-            self.stages[self.numStages] = badgeStage
+            numStages = numStages + 1
+            self.stages[numStages] = badgeStage
             self.document:GetElementById("awards_wrapper"):SetClass("hidden", false)
             local awards_el = self.document:GetElementById("medal_image_wrapper")
             local imgEl = self.document:CreateElement("img")
@@ -105,23 +107,19 @@ function DebriefingController:initialize(document)
             --- @type debriefing_stage
             local stage = debriefing[i]
             if stage:checkVisible() then
-                self.numStages = self.numStages + 1
-                self.stages[self.numStages] = stage
+                numStages = numStages + 1
+                self.stages[numStages] = stage
                 --This is where we should replace variables and containers probably!
             end
         end
     else
-        self.numStages = 1
+        numStages = 1
         self.stages[1] = traitorStage
     end
-	
-	self.document:GetElementById("stage_select"):SetClass("hidden", true)
-	self.document:GetElementById("play_cont"):SetClass("hidden", true)
-	self.document:GetElementById("stop_cont"):SetClass("hidden", true)
     
     self:BuildText()
     
-    self:start_audio()
+    self:PlayVoice()
     
     self.document:GetElementById("debrief_btn"):SetPseudoClass("checked", true)
     
@@ -129,30 +127,12 @@ function DebriefingController:initialize(document)
 
 end
 
-function DebriefingController:start_audio()
-	self.audioPlaying = 0
-	self.audioFinished = false
-	self:PlayVoice()
-	self.document:GetElementById("play_cont"):SetClass("hidden", true)
-	self.document:GetElementById("stop_cont"):SetClass("hidden", false)
-end
-
-function DebriefingController:stop_audio()
-	self.audioPlaying = self.numStages
-	self:StopVoice()
-	self.document:GetElementById("play_cont"):SetClass("hidden", false)
-	self.document:GetElementById("stop_cont"):SetClass("hidden", true)
-end
-
 function DebriefingController:PlayVoice()
 	if self.selectedSection ~= 1 then
 		return
 	end
 	-- If we've played all the audio then don't play any more!
-	if self.audioPlaying == self.numStages then
-		self.audioFinished = true
-		self.document:GetElementById("play_cont"):SetClass("hidden", false)
-		self.document:GetElementById("stop_cont"):SetClass("hidden", true)
+	if self.audioPlaying == numStages then
 		return
 	end
     async.run(function()
@@ -166,7 +146,9 @@ function DebriefingController:PlayVoice()
                 local file = self.stages[self.audioPlaying].AudioFilename
                 if #file > 0 and string.lower(file) ~= "none" then
 					--If a voice is already playing then close it and start a new one
-					self:StopVoice()
+					if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
+						self.current_voice_handle:close(false)
+					end
                     self.current_voice_handle = ad.openAudioStream(file, AUDIOSTREAM_VOICE)
                     self.current_voice_handle:play(ad.MasterVoiceVolume)
                 end
@@ -179,12 +161,6 @@ function DebriefingController:PlayVoice()
             self:PlayVoice()
         end
     end, async.OnFrameExecutor)
-end
-
-function DebriefingController:StopVoice()
-	if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
-		self.current_voice_handle:close(false)
-	end
 end
 
 function DebriefingController:waitForStageFinishAsync()
@@ -543,15 +519,12 @@ function DebriefingController:debrief_pressed(element)
         self.document:GetElementById("stats_btn"):SetPseudoClass("checked", false)
         self.selectedSection = 1
         
-        self.document:GetElementById("stage_select"):SetClass("hidden", true)
-		self.document:GetElementById("play_controls"):SetClass("hidden", false)
+        self.document:GetElementById("stage_select"):SetPseudoClass("hidden", true)
         
         self:ClearText()
+		self.audioPlaying = 0
         self:BuildText()
-		
-		if not self.audioFinished then
-			self:start_audio()
-		end
+        self:PlayVoice()
         
         self.recommendVisible = false
     end
@@ -564,11 +537,12 @@ function DebriefingController:stats_pressed(element)
         self.document:GetElementById("stats_btn"):SetPseudoClass("checked", true)
         self.selectedSection = 2
         
-        self.document:GetElementById("stage_select"):SetClass("hidden", false)
-		self.document:GetElementById("play_controls"):SetClass("hidden", true)
+        self.document:GetElementById("stage_select"):SetPseudoClass("hidden", false)
         
         self:ClearText()
-        self:StopVoice()
+        if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
+            self.current_voice_handle:close(false)
+        end
         self:BuildStats()
         
         self.recommendVisible = false
@@ -741,7 +715,9 @@ end
 
 function DebriefingController:unload()
 	self.selectedSection = 0
-    self:StopVoice()
+    if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
+        self.current_voice_handle:close(false)
+    end
 end
 
 --Prevent the debriefing UI from being drawn if we're just going
