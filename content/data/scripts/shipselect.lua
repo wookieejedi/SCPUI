@@ -450,13 +450,27 @@ function ShipSelectController:BuildInfo(entry)
 	
 	local midString = "</p><p class=\"info\">"
 	
+	--Setup the hitpoints string
+	local hitpointsString = ''
+	for i = 1, math.floor(entry.Hitpoints / 50) do
+		hitpointsString = hitpointsString .. '++'
+	end
+	
+	--Setup the shield hitpoints string
+	--[[local ShieldhitpointsString = ''
+	for i = 1, math.floor(entry.ShieldHitpoints / 50) do
+		ShieldhitpointsString = ShieldhitpointsString .. '++'
+	end]]--
+	
 	local array    = {
 		{ba.XSTR("Class", 739), entry.Name},
 		{ba.XSTR("Type", 740), entry.Type},
 		{ba.XSTR("Length", 741), entry.Length},
-		{ba.XSTR("Max Velocity", 742), entry.Velocity},
+		{ba.XSTR("Max Velocity", 742), entry.Velocity .. ' (' .. entry.AfterburnerVelocity .. ba.XSTR(" m/s with afterburner", 5403) .. ')'},
 		{ba.XSTR("Maneuverability", 744), entry.Maneuverability},
-		{ba.XSTR("Armor", 745), entry.Armor},
+		--{ba.XSTR("Armor", 745), entry.Armor}, --Removed because it doesn't usually offer much useful information
+		{ba.XSTR("Hull Strength", -1), hitpointsString},
+		--{ba.XSTR("Shield Strength", -1), ShieldhitpointsString},
 		{ba.XSTR("Gun Mounts", 746), entry.GunMounts},
 		{ba.XSTR("Missile Banks", 747), entry.MissileBanks},
 		{ba.XSTR("Manufacturer", 748), entry.Manufacturer}

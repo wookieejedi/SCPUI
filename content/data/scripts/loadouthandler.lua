@@ -291,17 +291,19 @@ function LoadoutHandler:AppendToShipInfo(shipIdx)
 		Index = tb.ShipClasses[shipIdx]:getShipClassIndex(),
 		Amount = self:GetShipPoolAmount(shipIdx),
 		Icon = tb.ShipClasses[shipIdx].SelectIconFilename,
-		GeneratedIcon = {},
 		Anim = tb.ShipClasses[shipIdx].SelectAnimFilename,
 		Name = tb.ShipClasses[shipIdx].Name,
 		Type = tb.ShipClasses[shipIdx].TypeString,
 		Length = tb.ShipClasses[shipIdx].LengthString,
 		Velocity = tb.ShipClasses[shipIdx].VelocityString,
+		AfterburnerVelocity = tb.ShipClasses[shipIdx].AfterburnerVelocityMax.z,
 		Maneuverability = tb.ShipClasses[shipIdx].ManeuverabilityString,
 		Armor = tb.ShipClasses[shipIdx].ArmorString,
 		GunMounts = tb.ShipClasses[shipIdx].GunMountsString,
 		MissileBanks = tb.ShipClasses[shipIdx].MissileBanksString,
 		Manufacturer = tb.ShipClasses[shipIdx].ManufacturerString,
+		Hitpoints = tb.ShipClasses[shipIdx].HitpointsMax,
+		--ShieldHitpoints = tb.ShipClasses[shipIdx].ShieldHitpointsMax,
 		key = tb.ShipClasses[shipIdx].Name,
 		GeneratedWidth = rocketUiIcons[tb.ShipClasses[shipIdx].Name].Width,
 		GeneratedHeight = rocketUiIcons[tb.ShipClasses[shipIdx].Name].Height,
@@ -356,40 +358,30 @@ function LoadoutHandler:AppendToWeaponInfo(wepIdx)
 		ScpuiSystem:setIconFrames(tb.WeaponClasses[wepIdx].Name)
 	end
 	
-	local data = {}
 	local type_v = nil
 	if tb.WeaponClasses[wepIdx]:isPrimary() then
 		type_v = "primary"
 	else
 		type_v = "secondary"
 	end
-	data = {
-		Index = wepIdx,
-		Amount = self:GetWeaponPoolAmount(wepIdx),
-		Icon = tb.WeaponClasses[wepIdx].SelectIconFilename,
-		GeneratedIcon = {},
-		Anim = tb.WeaponClasses[wepIdx].SelectAnimFilename,
-		Name = tb.WeaponClasses[wepIdx].Name,
-		Title = tb.WeaponClasses[wepIdx].TechTitle,
-		Description = string.gsub(tb.WeaponClasses[wepIdx].Description, "Level", "<br></br>Level"),
-		Velocity = math.floor(tb.WeaponClasses[wepIdx].Speed*10)/10,
-		Range = math.floor(tb.WeaponClasses[wepIdx].Speed*tb.WeaponClasses[wepIdx].LifeMax*10)/10,
-		Damage = math.floor(tb.WeaponClasses[wepIdx].Damage*10)/10,
-		ArmorFactor = math.floor(tb.WeaponClasses[wepIdx].ArmorFactor*10)/10,
-		ShieldFactor = math.floor(tb.WeaponClasses[wepIdx].ShieldFactor*10)/10,
-		SubsystemFactor = math.floor(tb.WeaponClasses[wepIdx].SubsystemFactor*10)/10,
-		FireWait = math.floor(tb.WeaponClasses[wepIdx].FireWait*10)/10,
-		Power = tb.WeaponClasses[wepIdx].EnergyConsumed,
-		Type = type_v,
-		key = tb.WeaponClasses[wepIdx].Name,
-		GeneratedWidth = rocketUiIcons[tb.WeaponClasses[wepIdx].Name].Width,
-		GeneratedHeight = rocketUiIcons[tb.WeaponClasses[wepIdx].Name].Height,
-		GeneratedIcon = rocketUiIcons[tb.WeaponClasses[wepIdx].Name].Icon
-	}
-	
+	local weaponClass = tb.WeaponClasses[wepIdx]
+	local data = topics.weapons.stats:send(weaponClass)
+	data.Index = wepIdx
+	data.Amount = self:GetWeaponPoolAmount(wepIdx)
+	data.Icon = weaponClass.SelectIconFilename
+	data.Anim = weaponClass.SelectAnimFilename
+	data.Name = weaponClass.Name
+	data.Title = weaponClass.TechTitle
+	data.Description = string.gsub(weaponClass.Description, "Level", "<br></br>Level")
+	data.FireWait = weaponClass.FireWait
+	data.Type = type_v
+	data.key = weaponClass.Name
+	data.GeneratedWidth = rocketUiIcons[weaponClass.Name].Width
+	data.GeneratedHeight = rocketUiIcons[weaponClass.Name].Height
+	data.GeneratedIcon = rocketUiIcons[weaponClass.Name].Icon
 	topics.loadouts.initWeaponInfo:send(data)
 	
-	if tb.WeaponClasses[wepIdx]:isPrimary() then
+	if weaponClass:isPrimary() then
 		local i = #ScpuiSystem.loadouts.primaryInfo + 1
 		ScpuiSystem.loadouts.primaryInfo[i] = data
 		return ScpuiSystem.loadouts.primaryInfo[i]

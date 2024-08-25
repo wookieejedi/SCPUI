@@ -748,25 +748,40 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	ScpuiSystem:ClearEntries(infoEl)
 	
-	local hull = entry.ArmorFactor * entry.Damage
-	local shield = entry.ShieldFactor * entry.Damage
-	local subsystem = entry.SubsystemFactor * entry.Damage
-	local power = math.floor(entry.Power * 100)
-	local rof = math.floor(100 / entry.FireWait) / 100
+	local power = math.floor(entry.Power)
+	local rof = entry.RoF
+	local velocity = math.floor(entry.Velocity)
+	local range = math.floor(entry.Range)
 	
 	local desc_el = self.document:CreateElement("p")
 	desc_el.inner_rml = entry.Description
+	desc_el:SetClass("white", true)
 	
 	local stats1_el = self.document:CreateElement("p")
-	stats1_el.inner_rml = ba.XSTR("Velocity", -1) .. ": " .. entry.Velocity .. "m/s " .. ba.XSTR("Range", -1) .. ": " .. entry.Range .. "m"
+	stats1_el.inner_rml = ba.XSTR("Velocity", -1) .. ": " .. velocity .. "m/s, " .. ba.XSTR("Range", -1) .. ": " .. range .. "m"
+	stats1_el:SetClass("green", true)
 	
 	local stats2_el = self.document:CreateElement("p")
 	stats2_el:SetClass("info", true)
-	stats2_el.inner_rml = ba.XSTR("Damage", -1) .. ": " .. hull .. " " .. ba.XSTR("Hull", -1) .. ", " .. shield .. " " .. ba.XSTR("Shield", -1) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", -1)
+	local volley = entry.VolleySize or 1
+	if entry.Type == "secondary" and entry.FireWait >= 1 then
+		local hull = math.floor(entry.HullDamage * volley)
+		local shield = math.floor(entry.ShieldDamage * volley)
+		local subsystem = math.floor(entry.SubsystemDamage * volley)
+		local label = (volley == 1) and ba.XSTR("Damage per missile", -1) or ba.XSTR("Damage per volley", -1)
+		stats2_el.inner_rml = label .. ": " .. hull .. " " .. ba.XSTR("Hull", -1) .. ", " .. shield .. " " .. ba.XSTR("Shield", -1) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", -1)
+	else
+		local hull = math.floor(entry.HullDamage * volley / entry.FireWait)
+		local shield = math.floor(entry.ShieldDamage * volley / entry.FireWait)
+		local subsystem = math.floor(entry.SubsystemDamage * volley / entry.FireWait)
+		stats2_el.inner_rml = ba.XSTR("Damage per second", -1) .. ": " .. hull .. " " .. ba.XSTR("Hull", -1) .. ", " .. shield .. " " .. ba.XSTR("Shield", -1) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", -1)
+	end
+	stats2_el:SetClass("red", true)
 	
 	local stats3_el = self.document:CreateElement("p")
 	stats3_el:SetClass("info", true)
-	stats3_el.inner_rml = ba.XSTR("Power Use", -1) .. ": " .. power .. ba.XSTR("W", -1) .. " " .. ba.XSTR("ROF", -1) .. ": " .. rof .. "/s"
+	stats3_el.inner_rml = ba.XSTR("Power Use", -1) .. ": " .. power .. ba.XSTR("W", -1) .. ", " .. ba.XSTR("Rate of Fire", -1) .. ": " .. rof .. "/s"
+	stats3_el:SetClass("blue", true)
 	
 	infoEl:AppendChild(desc_el)
 	infoEl:AppendChild(stats1_el)
