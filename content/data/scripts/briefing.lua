@@ -472,6 +472,7 @@ function BriefingController:acceptPressed()
 		end
 		ScpuiSystem:stopMusic()
 		ScpuiSystem.current_played = nil
+		ScpuiSystem.cutscenePlayed = nil
 	end
 
 end
@@ -481,6 +482,7 @@ function BriefingController:skip_pressed()
 	ScpuiSystem:stopMusic()
 	
 	loadoutHandler:unloadAll(false)
+	ScpuiSystem.cutscenePlayed = nil
     
 	if mn.isTraining() then
 		ui.Briefing.skipMission()

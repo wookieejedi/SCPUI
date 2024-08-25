@@ -7,7 +7,11 @@ local AbstractBriefingController = require("briefingCommon")
 local CommandBriefingController = class(AbstractBriefingController)
 
 function CommandBriefingController:init()
-	ScpuiSystem:maybePlayCutscene(MOVIE_PRE_CMD_BRIEF)
+	if not ScpuiSystem.cutscenePlayed then
+		ScpuiSystem:maybePlayCutscene(MOVIE_PRE_CMD_BRIEF)
+	end
+	
+	ScpuiSystem.cutscenePlayed = true
     --- @type cmd_briefing_stage[]
     self.stages = {}
 
@@ -46,6 +50,7 @@ function CommandBriefingController:initialize(document)
 end
 
 function CommandBriefingController:acceptPressed()
+	ScpuiSystem.cutscenePlayed = nil
     if mn.isRedAlertMission() then
         ba.postGameEvent(ba.GameEvents["GS_EVENT_RED_ALERT"])
     else
