@@ -13,23 +13,6 @@
 	</head>
 	<body id=main_background onkeydown="controller:global_keydown(element, event)" onload="controller:initialize(document)"
 		  onunload="controller:unload(); controller = nil">
-		<div id=chat_wrapper class="hidden">
-			<div id=chat_window>
-			</div>
-			<input id=chat_input type="text" maxlength="512" onblur="controller:InputFocusLost()"
-				onchange="controller:InputChange(event)"></input>
-			<div id=submit_cont>
-				<button id="submit_btn" class="submit button_1" onclick="controller:submit_pressed()">
-					<span id="submit_img" class="submit button_img">
-						<img src="select.png" class="psuedo_img"></img>
-					</span>
-					<span class="pos button_text_special">
-						<p>XSTR("Submit", -1)</p>
-					</span>
-				</button>
-			</div>
-			<img src="c-brief-text-window.png"></img>
-		</div>
 		<div id=top_panel_wrapper>
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
@@ -119,6 +102,24 @@
 							<button id="cmdfirst_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(1)">
 								<span id="cmdfirst_img" class="arrowbuttons button_img">
 									<img src="skip-l.png" class="psuedo_img"></img>
+								</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div id=play_controls>
+					<div id=button_wrapper>
+						<div id=play_cont>
+							<button id="play_btn" class="arrowbuttons button_1" onclick="controller:start_audio()">
+								<span id="play_img" class="arrowbuttons button_img">
+									<img src="arrow-right.png" class="psuedo_img"></img>
+								</span>
+							</button>
+						</div>
+						<div id=stop_cont>
+							<button id="stop_btn" class="arrowbuttons button_1" onclick="controller:stop_audio()">
+								<span id="stop_img" class="arrowbuttons button_img">
+									<img src="square.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
