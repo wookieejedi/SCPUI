@@ -94,18 +94,48 @@ function MissionlogController:initMessageLog()
 	end
 end
 
+function MissionlogController:makeBullet(status)
+	local bullet_el = self.document:CreateElement("div")
+	local img = nil
+	if status == 0 then
+		bullet_el.id = "goalsdot_img_failed"
+		img = "goal-failed.png"
+	elseif status == 1 then
+		bullet_el.id = "goalsdot_img_complete"
+		img = "goal-complete.png"
+	else
+		bullet_el.id = "goalsdot_img_incomplete"
+		bullet_el:SetClass("brightblue", true)
+		img = "goal-incomplete.png"
+	end
+	bullet_el:SetClass("goalsdot", true)
+	
+	local bullet_img = self.document:CreateElement("img")
+	bullet_img:SetClass("psuedo_img", true)
+	bullet_img:SetAttribute("src", img)
+	bullet_el:AppendChild(bullet_img)
+	
+	return bullet_el
+end
+
+function MissionlogController:createGoalItem(title, status)
+	local goal_el = self.document:CreateElement("li")
+	goal_el:SetClass("goal", true)
+	goal_el:AppendChild(self:makeBullet(status))
+	
+	local goal_text = self.document:CreateElement("div")
+	goal_text.inner_rml = goal.Message .. "<br></br>"
+	goal_el:AppendChild(goal_text)
+	
+	return goal_el
+end
+
 function MissionlogController:initGoalsLog()
 
 	goals = ui.Briefing.Objectives
-	local incompleteBulletHTML = "<div id=\"goalsdot_img_incomplete\" class=\"goalsdot brightblue\"><img src=\"goal-incomplete.png\" class=\"psuedo_img\"></img></div>"
-	local completeBulletHTML = "<div id=\"goalsdot_img_complete\" class=\"goalsdot\"><img src=\"goal-complete.png\" class=\"psuedo_img\"></img></div>"
-	local failedBulletHTML = "<div id=\"goalsdot_img_failed\" class=\"goalsdot\"><img src=\"goal-failed.png\" class=\"psuedo_img\"></img></div>"
 	local primaryWrapper = self.document:GetElementById("primary_goal_list")
-	local primaryText = ""
 	local secondaryWrapper = self.document:GetElementById("secondary_goal_list")
-	local secondaryText = ""
 	local bonusWrapper = self.document:GetElementById("bonus_goal_list")
-	local bonusText = ""
 	for i = 1, #goals do
 		goal = goals[i]
 		if goal.isGoalValid and goal.Message ~= "" then
@@ -121,16 +151,13 @@ function MissionlogController:initGoalsLog()
 			end
 			
 			if goal.Type == "primary" then
-				local text = "<div class=\"goal\">" .. bulletHTML .. goal.Message .. "<br></br></div>"
-				primaryText = primaryText .. text
+				primaryWrapper:AppendChild(self:createGoalItem(goal.Message, status))
 			end
 			if goal.Type == "secondary" then
-				local text = bulletHTML .. goal.Message .. "<br></br></div>"
-				secondaryText = "<div class=\"goal\">" .. secondaryText .. text
+				secondaryWrapper:AppendChild(self:createGoalItem(goal.Message, status))
 			end
 			if goal.Type == "bonus" then
-				local text = bulletHTML .. goal.Message .. "<br></br></div>"
-				bonusText = "<div class=\"goal\">" .. bonusText .. text
+				bonusWrapper:AppendChild(self:createGoalItem(goal.Message, status))
 				
 				--unhide bonus goals if they are completed
 				if status == 1 then
@@ -140,11 +167,7 @@ function MissionlogController:initGoalsLog()
 		end
 	end
 	
-	primaryWrapper.inner_rml = primaryText
-	secondaryWrapper.inner_rml = secondaryText
-	bonusWrapper.inner_rml = bonusText
-	
-	--Reset these for the goals key
+	--These are for the goals key
 	local incompleteBulletHTML = "<div id=\"goalsdot_img_incomplete\" class=\"goalsdot_key brightblue\"><img src=\"goal-incomplete.png\" class=\"psuedo_img\"></img></div>"
 	local completeBulletHTML = "<div id=\"goalsdot_img_complete\" class=\"goalsdot_key\"><img src=\"goal-complete.png\" class=\"psuedo_img\"></img></div>"
 	local failedBulletHTML = "<div id=\"goalsdot_img_failed\" class=\"goalsdot_key\"><img src=\"goal-failed.png\" class=\"psuedo_img\"></img></div>"
