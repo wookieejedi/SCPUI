@@ -124,6 +124,24 @@
 						</div>
 					</div>
 				</div>
+				<div id=play_controls>
+					<div id=button_wrapper>
+						<div id=play_cont>
+							<button id="play_btn" class="arrowbuttons button_1" onclick="controller:start_audio()">
+								<span id="play_img" class="arrowbuttons button_img">
+									<img src="arrow-right.png" class="psuedo_img"></img>
+								</span>
+							</button>
+						</div>
+						<div id=stop_cont>
+							<button id="stop_btn" class="arrowbuttons button_1" onclick="controller:stop_audio()">
+								<span id="stop_img" class="arrowbuttons button_img">
+									<img src="square.png" class="psuedo_img"></img>
+								</span>
+							</button>
+						</div>
+					</div>
+				</div>
 				<img src="debrief-window.png"></img>
 			</div>
 		</div>

@@ -73,6 +73,14 @@ div#stage_select
 	width: 50%;
 }
 
+div#play_controls
+{
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 50%;
+}
+
 .stats_header
 {
 	margin-top: 5%;
@@ -286,6 +294,64 @@ button#stats_btn:checked #bullet_img
 {
 	background-decorator: image;
 	background-image: bullet-r-o.png;
+}
+
+/*Play-Stop buttons*/
+
+div#play_cont
+{
+	float: right;
+	width: 12%;
+	height: auto;
+	margin-right: 28%;
+	margin-bottom: 0.0%;
+	margin-top: 9%;
+}
+
+div#stop_cont
+{
+	float: right;
+	width: 12%;
+	height: auto;
+	margin-right: 28%;
+	margin-bottom: 0.0%;
+	margin-top: 9%;
+}
+
+#play_img
+{
+	background-decorator: image;
+	background-image: arrow-right.png;
+}
+
+#stop_img
+{
+	background-decorator: image;
+	background-image: square.png;
+}
+
+button#play_btn:hover #play_img
+{
+	background-decorator: image;
+	background-image: arrow-right-h.png;
+}
+
+button#stop_btn:hover #stop_img
+{
+	background-decorator: image;
+	background-image: square-h.png;
+}
+
+button#play_btn:active #play_img
+{
+	background-decorator: image;
+	background-image: arrow-right-o.png;
+}
+
+button#stop_btn:active #stop_img
+{
+	background-decorator: image;
+	background-image: square-o.png;
 }
 
 /*Arrow Buttons*/
