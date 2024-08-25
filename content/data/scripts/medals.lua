@@ -22,7 +22,7 @@ function MedalsController:initialize(document)
 	--This will reparse the medal info data in SCPUI's tables to make positioning medals
 	--easier. Basically this makes it so ctrl-shift-r will allow reflecting table data
 	--changes without having to restart the entire game.
-	--self:reparseTableData() --Disabled until parse.skipToString() is merged into FSO
+	self:reparseTableData()
 	
 	---Load background choice
 	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
@@ -106,17 +106,11 @@ function MedalsController:parseMedalInfo(data)
 end
 
 function MedalsController:isBadge(medal)
-	--Eventually we can check through the API directly
-	--but for now we just gotta check the name
-	return string.find(string.lower(medal.Name), "ace") ~= nil
-	--return (medal.KillsNeeded > 0)
+	return (medal.KillsNeeded > 0)
 end
 
 function MedalsController:isRank(medal)
-	--Eventually we can check through the API directly
-	--but for now we just gotta check the name
-	return string.find(string.lower(medal.Name), "rank") ~= nil
-	--return medal.isRank()
+	return medal.isRank()
 end
 
 function MedalsController:GetMedalInfo(id)
