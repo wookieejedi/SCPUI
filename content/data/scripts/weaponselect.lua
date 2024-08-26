@@ -1215,7 +1215,6 @@ end
 
 function WeaponSelectController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-		ScpuiSystem.current_played = nil
         event:StopPropagation()
 
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
