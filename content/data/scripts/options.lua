@@ -9,11 +9,11 @@ local async_util = require("async_util")
 
 local customValues = ScpuiOptionValues
 local customOptions = {}
-local detailOptions = {}
+local graphicsOptions = {}
 local modCustom = true
 local graphicsCustom = true
 
-local detailPresets = {
+local graphicsPresets = {
 	"option_graphics_detail_element",
 	"option_graphics_nebuladetail_element",
 	"option_graphics_texture_element",
@@ -30,7 +30,7 @@ local detailPresets = {
 	"option_graphics_lightshafts_element",
 	"option_graphics_softparticles_element",
 	"option_graphics_deferredlighting_element"
-	}
+}
 
 local fontChoice = nil
 
@@ -132,9 +132,8 @@ function OptionsController:init()
     self.options          = {}
     self.category_options = {
         basic  = {},
-        detail = {},
-		prefs  = {},
-        other  = {},
+        graphics = {},
+        misc  = {},
         multi  = {}
     }
 	
@@ -390,7 +389,7 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
             if change_func then
                 change_func(vals[1])
             end
-			self:setDetailDefaultStatus()
+			self:setGraphicsDefaultStatus()
         end
     end)
     right_btn:AddEventListener("click", function()
@@ -409,7 +408,7 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
             if change_func then
                 change_func(vals[2])
             end
-			self:setDetailDefaultStatus()
+			self:setGraphicsDefaultStatus()
         end
     end)
 	
@@ -437,9 +436,9 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
 			noDefault = option.NoDefault
 		}
 	else
-		for k, v in pairs(detailPresets) do
+		for k, v in pairs(graphicsPresets) do
 			if el_actual.id == v then
-				detailOptions[Key] = {
+				graphicsOptions[Key] = {
 					key = Key,
 					title = option.Title,
 					optType = "Binary",
@@ -534,7 +533,7 @@ function OptionsController:init_selection_element(element, option, vals, change_
 				customOptions[Key].currentValue = vals[count]
 				customOptions[Key].savedValue = vals[count]
 			else
-				for k, v in pairs(detailPresets) do
+				for k, v in pairs(graphicsPresets) do
 					if el_actual.id == v then
 						if el_actual.id == "option_graphics_anisotropy_element" then
 							--This option saves reports the string so we need to save the known index
@@ -543,13 +542,13 @@ function OptionsController:init_selection_element(element, option, vals, change_
 							if event.parameters.value == "2.0" then a_value = 2 end
 							if event.parameters.value == "4.0" then a_value = 3 end
 							if event.parameters.value == "8.0" then a_value = 4 end
-							detailOptions[Key].currentValue = a_value
-							detailOptions[Key].savedValue = a_value
+							graphicsOptions[Key].currentValue = a_value
+							graphicsOptions[Key].savedValue = a_value
 						else
 							--Translate from a 0 based index to a 1 based index because reasons??
 							if tonumber(event.parameters.value) then
-								detailOptions[Key].currentValue = event.parameters.value + 1
-								detailOptions[Key].savedValue = event.parameters.value + 1
+								graphicsOptions[Key].currentValue = event.parameters.value + 1
+								graphicsOptions[Key].savedValue = event.parameters.value + 1
 							end
 						end
 					end
@@ -557,7 +556,7 @@ function OptionsController:init_selection_element(element, option, vals, change_
 			end
         end
 		if option.Category ~= "Custom" then
-			self:setDetailDefaultStatus()
+			self:setGraphicsDefaultStatus()
 		else
 			self:setModDefaultStatus()
 		end
@@ -577,9 +576,9 @@ function OptionsController:init_selection_element(element, option, vals, change_
 			noDefault = option.NoDefault
 		}
 	else
-		for k, v in pairs(detailPresets) do
+		for k, v in pairs(graphicsPresets) do
 			if el_actual.id == v then
-				detailOptions[Key] = {
+				graphicsOptions[Key] = {
 					key = Key,
 					optType = "Multi",
 					currentValue = tblUtil.ifind(vals, value),
@@ -889,12 +888,12 @@ function OptionsController:initialize_basic_options()
             opt_el = self:createSelectionOptionElement(option, option:getValidValues(), "language_selector", {
                 --no_title = true
             })
-		elseif key == "Game.Discord" then
-            opt_el = self:createOptionElement(option, "discord_selector")
-        elseif key == "Audio.BriefingVoice" then
-            opt_el = self:createOptionElement(option, "briefing_voice_container")
-		elseif key == "Game.UnfocusedPause" then
-            opt_el = self:createOptionElement(option, "unfocused_pause_container")
+		elseif key == "Input.ForceFeedback" then
+            opt_el = self:createOptionElement(option, "force_feeback_selector")
+        elseif key == "Input.FFStrength" then
+            opt_el = self:createOptionElement(option, "force_feedback_sensitivity")
+		elseif key == "Input.HitEffect" then
+            opt_el = self:createOptionElement(option, "directional_hit")
         elseif key == "Audio.Effects" then
             -- The audio options are applied immediately so the user hears the effects
             self.option_backup[option] = option.Value
@@ -945,7 +944,7 @@ function OptionsController:initialize_basic_options()
     end
 end
 
-local built_in_detail_keys = {
+local built_in_graphics_keys = {
     "Graphics.NebulaDetail",
     "Graphics.Lighting",
     "Graphics.Detail",
@@ -956,23 +955,23 @@ local built_in_detail_keys = {
     "Graphics.Stars",
 };
 
-function OptionsController:initialize_detail_options()
+function OptionsController:initialize_graphics_options()
     local current_column = 3
-    for _, option in ipairs(self.category_options.detail) do
+    for _, option in ipairs(self.category_options.graphics) do
 		local opt_el = nil
 		
         if option.Key == "Graphics.Resolution" then
-            opt_el = self:createOptionElement(option, "detail_column_1")
+            opt_el = self:createOptionElement(option, "graphics_column_1")
         elseif option.Key == "Graphics.WindowMode" then
-            opt_el = self:createOptionElement(option, "detail_column_1")
+            opt_el = self:createOptionElement(option, "graphics_column_1")
         elseif option.Key == "Graphics.Display" then
-            opt_el = self:createOptionElement(option, "detail_column_1", function(_)
+            opt_el = self:createOptionElement(option, "graphics_column_1", function(_)
                 self.sources["Graphics.Resolution"]:updateValues()
             end)
-        elseif tblUtil.contains(built_in_detail_keys, option.Key) then
-            opt_el = self:createOptionElement(option, "detail_column_2")
+        elseif tblUtil.contains(built_in_graphics_keys, option.Key) then
+            opt_el = self:createOptionElement(option, "graphics_column_2")
         else
-            local el = self:createOptionElement(option, string.format("detail_column_%d", current_column))
+            local el = self:createOptionElement(option, string.format("graphics_column_%d", current_column))
 			
 			opt_el = el
 
@@ -993,16 +992,17 @@ function OptionsController:initialize_detail_options()
 		end
     end
 	
-	self:setDetailDefaultStatus()
+	self:setGraphicsDefaultStatus()
 end
 
---Here are where we parse and place mod options into the Preferences tab
-function OptionsController:initialize_prefs_options()
+--Here are where we parse and place mod options into the Misc tab
+function OptionsController:initialize_misc_options()
     local current_column = 1
+	local count = 1
 	
 	--Handle built-in preferences options
-	for _, option in ipairs(self.category_options.prefs) do
-		local el = self:createOptionElement(option, string.format("prefs_column_%d", current_column))
+	for _, option in ipairs(self.category_options.misc) do
+		local el = self:createOptionElement(option, string.format("misc_column_%d", current_column))
 		
 		if option.Description then
 			self:AddOptionTooltip(option, el)
@@ -1014,17 +1014,25 @@ function OptionsController:initialize_prefs_options()
 			el:SetClass("horz_right", true)
 		end
 		
-		current_column = current_column + 1
-		if current_column > 4 then
-			current_column = 3
+		count = count + 1
+		
+		if count > 10 then 
+			current_column = current_column + 1
+			if current_column > 4 then
+				current_column = 1
+			end
+			count = 1
 		end
 	end
 	
-	--Handle mod custom preferences options
+end
+
+--Here are where we parse and place mod options into the Preferences tab
+function OptionsController:initialize_custom_options()
     for _, option in ipairs(ScpuiSystem.CustomOptions) do
 		option.Category = "Custom"
 		--option.Title = option.Title
-		local el = self:createCustomOptionElement(option, string.format("prefs_column_%d", option.Column))
+		local el = self:createCustomOptionElement(option, string.format("custom_column_%d", option.Column))
 		
 		if option.Description then
 			self:AddOptionTooltip(option, el)
@@ -1035,15 +1043,9 @@ function OptionsController:initialize_prefs_options()
 		elseif option.Column == 4 then
 			el:SetClass("horz_right", true)
 		end
-
-		current_column = current_column + 1
-		if current_column > 4 then
-			current_column = 3
-		end
     end
 	
 	self:setModDefaultStatus()
-	
 end
 
 function OptionsController:RemoveSelectedIP()
@@ -1343,26 +1345,48 @@ function OptionsController:initialize(document)
 
         local category = getCategoryFromKey(v.Key)
         local key      = v.Key
+		
+		local basicOptions = {
+			"Input.Joystick",
+			"Input.Joystick1",
+			"Input.Joystick2",
+			"Input.Joystick3",
+			"Input.JoystickDeadZone",
+			"Input.JoystickSensitivity",
+			"Input.ForceFeedback",
+			"Input.FFStrength",
+			"Input.HitEffect",
+			"Input.UseMouse",
+			"Input.MouseSensitivity",
+			"Game.Language",
+			"Audio.Effects",
+			"Audio.Music",
+			"Audio.Voice",
+			"Game.SkillLevel",
+			"Graphics.Gamma"
+		}
 
-        if category == "Input" or category == "Audio" or category == "Game" or key == "Graphics.Gamma" then
+        if utils.table.contains(basicOptions, key) then
             table.insert(self.category_options.basic, v)
         elseif category == "Graphics" then
-            table.insert(self.category_options.detail, v)
-		elseif category == "Other" then
-            table.insert(self.category_options.prefs, v)
+            table.insert(self.category_options.graphics, v)
 		elseif category == "Multi" then
 			table.insert(self.category_options.multi, v)
+		else
+            table.insert(self.category_options.misc, v)
         end
     end
     ba.print("Done.\n")
 
     self:initialize_basic_options()
-
-    self:initialize_detail_options()
 	
-	self:initialize_prefs_options()
+	self:initialize_misc_options()
+
+    self:initialize_graphics_options()
 	
 	self:initialize_multi_options()
+	
+	self:initialize_custom_options()
 	
 	if ScpuiSystem.hideMulti == true then
 		self.document:GetElementById("multi_btn"):SetClass("hidden", true)
@@ -1446,7 +1470,7 @@ function OptionsController:acceptChanges(state)
     end)
 end
 
-function OptionsController:SetDetailBullet(level)
+function OptionsController:SetGraphicsBullet(level)
 	
 	local lowbullet = self.document:GetElementById("det_low_btn")
 	local medbullet = self.document:GetElementById("det_med_btn")
@@ -1464,11 +1488,11 @@ function OptionsController:SetDetailBullet(level)
 
 end
 
-function OptionsController:DetailMinimum(element)
+function OptionsController:GraphicsMinimum(element)
 
-	for k, v in pairs(detailOptions) do
-		local option = detailOptions[k]
-		for k, v in pairs(detailPresets) do
+	for k, v in pairs(graphicsOptions) do
+		local option = graphicsOptions[k]
+		for k, v in pairs(graphicsPresets) do
 			if option.parentID.id == v then
 				local parent = self.document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
@@ -1501,15 +1525,15 @@ function OptionsController:DetailMinimum(element)
 	end
 	
 	graphicsCustom = false
-	self:SetDetailBullet("min")
+	self:SetGraphicsBullet("min")
 
 end
 
-function OptionsController:DetailLow(element)
+function OptionsController:GraphicsLow(element)
 	
-	for k, v in pairs(detailOptions) do
-		local option = detailOptions[k]
-		for k, v in pairs(detailPresets) do
+	for k, v in pairs(graphicsOptions) do
+		local option = graphicsOptions[k]
+		for k, v in pairs(graphicsPresets) do
 			if option.parentID.id == v then
 				local parent = self.document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
@@ -1542,15 +1566,15 @@ function OptionsController:DetailLow(element)
 	end
 	
 	graphicsCustom = false
-	self:SetDetailBullet("low")
+	self:SetGraphicsBullet("low")
 
 end
 
-function OptionsController:DetailMedium(element)
+function OptionsController:GraphicsMedium(element)
 	
-	for k, v in pairs(detailOptions) do
-		local option = detailOptions[k]
-		for k, v in pairs(detailPresets) do
+	for k, v in pairs(graphicsOptions) do
+		local option = graphicsOptions[k]
+		for k, v in pairs(graphicsPresets) do
 			if option.parentID.id == v then
 				local parent = self.document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
@@ -1583,15 +1607,15 @@ function OptionsController:DetailMedium(element)
 	end
 	
 	graphicsCustom = false
-	self:SetDetailBullet("med")
+	self:SetGraphicsBullet("med")
 
 end
 
-function OptionsController:DetailHigh(element)
+function OptionsController:GraphicsHigh(element)
 	
-	for k, v in pairs(detailOptions) do
-		local option = detailOptions[k]
-		for k, v in pairs(detailPresets) do
+	for k, v in pairs(graphicsOptions) do
+		local option = graphicsOptions[k]
+		for k, v in pairs(graphicsPresets) do
 			if option.parentID.id == v then
 				local parent = self.document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
@@ -1624,15 +1648,15 @@ function OptionsController:DetailHigh(element)
 	end
 	
 	graphicsCustom = false
-	self:SetDetailBullet("hig")
+	self:SetGraphicsBullet("hig")
 
 end
 
-function OptionsController:DetailUltra(element)
+function OptionsController:GraphicsUltra(element)
 	
-	for k, v in pairs(detailOptions) do
-		local option = detailOptions[k]
-		for k, v in pairs(detailPresets) do
+	for k, v in pairs(graphicsOptions) do
+		local option = graphicsOptions[k]
+		for k, v in pairs(graphicsPresets) do
 			if option.parentID.id == v then
 				local parent = self.document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
@@ -1665,16 +1689,16 @@ function OptionsController:DetailUltra(element)
 	end
 	
 	graphicsCustom = false
-	self:SetDetailBullet("ult")
+	self:SetGraphicsBullet("ult")
 
 end
 
-function OptionsController:DetailCustom(element)
+function OptionsController:GraphicsCustom(element)
 	
 	if graphicsCustom == false then
-		for k, v in pairs(detailOptions) do
-			local option = detailOptions[k]
-			for k, v in pairs(detailPresets) do
+		for k, v in pairs(graphicsOptions) do
+			local option = graphicsOptions[k]
+			for k, v in pairs(graphicsPresets) do
 				if option.parentID.id == v then
 					local parent = self.document:GetElementById(option.parentID.id)
 					if option.optType == "Multi" then
@@ -1697,14 +1721,14 @@ function OptionsController:DetailCustom(element)
 		end
 		
 		graphicsCustom = true
-		self:SetDetailBullet("cst")
+		self:SetGraphicsBullet("cst")
 	end
 
 end
 
-function OptionsController:isDetailPreset(value)
-	for k, v in pairs(detailOptions) do
-		local option = detailOptions[k]
+function OptionsController:isGraphicsPreset(value)
+	for k, v in pairs(graphicsOptions) do
+		local option = graphicsOptions[k]
 		if option.parentID.id == "option_graphics_aamode_element" then
 			local a_value = 8
 			if value == 1 then a_value = 1 end
@@ -1750,29 +1774,29 @@ function OptionsController:isDetailPreset(value)
 	return true
 end
 
-function OptionsController:setDetailDefaultStatus()
+function OptionsController:setGraphicsDefaultStatus()
 	
 	local preset = "cst"
 	graphicsCustom = true
 	
-	if self:isDetailPreset(1) then
+	if self:isGraphicsPreset(1) then
 		preset = "min"
 		graphicsCustom = false
-	elseif self:isDetailPreset(2) then
+	elseif self:isGraphicsPreset(2) then
 		preset = "low"
 		graphicsCustom = false
-	elseif self:isDetailPreset(3) then
+	elseif self:isGraphicsPreset(3) then
 		preset = "med"
 		graphicsCustom = false
-	elseif self:isDetailPreset(4) then
+	elseif self:isGraphicsPreset(4) then
 		preset = "hig"
 		graphicsCustom = false
-	elseif self:isDetailPreset(5) then
+	elseif self:isGraphicsPreset(5) then
 		preset = "ult"
 		graphicsCustom = false
 	end
 
-	self:SetDetailBullet(preset)
+	self:SetGraphicsBullet(preset)
 
 end
 

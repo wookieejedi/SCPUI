@@ -17,38 +17,49 @@
 	</div>
 		<div id=options_window>
 			<tabset id="ops_tabs_cont">
-				<tab id="options_btn" class="button_1 tab">
-					<span id="options_img" class="options button_img">
+				<tab id="basic_btn" class="button_1 tab">
+					<span id="basic_img" class="basic button_img">
 						<img src="diamonds.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text">
-						<p>XSTR("Options", -1)</p>
+						<p>XSTR("Basic", -1)</p>
 					</span>
 				</tab>
 					<panel class="options_panel">
 						<include src="options_basic_tab.rml"/>
 					</panel>
-				<tab id="detail_btn" class="button_1 tab">
-					<span id="detail_img" class="detail button_img">
+				<tab id="misc_btn" class="button_1 tab">
+					<span id="misc_img" class="misc button_img">
+						<img src="computer.png" class="psuedo_img"></img>
+					</span>
+					<span class="pos button_text">
+						<p>XSTR("Misc", -1)</p>
+					</span>
+				</tab>
+					<panel class="options_panel">
+						<include src="options_misc_tab.rml"/>
+					</panel>
+				<tab id="graphics_btn" class="button_1 tab">
+					<span id="graphics_img" class="graphics button_img">
 						<img src="detail.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text">
-						<p>XSTR("Detail", -1)</p>
+						<p>XSTR("Graphics", -1)</p>
 					</span>
 				</tab>
 					<panel class="options_panel">
-						<include src="options_detail_tab.rml"/>
+						<include src="options_graphics_tab.rml"/>
 					</panel>
-				<tab id="prefs_btn" class="button_1 tab">
-					<span id="prefs_img" class="prefs button_img">
+				<tab id="settings_btn" class="button_1 tab">
+					<span id="settings_img" class="settings button_img">
 						<img src="prefs.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text">
-						<p>XSTR("Preferences", -1)</p>
+						<p>XSTR("Settings", -1)</p>
 					</span>
 				</tab>
 					<panel class="options_panel">
-						<include src="options_other_tab.rml"/>
+						<include src="options_custom_tab.rml"/>
 					</panel>
 				<tab id="multi_btn" class="button_1 tab">
 					<span id="multi_img" class="multi button_img">

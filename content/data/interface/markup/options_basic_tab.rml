@@ -14,23 +14,23 @@
             <!-- Filled in by Lua -->
         </div>
     </div>
-	<div id="misc_options_wrapper">
-		<div id="misc_options_col_1">
-			<div id="language_selector">
-				<!-- Lua will fill in the options UI elements here -->
-			</div>
+	<div id="quick_options_wrapper">
+		<div id="quick_options_col_1">
 			<div id="font_size_selector">
 				<!-- Lua will fill in the options UI elements here -->
 			</div>
+			<div id="language_selector">
+				<!-- Lua will fill in the options UI elements here -->
+			</div>
 		</div>
-		<div id="misc_options_col_2">
-			<div id="discord_selector">
+		<div id="quick_options_col_2">
+			<div id="directional_hit">
 				<!-- Lua will fill in the options UI elements here -->
 			</div>
-			<div id="briefing_voice_container">
+			<div id="force_feeback_selector">
 				<!-- Lua will fill in the options UI elements here -->
 			</div>
-			<div id="unfocused_pause_container">
+			<div id="force_feedback_sensitivity">
 				<!-- Lua will fill in the options UI elements here -->
 			</div>
 		</div>

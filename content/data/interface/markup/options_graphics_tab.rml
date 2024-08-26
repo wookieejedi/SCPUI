@@ -1,5 +1,5 @@
 <body>
-<div id="detail_column_1" class="options_column_25"> <!--left column button panels-->
+<div id="graphics_column_1" class="options_column_25"> <!--left column button panels-->
     <div class="btn_panel_vert_tall"> <!--This begins all the rml for the preset selector-->
         <div id="vert_tall_panel_text">
             <p id="preset_title">XSTR("Preset Graphics Level", -1)</p>
@@ -69,10 +69,10 @@
         <img src="ops-panel-vert-tall-l.png"></img>
     </div>
 </div>
-<div id="detail_column_2" class="options_column_25">
+<div id="graphics_column_2" class="options_column_25">
 </div> <!--middle column. Any buttons here need "horz_middle" added to their class-->
-<div id="detail_column_3" class="options_column_25">
+<div id="graphics_column_3" class="options_column_25">
 </div> <!--middle column. Any buttons here need "horz_middle" added to their class-->
-<div id="detail_column_4" class="options_column_25">
+<div id="graphics_column_4" class="options_column_25">
 </div> <!--middle column. Any buttons here need "horz_right" added to their class-->
 </body>

@@ -97,8 +97,8 @@ div#bottom_panel_c img
 
 .options_panel
 {
-	width: 355%;
-	margin-left: -8%;
+	width: 300%;
+	padding-left: 5%;
 	padding-top: 5%;
 }
 
@@ -125,56 +125,89 @@ div#bottom_panel_c img
 #ops_tabs_cont
 {
 	float: left;
-	width: 28%;
+	width: 33%;
 	height: auto;
-	margin-left: 4%;
 	margin-bottom: 1%;
 	margin-top: 0%;
 }
 
 .tab
 {
-	width: 25%;
+	width: 19.5%;
 }
 
-/*Options*/
+/*Basic*/
 
-.options
+.basic
 {
 	display: block;
-	width: 68%;
+	width: 78%;
 	height: auto;
 	margin: auto;
-
 }
 
-#options_img
+#basic_img
 {
 	background-decorator: image;
 	background-image: diamonds.png;
 }
 
-#options_btn:hover #options_img
+#basic_btn:hover #basic_img
 {
 	background-decorator: image;
 	background-image: diamonds-h.png;
 }
 
-#options_btn:active #options_img
+#basic_btn:active #basic_img
 {
 	background-decorator: image;
 	background-image: diamonds-o.png;
 }
 
-#options_btn:selected #options_img
+#basic_btn:selected #basic_img
 {
 	background-decorator: image;
 	background-image: diamonds-o.png;
 }
 
-/*Detail*/
+/*Misc*/
 
-.detail
+.misc
+{
+	display: block;
+	width: 64%;
+	height: auto;
+	margin: auto;
+
+}
+
+#misc_img
+{
+	background-decorator: image;
+	background-image: computer.png;
+}
+
+#misc_btn:hover #misc_img
+{
+	background-decorator: image;
+	background-image: computer-h.png;
+}
+
+#misc_btn:active #misc_img
+{
+	background-decorator: image;
+	background-image: computer-o.png;
+}
+
+#misc_btn:selected #misc_img
+{
+	background-decorator: image;
+	background-image: computer-o.png;
+}
+
+/*Graphics*/
+
+.graphics
 {
 	display: block;
 	width: 75%;
@@ -183,33 +216,33 @@ div#bottom_panel_c img
 
 }
 
-#detail_img
+#graphics_img
 {
 	background-decorator: image;
 	background-image: detail.png;
 }
 
-#detail_btn:hover #detail_img
+#graphics_btn:hover #graphics_img
 {
 	background-decorator: image;
 	background-image: detail-h.png;
 }
 
-#detail_btn:active #detail_img
+#graphics_btn:active #graphics_img
 {
 	background-decorator: image;
 	background-image: detail-o.png;
 }
 
-#detail_btn:selected #detail_img
+#graphics_btn:selected #graphics_img
 {
 	background-decorator: image;
 	background-image: detail-o.png;
 }
 
-/*Preferences*/
+/*Settings*/
 
-.prefs
+.settings
 {
 	display: block;
 	width: 50%;
@@ -218,25 +251,25 @@ div#bottom_panel_c img
 
 }
 
-#prefs_img
+#settings_img
 {
 	background-decorator: image;
 	background-image: prefs.png;
 }
 
-#prefs_btn:hover #prefs_img
+#settings_btn:hover #settings_img
 {
 	background-decorator: image;
 	background-image: prefs-h.png;
 }
 
-#prefs_btn:active #prefs_img
+#settings_btn:active #settings_img
 {
 	background-decorator: image;
 	background-image: prefs-o.png;
 }
 
-#prefs_btn:selected #prefs_img
+#settings_btn:selected #settings_img
 {
 	background-decorator: image;
 	background-image: prefs-o.png;
@@ -1602,7 +1635,7 @@ input.range sliderarrowinc:active
 	icon-image: arrow-right-o.png;
 }
 
-#misc_options_wrapper
+#quick_options_wrapper
 {
 	position:relative;
 	margin-top: 1%;
@@ -1638,13 +1671,13 @@ input.range sliderarrowinc:active
 	margin-top: 1%;
 }
 
-#misc_options_col_1
+#quick_options_col_1
 {
 	width: 49%;
 	float: left;
 }
 
-#misc_options_col_2
+#quick_options_col_2
 {
 	width: 49%;
 	float: right;
