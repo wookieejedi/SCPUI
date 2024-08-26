@@ -69,9 +69,18 @@ function CommandBriefingController:go_to_stage(stage_idx)
     local aniWrapper = self.document:GetElementById("cmd_anim")
     if #stage.AniFilename > 0 then
         local aniEl = self.document:CreateElement("ani")
+		
+		local filename = stage.AniFilename
+		-- For legacy.. we need to try to load default
+		if string.lower(filename) == "<default>" then
+			filename = "cb_default"
+			if utils.animExists("2_cb_default") then
+				filename = "2_cb_default"
+			end
+		end
 
-		if utils.animExists(stage.AniFilename) then
-			aniEl:SetAttribute("src", stage.AniFilename)
+		if utils.animExists(filename) then
+			aniEl:SetAttribute("src", filename)
 		end
 
         aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
