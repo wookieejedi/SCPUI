@@ -303,7 +303,7 @@ function LoadoutHandler:AppendToShipInfo(shipIdx)
 		MissileBanks = tb.ShipClasses[shipIdx].MissileBanksString,
 		Manufacturer = tb.ShipClasses[shipIdx].ManufacturerString,
 		Hitpoints = tb.ShipClasses[shipIdx].HitpointsMax,
-		--ShieldHitpoints = tb.ShipClasses[shipIdx].ShieldHitpointsMax,
+		ShieldHitpoints = tb.ShipClasses[shipIdx].ShieldHitpointsMax,
 		key = tb.ShipClasses[shipIdx].Name,
 		GeneratedWidth = rocketUiIcons[tb.ShipClasses[shipIdx].Name].Width,
 		GeneratedHeight = rocketUiIcons[tb.ShipClasses[shipIdx].Name].Height,
