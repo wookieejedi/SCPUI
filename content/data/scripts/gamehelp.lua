@@ -23,21 +23,31 @@ function GamehelpController:initialize(document)
 	ui.GameHelp.initGameHelp()
 	
 	self.numSections = #ui.GameHelp.Help_Sections
+	if ScpuiSystem.hideMulti then
+		self.numSections = self.numSections - 1
+	end
 	self.sections = {}
 	
-	for i = 1, self.numSections do
-		self.sections[i] = {
-			Title = nil,
-			Subtitle = nil,
-			Header = nil,
-			Keys = {},
-			Texts = {}
-		}
-		self.sections[i].Title = ui.GameHelp.Help_Sections[i].Title
-		self.sections[i].Subtitle = "Page " .. i.. " of " .. self.numSections
-		self.sections[i].Header = ui.GameHelp.Help_Sections[i].Header
-		self.sections[i].Keys = ui.GameHelp.Help_Sections[i].Keys
-		self.sections[i].Texts = ui.GameHelp.Help_Sections[i].Texts
+	local count = 1
+	for i = 1, #ui.GameHelp.Help_Sections do
+		if ui.GameHelp.Help_Sections[i].Title == 'Multiplayer Keys' and ScpuiSystem.hideMulti then
+			--Skip adding the multi keys
+		else
+			self.sections[count] = {
+				Title = nil,
+				Subtitle = nil,
+				Header = nil,
+				Keys = {},
+				Texts = {}
+			}
+			self.sections[count].Title = ui.GameHelp.Help_Sections[i].Title
+			self.sections[count].Subtitle = "Page " .. count .. " of " .. self.numSections
+			self.sections[count].Header = ui.GameHelp.Help_Sections[i].Header
+			self.sections[count].Keys = ui.GameHelp.Help_Sections[i].Keys
+			self.sections[count].Texts = ui.GameHelp.Help_Sections[i].Texts
+			
+			count = count + 1
+		end
 	end
 	
 	ui.GameHelp.closeGameHelp()
