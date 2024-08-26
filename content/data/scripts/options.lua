@@ -1144,25 +1144,6 @@ function OptionsController:CreateIPItem(entry)
 	return li_el
 end
 
-function OptionsController:togglePXO(toggle)
-	local loc_el = self.document:GetElementById("local_btn")
-	local pxo_el = self.document:GetElementById("pxo_btn")
-	local loc_vals = self.local_opt:getValidValues()
-	local pxo_vals = self.pxo_opt:getValidValues()
-	
-	if toggle then
-		loc_el:SetPseudoClass("checked", false)
-		pxo_el:SetPseudoClass("checked", true)
-		self.local_opt.Value = loc_vals[1]
-		self.pxo_opt.Value = loc_vals[2]
-	else
-		loc_el:SetPseudoClass("checked", true)
-		pxo_el:SetPseudoClass("checked", false)
-		self.local_opt.Value = loc_vals[2]
-		self.pxo_opt.Value = loc_vals[1]
-	end
-end
-
 function OptionsController:LoginChanged()
 	self.login_changed = true
 end
@@ -1229,11 +1210,16 @@ function OptionsController:initialize_multi_options()
 	for _, option in ipairs(self.category_options.multi) do
 		local opt_el = nil
 		if option.Key == "Multi.LocalBroadcast" then
-			self.local_opt = option
 			opt_el = self.document:GetElementById("local_btn")
 			opt_el:AddEventListener("click", function()
-				if option.Value.Display == "Off" then
-					self:togglePXO(false)
+				local opt_el = self.document:GetElementById("local_btn")
+				local vals = option:getValidValues()
+				if option.Value.Display == "On" then
+					opt_el:SetPseudoClass("checked", false)
+					option.Value = vals[1]
+				else
+					opt_el:SetPseudoClass("checked", true)
+					option.Value = vals[2]
 				end
 			end)
 			if option.Value.Display == "On" then
@@ -1242,11 +1228,16 @@ function OptionsController:initialize_multi_options()
 				opt_el:SetPseudoClass("checked", false)
 			end
 		elseif option.Key == "Multi.TogglePXO" then
-			self.pxo_opt = option
 			opt_el = self.document:GetElementById("pxo_btn")
 			opt_el:AddEventListener("click", function()
-				if option.Value.Display == "Off" then
-					self:togglePXO(true)
+				local opt_el = self.document:GetElementById("pxo_btn")
+				local vals = option:getValidValues()
+				if option.Value.Display == "On" then
+					opt_el:SetPseudoClass("checked", false)
+					option.Value = vals[1]
+				else
+					opt_el:SetPseudoClass("checked", true)
+					option.Value = vals[2]
 				end
 			end)
 			if option.Value.Display == "On" then
@@ -1262,11 +1253,6 @@ function OptionsController:initialize_multi_options()
 		end
 		
 		self:AddOptionTooltip(option, opt_el)
-	end
-	
-	--Double check that both Local & PXO are not selected
-	if self.local_opt.Value.Display == "On" and self.pxo_opt.Value.Display == "On" then
-		self:togglePXO(true)
 	end
 end
 
