@@ -1,3 +1,4 @@
+local utils = require('utils')
 local dialogs = require("dialogs")
 local class = require("class")
 local topics = require("ui_topics")
@@ -841,7 +842,14 @@ function ControlConfigController:maybeShowDialogs()
 	async.run(function()
         async.await(async_util.wait_for(0.01))
 		if self.nextDialog ~= nil then
-			self:Show(self.nextDialog.text, self.nextDialog.title, self.nextDialog.input, self.nextDialog.buttons)
+			-- Use utils.copy to create copies of the dialog data
+            local dialogText = utils.copy(self.nextDialog.text)
+            local dialogTitle = utils.copy(self.nextDialog.title)
+            local dialogInput = utils.copy(self.nextDialog.input)
+            local dialogButtons = utils.copy(self.nextDialog.buttons)
+            
+            self:Show(dialogText, dialogTitle, dialogInput, dialogButtons)
+			
 			self.nextDialog = nil
 		end
         self:maybeShowDialogs()
