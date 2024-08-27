@@ -69,6 +69,7 @@ function MedalsController:initialize(document)
 end
 
 function MedalsController:reparseTableData()
+	ScpuiSystem.medalInfo = {}
 	if cf.fileExists("scpui.tbl") then
         self:parseMedalInfo("scpui.tbl")
     end
@@ -85,9 +86,12 @@ function MedalsController:parseMedalInfo(data)
 		while parse.optionalString("$Medal Bitmap:") do
 		
 			local id = parse.getString()
-			ba.warning(id)
 			
 			ScpuiSystem.medalInfo[id] = {}
+			
+			if parse.optionalString("+Alt Bitmap:") then
+				ScpuiSystem.medalInfo[id].bitmap = parse.getString()
+			end
 			
 			parse.requiredString("+Position X:")
 			ScpuiSystem.medalInfo[id].x = parse.getFloat()
@@ -143,8 +147,13 @@ function MedalsController:build_medal_div(idx)
 	medal_el.style.top = info.y .. "%"
 	medal_el.style.left = info.x .. "%"
 	
+	local filename = id
+	if info.bitmap then
+		filename = info.bitmap
+	end
+	
 	local img_el = self.document:CreateElement("img")
-	img_el:SetAttribute("src", id .. "_00.png")
+	img_el:SetAttribute("src", filename .. "_00.png")
 	
 	medal_el:AppendChild(img_el)
 	parent_el:AppendChild(medal_el)
@@ -156,6 +165,11 @@ function MedalsController:showMedal(idx)
 	
 	--get the div
 	local medal_el = self.document:GetElementById(string.lower(medal.Bitmap:match("(.+)%..+$")))
+	local info = self:GetMedalInfo(medal_el.id)
+	local filename = medal_el.id
+	if info.bitmap then
+		filename = info.bitmap
+	end
 	
 	--create new image element based on number earned
 	local img_el = self.document:CreateElement("img")
@@ -180,7 +194,7 @@ function MedalsController:showMedal(idx)
 	--Special access to the png id for external scripts
 	num = topics.medals.setRankBitmap:send({medal.Name, num})
 	
-	local filename = medal_el.id .. num .. ".png"
+	filename = filename .. num .. ".png"
 	
 	img_el:SetAttribute("src", filename)
 	

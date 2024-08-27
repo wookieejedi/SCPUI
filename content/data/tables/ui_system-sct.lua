@@ -79,28 +79,44 @@ function ScpuiSystem:parseTable(data)
 		
 	end
 
-	parse.requiredString("#State Replacement")
+	if parse.optionalString("#State Replacement") then
 
-	while parse.optionalString("$State:") do
-		local state = parse.getString()
-
-		if state == "GS_STATE_SCRIPTING" then
-			parse.requiredString("+Substate:")
+		while parse.optionalString("$State:") do
 			local state = parse.getString()
-			parse.requiredString("+Markup:")
-			local markup = parse.getString()
-			ba.print("SCPUI found definition for script substate " .. state .. " : " .. markup .. "\n")
-			self.replacements[state] = {
-				markup = markup
-			}
-		else
-			parse.requiredString("+Markup:")
-			local markup = parse.getString()
-			ba.print("SCPUI found definition for game state " .. state .. " : " .. markup .. "\n")
-			self.replacements[state] = {
-				markup = markup
-			}
+
+			if state == "GS_STATE_SCRIPTING" then
+				parse.requiredString("+Substate:")
+				local state = parse.getString()
+				parse.requiredString("+Markup:")
+				local markup = parse.getString()
+				ba.print("SCPUI found definition for script substate " .. state .. " : " .. markup .. "\n")
+				self.replacements[state] = {
+					markup = markup
+				}
+			else
+				parse.requiredString("+Markup:")
+				local markup = parse.getString()
+				ba.print("SCPUI found definition for game state " .. state .. " : " .. markup .. "\n")
+				self.replacements[state] = {
+					markup = markup
+				}
+			end
 		end
+		
+		if parse.optionalString("#Background Replacement") then
+		
+			while parse.optionalString("$Campaign Background:") do
+				parse.requiredString("+Campaign Filename:")
+				local campaign = utils.strip_extension(parse.getString())
+				
+				parse.requiredString("+RCSS Class Name:")
+				local classname = parse.getString()
+				
+				self.backgrounds[campaign] = classname
+			end
+		
+		end
+		
 	end
 	
 	if parse.optionalString("#Background Replacement") then
@@ -159,6 +175,10 @@ function ScpuiSystem:parseTable(data)
 			local id = parse.getString()
 			
 			self.medalInfo[id] = {}
+			
+			if parse.optionalString("+Alt Bitmap:") then
+				self.medalInfo[id].bitmap = parse.getString()
+			end
 			
 			parse.requiredString("+Position X:")
 			self.medalInfo[id].x = parse.getFloat()
