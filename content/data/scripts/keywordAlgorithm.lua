@@ -34,6 +34,7 @@ which are not inside a valid HTML tag. This is supported further below.
 
 -- Some arbitrary key which is not a legal term
 local COLOR = '<{@[ COLOR ]@}>'
+local TOOLTIP = '<{@[ TOOLTIP ]@}>'
 
 local function getTerms(s)
   -- Lua patterns don't support alternation, so we need to get creative.
@@ -53,7 +54,7 @@ end
 -- The tree of keywords described at the top of this file.
 local keywords = {}
 
-local function registerKeyword(keyword, color)
+local function registerKeyword(keyword, color, tooltip)
   local node = keywords
   for _, term in ipairs(getTerms(keyword)) do
     local nextNode = node[term]
@@ -62,6 +63,9 @@ local function registerKeyword(keyword, color)
       node[term] = nextNode
     end
     node = nextNode
+  end
+  if tooltip then
+    node[TOOLTIP] = tooltip
   end
   if node[COLOR] then
     -- Unless we're registering the same color twice, this is a conflict.
@@ -78,16 +82,18 @@ local function getColor(terms, index, node)
   local term = terms[index]
   local nextNode = node[term]
   if nextNode then
-    local nextIndex, nextColor = getColor(terms, index + 1, nextNode)
+    local nextIndex, nextColor, nextTooltip = getColor(terms, index + 1, nextNode)
     if nextColor then
-     return nextIndex, nextColor
+     return nextIndex, nextColor, nextTooltip
     else
-     return index, nextNode[COLOR]
+     return index, nextNode[COLOR], nextNode[TOOLTIP]
     end
   else
-    return nil, nil
+    return nil, nil, nil
   end
 end
+
+local tooltipRegister = {}
 
 local function colorizeFragment(s)
   -- Take a fragment of literal text (i.e. text without any HTML tags in it),
@@ -98,10 +104,32 @@ local function colorizeFragment(s)
   local terms = getTerms(s)
   local count = #terms
   while i <= count do
-    local j, color = getColor(terms, i, keywords)
+    local j, color, tooltip = getColor(terms, i, keywords)
     if j and color then
       -- We found a keyword! Color it and skip ahead if it spans multiple terms.
-      result = result .. "<span class='" .. color .. "'>"
+	  
+	  -- If we have a tooltip then add a unique id and register both
+	  local id = ''
+	  if tooltip then
+		-- This uuid implementation is only has resolution up to 1 second so we supply a unique string instead
+	    local uuid = require("uuid")
+		-- But that string can only be hex characters so let's jump through some hoops
+		local function randomHexChar()
+          local hexChars = "0123456789abcdef"
+		  return hexChars:sub(math.random(1, #hexChars), math.random(1, #hexChars))
+		end
+		local function replaceNonHexWithRandomHex(inputString)
+          return inputString:gsub("[^0-9a-fA-F]", function()
+            return randomHexChar()
+          end)
+        end
+		local key = uuid(j .. replaceNonHexWithRandomHex(tooltip) .. #tooltipRegister)
+		
+		-- Now register the tooltip with the uuid and set the id string
+	    tooltipRegister[key] = tooltip
+		id = "id='" .. key .. "'"
+	  end
+      result = result .. "<span " .. id .. " class='" .. color .. "' style='position: relative;'>"
       for x = i, j do
         result = result .. terms[x]
       end
@@ -117,6 +145,8 @@ local function colorizeFragment(s)
 end
 
 local function colorize(s)
+  -- Clear the tooltip register for this run
+  tooltipRegister = {}
   -- This depth variable keeps track of whether we're nested inside a tag.
   local depth = 0
   -- A "fragment" is an HTML start tag (e.g. <span>), end tag (e.g. </span>),
@@ -146,7 +176,7 @@ local function colorize(s)
       -- This fragment is nested, so don't colorize it.
       return x
     end
-  end):gsub('> <', '>&nbsp;<')
+  end):gsub('> <', '>&nbsp;<'), tooltipRegister
 end
 
 return { colorize = colorize, registerKeyword = registerKeyword }

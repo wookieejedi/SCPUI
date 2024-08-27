@@ -32,7 +32,8 @@ ScpuiSystem = {
 	render = true,
 	dialog = nil,
 	dataSaverMulti = 1,
-	missionLoaded = false
+	missionLoaded = false,
+	tooltipTimers = {}
 }
 
 ScpuiOptionValues = {}
@@ -81,42 +82,42 @@ function ScpuiSystem:parseTable(data)
 
 	if parse.optionalString("#State Replacement") then
 
-		while parse.optionalString("$State:") do
-			local state = parse.getString()
+	while parse.optionalString("$State:") do
+		local state = parse.getString()
 
-			if state == "GS_STATE_SCRIPTING" then
-				parse.requiredString("+Substate:")
-				local state = parse.getString()
-				parse.requiredString("+Markup:")
-				local markup = parse.getString()
-				ba.print("SCPUI found definition for script substate " .. state .. " : " .. markup .. "\n")
-				self.replacements[state] = {
-					markup = markup
-				}
-			else
-				parse.requiredString("+Markup:")
-				local markup = parse.getString()
-				ba.print("SCPUI found definition for game state " .. state .. " : " .. markup .. "\n")
-				self.replacements[state] = {
-					markup = markup
-				}
-			end
+		if state == "GS_STATE_SCRIPTING" then
+			parse.requiredString("+Substate:")
+			local state = parse.getString()
+			parse.requiredString("+Markup:")
+			local markup = parse.getString()
+			ba.print("SCPUI found definition for script substate " .. state .. " : " .. markup .. "\n")
+			self.replacements[state] = {
+				markup = markup
+			}
+		else
+			parse.requiredString("+Markup:")
+			local markup = parse.getString()
+			ba.print("SCPUI found definition for game state " .. state .. " : " .. markup .. "\n")
+			self.replacements[state] = {
+				markup = markup
+			}
 		end
-		
-		if parse.optionalString("#Background Replacement") then
-		
-			while parse.optionalString("$Campaign Background:") do
-				parse.requiredString("+Campaign Filename:")
-				local campaign = utils.strip_extension(parse.getString())
-				
-				parse.requiredString("+RCSS Class Name:")
-				local classname = parse.getString()
-				
-				self.backgrounds[campaign] = classname
-			end
-		
+	end
+	
+	if parse.optionalString("#Background Replacement") then
+	
+		while parse.optionalString("$Campaign Background:") do
+			parse.requiredString("+Campaign Filename:")
+			local campaign = utils.strip_extension(parse.getString())
+			
+			parse.requiredString("+RCSS Class Name:")
+			local classname = parse.getString()
+			
+			self.backgrounds[campaign] = classname
 		end
-		
+	
+	end
+	
 	end
 	
 	if parse.optionalString("#Background Replacement") then
@@ -216,6 +217,7 @@ function ScpuiSystem:cleanSelf()
 	ScpuiSystem.currentDoc.document:Close()
 	ScpuiSystem.currentDoc.document = nil
 	ScpuiSystem.currentDoc = nil
+	ScpuiSystem.tooltipTimers = {}
 end
 
 function ScpuiSystem:stateStart()

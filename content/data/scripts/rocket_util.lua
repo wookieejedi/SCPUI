@@ -1,4 +1,5 @@
 local utils = require("utils")
+local async_util = require("async_util")
 local tblUtil = utils.table;
 
 local M = {}
@@ -90,6 +91,80 @@ local function add_line_elements(document, paragraph, line, defaultColorTag, col
     add_text_element(paragraph, document, remainingText, colorStack[#colorStack], colorTags)
 end
 
+local function maybe_show_tooltip(tool_el, id)
+	if ScpuiSystem.tooltipTimers[id] == nil then
+		return
+	end
+	
+	if ScpuiSystem.tooltipTimers[id] >= 3 then
+		tool_el:SetPseudoClass("shown", true)
+	else
+		async.run(function()
+			async.await(async_util.wait_for(1.0))
+			if ScpuiSystem.tooltipTimers[id] ~= nil then
+				ScpuiSystem.tooltipTimers[id] = ScpuiSystem.tooltipTimers[id] + 1
+				maybe_show_tooltip(tool_el, id)
+			end
+		end, async.OnFrameExecutor)
+	end
+end
+
+local function add_tooltip(document, id, tooltip)
+	if tooltip == nil or id == nil then
+		return
+	end
+	
+	local parent = document:GetElementById(id)
+	
+	if not parent then
+		return
+	end
+
+	local tool_el = document:CreateElement("div")
+	tool_el.id = id .. "_tooltip"
+	tool_el:SetClass("tooltip", true)
+	tool_el.position = "fixed"
+	
+	-- Set the width of the tooltip
+	-- Calculate the width of the tooltip element
+	local maxCharacters = 25 -- Maximum characters before wrapping
+	local fontPixelSize = ScpuiSystem:getFontPixelSize()
+	local actualCharacters = math.min(maxCharacters, #tooltip)
+	local elementWidth = fontPixelSize * actualCharacters
+
+	tool_el.style.width = elementWidth .. "px"
+
+	-- Calculate the number of characters that fit in one line
+	local charactersPerLine = math.floor(elementWidth / fontPixelSize)
+
+	-- Calculate the number of lines required
+	local numberOfLines = math.ceil(#tooltip / charactersPerLine)
+	
+	local totalWidth = elementWidth + 10 -- Tooltip class has a padding of 5
+	local totalHeight = ((numberOfLines * fontPixelSize) + 10) * 2
+	
+	-- Now append!
+	tool_el.inner_rml = "<span class=\"tooltiptext\">" .. tooltip .. "</span>"
+	local root = document:GetElementById('main_background')
+	root:AppendChild(tool_el)
+	
+	parent:AddEventListener("mouseover", function(event, _, _)
+		local x = event.parameters.mouse_x
+		local y = event.parameters.mouse_y
+		tool_el.style.left = (x - totalWidth) .. "px"
+		tool_el.style.top = (y - totalHeight) .. "px"
+		if ScpuiSystem.tooltipTimers[id] == nil then
+			ScpuiSystem.tooltipTimers[id] = 0
+			maybe_show_tooltip(tool_el, id)
+		end
+	end)
+	
+	parent:AddEventListener("mouseout", function()
+		ScpuiSystem.tooltipTimers[id] = nil
+		tool_el:SetPseudoClass("shown", false)
+	end)
+end
+
 ---@param brief_text string
 function M.set_briefing_text(parent, brief_text, recommendation)
     -- First, clear all the children of this element
@@ -99,6 +174,8 @@ function M.set_briefing_text(parent, brief_text, recommendation)
 
     local colorTags = ui.ColorTags
     local defaultColorTag = ui.DefaultTextColorTag(2)
+	
+	local tooltipRegister = {}
 
     local rml_mode = false
     local escapeStart, escapeEnd = brief_text:find("^%s*!html%s*")
@@ -123,12 +200,15 @@ function M.set_briefing_text(parent, brief_text, recommendation)
         if rml_mode then
             -- In HTML mode, we just use the text unescaped as the inner RML after running
 			-- it through the keyword system
-            paragraph.inner_rml = ScpuiSystem:applyKeywordClasses(ba.replaceVariables(line))
+            paragraph.inner_rml, tooltipRegister = ScpuiSystem:applyKeywordClasses(ba.replaceVariables(line))
         else
             add_line_elements(document, paragraph, ba.replaceVariables(line), defaultColorTag, colorTags)
         end
 
         parent:AppendChild(paragraph)
+		for key, value in pairs(tooltipRegister) do
+			add_tooltip(document, key, value)
+		end
     end
 	
 	if recommendation then

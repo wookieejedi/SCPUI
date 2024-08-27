@@ -53,10 +53,14 @@ function ScpuiSystem:parseKeywords(data, inheritedAffixes)
     while parse.optionalString("+Text:") do
       any = true
       local text = parse.getString()
+	  local tooltip = nil
+	  if parse.optionalString("++Tooltip:") then
+	    tooltip = parse.getString()
+	  end
       for _, prefix in ipairs(affixes.prefixes) do
         for _, suffix in ipairs(affixes.suffixes) do
           local t = prefix .. text .. suffix
-          if not keywordAlgorithm.registerKeyword(t, style) then
+          if not keywordAlgorithm.registerKeyword(t, style, tooltip) then
             parse.displayMessage("SCPUI Keyword '" .. t .. "' already exists. Skipping!")
           end
         end
