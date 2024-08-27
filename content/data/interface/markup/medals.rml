@@ -21,7 +21,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Medals", -1)</p>
+								<p>XSTR("Medals", 888012)</p>
 							</span>
 						</button>
 					</div>
@@ -31,7 +31,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Ribbons", -1)</p>
+								<p>XSTR("Ribbons", 888078)</p>
 							</span>
 						</button>
 					</div>

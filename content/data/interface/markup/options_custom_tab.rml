@@ -2,7 +2,7 @@
 <div id="custom_column_1" class="options_column_25">
     <div class="btn_panel_vert">
         <div id="vert_panel_text">
-            <p id="preset_title">XSTR("Game Options", -1)</p>
+            <p id="preset_title">XSTR("Game Options", 888166)</p>
         </div>
         <div id=vert_panel_wrapper>
             <div id=bullet_choice_cont>
@@ -11,7 +11,7 @@
                         <img src="bullet-r.png" class="psuedo_img"></img>
                     </div>
                     <div class="pos button_text_right">
-                        <p>XSTR("Custom", -1)</p>
+                        <p>XSTR("Custom", 888167)</p>
                     </div>
                 </button>
             </div>
@@ -21,7 +21,7 @@
                         <img src="bullet-r.png" class="psuedo_img"></img>
                     </div>
                     <div class="pos button_text_right">
-                        <p>XSTR("Mod Default", -1)</p>
+                        <p>XSTR("Mod Default", 888168)</p>
                     </div>
                 </button>
             </div>

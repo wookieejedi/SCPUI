@@ -85,13 +85,13 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Continue", -1)</p>
+								<p>XSTR("Continue", 888027)</p>
 							</span>
 						</button>
 					</div>
 				</div>
 				<div class="tooltip">
-					<span class="tooltiptext">XSTR("Proceed to the mission briefing", -1)</span>
+					<span class="tooltiptext">XSTR("Proceed to the mission briefing", 888034)</span>
 				</div>
 				<img src="bottom-panel-a.png"></img>
 			</div>
@@ -103,7 +103,7 @@
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>XSTR("Help", -1)</p>
+								<p>XSTR("Help", 888015)</p>
 							</span>
 						</button>
 					</div>
@@ -113,7 +113,7 @@
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>XSTR("Options", -1)</p>
+								<p>XSTR("Options", 888016)</p>
 							</span>
 						</button>
 					</div>

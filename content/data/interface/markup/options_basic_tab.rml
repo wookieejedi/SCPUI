@@ -2,7 +2,7 @@
 <div class="options_column_40">
     <div class="btn_panel_large">
         <div id="large_panel_text" class="ops_left_header">
-            <p>XSTR("Volume", -1)</p>
+            <p>XSTR("Volume", 888162)</p>
         </div>
         <div id="volume_sliders_container" class=large_panel_wrapper>
             <!-- Filled in by Lua -->
@@ -44,7 +44,7 @@
     </div>
     <div id=gamma_option class="btn_panel_large panel_right">
         <div id="large_panel_text" class="ops_right_header">
-            <p>XSTR("Brightness", -1)</p>
+            <p>XSTR("Brightness", 888163)</p>
         </div>
         <div id=gamma_panel_wrapper>
             <div id="gamma_controls" class="gamma_setting">
@@ -76,7 +76,7 @@
     </div>
 	<div id="joystick_selection_wrapper">
 		<div id="joystick_category_text">
-            <p>XSTR("Joystick Selections", -1)</p>
+            <p>XSTR("Joystick Selections", 888164)</p>
         </div>
 		<div id="joystick_column_1">
 			<!-- Lua will fill in the options UI elements here -->
@@ -87,7 +87,7 @@
 	</div>
 	<div id="joystick_settings" class="joystick_settings1">
         <div id="joystick_category_text">
-            <p>XSTR("Global Joystick Settings", -1)</p>
+            <p>XSTR("Global Joystick Settings", 888165)</p>
         </div>
         <div id="joystick_values_wrapper" class=large_panel_wrapper>
             <!-- Lua will fill in the options UI elements here -->

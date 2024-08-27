@@ -251,9 +251,9 @@ function HudConfigController:savePreset(name)
 		local buttons = {}
 		buttons[1] = {
 			b_type = dialogs.BUTTON_TYPE_POSITIVE,
-			b_text = ba.XSTR("Okay", -1),
+			b_text = ba.XSTR("Okay", 888290),
 			b_value = "",
-			b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
+			b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 		}
 		
 		self:Show(text, title, false, buttons)
@@ -567,9 +567,9 @@ function HudConfigController:getPresetInput()
 	local buttons = {}
 	buttons[1] = {
 		b_type = dialogs.BUTTON_TYPE_POSITIVE,
-		b_text = ba.XSTR("Okay", -1),
+		b_text = ba.XSTR("Okay", 888290),
 		b_value = "",
-		b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
+		b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 	}
 	
 	self:Show(text, title, true, buttons)

@@ -231,7 +231,7 @@ function DebriefingController:BuildText()
         local recommendation = self.document:CreateElement("p")
         self.RecIDs[1] = recommendation
         text_el:AppendChild(recommendation)
-        recommendation.inner_rml = ba.XSTR("We have no recommendations for you.", -1)
+        recommendation.inner_rml = ba.XSTR("We have no recommendations for you.", 888314)
         recommendation:SetClass("hidden", true)
         recommendation:SetClass("red", true)
         recommendation:SetClass("recommendation", true)
@@ -481,7 +481,7 @@ function DebriefingController:GetCharacterAtWord(text, index)
 end
 
 function DebriefingController:OfferSkip()
-    local text = ba.XSTR("You have failed this mission five times.  If you like, you may advance to the next mission.", 1472)
+    local text = ba.XSTR("You have failed this mission five times.  If you like, you may advance to the next mission.", 888315)
     local title = ""
     local buttons = {}
     
@@ -489,21 +489,21 @@ function DebriefingController:OfferSkip()
     
     buttons[1] = {
         b_type = dialogs.BUTTON_TYPE_NEGATIVE,
-        b_text = ba.XSTR("Do Not Skip This Mission", 1473),
+        b_text = ba.XSTR("Do Not Skip This Mission", 888316),
         b_value = "cancel",
-        b_keypress = self:GetCharacterAtWord(ba.XSTR("Do Not Skip This Mission", 1473), 2)
+        b_keypress = self:GetCharacterAtWord(ba.XSTR("Do Not Skip This Mission", 888316), 2)
     }
     buttons[2] = {
         b_type = dialogs.BUTTON_TYPE_POSITIVE,
-        b_text = ba.XSTR("Advance To The Next Mission", 1474),
+        b_text = ba.XSTR("Advance To The Next Mission", 888318),
         b_value = "skip",
-        b_keypress = self:GetCharacterAtWord(ba.XSTR("Advance To The Next Mission", 1474), 1)
+        b_keypress = self:GetCharacterAtWord(ba.XSTR("Advance To The Next Mission", 888318), 1)
     }
     buttons[3] = {
         b_type = dialogs.BUTTON_TYPE_NEUTRAL,
-        b_text = ba.XSTR("Don't Show Me This Again", 1475),
+        b_text = ba.XSTR("Don't Show Me This Again", 888320),
         b_value = "optout",
-        b_keypress = self:GetCharacterAtWord(ba.XSTR("Don't Show Me This Again", 1475), 1)
+        b_keypress = self:GetCharacterAtWord(ba.XSTR("Don't Show Me This Again", 888320), 1)
     }
         
     self:Show(text, title, buttons)
@@ -599,21 +599,21 @@ function DebriefingController:replay_pressed(element)
         self:close()
         ui.Debriefing.replayMission()
     else
-        local text = ba.XSTR("If you choose to replay this mission, you will be required to complete it again before proceeding to future missions.\n\nIn addition, any statistics gathered during this mission will be discarded if you choose to replay.", 452)
+        local text = ba.XSTR("If you choose to replay this mission, you will be required to complete it again before proceeding to future missions.\n\nIn addition, any statistics gathered during this mission will be discarded if you choose to replay.", 888322)
         text = string.gsub(text,"\n","<br></br>")
         local title = ""
         local buttons = {}
         buttons[1] = {
             b_type = dialogs.BUTTON_TYPE_NEGATIVE,
-            b_text = ba.XSTR("Cancel", 504),
+            b_text = ba.XSTR("Cancel", 888091),
             b_value = "cancel",
-            b_keypress = self:GetCharacterAtWord(ba.XSTR("Cancel", 504), 1)
+            b_keypress = self:GetCharacterAtWord(ba.XSTR("Cancel", 888091), 1)
         }
         buttons[2] = {
             b_type = dialogs.BUTTON_TYPE_POSITIVE,
-            b_text = ba.XSTR("Replay", 451),
+            b_text = ba.XSTR("Replay", 888325),
             b_value = "replay",
-            b_keypress = self:GetCharacterAtWord(ba.XSTR("Replay", 451), 1)
+            b_keypress = self:GetCharacterAtWord(ba.XSTR("Replay", 888325), 1)
         }
             
         self:Show(text, title, buttons)
@@ -624,29 +624,29 @@ function DebriefingController:accept_pressed()
     if ui.Debriefing:mustReplay() then
         local text = nil
         if ui.Debriefing.getTraitor() then
-            text = ba.XSTR("Your career is over, Traitor!  You can't accept new missions!", 439)
+            text = ba.XSTR("Your career is over, Traitor!  You can't accept new missions!", 888327)
         else
-            text = ba.XSTR("You have failed this mission and cannot accept.  What do you you wish to do instead?", 441)
+            text = ba.XSTR("You have failed this mission and cannot accept.  What do you you wish to do instead?", 888328)
         end
         local title = ""
         local buttons = {}
         buttons[1] = {
             b_type = dialogs.BUTTON_TYPE_NEUTRAL,
-            b_text = ba.XSTR("Return to Debriefing", 442),
+            b_text = ba.XSTR("Return to Debriefing", 888329),
             b_value = "cancel",
-            b_keypress = self:GetCharacterAtWord(ba.XSTR("Return to Debriefing", 442), 3)
+            b_keypress = self:GetCharacterAtWord(ba.XSTR("Return to Debriefing", 888329), 3)
         }
         buttons[2] = {
             b_type = dialogs.BUTTON_TYPE_NEUTRAL,
-            b_text = ba.XSTR("Go to Flight Deck", 443),
+            b_text = ba.XSTR("Go to Flight Deck", 888331),
             b_value = "quit",
-            b_keypress = self:GetCharacterAtWord(ba.XSTR("Go to Flight Deck", 443), 1)
+            b_keypress = self:GetCharacterAtWord(ba.XSTR("Go to Flight Deck", 888331), 1)
         }
         buttons[3] = {
             b_type = dialogs.BUTTON_TYPE_NEUTRAL,
-            b_text = ba.XSTR("Replay Mission", 444),
+            b_text = ba.XSTR("Replay Mission", 888058),
             b_value = "replay",
-            b_keypress = self:GetCharacterAtWord(ba.XSTR("Replay Mission", 444), 1)
+            b_keypress = self:GetCharacterAtWord(ba.XSTR("Replay Mission", 888058), 1)
         }
             
         self:Show(text, title, buttons)
@@ -687,45 +687,45 @@ function DebriefingController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
         if ui.Debriefing:mustReplay() then
-            local text = ba.XSTR("Because this mission was a failure, you must replay this mission when you continue your campaign.\n\nReturn to the Flight Deck?", 457)
+            local text = ba.XSTR("Because this mission was a failure, you must replay this mission when you continue your campaign.\n\nReturn to the Flight Deck?", 888335)
             text = string.gsub(text,"\n","<br></br>")
             local title = ""
             local buttons = {}
             buttons[1] = {
                 b_type = dialogs.BUTTON_TYPE_NEGATIVE,
-                b_text = ba.XSTR("No", 506),
+                b_text = ba.XSTR("No", 888298),
                 b_value = "cancel",
-                b_keypress = self:GetCharacterAtWord(ba.XSTR("No", 506), 1)
+                b_keypress = self:GetCharacterAtWord(ba.XSTR("No", 888298), 1)
             }
             buttons[2] = {
                 b_type = dialogs.BUTTON_TYPE_POSITIVE,
-                b_text = ba.XSTR("Yes", 505),
+                b_text = ba.XSTR("Yes", 888296),
                 b_value = "quit",
-                b_keypress = self:GetCharacterAtWord(ba.XSTR("Yes", 505), 1)
+                b_keypress = self:GetCharacterAtWord(ba.XSTR("Yes", 888296), 1)
             }
                 
             self:Show(text, title, buttons)
         else
-            local text = ba.XSTR("Accept this mission outcome?", 440)
+            local text = ba.XSTR("Accept this mission outcome?", 888340)
             local title = ""
             local buttons = {}
             buttons[1] = {
                 b_type = dialogs.BUTTON_TYPE_NEGATIVE,
-                b_text = ba.XSTR("Cancel", 504),
+                b_text = ba.XSTR("Cancel", 888091),
                 b_value = "cancel",
-                b_keypress = self:GetCharacterAtWord(ba.XSTR("Cancel", 504), 1)
+                b_keypress = self:GetCharacterAtWord(ba.XSTR("Cancel", 888091), 1)
             }
             buttons[2] = {
                 b_type = dialogs.BUTTON_TYPE_POSITIVE,
-                b_text = ba.XSTR("Yes", 454),
+                b_text = ba.XSTR("Yes", 888296),
                 b_value = "acceptquit",
-                b_keypress = self:GetCharacterAtWord(ba.XSTR("Yes", 454), 1)
+                b_keypress = self:GetCharacterAtWord(ba.XSTR("Yes", 888296), 1)
             }
             buttons[3] = {
                 b_type = dialogs.BUTTON_TYPE_NEUTRAL,
-                b_text = ba.XSTR("No, retry later", 455),
+                b_text = ba.XSTR("No, retry later", 888345),
                 b_value = "quit",
-                b_keypress = self:GetCharacterAtWord(ba.XSTR("No, retry later", 455), 1)
+                b_keypress = self:GetCharacterAtWord(ba.XSTR("No, retry later", 888345), 1)
             }
                 
             self:Show(text, title, buttons)

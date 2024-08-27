@@ -14,7 +14,7 @@
 	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload(); controller = nil">
 		<div id=pilot_select>
 			<div class=window_title>
-				<p>XSTR("Choose Pilot", -1)</p>
+				<p>XSTR("Choose Pilot", 888192)</p>
 			</div>
 			<div id=pilotlist>
 				<input id=pilot_name_input class="hidden" type="text" onblur="controller:callsign_input_focus_lost()"
@@ -31,7 +31,7 @@
 								<img src="multiplayer.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text">
-								<p>XSTR("Multi", -1)</p>
+								<p>XSTR("Multi", 888001)</p>
 							</span>
 						</button>
 					</div>
@@ -41,7 +41,7 @@
 								<img src="single-player.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text">
-								<p>XSTR("Single", -1)</p>
+								<p>XSTR("Single", 888002)</p>
 							</span>
 						</button>
 					</div>
@@ -55,7 +55,7 @@
 								<img src="create-pilot.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text below">
-								<p>XSTR("Create", -1)</p>
+								<p>XSTR("Create", 888005)</p>
 							</span>
 						</button>
 					</div>
@@ -65,7 +65,7 @@
 								<img src="clone-pilot.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text below">
-								<p>XSTR("Clone", -1)</p>
+								<p>XSTR("Clone", 888006)</p>
 							</span>
 						</button>
 					</div>
@@ -75,7 +75,7 @@
 								<img src="delete-pilot.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text below">
-								<p>XSTR("Delete", -1)</p>
+								<p>XSTR("Delete", 888007)</p>
 							</span>
 						</button>
 					</div>
@@ -89,7 +89,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text below">
-								<p>XSTR("Select", -1)</p>
+								<p>XSTR("Select", 888008)</p>
 							</span>
 						</button>
 					</div>
@@ -112,10 +112,10 @@
 			<img src="pilot-select-window.png"></img>
 		</div>
 		<div id="singleplayer_text" class="player_type_text">
-			<p>XSTR("Single Player Mode", -1)</p>
+			<p>XSTR("Single Player Mode", 888199)</p>
 		</div>
 		<div id="multiplayer_text" class="player_type_text">
-			<p>XSTR("Multi Player Mode", -1)</p>
+			<p>XSTR("Multi Player Mode", 888200)</p>
 		</div>
 		<div id=logo_wide>
 			<img src="logo-wide.png"></img>
@@ -123,7 +123,7 @@
 		<div id=copyright_info>
 			<p id=mod_version_info></p>
 			<p id=fso_version_info></p>
-			<p>XSTR("Copyright © 1999, Volition, Inc.  All rights reserved.", -1)</p>
+			<p>XSTR("Copyright © 1999, Volition, Inc.  All rights reserved.", 888201)</p>
 		</div>
 	</body>
 

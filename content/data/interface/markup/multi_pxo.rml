@@ -26,7 +26,7 @@
 							<img src="target.png" class="psuedo_img"></img>
 						</span>
 						<span class="pos button_text_bottom">
-							<p>XSTR("Web Ranking", -1)</p>
+							<p>XSTR("Web Ranking", 888129)</p>
 						</span>
 					</button>
 				</div>
@@ -36,7 +36,7 @@
 							<img src="create-pilot.png" class="psuedo_img"></img>
 						</span>
 						<span class="pos button_text_bottom">
-							<p>XSTR("Pilot Info", -1)</p>
+							<p>XSTR("Pilot Info", 888089)</p>
 						</span>
 					</button>
 				</div>
@@ -46,7 +46,7 @@
 							<img src="detail.png" class="psuedo_img"></img>
 						</span>
 						<span class="pos button_text_bottom">
-							<p>XSTR("Find Pilot", -1)</p>
+							<p>XSTR("Find Pilot", 888131)</p>
 						</span>
 					</button>
 				</div>
@@ -65,7 +65,7 @@
 						<img src="select.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text_join">
-						<p>XSTR("Join Channel", -1)</p>
+						<p>XSTR("Join Channel", 888132)</p>
 					</span>
 				</button>
 			</div>
@@ -75,7 +75,7 @@
 						<img src="select.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text_join">
-						<p>XSTR("Join Private", -1)</p>
+						<p>XSTR("Join Private", 888133)</p>
 					</span>
 				</button>
 			</div>
@@ -93,7 +93,7 @@
 							<img src="select.png" class="psuedo_img"></img>
 						</span>
 						<span class="pos button_text_special">
-							<p>XSTR("Submit", -1)</p>
+							<p>XSTR("Submit", 888017)</p>
 						</span>
 					</button>
 				</div>
@@ -110,7 +110,7 @@
 						<img src="star.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text_top">
-						<p>XSTR("MOTD", -1)</p>
+						<p>XSTR("MOTD", 888135)</p>
 					</span>
 				</button>
 			</div>
@@ -125,7 +125,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Accept", -1)</p>
+								<p>XSTR("Accept", 888014)</p>
 							</span>
 						</button>
 					</div>
@@ -140,7 +140,7 @@
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
-								<p>XSTR("Help", -1)</p>
+								<p>XSTR("Help", 888015)</p>
 							</span>
 						</button>
 					</div>
@@ -155,7 +155,7 @@
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
-								<p>XSTR("Exit", -1)</p>
+								<p>XSTR("Exit", 888102)</p>
 							</span>
 						</button>
 					</div>

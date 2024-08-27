@@ -13,7 +13,7 @@ function JournalController:initialize(document)
 
     self.document = document
     
-    self.new = {"NEW", -1}
+    self.new = {"NEW", 888548}
 
     ---Load background choice
     self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)

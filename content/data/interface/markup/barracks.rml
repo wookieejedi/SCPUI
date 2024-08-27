@@ -15,7 +15,7 @@
 		<div id="upper_windows" class="window_container">
 			<div id=pilot_select>
 				<div id="pilot_select_title" class="window_title">
-					<p>XSTR("Barracks", -1)</p>
+					<p>XSTR("Barracks", 888000)</p>
 				</div>
 				<div id=pilotlist>
 					<input id=pilot_name_input class="hidden" type="text" onblur="controller:callsign_input_focus_lost()"
@@ -32,7 +32,7 @@
 									<img src="multiplayer.png" class="psuedo_img"></img>
 								</span>
 								<span class="pos button_text">
-									<p>XSTR("Multi", -1)</p>
+									<p>XSTR("Multi", 888001)</p>
 								</span>
 							</button>
 						</div>
@@ -42,18 +42,18 @@
 									<img src="single-player.png" class="psuedo_img"></img>
 								</span>
 								<span class="pos button_text">
-									<p>XSTR("Single", -1)</p>
+									<p>XSTR("Single", 888002)</p>
 								</span>
 							</button>
 						</div>
 					</div>
 					<div class="tooltip">
-						<span class="tooltiptext">XSTR("Switch between Single and Multiplayer modes", -1)</span>
+						<span class="tooltiptext">XSTR("Switch between Single and Multiplayer modes", 888003)</span>
 					</div>
 				</div>
 				<div id=player_control>
 					<div class="tooltip">
-						<span class="tooltiptext">XSTR("Select, Create, Clone, & Delete Pilots", -1)</span>
+						<span class="tooltiptext">XSTR("Select, Create, Clone, & Delete Pilots", 888004)</span>
 					</div>
 					<div id="player_control_wrapper">
 						<div id=player_control_cont>
@@ -62,7 +62,7 @@
 									<img src="create-pilot.png" class="psuedo_img"></img>
 								</span>
 								<span class="pos button_text below">
-									<p>XSTR("Create", -1)</p>
+									<p>XSTR("Create", 888005)</p>
 								</span>
 							</button>
 						</div>
@@ -72,7 +72,7 @@
 									<img src="clone-pilot.png" class="psuedo_img"></img>
 								</span>
 								<span class="pos button_text below">
-									<p>XSTR("Clone", -1)</p>
+									<p>XSTR("Clone", 888006)</p>
 								</span>
 							</button>
 						</div>
@@ -82,7 +82,7 @@
 									<img src="delete-pilot.png" class="psuedo_img"></img>
 								</span>
 								<span class="pos button_text below">
-									<p>XSTR("Delete", -1)</p>
+									<p>XSTR("Delete", 888007)</p>
 								</span>
 							</button>
 						</div>
@@ -96,7 +96,7 @@
 									<img src="select.png" class="psuedo_img"></img>
 								</span>
 								<span class="neg button_text below">
-									<p>XSTR("Select", -1)</p>
+									<p>XSTR("Select", 888008)</p>
 								</span>
 							</button>
 						</div>
@@ -143,7 +143,7 @@
 						</button>
 					</div>
 					<div class="tooltip">
-						<span class="tooltiptext">XSTR("Choose Pilot head image", -1)</span>
+						<span class="tooltiptext">XSTR("Choose Pilot head image", 888009)</span>
 					</div>
 				</div>
 				<img src="pilot-head-window.png"></img>
@@ -152,12 +152,12 @@
 		<div id="lower_windows" class="window_container">
 			<div id=pilot_info>
 				<div id="pilot_info_title" class="window_title">
-					<p>XSTR("Pilot Stats", -1)</p>
+					<p>XSTR("Pilot Stats", 888010)</p>
 				</div>
 				<div id=pilot_stats_text>
 				</div>
 				<div class="tooltip">
-					<span class="tooltiptext">XSTR("View pilot stats", -1)</span>
+					<span class="tooltiptext">XSTR("View pilot stats", 888011)</span>
 				</div>
 				<div id=medals_btn_wrapper>
 					<div id=medals_btn_cont>
@@ -166,7 +166,7 @@
 								<img src="medals.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Medals", -1)</p>
+								<p>XSTR("Medals", 888012)</p>
 							</span>
 						</button>
 					</div>
@@ -198,7 +198,7 @@
 						</button>
 					</div>
 					<div class="tooltip">
-						<span class="tooltiptext">XSTR("Choose Pilot squad - multiplayer mode only", -1)</span>
+						<span class="tooltiptext">XSTR("Choose Pilot squad - multiplayer mode only", 888013)</span>
 					</div>
 				</div>
 				<img src="pilot-squad-window.png"></img>
@@ -216,7 +216,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Accept", -1)</p>
+								<p>XSTR("Accept", 888014)</p>
 							</span>
 						</button>
 					</div>
@@ -231,7 +231,7 @@
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>XSTR("Help", -1)</p>
+								<p>XSTR("Help", 888015)</p>
 							</span>
 						</button>
 					</div>
@@ -241,7 +241,7 @@
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>XSTR("Options", -1)</p>
+								<p>XSTR("Options", 888016)</p>
 							</span>
 						</button>
 					</div>

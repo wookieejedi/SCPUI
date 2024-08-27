@@ -58,7 +58,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Continue", -1)</p>
+								<p>XSTR("Continue", 888027)</p>
 							</span>
 						</button>
 					</div>

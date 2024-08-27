@@ -69,7 +69,7 @@ function BriefingController:initialize(document)
 		text_el.style.color = "#606060"
 		text_el.style.top = "8%"
 		text_el.style.left = "5%"
-		text_el.inner_rml = ba.XSTR("Loadout selection not available", -1)
+		text_el.inner_rml = ba.XSTR("Loadout selection not available", 888279)
 		self.document:GetElementById("main_background"):AppendChild(text_el)
 	end
 		
@@ -117,13 +117,13 @@ function BriefingController:initialize(document)
 	
 	if mn.isInCampaign() then
 		if mn.isTraining() then
-			self.document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Skip Training", -1)
+			self.document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Skip Training", 888280)
 			self.document:GetElementById("top_panel_a"):SetClass("hidden", false)
 		elseif mn.isInCampaignLoop() then
-			self.document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Exit Loop", -1)
+			self.document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Exit Loop", 888281)
 			self.document:GetElementById("top_panel_a"):SetClass("hidden", false)
 		elseif mn.isMissionSkipAllowed() then
-			self.document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Skip Mission", -1)
+			self.document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Skip Mission", 888282)
 			self.document:GetElementById("top_panel_a"):SetClass("hidden", false)
 		else
 			self.document:GetElementById("top_panel_a"):SetClass("hidden", true)

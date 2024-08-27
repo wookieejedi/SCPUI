@@ -2,7 +2,7 @@
 <div id="graphics_column_1" class="options_column_25"> <!--left column button panels-->
     <div class="btn_panel_vert_tall"> <!--This begins all the rml for the preset selector-->
         <div id="vert_tall_panel_text">
-            <p id="preset_title">XSTR("Preset Graphics Level", -1)</p>
+            <p id="preset_title">XSTR("Preset Graphics Level", 888169)</p>
         </div>
         <div id=vert_tall_panel_wrapper>
             <div id=bullet_choice_cont>
@@ -11,7 +11,7 @@
                         <img src="bullet-r.png" class="psuedo_img"></img>
                     </div>
                     <div class="pos button_text_right">
-                        <p>XSTR("Minimum", -1)</p>
+                        <p>XSTR("Minimum", 888170)</p>
                     </div>
                 </button>
             </div>
@@ -21,7 +21,7 @@
                         <img src="bullet-r.png" class="psuedo_img"></img>
                     </div>
                     <div class="pos button_text_right">
-                        <p>XSTR("Low", -1)</p>
+                        <p>XSTR("Low", 888171)</p>
                     </div>
                 </button>
             </div>
@@ -31,7 +31,7 @@
                         <img src="bullet-r.png" class="psuedo_img"></img>
                     </div>
                     <div class="pos button_text_right">
-                        <p>XSTR("Medium", -1)</p>
+                        <p>XSTR("Medium", 888172)</p>
                     </div>
                 </button>
             </div>
@@ -41,7 +41,7 @@
                         <img src="bullet-r.png" class="psuedo_img"></img>
                     </div>
                     <div class="pos button_text_right">
-                        <p>XSTR("High", -1)</p>
+                        <p>XSTR("High", 888173)</p>
                     </div>
                 </button>
             </div>
@@ -51,7 +51,7 @@
                         <img src="bullet-r.png" class="psuedo_img"></img>
                     </div>
                     <div class="pos button_text_right">
-                        <p>XSTR("Ultra", -1)</p>
+                        <p>XSTR("Ultra", 888174)</p>
                     </div>
                 </button>
             </div>
@@ -61,7 +61,7 @@
                         <img src="bullet-r.png" class="psuedo_img"></img>
                     </div>
                     <div class="pos button_text_right">
-                        <p>XSTR("Custom", -1)</p>
+                        <p>XSTR("Custom", 888167)</p>
                     </div>
                 </button>
             </div>

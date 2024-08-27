@@ -4,7 +4,7 @@ local topics = require("ui_topics")
 
 local GamePausedController = class()
 
-local pausedText = {"GAME IS PAUSED", -1}
+local pausedText = {"GAME IS PAUSED", 888347}
 
 local screenRender = nil
 

@@ -38,7 +38,7 @@
 								<img src="star.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
-								<p>XSTR("Restart Campaign", -1)</p>
+								<p>XSTR("Restart Campaign", 888031)</p>
 							</span>
 						</button>
 					</div>
@@ -53,7 +53,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Select", -1)</p>
+								<p>XSTR("Select", 888008)</p>
 							</span>
 						</button>
 					</div>

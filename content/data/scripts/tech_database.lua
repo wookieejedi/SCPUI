@@ -85,9 +85,9 @@ function TechDatabaseController:LoadData()
 		if list[i]:hasCustomData() and list[i].CustomData["HideInTechRoom"] == "true" then
 			ba.print("Skipping weapon " .. list[i].Name .. " in the tech room list!\n")
 		else
-			local t_string = utils.xstr("Primary", -1)
+			local t_string = utils.xstr("Primary", 888551)
 			if list[i]:isSecondary() then
-				t_string = utils.xstr("Secondary", -1)
+				t_string = utils.xstr("Secondary", 888552)
 			end
 			
 			local weapon = {
@@ -752,9 +752,9 @@ function TechDatabaseController:BreakoutReader()
 	local buttons = {}
 	buttons[1] = {
 		b_type = dialogs.BUTTON_TYPE_POSITIVE,
-		b_text = ba.XSTR("Close", -1),
+		b_text = ba.XSTR("Close", 888110),
 		b_value = "",
-		b_keypress = string.sub(ba.XSTR("Close", -1), 1, 1)
+		b_keypress = string.sub(ba.XSTR("Close", 888110), 1, 1)
 	}
 	self:Show(text, title, buttons)
 end

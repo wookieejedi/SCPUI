@@ -420,9 +420,9 @@ function WeaponSelectController:BreakoutReader()
 	local buttons = {}
 	buttons[1] = {
 		b_type = dialogs.BUTTON_TYPE_POSITIVE,
-		b_text = ba.XSTR("Close", -1),
+		b_text = ba.XSTR("Close", 888110),
 		b_value = "",
-		b_keypress = string.sub(ba.XSTR("Close", -1), 1, 1)
+		b_keypress = string.sub(ba.XSTR("Close", 888110), 1, 1)
 	}
 	self:Show(text, title, buttons)
 end
@@ -758,7 +758,7 @@ function WeaponSelectController:BuildInfo(entry)
 	desc_el:SetClass("white", true)
 	
 	local stats1_el = self.document:CreateElement("p")
-	stats1_el.inner_rml = ba.XSTR("Velocity", -1) .. ": " .. velocity .. "m/s, " .. ba.XSTR("Range", -1) .. ": " .. range .. "m"
+	stats1_el.inner_rml = ba.XSTR("Velocity", 888430) .. ": " .. velocity .. "m/s, " .. ba.XSTR("Range", 888431) .. ": " .. range .. "m"
 	stats1_el:SetClass("green", true)
 	
 	local stats2_el = self.document:CreateElement("p")
@@ -768,19 +768,19 @@ function WeaponSelectController:BuildInfo(entry)
 		local hull = math.floor(entry.HullDamage * volley)
 		local shield = math.floor(entry.ShieldDamage * volley)
 		local subsystem = math.floor(entry.SubsystemDamage * volley)
-		local label = (volley == 1) and ba.XSTR("Damage per missile", -1) or ba.XSTR("Damage per volley", -1)
-		stats2_el.inner_rml = label .. ": " .. hull .. " " .. ba.XSTR("Hull", -1) .. ", " .. shield .. " " .. ba.XSTR("Shield", -1) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", -1)
+		local label = (volley == 1) and ba.XSTR("Damage per missile", 888432) or ba.XSTR("Damage per volley", 888433)
+		stats2_el.inner_rml = label .. ": " .. hull .. " " .. ba.XSTR("Hull", 888434) .. ", " .. shield .. " " .. ba.XSTR("Shield", 888435) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", 888436)
 	else
 		local hull = math.floor(entry.HullDamage * volley / entry.FireWait)
 		local shield = math.floor(entry.ShieldDamage * volley / entry.FireWait)
 		local subsystem = math.floor(entry.SubsystemDamage * volley / entry.FireWait)
-		stats2_el.inner_rml = ba.XSTR("Damage per second", -1) .. ": " .. hull .. " " .. ba.XSTR("Hull", -1) .. ", " .. shield .. " " .. ba.XSTR("Shield", -1) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", -1)
+		stats2_el.inner_rml = ba.XSTR("Damage per second", 888437) .. ": " .. hull .. " " .. ba.XSTR("Hull", 888434) .. ", " .. shield .. " " .. ba.XSTR("Shield", 888435) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", 888436)
 	end
 	stats2_el:SetClass("red", true)
 	
 	local stats3_el = self.document:CreateElement("p")
 	stats3_el:SetClass("info", true)
-	stats3_el.inner_rml = ba.XSTR("Power Use", -1) .. ": " .. power .. ba.XSTR("W", -1) .. ", " .. ba.XSTR("Rate of Fire", -1) .. ": " .. rof .. "/s"
+	stats3_el.inner_rml = ba.XSTR("Power Use", 888441) .. ": " .. power .. ba.XSTR("W", 888442) .. ", " .. ba.XSTR("Rate of Fire", 888443) .. ": " .. rof .. "/s"
 	stats3_el:SetClass("blue", true)
 	
 	infoEl:AppendChild(desc_el)
@@ -990,14 +990,14 @@ function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 		--If the slot can't accept the weapon then abort!
 		if not loadoutHandler:IsWeaponAllowedInBank(shipIdx, weaponIndex, self.activeSlot) then
 			self.replace = nil
-			text = ba.XSTR("That weapon slot can't accept that weapon type", -1)
+			text = ba.XSTR("That weapon slot can't accept that weapon type", 888444)
 			local title = ""
 			local buttons = {}
 			buttons[1] = {
 				b_type = dialogs.BUTTON_TYPE_POSITIVE,
-				b_text = ba.XSTR("Okay", -1),
+				b_text = ba.XSTR("Okay", 888290),
 				b_value = "",
-				b_keypress = string.sub(ba.XSTR("Ok", -1), 1, 1)
+				b_keypress = string.sub(ba.XSTR("Ok", 888286), 1, 1)
 			}
 			
 			self:Show(text, title, buttons)
@@ -1082,14 +1082,14 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 		--If the slot can't accept the weapon then abort!
 		if not loadoutHandler:IsWeaponAllowedInBank(shipIdx, slotWeapon, dropSlot) then
 			self.replace = nil
-			text = ba.XSTR("That weapon slot can't accept that weapon type", -1)
+			text = ba.XSTR("That weapon slot can't accept that weapon type", 888444)
 			local title = ""
 			local buttons = {}
 			buttons[1] = {
 				b_type = dialogs.BUTTON_TYPE_POSITIVE,
-				b_text = ba.XSTR("Okay", -1),
+				b_text = ba.XSTR("Okay", 888290),
 				b_value = "",
-				b_keypress = string.sub(ba.XSTR("Ok", -1), 1, 1)
+				b_keypress = string.sub(ba.XSTR("Ok", 888286), 1, 1)
 			}
 			
 			self:Show(text, title, buttons)

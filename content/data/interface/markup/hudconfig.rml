@@ -25,7 +25,7 @@
 										<img src="round.png" class="psuedo_img"></img>
 									</span>
 									<span class="pos button_text_left">
-										<p>XSTR("On", -1)</p>
+										<p>XSTR("On", 888069)</p>
 									</span>
 								</button>
 							</div>
@@ -35,7 +35,7 @@
 										<img src="round.png" class="psuedo_img"></img>
 									</span>
 									<span class="pos button_text_left">
-										<p>XSTR("Off", -1)</p>
+										<p>XSTR("Off", 888070)</p>
 									</span>
 								</button>
 							</div>
@@ -45,7 +45,7 @@
 										<img src="round.png" class="psuedo_img"></img>
 									</span>
 									<span class="pos button_text_left">
-										<p>XSTR("Popup", -1)</p>
+										<p>XSTR("Popup", 888071)</p>
 									</span>
 								</button>
 							</div>
@@ -62,7 +62,7 @@
 										<img src="default.png" class="psuedo_img"></img>
 									</span>
 									<span class="pos button_text_bottom">
-										<p>XSTR("Use Default", -1)</p>
+										<p>XSTR("Use Default", 888072)</p>
 									</span>
 								</button>
 							</div>
@@ -72,7 +72,7 @@
 										<img src="star.png" class="psuedo_img"></img>
 									</span>
 									<span class="pos button_text_bottom">
-										<p>XSTR("Select All", -1)</p>
+										<p>XSTR("Select All", 888073)</p>
 									</span>
 								</button>
 							</div>
@@ -117,7 +117,7 @@
 								<img src="star.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Save as Preset", -1)</p>
+								<p>XSTR("Save as Preset", 888074)</p>
 							</span>
 						</button>
 					</div>
@@ -127,7 +127,7 @@
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_bottom">
-								<p>XSTR("Delete Preset", -1)</p>
+								<p>XSTR("Delete Preset", 888052)</p>
 							</span>
 						</button>
 					</div>
@@ -144,7 +144,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Accept", -1)</p>
+								<p>XSTR("Accept", 888014)</p>
 							</span>
 						</button>
 					</div>

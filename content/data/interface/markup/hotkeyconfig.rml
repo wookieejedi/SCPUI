@@ -41,7 +41,7 @@
 								<img src="decline.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Reset", -1)</p>
+								<p>XSTR("Reset", 888065)</p>
 							</span>
 						</button>
 					</div>
@@ -51,7 +51,7 @@
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Clear", -1)</p>
+								<p>XSTR("Clear", 888066)</p>
 							</span>
 						</button>
 					</div>
@@ -61,7 +61,7 @@
 								<img src="default.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Default", -1)</p>
+								<p>XSTR("Default", 888067)</p>
 							</span>
 						</button>
 					</div>
@@ -78,7 +78,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Accept", -1)</p>
+								<p>XSTR("Accept", 888014)</p>
 							</span>
 						</button>
 					</div>

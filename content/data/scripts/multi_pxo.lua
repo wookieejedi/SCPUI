@@ -80,9 +80,9 @@ function PXOController:joinPrivatePressed()
 	local buttons = {}
 	buttons[1] = {
 		b_type = dialogs.BUTTON_TYPE_POSITIVE,
-		b_text = ba.XSTR("Okay", -1),
+		b_text = ba.XSTR("Okay", 888290),
 		b_value = "",
-		b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
+		b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 	}
 	
 	self:Show(text, title, true, buttons)
@@ -198,9 +198,9 @@ function PXOController:FindPilotPressed()
 	local buttons = {}
 	buttons[1] = {
 		b_type = dialogs.BUTTON_TYPE_POSITIVE,
-		b_text = ba.XSTR("Okay", -1),
+		b_text = ba.XSTR("Okay", 888290),
 		b_value = "",
-		b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
+		b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 	}
 	
 	self:Show(text, title, true, buttons)
@@ -229,22 +229,22 @@ function PXOController:GetPlayerChannel(player_name)
 		text = text .. "<br></br>Join channel?"
 		buttons[1] = {
 			b_type = dialogs.BUTTON_TYPE_POSITIVE,
-			b_text = ba.XSTR("Yes", -1),
+			b_text = ba.XSTR("Yes", 888296),
 			b_value = true,
-			b_keypress = string.sub(ba.XSTR("Yes", -1), 1, 1)
+			b_keypress = string.sub(ba.XSTR("Yes", 888296), 1, 1)
 		}
 		buttons[2] = {
 			b_type = dialogs.BUTTON_TYPE_NEGATIVE,
-			b_text = ba.XSTR("No", -1),
+			b_text = ba.XSTR("No", 888298),
 			b_value = false,
-			b_keypress = string.sub(ba.XSTR("No", -1), 1, 1)
+			b_keypress = string.sub(ba.XSTR("No", 888298), 1, 1)
 		}
 	else
 		buttons[1] = {
 			b_type = dialogs.BUTTON_TYPE_POSITIVE,
-			b_text = ba.XSTR("Okay", -1),
+			b_text = ba.XSTR("Okay", 888290),
 			b_value = false,
-			b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
+			b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 		}
 	end
 	
@@ -261,9 +261,9 @@ function PXOController:GetPlayerStats(player_name)
 	local buttons = {}
 	buttons[1] = {
 		b_type = dialogs.BUTTON_TYPE_POSITIVE,
-		b_text = ba.XSTR("Okay", -1),
+		b_text = ba.XSTR("Okay", 888290),
 		b_value = "",
-		b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
+		b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 	}
 	
 	self:Show(text, title, false, buttons)
@@ -402,9 +402,9 @@ function PXOController:motd_pressed()
 	local buttons = {}
 	buttons[1] = {
 		b_type = dialogs.BUTTON_TYPE_POSITIVE,
-		b_text = ba.XSTR("Okay", -1),
+		b_text = ba.XSTR("Okay", 888290),
 		b_value = "",
-		b_keypress = string.sub(ba.XSTR("Okay", -1), 1, 1)
+		b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 	}
 	
 	self:Show(text, title, false, buttons)

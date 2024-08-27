@@ -38,7 +38,7 @@ $On Game Init:
 	  local new_el = message.document:CreateElement("div")
 	  new_el.id = "journal_new"
 	  new_el:SetClass("red", true)
-	  new_el.inner_rml = ba.XSTR("New!", -1)
+	  new_el.inner_rml = ba.XSTR("New!", 888549)
 	  new_el.style.position = "absolute"
 	  new_el.style["margin-top"] = "25%"
 	  

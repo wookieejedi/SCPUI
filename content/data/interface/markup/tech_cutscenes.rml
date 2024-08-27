@@ -21,7 +21,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Technical Database", -1)</p>
+								<p>XSTR("Technical Database", 888219)</p>
 							</span>
 						</button>
 					</div>
@@ -31,7 +31,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Mission Simulator", -1)</p>
+								<p>XSTR("Mission Simulator", 888220)</p>
 							</span>
 						</button>
 					</div>
@@ -41,7 +41,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Cutscenes", -1)</p>
+								<p>XSTR("Cutscenes", 888221)</p>
 							</span>
 						</button>
 					</div>
@@ -51,7 +51,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Credits", -1)</p>
+								<p>XSTR("Credits", 888222)</p>
 							</span>
 						</button>
 					</div>
@@ -94,7 +94,7 @@
 									<img src="arrow-right.png" class="psuedo_img"></img>
 								</span>
 								<span class="pos button_text_bottom">
-								<p>XSTR("Play", -1)</p>
+								<p>XSTR("Play", 888228)</p>
 							</span>
 							</button>
 						</div>
@@ -120,7 +120,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Exit", -1)</p>
+								<p>XSTR("Exit", 888102)</p>
 							</span>
 						</button>
 					</div>

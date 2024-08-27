@@ -358,9 +358,9 @@ function ShipSelectController:BreakoutReader()
 	local buttons = {}
 	buttons[1] = {
 		b_type = dialogs.BUTTON_TYPE_POSITIVE,
-		b_text = ba.XSTR("Close", -1),
+		b_text = ba.XSTR("Close", 888110),
 		b_value = "",
-		b_keypress = string.sub(ba.XSTR("Close", -1), 1, 1)
+		b_keypress = string.sub(ba.XSTR("Close", 888110), 1, 1)
 	}
 	self:Show(text, title, buttons)
 end
@@ -463,17 +463,17 @@ function ShipSelectController:BuildInfo(entry)
 	end
 	
 	local array    = {
-		{ba.XSTR("Class", 739), entry.Name},
-		{ba.XSTR("Type", 740), entry.Type},
-		{ba.XSTR("Length", 741), entry.Length},
-		{ba.XSTR("Max Velocity", 742), entry.Velocity .. ' (' .. entry.AfterburnerVelocity .. ba.XSTR(" m/s with afterburner", 5403) .. ')'},
-		{ba.XSTR("Maneuverability", 744), entry.Maneuverability},
-		--{ba.XSTR("Armor", 745), entry.Armor}, --Removed because it doesn't usually offer much useful information
-		{ba.XSTR("Hull Strength", -1), hitpointsString},
-		{ba.XSTR("Shield Strength", -1), ShieldhitpointsString},
-		{ba.XSTR("Gun Mounts", 746), entry.GunMounts},
-		{ba.XSTR("Missile Banks", 747), entry.MissileBanks},
-		{ba.XSTR("Manufacturer", 748), entry.Manufacturer}
+		{ba.XSTR("Class", 888414), entry.Name},
+		{ba.XSTR("Type", 888116), entry.Type},
+		{ba.XSTR("Length", 888416), entry.Length},
+		{ba.XSTR("Max Velocity", 888417), entry.Velocity .. ' (' .. entry.AfterburnerVelocity .. ba.XSTR(" m/s with afterburner", 888418) .. ')'},
+		{ba.XSTR("Maneuverability", 888419), entry.Maneuverability},
+		--{ba.XSTR("Armor", 888420), entry.Armor}, --Removed because it doesn't usually offer much useful information
+		{ba.XSTR("Hull Strength", 888421), hitpointsString},
+		{ba.XSTR("Shield Strength", 888422), ShieldhitpointsString},
+		{ba.XSTR("Gun Mounts", 888423), entry.GunMounts},
+		{ba.XSTR("Missile Banks", 888424), entry.MissileBanks},
+		{ba.XSTR("Manufacturer", 888425), entry.Manufacturer}
 	}
 	
 	for _, v in ipairs(array) do

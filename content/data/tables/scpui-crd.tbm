@@ -1,24 +1,24 @@
 --------------------------------------------------------------------
-XSTR("SCPUI", -1)
+XSTR("SCPUI", 888450)
 --------------------------------------------------------------------
 
-XSTR("This mod is released under the following license", -1)
-XSTR("Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International", -1)
-XSTR("A copy of this license may be found in data\tables", -1)
-XSTR("or at creativecommons.org/licenses/by-nc-sa/4.0/", -1)
+XSTR("This mod is released under the following license", 888451)
+XSTR("Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International", 888452)
+XSTR("A copy of this license may be found in data\tables", 888453)
+XSTR("or at creativecommons.org/licenses/by-nc-sa/4.0/", 888454)
 
-XSTR("You are free to copy and redistribute this mod in any medium or format", -1)
-XSTR("You must give appropriate credit when using this mod", -1)
-XSTR("Derivative works of this mod must be released under the same license", -1)
-XSTR("You must obtain permission to use this work for commercial purposes", -1)
+XSTR("You are free to copy and redistribute this mod in any medium or format", 888455)
+XSTR("You must give appropriate credit when using this mod", 888456)
+XSTR("Derivative works of this mod must be released under the same license", 888457)
+XSTR("You must obtain permission to use this work for commercial purposes", 888458)
 
-XSTR("Primary Coders", -1)
-XSTR("Mike 'MjnMixael' Nelson", -1)
-XSTR("m!m", -1)
+XSTR("Primary Coders", 888459)
+XSTR("Mike 'MjnMixael' Nelson", 888460)
+XSTR("m!m", 888461)
 
-XSTR("Contributors", -1)
-XSTR("Axem", -1)
-XSTR("Lafiel", -1)
-XSTR("Naomi Weidman", -1)
+XSTR("Contributors", 888462)
+XSTR("Axem", 888463)
+XSTR("Lafiel", 888464)
+XSTR("Naomi Weidman", 888465)
 
 #end

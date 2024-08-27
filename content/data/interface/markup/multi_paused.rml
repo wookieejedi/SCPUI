@@ -28,7 +28,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bot">
-								<p>XSTR("Submit", -1)</p>
+								<p>XSTR("Submit", 888017)</p>
 							</span>
 						</button>
 					</div>
@@ -38,7 +38,7 @@
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_bot">
-								<p>XSTR("End Mission", -1)</p>
+								<p>XSTR("End Mission", 888093)</p>
 							</span>
 						</button>
 					</div>

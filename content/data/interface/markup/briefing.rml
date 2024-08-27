@@ -24,7 +24,7 @@
 						<img src="select.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text_special">
-						<p>XSTR("Submit", -1)</p>
+						<p>XSTR("Submit", 888017)</p>
 					</span>
 				</button>
 			</div>
@@ -54,7 +54,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Briefing", -1)</p>
+								<p>XSTR("Briefing", 888018)</p>
 							</span>
 						</button>
 					</div>
@@ -64,7 +64,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Ship Selection", -1)</p>
+								<p>XSTR("Ship Selection", 888019)</p>
 							</span>
 						</button>
 					</div>
@@ -74,7 +74,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Weapon Selection", -1)</p>
+								<p>XSTR("Weapon Selection", 888020)</p>
 							</span>
 						</button>
 					</div>
@@ -82,7 +82,7 @@
 				<img src="ops-panel-vert-tall-l.png"></img>
 			</div>
 			<div class="tooltip">
-				<span class="tooltiptext">XSTR("Click here to change ship or weapon selection", -1)</span>
+				<span class="tooltiptext">XSTR("Click here to change ship or weapon selection", 888021)</span>
 			</div>
 		</div>
 		<div id=brief_wrapper>
@@ -108,7 +108,7 @@
 									<img src="scroll-bar-line-horz.png" class="psuedo_img"></img>
 								</div>
 								<div id="primary_goal_text">
-									<p>XSTR("Primary Objectives", -1)</p>
+									<p>XSTR("Primary Objectives", 888022)</p>
 								</div>
 								<div id="goalsline_img" class="primary_rightline rightline">
 									<img src="scroll-bar-line-horz.png" class="psuedo_img"></img>
@@ -125,7 +125,7 @@
 									<img src="scroll-bar-line-horz.png" class="psuedo_img"></img>
 								</div>
 								<div id="secondary_goal_text">
-									<p>XSTR("Secondary Objectives", -1)</p>
+									<p>XSTR("Secondary Objectives", 888023)</p>
 								</div>
 								<div id="goalsline_img" class="secondary_rightline rightline">
 									<img src="scroll-bar-line-horz.png" class="psuedo_img"></img>
@@ -142,7 +142,7 @@
 									<img src="scroll-bar-line-horz.png" class="psuedo_img"></img>
 								</div>
 								<div id="bonus_goal_text">
-									<p>XSTR("Bonus Objectives", -1)</p>
+									<p>XSTR("Bonus Objectives", 888024)</p>
 								</div>
 								<div id="goalsline_img" class="bonus_rightline rightline">
 									<img src="scroll-bar-line-horz.png" class="psuedo_img"></img>
@@ -192,7 +192,7 @@
 						</div>
 					</div>
 					<div class="tooltip">
-						<span class="tooltiptext">XSTR("Click here to change briefing stages", -1)</span>
+						<span class="tooltiptext">XSTR("Click here to change briefing stages", 888025)</span>
 					</div>
 				</div>
 				<img src="brief-main-window.png"></img>
@@ -216,7 +216,7 @@
 								<img src="star.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
-								<p>XSTR("Ships Locked", -1)</p>
+								<p>XSTR("Ships Locked", 888026)</p>
 							</span>
 						</button>
 					</div>
@@ -231,13 +231,13 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Continue", -1)</p>
+								<p>XSTR("Continue", 888027)</p>
 							</span>
 						</button>
 					</div>
 				</div>
 				<div class="tooltip">
-					<span class="tooltiptext">XSTR("Click here to begin the mission", -1)</span>
+					<span class="tooltiptext">XSTR("Click here to begin the mission", 888028)</span>
 				</div>
 				<img src="bottom-panel-a.png"></img>
 			</div>
@@ -249,7 +249,7 @@
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>XSTR("Help", -1)</p>
+								<p>XSTR("Help", 888015)</p>
 							</span>
 						</button>
 					</div>
@@ -259,7 +259,7 @@
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>XSTR("Options", -1)</p>
+								<p>XSTR("Options", 888016)</p>
 							</span>
 						</button>
 					</div>

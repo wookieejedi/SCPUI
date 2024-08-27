@@ -21,7 +21,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Technical Database", -1)</p>
+								<p>XSTR("Technical Database", 888219)</p>
 							</span>
 						</button>
 					</div>
@@ -31,7 +31,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Mission Simulator", -1)</p>
+								<p>XSTR("Mission Simulator", 888220)</p>
 							</span>
 						</button>
 					</div>
@@ -41,7 +41,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Cutscenes", -1)</p>
+								<p>XSTR("Cutscenes", 888221)</p>
 							</span>
 						</button>
 					</div>
@@ -51,7 +51,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Credits", -1)</p>
+								<p>XSTR("Credits", 888222)</p>
 							</span>
 						</button>
 					</div>
@@ -65,10 +65,10 @@
 		<div id=simulator_panel_wrapper>
 			<div id=simulator_window_wrapper>
 				<div id=column_titles>
-					<span class="missionlist_name">XSTR("Mission", -1)</span>
-					<span class="missionlist_author">XSTR("Author", -1)</span>
-					<span class="missionlist_filename">XSTR("Filename", -1)</span>
-					<span class="missionlist_description">XSTR("Description", -1)</span>
+					<span class="missionlist_name">XSTR("Mission", 888252)</span>
+					<span class="missionlist_author">XSTR("Author", 888253)</span>
+					<span class="missionlist_filename">XSTR("Filename", 888254)</span>
+					<span class="missionlist_description">XSTR("Description", 888255)</span>
 				</div>
 				<div id=campaign_name_wrapper class="blue">
 					<div id=campaign_title>
@@ -81,7 +81,7 @@
 						<p></p>
 					</ul>
 					<div class="tooltip">
-						<span class="tooltiptext">XSTR("Select a mission", -1)</span>
+						<span class="tooltiptext">XSTR("Select a mission", 888256)</span>
 					</div>
 				</div>
 				<img src="mission-sim-window.png"></img>
@@ -96,7 +96,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span id="simulator_type" class="pos button_text_right">
-								<p>XSTR("Campaign Missions", -1)</p>
+								<p>XSTR("Campaign Missions", 888257)</p>
 							</span>
 						</button>
 					</div>
@@ -106,12 +106,12 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span id="simulator_type" class="pos button_text_right">
-								<p>XSTR("Single Missions", -1)</p>
+								<p>XSTR("Single Missions", 888258)</p>
 							</span>
 						</button>
 					</div>
 					<div class="tooltip">
-						<span class="tooltiptext">XSTR("Filter standalone missions or missions that are in a campaign", -1)</span>
+						<span class="tooltiptext">XSTR("Filter standalone missions or missions that are in a campaign", 888259)</span>
 					</div>
 				</div>
 				<img src="ops-panel-vert-tall-l.png"></img>
@@ -126,7 +126,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Commit", -1)</p>
+								<p>XSTR("Commit", 888112)</p>
 							</span>
 						</button>
 					</div>
@@ -141,7 +141,7 @@
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>XSTR("Help", -1)</p>
+								<p>XSTR("Help", 888015)</p>
 							</span>
 						</button>
 					</div>
@@ -151,7 +151,7 @@
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>XSTR("Options", -1)</p>
+								<p>XSTR("Options", 888016)</p>
 							</span>
 						</button>
 					</div>

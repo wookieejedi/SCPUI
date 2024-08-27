@@ -30,7 +30,7 @@ function JournalUI:ParseTable(file, entriesonly)
 	local newdata = {}
 	newdata.Sections = {}
 	newdata.Entries = {}
-	newdata.title = ba.XSTR("Journal", -1)
+	newdata.title = ba.XSTR("Journal", 888550)
 	
 	if not parse.readFileText(file, "data/tables") then
 		return newdata

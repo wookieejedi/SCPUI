@@ -123,11 +123,11 @@ function CampaignController:restart_pressed(element)
     assert(self.fileNames[self.selection] ~= nil)
 
     local builder = dialogs.new()
-    builder:title(ba.XSTR("Warning", -1));
-    builder:text(ba.XSTR("This will cause all progress in your\nCurrent campaign to be lost", -1))
+    builder:title(ba.XSTR("Warning", 888284));
+    builder:text(ba.XSTR("This will cause all progress in your\nCurrent campaign to be lost", 888285))
 	builder:escape(false)
-    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), true, string.sub(ba.XSTR("Ok", -1), 1, 1))
-    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", -1), false, string.sub(ba.XSTR("Cancel", -1), 1, 1))
+    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), true, string.sub(ba.XSTR("Ok", 888286), 1, 1))
+    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", 888091), false, string.sub(ba.XSTR("Cancel", 888091), 1, 1))
     builder:show(self.document.context):continueWith(function(accepted)
         if not accepted then
             ui.playElementSound(element, "click", "error")

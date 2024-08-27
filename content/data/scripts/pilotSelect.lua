@@ -105,10 +105,10 @@ function PilotSelectController:initialize(document)
 														  .. " source code.", -1),
 										  ui.PilotSelect.WarningCount + ui.PilotSelect.ErrorCount)
 			local builder = dialogs.new()
-			builder:title(ba.XSTR("Warning!", -1))
+			builder:title(ba.XSTR("Warning!", 888395))
 			builder:text(text)
 			builder:escape(false)
-			builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), false, "o")
+			builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
 			builder:show(self.document.context)
 		end
 	end
@@ -176,9 +176,9 @@ function PilotSelectController:commit_pressed()
         ui.playElementSound(button, "click", "error")
 
         local builder = dialogs.new()
-        builder:text(ba.XSTR("You must select a valid pilot first", -1))
+        builder:text(ba.XSTR("You must select a valid pilot first", 888397))
 		builder:escape(false)
-        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), false, "o")
+        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
         builder:show(self.document.context)
         return
     end
@@ -199,7 +199,7 @@ function PilotSelectController:showWrongPilotLanguageDialog()
     builder:text(ba.XSTR("Selected pilot was created with a different language to the currently active language." ..
                                  "\n\nPlease select a different pilot or change the language", -1))
 	builder:escape(false)
-    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), false, "o")
+    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
     builder:show(self.document.context)
 end
 
@@ -348,11 +348,11 @@ function PilotSelectController:actual_pilot_create(element, callsign, clone_from
         return left:lower() == right:lower()
     end) then
         local builder = dialogs.new()
-        builder:title(ba.XSTR("Warning", -1))
-        builder:text(ba.XSTR("A duplicate pilot exists\nOverwrite?", -1))
+        builder:title(ba.XSTR("Warning", 888284))
+        builder:text(ba.XSTR("A duplicate pilot exists\nOverwrite?", 888401))
 		builder:escape(false)
-        builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", -1), false, "n")
-        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Yes", -1), true, "y")
+        builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", 888298), false, "n")
+        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Yes", 888296), true, "y")
         builder:show(self.document.context):continueWith(function(result)
             if not result then
                 return
@@ -402,19 +402,19 @@ function PilotSelectController:delete_player(element)
 
     if self.current_mode == "multi" then
         local builder = dialogs.new()
-        builder:title(ba.XSTR("Disabled!", -1))
+        builder:title(ba.XSTR("Disabled!", 888404))
         builder:text(ba.XSTR("Multi and single player pilots are now identical. Deleting a multi-player pilot will also delete" ..
                                      " all single-player data for that pilot.\n\nAs a safety precaution, pilots can only be deleted from the" ..
                                      " single-player menu.", -1))
 		builder:escape(false)
-        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), false, "o")
+        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
         builder:show(self.document.context)
         return
     end
 
     local builder = dialogs.new()
-    builder:title(ba.XSTR("Warning!", -1))
-    builder:text(ba.XSTR("Are you sure you wish to delete this pilot?", -1))
+    builder:title(ba.XSTR("Warning!", 888395))
+    builder:text(ba.XSTR("Are you sure you wish to delete this pilot?", 888407))
 	builder:escape(false)
     builder:button(dialogs.BUTTON_TYPE_NEGATIVE, "No", false, "n")
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Yes", true, "y")
@@ -429,10 +429,10 @@ function PilotSelectController:delete_player(element)
 
         if not ui.PilotSelect.deletePilot(pilot) then
             local builder = dialogs.new()
-            builder:title(ba.XSTR("Error", -1))
-            builder:text(ba.XSTR("Failed to delete pilot file. File may be read-only.", -1))
+            builder:title(ba.XSTR("Error", 888408))
+            builder:text(ba.XSTR("Failed to delete pilot file. File may be read-only.", 888409))
 			builder:escape(false)
-            builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), false, string.sub(ba.XSTR("Ok", -1), 1, 1))
+            builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, string.sub(ba.XSTR("Ok", 888286), 1, 1))
             builder:show(self.document.context)
             return
         end

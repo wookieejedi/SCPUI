@@ -17,7 +17,7 @@
 				<div id=options_column_1>
 					<div id="ai_orders_selector" class="btn_panel_horz">
 						<div id="horz_panel_text" class="ops_left_header">
-							<span id="dropdown_title" class="dropdown_text_el">XSTR("AI Orders", -1)</span>
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("AI Orders", 888092)</span>
 						</div>
 						<div id=horz_panel_wrapper>
 							<div id=ai_orders_cont>
@@ -29,7 +29,7 @@
 					</div>
 					<div id="end_mission_selector" class="btn_panel_horz">
 						<div id="horz_panel_text" class="ops_left_header">
-							<span id="dropdown_title" class="dropdown_text_el">XSTR("End Mission", -1)</span>
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("End Mission", 888093)</span>
 						</div>
 						<div id=horz_panel_wrapper>
 							<div id=end_mission_cont>
@@ -41,7 +41,7 @@
 					</div>
 					<div id="difficulty_selector" class="btn_panel_horz">
 						<div id="horz_panel_text" class="ops_left_header">
-							<span id="dropdown_title" class="dropdown_text_el">XSTR("Difficulty", -1)</span>
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("Difficulty", 888094)</span>
 						</div>
 						<div id=horz_panel_wrapper>
 							<div id=difficulty_cont>
@@ -53,7 +53,7 @@
 					</div>
 					<div id=host_modifies_wrapper>
 						<div id="horz_panel_text" class="ops_left_header">
-							<span id="dropdown_title" class="dropdown_text_el">XSTR("Host Modifies Ships", -1)</span>
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("Host Modifies Ships", 888095)</span>
 						</div>
 						<div id=host_modifies_cont>
 							<button id="host_modifies_btn" class="host_modifies button_1" onclick="controller:host_modifies_pressed()">
@@ -61,7 +61,7 @@
 									<img src="round.png" class="psuedo_img"></img>
 								</span>
 								<span class="pos button_text_right_sw">
-									<p>XSTR("Enable/Disable", -1)</p>
+									<p>XSTR("Enable/Disable", 888096)</p>
 								</span>
 							</button>
 						</div>
@@ -69,7 +69,7 @@
 					</div>
 					<div id=time_limit_wrapper>
 						<div id="horz_panel_text" class="ops_left_header">
-							<span id="dropdown_title" class="dropdown_text_el">XSTR("Time Limit (minutes)", -1)</span>
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("Time Limit (minutes)", 888097)</span>
 						</div>
 						<div id=input_cont>
 							<div id=user_input_wrapper>
@@ -80,7 +80,7 @@
 					</div>
 					<div id=respawn_limit_wrapper>
 						<div id="horz_panel_text" class="ops_left_header">
-							<span id="dropdown_title" class="dropdown_text_el">XSTR("Respawn Limit", -1)</span>
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("Respawn Limit", 888098)</span>
 						</div>
 						<div id=input_cont>
 							<div id=user_input_wrapper>
@@ -91,7 +91,7 @@
 					</div>
 					<div id=kill_limit_wrapper>
 						<div id="horz_panel_text" class="ops_left_header">
-							<span id="dropdown_title" class="dropdown_text_el">XSTR("Kill Limit", -1)</span>
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("Kill Limit", 888099)</span>
 						</div>
 						<div id=input_cont>
 							<div id=user_input_wrapper>
@@ -102,7 +102,7 @@
 					</div>
 					<div id=observers_limit_wrapper>
 						<div id="horz_panel_text" class="ops_left_header">
-							<span id="dropdown_title" class="dropdown_text_el">XSTR("Observers Limit", -1)</span>
+							<span id="dropdown_title" class="dropdown_text_el">XSTR("Observers Limit", 888100)</span>
 						</div>
 						<div id=input_cont>
 							<div id=user_input_wrapper>
@@ -129,7 +129,7 @@
 							<img src="select.png" class="psuedo_img"></img>
 						</span>
 						<span class="pos button_text_special">
-							<p>XSTR("Submit", -1)</p>
+							<p>XSTR("Submit", 888017)</p>
 						</span>
 					</button>
 				</div>
@@ -146,7 +146,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Exit", -1)</p>
+								<p>XSTR("Exit", 888102)</p>
 							</span>
 						</button>
 					</div>

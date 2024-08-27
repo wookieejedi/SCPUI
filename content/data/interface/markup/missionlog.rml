@@ -24,7 +24,7 @@
 									<img src="scroll-bar-line-horz.png" class="psuedo_img"></img>
 								</div>
 								<div id="primary_goal_text">
-									<p>XSTR("Primary Objectives", -1)</p>
+									<p>XSTR("Primary Objectives", 888022)</p>
 								</div>
 								<div id="goalsline_img" class="primary_rightline rightline">
 									<img src="scroll-bar-line-horz.png" class="psuedo_img"></img>
@@ -41,7 +41,7 @@
 									<img src="scroll-bar-line-horz.png" class="psuedo_img"></img>
 								</div>
 								<div id="secondary_goal_text">
-									<p>XSTR("Secondary Objectives", -1)</p>
+									<p>XSTR("Secondary Objectives", 888023)</p>
 								</div>
 								<div id="goalsline_img" class="secondary_rightline rightline">
 									<img src="scroll-bar-line-horz.png" class="psuedo_img"></img>
@@ -58,7 +58,7 @@
 									<img src="scroll-bar-line-horz.png" class="psuedo_img"></img>
 								</div>
 								<div id="bonus_goal_text">
-									<p>XSTR("Bonus Objectives", -1)</p>
+									<p>XSTR("Bonus Objectives", 888024)</p>
 								</div>
 								<div id="goalsline_img" class="bonus_rightline rightline">
 									<img src="scroll-bar-line-horz.png" class="psuedo_img"></img>
@@ -86,7 +86,7 @@
 								<img src="computer.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Objectives", -1)</p>
+								<p>XSTR("Objectives", 888082)</p>
 							</span>
 						</button>
 					</div>
@@ -96,7 +96,7 @@
 								<img src="dish.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Messages", -1)</p>
+								<p>XSTR("Messages", 888083)</p>
 							</span>
 						</button>
 					</div>
@@ -106,7 +106,7 @@
 								<img src="ship.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Events", -1)</p>
+								<p>XSTR("Events", 888084)</p>
 							</span>
 						</button>
 					</div>
@@ -123,7 +123,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Continue", -1)</p>
+								<p>XSTR("Continue", 888027)</p>
 							</span>
 						</button>
 					</div>

@@ -31,7 +31,7 @@
 								<img src="target.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Targeting", -1)</p>
+								<p>XSTR("Targeting", 888037)</p>
 							</span>
 						</button>
 					</div>
@@ -41,7 +41,7 @@
 								<img src="ship.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Ship", -1)</p>
+								<p>XSTR("Ship", 888038)</p>
 							</span>
 						</button>
 					</div>
@@ -51,7 +51,7 @@
 								<img src="gun.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Weapons", -1)</p>
+								<p>XSTR("Weapons", 888039)</p>
 							</span>
 						</button>
 					</div>
@@ -61,7 +61,7 @@
 								<img src="star.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Misc", -1)</p>
+								<p>XSTR("Misc", 888040)</p>
 							</span>
 						</button>
 					</div>
@@ -75,7 +75,7 @@
 								<img src="cancel.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Clear Conflict", -1)</p>
+								<p>XSTR("Clear Conflict", 888041)</p>
 							</span>
 						</button>
 					</div>
@@ -85,7 +85,7 @@
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_bottom">
-								<p>XSTR("Clear All", -1)</p>
+								<p>XSTR("Clear All", 888042)</p>
 							</span>
 						</button>
 					</div>
@@ -97,7 +97,7 @@
 								<img src="clear.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_bottom">
-								<p>XSTR("Clear Selected", -1)</p>
+								<p>XSTR("Clear Selected", 888043)</p>
 							</span>
 						</button>
 					</div>
@@ -107,7 +107,7 @@
 								<img src="undo.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Undo", -1)</p>
+								<p>XSTR("Undo", 888044)</p>
 							</span>
 						</button>
 					</div>
@@ -119,7 +119,7 @@
 								<img src="detail.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Search", -1)</p>
+								<p>XSTR("Search", 888045)</p>
 							</span>
 						</button>
 					</div>
@@ -131,7 +131,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Bind", -1)</p>
+								<p>XSTR("Bind", 888046)</p>
 							</span>
 						</button>
 					</div>
@@ -150,7 +150,7 @@
 								<img src="bullet-u.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
-								<p>XSTR("Alt", -1)</p>
+								<p>XSTR("Alt", 888047)</p>
 							</span>
 						</button>
 					</div>
@@ -162,7 +162,7 @@
 								<img src="bullet-u.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
-								<p>XSTR("Shift", -1)</p>
+								<p>XSTR("Shift", 888048)</p>
 							</span>
 						</button>
 					</div>
@@ -174,7 +174,7 @@
 								<img src="bullet-u.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
-								<p>XSTR("Invert", -1)</p>
+								<p>XSTR("Invert", 888049)</p>
 							</span>
 						</button>
 					</div>
@@ -197,7 +197,7 @@
 								<img src="star.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Save Preset", -1)</p>
+								<p>XSTR("Save Preset", 888050)</p>
 							</span>
 						</button>
 					</div>
@@ -209,7 +209,7 @@
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_bottom">
-								<p>XSTR("Clone Preset", -1)</p>
+								<p>XSTR("Clone Preset", 888051)</p>
 							</span>
 						</button>
 					</div>
@@ -221,7 +221,7 @@
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_bottom">
-								<p>XSTR("Delete Preset", -1)</p>
+								<p>XSTR("Delete Preset", 888052)</p>
 							</span>
 						</button>
 					</div>
@@ -238,7 +238,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Accept", -1)</p>
+								<p>XSTR("Accept", 888014)</p>
 							</span>
 						</button>
 					</div>

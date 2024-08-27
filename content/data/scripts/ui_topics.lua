@@ -62,7 +62,7 @@ return {
 		filter = Topic(function(x) return x.InTechDatabase end),
 		name = Topic(function(x) return x.Name end),
 		description = Topic(function(x) return x.Description end),
-		type = Topic(function(x) return ba.XSTR('Other', -1) end)
+		type = Topic(function(x) return ba.XSTR('Other', 888553) end)
 	},
 	
 	--Interfaces

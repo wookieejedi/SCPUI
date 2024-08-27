@@ -277,7 +277,7 @@ function AbstractBriefingController:initializeStage(stageIdx, briefingText, audi
     local num_stage_lines = rocket_utils.set_briefing_text(text_el, briefingText)
 
     local stage_indicator_el = self.document:GetElementById(self.element_names.stage_text_el)
-    stage_indicator_el.inner_rml = string.format(ba.XSTR("Stage %d of %d", -1), self.current_stage, #self.stages)
+    stage_indicator_el.inner_rml = string.format(ba.XSTR("Stage %d of %d", 888283), self.current_stage, #self.stages)
 
     local stage_id = self.stage_instance_id
     -- This will ensure that this coroutine only runs if we are still in the same briefing stage and in the same game state

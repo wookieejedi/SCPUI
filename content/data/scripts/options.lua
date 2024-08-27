@@ -836,8 +836,8 @@ end
 function OptionsController:initialize_basic_options()
 	--Create the font size selector option
 	local fontAdjustment = {
-		Title = utils.xstr({"Font Size Adjustment", -1}),
-		Description = utils.xstr({"Increases or decreases the font size", -1}),
+		Title = utils.xstr({"Font Size Adjustment", 888393}),
+		Description = utils.xstr({"Increases or decreases the font size", 888394}),
 		Key = "Font_Adjustment",
 		Type = "Range",
 		Category = "Custom",
@@ -1079,18 +1079,18 @@ function OptionsController:AddSelectedIP()
 				ip_el:AppendChild(self:CreateIPItem(self.submittedIP))
 			else
 				local builder      = dialogs.new()
-				builder:title(ba.XSTR("Invalid IP", -1))
-				builder:text(ba.XSTR("Ip string is invalid!", 386))
+				builder:title(ba.XSTR("Invalid IP", 888376))
+				builder:text(ba.XSTR("Ip string is invalid!", 888377))
 				builder:escape(false)
-				builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), true, string.sub(ba.XSTR("Ok", -1), 1, 1))
+				builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), true, string.sub(ba.XSTR("Ok", 888286), 1, 1))
 				builder:show(self.document.context):continueWith(function() end)
 			end
 		else
 			local builder      = dialogs.new()
-			builder:title(ba.XSTR("Duplicate IP", -1))
-			builder:text(ba.XSTR("IP Address already listed!", -1))
+			builder:title(ba.XSTR("Duplicate IP", 888380))
+			builder:text(ba.XSTR("IP Address already listed!", 888381))
 			builder:escape(false)
-			builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), true, string.sub(ba.XSTR("Ok", -1), 1, 1))
+			builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), true, string.sub(ba.XSTR("Ok", 888286), 1, 1))
 			builder:show(self.document.context):continueWith(function() end)
 		end
 	end
@@ -1436,14 +1436,14 @@ function OptionsController:acceptChanges(state)
     local changed_text = table.concat(titles, "\n")
 
     local dialog_text  = string.format(ba.XSTR("<p>The following changes require a restart to apply their changes:</p><p>%s</p>",
-                                               -1), changed_text)
+                                               888384), changed_text)
 
     local builder      = dialogs.new()
-    builder:title(ba.XSTR("Restart required", -1))
+    builder:title(ba.XSTR("Restart required", 888385))
     builder:text(dialog_text)
 	builder:escape(false)
-    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", -1), false, string.sub(ba.XSTR("Cancel", -1), 1, 1))
-    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", -1), true, string.sub(ba.XSTR("Ok", -1), 1, 1))
+    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", 888091), false, string.sub(ba.XSTR("Cancel", 888091), 1, 1))
+    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), true, string.sub(ba.XSTR("Ok", 888286), 1, 1))
     builder:show(self.document.context):continueWith(function(val)
         if val then
 			
@@ -1989,9 +1989,9 @@ end
 
 function OptionsController:exit_game_clicked()
     local builder = dialogs.new()
-    builder:text(ba.XSTR("Exit Game?", -1))
-    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", -1), false)
-    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Yes", -1), true)
+    builder:text(ba.XSTR("Exit Game?", 888390))
+    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", 888298), false)
+    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Yes", 888296), true)
     builder:show(self.document.context):continueWith(function(result)
         if not result then
             return

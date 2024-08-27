@@ -21,7 +21,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Technical Database", -1)</p>
+								<p>XSTR("Technical Database", 888219)</p>
 							</span>
 						</button>
 					</div>
@@ -31,7 +31,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Mission Simulator", -1)</p>
+								<p>XSTR("Mission Simulator", 888220)</p>
 							</span>
 						</button>
 					</div>
@@ -41,7 +41,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Cutscenes", -1)</p>
+								<p>XSTR("Cutscenes", 888221)</p>
 							</span>
 						</button>
 					</div>
@@ -51,7 +51,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Credits", -1)</p>
+								<p>XSTR("Credits", 888222)</p>
 							</span>
 						</button>
 					</div>
@@ -65,7 +65,7 @@
 		<div id=sorting_panel_wrapper>
 			<div id=sorting_panel_b>
 				<div id=sorting_text>
-					<p>XSTR("Sort Items", -1)</p>
+					<p>XSTR("Sort Items", 888234)</p>
 				</div>
 				<div id=sorting_b_panel_wrapper>
 					<div id=sort_bullet_cont>
@@ -74,7 +74,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_sort">
-								<p>XSTR("Default", -1)</p>
+								<p>XSTR("Default", 888067)</p>
 							</span>
 						</button>
 					</div>
@@ -84,13 +84,13 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_sort">
-								<p>XSTR("By Name", -1)</p>
+								<p>XSTR("By Name", 888236)</p>
 							</span>
 						</button>
 					</div>
 				</div>
 				<div class="tooltip">
-					<span class="tooltiptext">XSTR("Sort the list. Click multiple times to change how the list is sorted.", -1)</span>
+					<span class="tooltiptext">XSTR("Sort the list. Click multiple times to change how the list is sorted.", 888237)</span>
 				</div>
 				<img src="ops-panel-vert-tall-l.png"></img>
 			</div>
@@ -98,7 +98,7 @@
 		<div id=category_panel_wrapper>
 			<div id=category_panel_b>
 				<div id=category_text>
-					<p>XSTR("Categorize", -1)</p>
+					<p>XSTR("Categorize", 888238)</p>
 				</div>
 				<div id=category_b_panel_wrapper>
 					<div id=sort_bullet_cont>
@@ -107,7 +107,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_sort">
-								<p>XSTR("None", -1)</p>
+								<p>XSTR("None", 888239)</p>
 							</span>
 						</button>
 					</div>
@@ -117,13 +117,13 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_sort">
-								<p>XSTR("By Type", -1)</p>
+								<p>XSTR("By Type", 888240)</p>
 							</span>
 						</button>
 					</div>
 				</div>
 				<div class="tooltip">
-					<span class="tooltiptext">XSTR("Categorize items. Click multiple times to change how categories are listed.", -1)</span>
+					<span class="tooltiptext">XSTR("Categorize items. Click multiple times to change how categories are listed.", 888241)</span>
 				</div>
 				<img src="ops-panel-vert-tall-l.png"></img>
 			</div>
@@ -158,7 +158,7 @@
 						</div>
 					</div>
 					<div class="tooltip">
-						<span class="tooltiptext">XSTR("View the next or previous data entry", -1)</span>
+						<span class="tooltiptext">XSTR("View the next or previous data entry", 888242)</span>
 					</div>
 				</div>
 				<div id="angle_slider">
@@ -196,7 +196,7 @@
 								<img src="oval.png" class="psuedo_img"></img>
 							</span>
 							<span id="breakout_button_text" class="pos button_text_right">
-								<p>XSTR("Read in window", -1)</p>
+								<p>XSTR("Read in window", 888243)</p>
 							</span>
 						</button>
 					</div>
@@ -210,7 +210,7 @@
 									<img src="ship.png" class="psuedo_img"></img>
 								</span>
 								<span id="tech_button_text" class="pos button_text_right">
-									<p>XSTR("Ships", -1)</p>
+									<p>XSTR("Ships", 888244)</p>
 								</span>
 							</button>
 						</div>
@@ -220,7 +220,7 @@
 									<img src="gun.png" class="psuedo_img"></img>
 								</span>
 								<span id="tech_button_text" class="pos button_text_right">
-									<p>XSTR("Weapons", -1)</p>
+									<p>XSTR("Weapons", 888039)</p>
 								</span>
 							</button>
 						</div>
@@ -230,13 +230,13 @@
 									<img src="computer.png" class="psuedo_img"></img>
 								</span>
 								<span id="tech_button_text" class="pos button_text_right">
-									<p>XSTR("Intelligence", -1)</p>
+									<p>XSTR("Intelligence", 888246)</p>
 								</span>
 							</button>
 						</div>
 					</div>
 					<div class="tooltip">
-						<span class="tooltiptext">XSTR("Study technical data on all known ships and weapons, as well as historical and species information", -1)</span>
+						<span class="tooltiptext">XSTR("Study technical data on all known ships and weapons, as well as historical and species information", 888247)</span>
 					</div>
 				</div>
 				<img src="tech-room-text-window.png"></img>

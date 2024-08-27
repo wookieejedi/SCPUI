@@ -19,7 +19,7 @@
 						<img src="round.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text_right_sw">
-						<p>XSTR("Squadwar", -1)</p>
+						<p>XSTR("Squadwar", 888086)</p>
 					</span>
 				</button>
 			</div>
@@ -37,7 +37,7 @@
 							<img src="bullet-r.png" class="psuedo_img"></img>
 						</span>
 						<span class="pos button_text_bottom">
-							<p>XSTR("Missions", -1)</p>
+							<p>XSTR("Missions", 888104)</p>
 						</span>
 					</button>
 				</div>
@@ -47,7 +47,7 @@
 							<img src="bullet-r.png" class="psuedo_img"></img>
 						</span>
 						<span class="pos button_text_bottom">
-							<p>XSTR("Campaigns", -1)</p>
+							<p>XSTR("Campaigns", 888105)</p>
 						</span>
 					</button>
 				</div>
@@ -79,7 +79,7 @@
 							<img src="oval.png" class="psuedo_img"></img>
 						</span>
 						<span class="pos button_text_top_team">
-							<p>XSTR("Team 1", -1)</p>
+							<p>XSTR("Team 1", 888087)</p>
 						</span>
 					</button>
 				</div>
@@ -89,7 +89,7 @@
 							<img src="oval.png" class="psuedo_img"></img>
 						</span>
 						<span class="pos button_text_top_team">
-							<p>XSTR("Team 2", -1)</p>
+							<p>XSTR("Team 2", 888088)</p>
 						</span>
 					</button>
 				</div>
@@ -102,7 +102,7 @@
 							<img src="create-pilot.png" class="psuedo_img"></img>
 						</span>
 						<span class="pos button_text_bottom">
-							<p>XSTR("Pilot Info", -1)</p>
+							<p>XSTR("Pilot Info", 888089)</p>
 						</span>
 					</button>
 				</div>
@@ -112,7 +112,7 @@
 							<img src="clear.png" class="psuedo_img"></img>
 						</span>
 						<span class="pos button_text_bottom">
-							<p>XSTR("Kick", -1)</p>
+							<p>XSTR("Kick", 888109)</p>
 						</span>
 					</button>
 				</div>
@@ -122,7 +122,7 @@
 							<img src="exit.png" class="psuedo_img"></img>
 						</span>
 						<span class="pos button_text_bottom">
-							<p>XSTR("Close", -1)</p>
+							<p>XSTR("Close", 888110)</p>
 						</span>
 					</button>
 				</div>
@@ -142,7 +142,7 @@
 							<img src="select.png" class="psuedo_img"></img>
 						</span>
 						<span class="pos button_text_special">
-							<p>XSTR("Submit", -1)</p>
+							<p>XSTR("Submit", 888017)</p>
 						</span>
 					</button>
 				</div>
@@ -164,7 +164,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Commit", -1)</p>
+								<p>XSTR("Commit", 888112)</p>
 							</span>
 						</button>
 					</div>
@@ -198,7 +198,7 @@
 								<img src="prefs.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>XSTR("Host Options", -1)</p>
+								<p>XSTR("Host Options", 888113)</p>
 							</span>
 						</button>
 					</div>
@@ -208,7 +208,7 @@
 								<img src="decline.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>XSTR("Cancel", -1)</p>
+								<p>XSTR("Cancel", 888091)</p>
 							</span>
 						</button>
 					</div>

@@ -27,7 +27,7 @@
 								<img src="replay.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_right">
-								<p>XSTR("Replay Previous Mission", -1)</p>
+								<p>XSTR("Replay Previous Mission", 888202)</p>
 							</span>
 						</button>
 					</div>
@@ -36,7 +36,7 @@
 			</div>
 		</div>
 		<div id=incoming_transmission>
-			<p>XSTR("Incoming Transmission", -1)</p>
+			<p>XSTR("Incoming Transmission", 888203)</p>
 		</div>
 		<div id=bottom_panel_wrapper>
 			<div id=bottom_panel_a>
@@ -47,7 +47,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Continue", -1)</p>
+								<p>XSTR("Continue", 888027)</p>
 							</span>
 						</button>
 					</div>

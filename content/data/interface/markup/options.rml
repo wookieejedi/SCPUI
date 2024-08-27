@@ -22,7 +22,7 @@
 						<img src="diamonds.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text">
-						<p>XSTR("Basic", -1)</p>
+						<p>XSTR("Basic", 888153)</p>
 					</span>
 				</tab>
 					<panel class="options_panel">
@@ -33,7 +33,7 @@
 						<img src="computer.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text">
-						<p>XSTR("Misc", -1)</p>
+						<p>XSTR("Misc", 888040)</p>
 					</span>
 				</tab>
 					<panel class="options_panel">
@@ -44,7 +44,7 @@
 						<img src="detail.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text">
-						<p>XSTR("Graphics", -1)</p>
+						<p>XSTR("Graphics", 888155)</p>
 					</span>
 				</tab>
 					<panel class="options_panel">
@@ -55,7 +55,7 @@
 						<img src="prefs.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text">
-						<p>XSTR("Settings", -1)</p>
+						<p>XSTR("Settings", 888156)</p>
 					</span>
 				</tab>
 					<panel class="options_panel">
@@ -66,7 +66,7 @@
 						<img src="multiplayer.png" class="psuedo_img"></img>
 					</span>
 					<span class="pos button_text">
-						<p>XSTR("Multi", -1)</p>
+						<p>XSTR("Multi", 888001)</p>
 					</span>
 				</tab>
 					<panel class="options_panel">
@@ -87,7 +87,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Accept", -1)</p>
+								<p>XSTR("Accept", 888014)</p>
 							</span>
 						</button>
 					</div>
@@ -102,7 +102,7 @@
 								<img src="ship.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
-								<p>XSTR("Control Config", -1)</p>
+								<p>XSTR("Control Config", 888159)</p>
 							</span>
 						</button>
 					</div>
@@ -112,7 +112,7 @@
 								<img src="hud.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_top">
-								<p>XSTR("HUD Config", -1)</p>
+								<p>XSTR("HUD Config", 888160)</p>
 							</span>
 						</button>
 					</div>
@@ -129,7 +129,7 @@
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Exit Game", -1)</p>
+								<p>XSTR("Exit Game", 888161)</p>
 							</span>
 						</button>
 					</div>

@@ -70,8 +70,8 @@ function LoopBriefController:Show(text, title)
 	dialogs.new()
 		:title(title)
 		:text(text)
-		:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Accept", 1035), true, string.sub(ba.XSTR("Accept", 1035), 1, 1))
-		:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Decline", 1467), false, string.sub(ba.XSTR("Decline", 1467), 1, 1))
+		:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Accept", 888014), true, string.sub(ba.XSTR("Accept", 888014), 1, 1))
+		:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Decline", 888354), false, string.sub(ba.XSTR("Decline", 888354), 1, 1))
 		:show(self.document.context)
 		:continueWith(function(accepted)
         if not accepted then
@@ -87,7 +87,7 @@ end
 function LoopBriefController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
 
-		local text = ba.XSTR("You must either Accept or Decline before returning to the Main Hall", 1618)
+		local text = ba.XSTR("You must either Accept or Decline before returning to the Main Hall", 888356)
 		local title = ""
 		self:Show(text, title)
     end

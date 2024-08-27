@@ -13,13 +13,13 @@
 	</head>
 	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
 		<div id=create_game_title>
-			<p>XSTR("Create Game", -1)</p>
+			<p>XSTR("Create Game", 888122)</p>
 		</div>
 		<div id=form_wrapper>
 			<div id=game_title_container>
 				<div id=game_title_wrapper>
 					<div id=game_title_header>
-						<p>XSTR("Title", -1)</p>
+						<p>XSTR("Title", 888140)</p>
 					</div>
 					<div id=game_title_img>
 						<img src="ops-panel-vert-l.png"></img>
@@ -33,7 +33,7 @@
 			<div id=game_type_container>
 				<div id=game_type_wrapper>
 					<div id=game_type_header>
-						<p>XSTR("Game Type", -1)</p>
+						<p>XSTR("Game Type", 888141)</p>
 					</div>
 					<div id=game_type_img>
 						<img src="ops-panel-vert-tall-l.png"></img>
@@ -66,7 +66,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_right">
-								<p>XSTR("Open", -1)</p>
+								<p>XSTR("Open", 888142)</p>
 							</span>
 						</button>
 					</div>
@@ -76,7 +76,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos wide_text button_text_right">
-								<p>XSTR("Password Protected", -1)</p>
+								<p>XSTR("Password Protected", 888143)</p>
 							</span>
 						</button>
 					</div>
@@ -86,7 +86,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos wide_text button_text_right">
-								<p>XSTR("Allow Rank Above", -1)</p>
+								<p>XSTR("Allow Rank Above", 888144)</p>
 							</span>
 						</button>
 					</div>
@@ -96,7 +96,7 @@
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos wide_text button_text_right">
-								<p>XSTR("Allow Rank Below", -1)</p>
+								<p>XSTR("Allow Rank Below", 888145)</p>
 							</span>
 						</button>
 					</div>
@@ -112,7 +112,7 @@
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
 							<span class="neg button_text_top">
-								<p>XSTR("Accept", -1)</p>
+								<p>XSTR("Accept", 888014)</p>
 							</span>
 						</button>
 					</div>
@@ -127,7 +127,7 @@
 								<img src="help.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>XSTR("Help", -1)</p>
+								<p>XSTR("Help", 888015)</p>
 							</span>
 						</button>
 					</div>
@@ -137,7 +137,7 @@
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
 							<span class="pos button_text_left">
-								<p>XSTR("Options", -1)</p>
+								<p>XSTR("Options", 888016)</p>
 							</span>
 						</button>
 					</div>
