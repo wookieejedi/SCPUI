@@ -178,7 +178,7 @@
 888394, "Increases or decreases the font size"
 888393, "Font Size Adjustment"
 888380, "Duplicate IP"
-888554, Brief Render Option
+888554, "Brief Render Option"
 888555, "Toggles rendering directly to screen or to a texture. Can fix flickering in the briefing map."
 888556, "Texture"
 888557, "Screen"
