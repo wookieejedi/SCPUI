@@ -21,7 +21,11 @@ local function add_text_element(parent, document, text, color_tag, colorTable)
     local spanEl = document:CreateElement("span")
     local textEl = document:CreateTextNode(text)
 
-    spanEl.style.color = ("rgba(%d, %d, %d, %d)"):format(colorVal.Red, colorVal.Green, colorVal.Blue, colorVal.Alpha)
+	if colorVal then
+		spanEl.style.color = ("rgba(%d, %d, %d, %d)"):format(colorVal.Red, colorVal.Green, colorVal.Blue, colorVal.Alpha)
+	else
+		ba.warning("Invalid color tag '" .. color_tag .. "' in text: '" .. text .."'")
+	end
 
     spanEl:AppendChild(textEl)
 
