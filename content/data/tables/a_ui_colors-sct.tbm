@@ -76,6 +76,82 @@ function ScpuiSystem:parseKeywords(data, inheritedAffixes)
   return globalAffixes
 end
 
+function ScpuiSystem:maybeShowTooltip(tool_el, id)
+	local async_util = require("async_util")
+	if ScpuiSystem.tooltipTimers[id] == nil then
+		return
+	end
+	
+	if ScpuiSystem.tooltipTimers[id] >= 3 then
+		tool_el:SetPseudoClass("shown", true)
+	else
+		async.run(function()
+			async.await(async_util.wait_for(1.0))
+			if ScpuiSystem.tooltipTimers[id] ~= nil then
+				ScpuiSystem.tooltipTimers[id] = ScpuiSystem.tooltipTimers[id] + 1
+				ScpuiSystem:maybeShowTooltip(tool_el, id)
+			end
+		end, async.OnFrameExecutor)
+	end
+end
+
+function ScpuiSystem:addTooltip(document, id, tooltip)
+	if tooltip == nil or id == nil then
+		return
+	end
+	
+	local parent = document:GetElementById(id)
+	
+	if not parent then
+		ba.print('Could not find tooltip parent!\n')
+		return
+	end
+
+	local tool_el = document:CreateElement("div")
+	tool_el.id = id .. "_tooltip"
+	tool_el:SetClass("tooltip", true)
+	tool_el.position = "fixed"
+	
+	-- Set the width of the tooltip
+	-- Calculate the width of the tooltip element
+	local maxCharacters = 25 -- Maximum characters before wrapping
+	local fontPixelSize = ScpuiSystem:getFontPixelSize()
+	local actualCharacters = math.min(maxCharacters, #tooltip)
+	local elementWidth = fontPixelSize * actualCharacters
+
+	tool_el.style.width = elementWidth .. "px"
+
+	-- Calculate the number of characters that fit in one line
+	local charactersPerLine = math.floor(elementWidth / fontPixelSize)
+
+	-- Calculate the number of lines required
+	local numberOfLines = math.ceil(#tooltip / charactersPerLine)
+	
+	local totalWidth = elementWidth + 10 -- Tooltip class has a padding of 5
+	local totalHeight = ((numberOfLines * fontPixelSize) + 10)
+	
+	-- Now append!
+	tool_el.inner_rml = "<span class=\"tooltiptext\">" .. tooltip .. "</span>"
+	local root = document:GetElementById('main_background')
+	root:AppendChild(tool_el)
+	
+	parent:AddEventListener("mouseover", function(event, _, _)
+		local x = event.parameters.mouse_x - totalWidth
+		local y = event.parameters.mouse_y - totalHeight
+		tool_el.style.left = math.max(3, x) .. "px"
+		tool_el.style.top = math.max(3, y) .. "px"
+		if ScpuiSystem.tooltipTimers[id] == nil then
+			ScpuiSystem.tooltipTimers[id] = 0
+			ScpuiSystem:maybeShowTooltip(tool_el, id)
+		end
+	end)
+	
+	parent:AddEventListener("mouseout", function()
+		ScpuiSystem.tooltipTimers[id] = nil
+		tool_el:SetPseudoClass("shown", false)
+	end)
+end
+
 function ScpuiSystem:applyKeywordClasses(inputText)
   local keywordAlgorithm = require('keywordAlgorithm')
   return keywordAlgorithm.colorize(inputText)
