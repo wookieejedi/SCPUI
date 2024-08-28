@@ -866,6 +866,7 @@ function OptionsController:initialize_basic_options()
 		Value = "Texture",
 		ForceSelector = true
 	}
+	self.sources[briefRenderChoice.Key] = createOptionSource(briefRenderChoice)
 	local brief_choice_el = self:createCustomOptionElement(briefRenderChoice, "brief_choice_selector")
 	self:AddOptionTooltip(briefRenderChoice, brief_choice_el)
 	
