@@ -22,6 +22,9 @@
 			<div id="language_selector">
 				<!-- Lua will fill in the options UI elements here -->
 			</div>
+			<div id="brief_choice_selector">
+				<!-- Lua will fill in the options UI elements here -->
+			</div>
 		</div>
 		<div id="quick_options_col_2">
 			<div id="directional_hit">

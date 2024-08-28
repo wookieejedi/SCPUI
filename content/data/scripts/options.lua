@@ -848,6 +848,27 @@ function OptionsController:initialize_basic_options()
 	local font_adjust_el = self:createCustomOptionElement(fontAdjustment, "font_size_selector")
 	self:AddOptionTooltip(fontAdjustment, font_adjust_el)
 	
+	--Create the briefing render style option
+	local briefRenderChoice = {
+		Title = utils.xstr({"Brief Render Option", 888554}),
+		Description = utils.xstr({"Toggles rendering directly to screen or to a texture. Can fix flickering in the briefing map.", 888555}),
+		Key = "Brief_Render_Option",
+		Type = "Binary",
+		Category = "Custom",
+		ValidValues = {
+			[1] = "Texture",
+			[2] = "Screen",
+		},
+		DisplayNames = {
+			["Texture"] = utils.xstr({"Texture", 888556}), 
+			["Screen"] = utils.xstr({"Screen", 888557}),
+		},
+		Value = "Texture",
+		ForceSelector = true
+	}
+	local brief_choice_el = self:createCustomOptionElement(briefRenderChoice, "brief_choice_selector")
+	self:AddOptionTooltip(briefRenderChoice, brief_choice_el)
+	
     for _, option in ipairs(self.category_options.basic) do
         local key = option.Key
 		local opt_el = nil
