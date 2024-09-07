@@ -77,9 +77,10 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 	
 	local o_clr = gr.getColor(true)
 	
-	--Create a texture and then draw to it, save the output
-	if gen3d then
-		
+	--Create a texture and then draw the model to it, save the output
+	local function makeIconFromModel()
+		local name = nil
+		local icon = nil
 		local model_h = nil
 		local modelDetails = {
 			width = nil,
@@ -91,17 +92,21 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 		}
 
 		if is_ship == true then
+			name = tb.ShipClasses[item].Name
+			icon = tb.ShipClasses[item].SelectIconFilename
 			model_h = tb.ShipClasses[item]
-			modelDetails.width = 128
-			modelDetails.height = 112
+			modelDetails.width = ScpuiSystem.iconDimentions.ship.width
+			modelDetails.height = ScpuiSystem.iconDimentions.ship.height
 			modelDetails.heading = 50
 			modelDetails.pitch = 15
 			modelDetails.bank = 50
 			modelDetails.zoom = 1.1
 		else
+			name = tb.WeaponClasses[item].Name
+			icon = tb.WeaponClasses[item].SelectIconFilename
 			model_h = tb.WeaponClasses[item]
-			modelDetails.width = 112
-			modelDetails.height = 48
+			modelDetails.width = ScpuiSystem.iconDimentions.weapon.width
+			modelDetails.height = ScpuiSystem.iconDimentions.weapon.height
 			modelDetails.heading = 75
 			modelDetails.pitch = 0
 			modelDetails.bank = 40
@@ -114,7 +119,15 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 		local tex_h = gr.createTexture(modelDetails.width, modelDetails.height)
 		gr.setTarget(tex_h)
 		gr.clearScreen(0,0,0,0)
-		model_h:renderTechModel(0, 0, modelDetails.width, modelDetails.height, modelDetails.heading, modelDetails.pitch, modelDetails.bank, modelDetails.zoom, false)
+		local result = model_h:renderTechModel(0, 0, modelDetails.width, modelDetails.height, modelDetails.heading, modelDetails.pitch, modelDetails.bank, modelDetails.zoom, false)
+		if not result then
+			--If we don't have an icon file then we're done!
+			if not icon or #icon == 0 then
+				ba.warning("An icon for " .. name .. " could not be created because it has neither a select icon or a tech model defined!")
+			else
+				makeIconFromIconFile(icon)
+			end
+		end
 		local blob = gr.screenToBlob()
 		
 		for j = 1, 5, 1 do -- 1 through 5 are the plain ship for now
@@ -148,14 +161,16 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 		gr.setColor(o_clr)
 		tex_h:destroyRenderTarget()
 		tex_h:unload()
-	else
-		--Create a texture and then draw to it, save the output
+	end
+	
+	--Create a texture and then draw the image to it, save the output
+	local function makeIconFromIconFile(filename)
 		local imag_h = nil
 		
 		if is_ship == true then
-			imag_h = gr.loadTexture(tb.ShipClasses[item].SelectIconFilename , true, true)
+			imag_h = gr.loadTexture(tb.ShipClasses[item].SelectIconFilename, true, true)
 		else
-			imag_h = gr.loadTexture(tb.WeaponClasses[item].SelectIconFilename , true, true)
+			imag_h = gr.loadTexture(tb.WeaponClasses[item].SelectIconFilename, true, true)
 		end
 		
 		local width = imag_h:getWidth()
@@ -173,9 +188,28 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 		--clean up
 		gr.setTarget()
 		tex_h:destroyRenderTarget()
-		imag_h:destroyRenderTarget()
+		--imag_h:destroyRenderTarget() --Don't need to destroy this render target apparently
 		imag_h:unload()
 		tex_h:unload()
+	end
+	
+	--Icon from 3D model or from a file?
+	if gen3d then
+		makeIconFromModel()
+	else
+		local icon = nil
+		if is_ship == true then
+			icon = tb.ShipClasses[item].SelectIconFilename
+		else
+			icon = tb.WeaponClasses[item].SelectIconFilename
+		end
+		
+		--If we don't have a file then fallback to using the model
+		if not icon or #icon == 0 then
+			makeIconFromModel()
+		else
+			makeIconFromIconFile(icon)
+		end
 	end
 
 	rocketUiIcons[item] = icon_details

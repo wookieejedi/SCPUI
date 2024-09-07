@@ -33,7 +33,17 @@ ScpuiSystem = {
 	dialog = nil,
 	dataSaverMulti = 1,
 	missionLoaded = false,
-	tooltipTimers = {}
+	tooltipTimers = {},
+	iconDimentions = {
+		ship = {
+			width = 128,
+			height = 112,
+		},
+		weapon = {
+			width = 112,
+			height = 48,
+		}
+	}
 }
 
 ScpuiOptionValues = {}
@@ -76,6 +86,22 @@ function ScpuiSystem:parseTable(data)
 		
 		if parse.optionalString("$Data Saver Multiplier:") then
 			ScpuiSystem.dataSaverMulti = parse.getInt()
+		end
+		
+		if parse.optionalString("$Ship Icon Width:") then
+			ScpuiSystem.iconDimentions.ship.width = parse.getInt()
+		end
+
+		if parse.optionalString("$Ship Icon Height:") then
+			ScpuiSystem.iconDimentions.ship.height = parse.getInt()
+		end
+
+		if parse.optionalString("$Weapon Icon Width:") then
+			ScpuiSystem.iconDimentions.weapon.width = parse.getInt()
+		end
+
+		if parse.optionalString("$Weapon Icon Height:") then
+			ScpuiSystem.iconDimentions.weapon.height = parse.getInt()
 		end
 		
 	end
