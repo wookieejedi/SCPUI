@@ -20,7 +20,7 @@ ScpuiSystem = {
 	medalInfo = {},
 	substate = "none",
 	cutscene = "none",
-	disableInMulti = true,
+	disableInMulti = false,
 	hideMulti = false,
 	debriefInit = false,
 	selectInit = false,
@@ -68,6 +68,33 @@ function ScpuiSystem:init()
 	end
 	for _, v in ipairs(cf.listFiles("data/tables", "*-ui.tbm")) do
 		self:parseTable(v)
+	end
+end
+
+function ScpuiSystem:parseMedals()
+	while parse.optionalString("$Medal:") do
+	
+		local id = parse.getString()
+		
+		self.medalInfo[id] = {}
+		
+		if parse.optionalString("+Alt Bitmap:") then
+			self.medalInfo[id].altBitmap = parse.getString()
+		end
+		
+		if parse.optionalString("+Alt Debrief Bitmap:") then
+			self.medalInfo[id].altDebriefBitmap = parse.getString()
+		end
+		
+		parse.requiredString("+Position X:")
+		self.medalInfo[id].x = parse.getFloat()
+		
+		parse.requiredString("+Position Y:")
+		self.medalInfo[id].y = parse.getFloat()
+		
+		parse.requiredString("+Width:")
+		self.medalInfo[id].w = parse.getFloat()
+	
 	end
 end
 
@@ -196,28 +223,7 @@ function ScpuiSystem:parseTable(data)
 	end
 	
 	if parse.optionalString("#Medal Placements") then
-	
-		while parse.optionalString("$Medal Bitmap:") do
-		
-			local id = parse.getString()
-			
-			self.medalInfo[id] = {}
-			
-			if parse.optionalString("+Alt Bitmap:") then
-				self.medalInfo[id].bitmap = parse.getString()
-			end
-			
-			parse.requiredString("+Position X:")
-			self.medalInfo[id].x = parse.getFloat()
-			
-			parse.requiredString("+Position Y:")
-			self.medalInfo[id].y = parse.getFloat()
-			
-			parse.requiredString("+Width:")
-			self.medalInfo[id].w = parse.getFloat()
-		
-		end
-	
+		ScpuiSystem:parseMedals()
 	end
 		
 

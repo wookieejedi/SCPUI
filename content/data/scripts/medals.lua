@@ -83,26 +83,7 @@ function MedalsController:parseMedalInfo(data)
 	
 	if parse.skipToString("#Medal Placements") then
 	
-		while parse.optionalString("$Medal Bitmap:") do
-		
-			local id = parse.getString()
-			
-			ScpuiSystem.medalInfo[id] = {}
-			
-			if parse.optionalString("+Alt Bitmap:") then
-				ScpuiSystem.medalInfo[id].bitmap = parse.getString()
-			end
-			
-			parse.requiredString("+Position X:")
-			ScpuiSystem.medalInfo[id].x = parse.getFloat()
-			
-			parse.requiredString("+Position Y:")
-			ScpuiSystem.medalInfo[id].y = parse.getFloat()
-			
-			parse.requiredString("+Width:")
-			ScpuiSystem.medalInfo[id].w = parse.getFloat()
-		
-		end
+		ScpuiSystem:parseMedals()
 	
 	end
 	
@@ -137,7 +118,7 @@ function MedalsController:build_medal_div(idx)
 	local parent_el = self.document:GetElementById("medals_wrapper_actual")
 	
 	local id = string.lower(medal.Bitmap:match("(.+)%..+$"))
-	local info = self:GetMedalInfo(id)
+	local info = self:GetMedalInfo(medal.Name)
 	
 	local medal_el = self.document:CreateElement("div")
 	medal_el.id = id
@@ -148,8 +129,8 @@ function MedalsController:build_medal_div(idx)
 	medal_el.style.left = info.x .. "%"
 	
 	local filename = id
-	if info.bitmap then
-		filename = info.bitmap
+	if info.altBitmap then
+		filename = info.altBitmap
 	end
 	
 	local img_el = self.document:CreateElement("img")
@@ -165,10 +146,10 @@ function MedalsController:showMedal(idx)
 	
 	--get the div
 	local medal_el = self.document:GetElementById(string.lower(medal.Bitmap:match("(.+)%..+$")))
-	local info = self:GetMedalInfo(medal_el.id)
+	local info = self:GetMedalInfo(medal.Name)
 	local filename = medal_el.id
-	if info.bitmap then
-		filename = info.bitmap
+	if info.altBitmap then
+		filename = info.altBitmap
 	end
 	
 	--create new image element based on number earned

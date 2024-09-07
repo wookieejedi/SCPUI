@@ -1,96 +1,96 @@
 #Medal Placements
 
-$Medal Bitmap: medal00 ;;Epsilon Pegasi Liberation
+$Medal: Epsilon Pegasi Liberation
 	+Position X: 19
 	+Position Y: 14
 	+Width: 9
 
-$Medal Bitmap: medal01 ;;Imperial Order of Vasuda
+$Medal: Imperial Order of Vasuda
 	+Position X: 72
 	+Position Y: 14
 	+Width: 9
 
-$Medal Bitmap: medal02 ;;Distinguished Flying Cross
+$Medal: Distinguished Flying Cross
 	+Position X: 26
 	+Position Y: 35
 	+Width: 9
 
-$Medal Bitmap: medal03 ;;SOC Service Medallion
+$Medal: SOC Service Medallion
 	+Position X: 35
 	+Position Y: 35
 	+Width: 9
 
-$Medal Bitmap: medal04 ;;Intelligence Cross
+$Medal: Intelligence Cross
 	+Position X: 65
 	+Position Y: 35
 	+Width: 9
 
-$Medal Bitmap: medal05 ;;Order of Galatea
+$Medal: Order of Galatea
 	+Position X: 56
 	+Position Y: 35
 	+Width: 9
 
-$Medal Bitmap: medal06 ;;Meritorious Unit Commendation
+$Medal: Meritorious Unit Commendation
 	+Position X: 19
 	+Position Y: 62
 	+Width: 9
 
-$Medal Bitmap: medal07 ;;Medal of Valor
+$Medal: Medal of Valor
 	+Position X: 29
 	+Position Y: 62
 	+Width: 9
 
-$Medal Bitmap: medal08 ;;GTVA Legion of Honor
+$Medal: GTVA Legion of Honor
 	+Position X: 39
 	+Position Y: 62
 	+Width: 9
 
-$Medal Bitmap: medal09 ;;Allied Defense Citation
+$Medal: Allied Defense Citation
 	+Position X: 52
 	+Position Y: 62
 	+Width: 9
 
-$Medal Bitmap: medal10 ;;Nebula Campaign Victory Star
+$Medal: Nebula Campaign Victory Star
 	+Position X: 62
 	+Position Y: 62
 	+Width: 9
 
-$Medal Bitmap: medal11 ;;NTF Campaign Victory Star
+$Medal: NTF Campaign Victory Star
 	+Position X: 72
 	+Position Y: 62
 	+Width: 9
 
-$Medal Bitmap: medal13 ;;Wings
+$Medal: Wings
 	+Alt Bitmap: wings
 	+Position X: 45
 	+Position Y: 30
 	+Width: 9
 
-$Medal Bitmap: medal17 ;;SOC Unit Crest
+$Medal: SOC Unit Crest
 	+Alt Bitmap: soccrest
 	+Position X: 46
 	+Position Y: 45
 	+Width: 7
 
-$Medal Bitmap: medal12 ;;Rank
+$Medal: Rank
 	+Alt Bitmap: rank
 	+Position X: 30
 	+Position Y: 25
 	+Width: 12
 
-$Medal Bitmap: medal14 ;;Ace
+$Medal: Ace
 	+Alt Bitmap: badge01
 	+Position X: 58
 	+Position Y: 25
 	+Width: 5
 
-$Medal Bitmap: medal15 ;;Double Ace
+$Medal: Double Ace
 	+Alt Bitmap: badge02
 	+Position X: 62
 	+Position Y: 25
 	+Width: 5
 
-$Medal Bitmap: medal16 ;;Triple Ace
+$Medal: Triple Ace
 	+Alt Bitmap: badge03
 	+Position X: 66
 	+Position Y: 25

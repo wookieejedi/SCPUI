@@ -93,6 +93,12 @@ function DebriefingController:initialize(document)
         end
         
         if medalName then
+			--Check for an alt debrief bitmap
+			if ScpuiSystem.medalInfo[medalName] then
+				if ScpuiSystem.medalInfo[medalName].altDebriefBitmap then
+					medalFile = ScpuiSystem.medalInfo[medalName].altDebriefBitmap
+				end
+			end
             self.document:GetElementById("awards_wrapper"):SetClass("hidden", false)
             local awards_el = self.document:GetElementById("medal_image_wrapper")
             local imgEl = self.document:CreateElement("img")
