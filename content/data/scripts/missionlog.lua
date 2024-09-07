@@ -156,11 +156,10 @@ function MissionlogController:initGoalsLog()
 			if goal.Type == "secondary" then
 				secondaryWrapper:AppendChild(self:createGoalItem(goal.Message, status))
 			end
-			if goal.Type == "bonus" then
-				bonusWrapper:AppendChild(self:createGoalItem(goal.Message, status))
-				
-				--unhide bonus goals if they are completed
+			if goal.Type == "bonus" then				
 				if status == 1 then
+					bonusWrapper:AppendChild(self:createGoalItem(goal.Message, status))
+					--unhide bonus goals section if we have a completed bonus goal
 					self.unhideBonus = true
 				end
 			end
