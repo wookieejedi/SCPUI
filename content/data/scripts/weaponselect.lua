@@ -752,6 +752,7 @@ function WeaponSelectController:BuildInfo(entry)
 	local rof = entry.RoF
 	local velocity = math.floor(entry.Velocity)
 	local range = math.floor(entry.Range)
+	local cargoSize = entry.CargoSize
 	
 	local desc_el = self.document:CreateElement("p")
 	desc_el.inner_rml = entry.Description
@@ -780,7 +781,11 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	local stats3_el = self.document:CreateElement("p")
 	stats3_el:SetClass("info", true)
-	stats3_el.inner_rml = ba.XSTR("Power Use", 888441) .. ": " .. power .. ba.XSTR("W", 888442) .. ", " .. ba.XSTR("Rate of Fire", 888443) .. ": " .. rof .. "/s"
+	if entry.Type == "secondary" then
+		stats3_el.inner_rml = ba.XSTR("Cargo Size", 888558) .. ": " .. cargoSize .. ", " .. ba.XSTR("Rate of Fire", 888443) .. ": " .. rof .. "/s"
+	else
+		stats3_el.inner_rml = ba.XSTR("Power Use", 888441) .. ": " .. power .. ba.XSTR("W", 888442) .. ", " .. ba.XSTR("Rate of Fire", 888443) .. ": " .. rof .. "/s"
+	end
 	stats3_el:SetClass("blue", true)
 	
 	infoEl:AppendChild(desc_el)

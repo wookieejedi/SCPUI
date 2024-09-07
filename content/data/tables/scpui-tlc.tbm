@@ -323,5 +323,8 @@
 888435, "Shield"
 888436, "Subsystem"
 888431, "Range"
+888558, "Cargo Size"
+
+;;Next available ID: 888559
 
 #end
