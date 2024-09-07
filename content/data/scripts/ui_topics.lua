@@ -35,7 +35,7 @@ local function weaponStats(weaponClass)
 		Velocity = velocity,
 		Range = range,
 		RoF = rof,
-		CargoSize = weaponClass.CargoSize
+		CargoSize = weaponClass.CargoSize,
 		Power = weaponClass.EnergyConsumed * 100,
 		-- TODO: Use SwarmInfo and CorkscrewInfo to determine this automatically.
 		VolleySize = tonumber(weaponClass.CustomData["volley"] or 1)
