@@ -219,11 +219,12 @@ function ScpuiSystem:genIcons()
 
 		v = tb.WeaponClasses[i]
 
-		if v:isPlayerAllowed() then			
+		if v:isPlayerAllowed() then		
+			local safeName = v.Name:gsub("'", "\\'")
 			ScpuiSystem:addPreload(
 				"Generating icon for " .. v.Name, --log print
 				"Generating " .. v.Name .. " icon", --on screen print
-				"ScpuiSystem:setIconFrames('" .. v.Name .. "', false)", --function to run
+				"ScpuiSystem:setIconFrames('" .. safeName .. "', false)", --function to run
 				1 --priority level
 			)
 		end
@@ -235,10 +236,11 @@ function ScpuiSystem:genIcons()
 		v = tb.ShipClasses[i]
 
 		if v:isPlayerAllowed() then
+			local safeName = v.Name:gsub("'", "\\'")
 			ScpuiSystem:addPreload(
 				"Generating icon for " .. v.Name,
 				"Generating " .. v.Name .. " icon",
-				"ScpuiSystem:setIconFrames('" .. v.Name .. "', true)",
+				"ScpuiSystem:setIconFrames('" .. safeName .. "', true)",
 				2
 			)
 		end
