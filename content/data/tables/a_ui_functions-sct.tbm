@@ -1,9 +1,22 @@
 #Conditional Hooks
-$Application: FS2_Open
 $On Game Init:
 [
 
 --Misc functions for handling various UI-related tasks
+
+function ScpuiSystem:parseTable(parserObject, parseFunction, tblName, tbmName)
+    ba.print("Beginning parse of " .. tblName .. ".tbl...\n")
+    
+    -- Check if the base table exists and parse it
+    if cf.fileExists(tblName .. '.tbl', '', true) then
+        parseFunction(parserObject, tblName .. '.tbl')
+    end
+
+    -- Parse any associated .tbm files
+    for _, v in ipairs(cf.listFiles("data/tables", "*-" .. tbmName .. ".tbm")) do
+        parseFunction(parserObject, v)
+    end
+end
 
 function ScpuiSystem:inMultiGame()
 	local game = ui.MultiGeneral.getNetGame()
