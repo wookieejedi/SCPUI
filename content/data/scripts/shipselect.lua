@@ -263,12 +263,25 @@ function ShipSelectController:ActivateSlot(slot)
 			--Add drag detection
 			element:SetClass("drag", true)
 			element:AddEventListener("dragend", function(_, _, _)
+				self.drag = false
 				self:DragSlotEnd(element, thisEntry, slot)
 			end)
 			
-			element:AddEventListener("dragstart", function(event, _, _)
-				local el = Element.As.Element(event.parameters.drag_element)
-				ba.warning(el.id)
+			--Add dragstart detection
+			element:AddEventListener("dragstart", function(_,_,_)
+				self.drag = true
+			end)
+			
+			--Add mouseover detection
+			element:AddEventListener("mouseover", function(_, _, _)
+				if self.drag then
+					element:SetPseudoClass("valid", true)
+				end
+			end)
+			
+			--Add mouseout detection
+			element:AddEventListener("mouseout", function(_, _, _)
+				element:SetPseudoClass("valid", false)
 			end)
 			
 			if self.icon3d then
@@ -334,7 +347,13 @@ function ShipSelectController:CreateEntryItem(entry, idx)
 	if topics.shipselect.poolentry:send({self, iconEl, entry}) then
 		iconEl:SetClass("drag", true)
 		iconEl:AddEventListener("dragend", function(_, _, _)
+			self.drag = false
 			self:DragPoolEnd(iconEl, entry, entry.Index)
+		end)
+		
+		--Add dragstart detection
+		iconEl:AddEventListener("dragstart", function(_,_,_)
+			self.drag = true
 		end)
 	end
 
@@ -515,6 +534,7 @@ end
 function ShipSelectController:DragOver(element, slot)
 	self.replace = element
 	self.activeSlot = slot
+	element:SetPseudoClass("valid", false)
 end
 
 function ShipSelectController:DragNameOver(element, slot)

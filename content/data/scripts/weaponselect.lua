@@ -390,6 +390,10 @@ function WeaponSelectController:CreateEntryItem(entry, idx)
 	iconEl:AddEventListener("dragend", function(_, _, _)
 		self:DragPoolEnd(iconEl, entry, entry.Index)
 	end)
+	iconEl:AddEventListener("dragstart", function(_,_,_)
+		self.heldWeapon = entry.Index
+		self.drag = true
+	end)
 	entry.key = li_el.id
 
 	return li_el
@@ -814,20 +818,48 @@ end
 function WeaponSelectController:DragDrop(element, slot)
 	self.replace = element
 	self.activeSlot = slot
+	element:SetPseudoClass("valid", false)
+	element:SetPseudoClass("invalid", false)
 end
 
 function WeaponSelectController:DragOver(element, slot)
-	local amount = loadoutHandler:GetShipLoadout(self.currentShipSlot).Weapons[slot]
-
-	if amount ~= nil then
-		if amount > 0 then
-			ScpuiSystem.modelDraw.Hover = slot
+	local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
+	local amount = ship.Weapons[slot]
+	
+	if not loadoutHandler:ShipHasBank(ship.ShipClassIndex, slot) then
+		return
+	end
+	
+	local allowed = false
+	
+	if self.drag and not ship.isWeaponLocked then
+		if loadoutHandler:IsWeaponAllowedInBank(ship.ShipClassIndex, self.heldWeapon, slot) then
+			allowed = true
 		end
 	end
+
+	if allowed then
+		element:SetPseudoClass("valid", true)
+		if amount ~= nil then
+			if amount > 0 then
+				ScpuiSystem.modelDraw.Hover = slot
+			end
+		end
+	else
+		element:SetPseudoClass("invalid", true)
+	end
+end
+
+function WeaponSelectController:DragSlotStart(element, slot)
+	local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
+	self.heldWeapon = ship.Weapons[slot]
+	self.drag = true
 end
 
 function WeaponSelectController:DragOut(element, slot)
 	ScpuiSystem.modelDraw.Hover = -1
+	element:SetPseudoClass("valid", false)
+	element:SetPseudoClass("invalid", false)
 end
 
 function WeaponSelectController:ApplyWeaponToSlot(parentEl, slot, bank, weapon)
@@ -958,6 +990,8 @@ function WeaponSelectController:UpdateSecondaryCount(bank)
 end
 
 function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
+	self.heldWeapon = nil
+	
 	--No changes if wing positions are not locked!
 	if ScpuiSystem:inMultiGame() and ui.MultiGeneral.getNetGame().Locked == false then
 		return
@@ -1039,6 +1073,8 @@ function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 end
 
 function WeaponSelectController:DragSlotEnd(element, slot)
+	self.heldWeapon = nil
+	
 	--No changes if wing positions are not locked!
 	if ScpuiSystem:inMultiGame() and ui.MultiGeneral.getNetGame().Locked == false then
 		return
