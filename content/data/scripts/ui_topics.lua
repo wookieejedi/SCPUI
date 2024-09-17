@@ -1,5 +1,12 @@
 local Topic = require("Topic")
 
+--round number function shared among all topics 
+function round(num, decimalPlaces)
+    local places = DecimalPlaces or 0
+    local multiplier = 10^places
+    return math.floor(num * multiplier + 0.5) / multiplier
+end
+
 local function altNameOrName(x)
 	local altName = x.AltName
 	if altName and altName ~= '' then
@@ -26,8 +33,31 @@ local function weaponStats(weaponClass)
 		baseDamage = baseDamage + bonusDamage
 	end
 	local velocity = weaponClass.Speed
-	local range = velocity * weaponClass.LifeMax
-	local rof = math.floor(100 / weaponClass.FireWait) / 100
+    -- account for +Weapon Range parameter -WW
+    local range = weaponClass.Range or 999999
+    local altrange = velocity * weaponClass.LifeMax
+    if  range > altrange then
+        range = weaponClass.Speed * weaponClass.LifeMax
+        else
+        range = weaponClass.Range
+    end
+	local rof = round(1 / weaponClass.FireWait, 2)
+    --[[ gross hacks begin here
+    weapon = tb.WeaponClasses[weaponClass.Index]
+    if weapon.SwarmInfo then
+        local isSwarmer, swarmcount, swarmwait = weapon.SwarmInfo
+        ba.warning("Swarm weapon " .. weaponClass.Name .. "detected with swarmcount" .. swarmcount)
+    end
+    local swarmproxy = swarmcount or 1 -- there has got to be a better way to do this
+    if weapon.CorkscrewInfo then
+        local isCorkscrew, cscrewcount, cscrewwait, cscrewrotate, cscrewtwist = weapon.CorkscrewInfo
+        ba.warning("Corkscrew weapon " .. weaponClass.Name .. "detected with corkscrew " .. cscrewcount)
+    end
+    local cscrewproxy = cscrewcount or 1 -- DANGEROUSLY CHEESY
+    local burst = weaponClass.BurstShots
+    local volley = round(swarmproxy * cscrewproxy * burst)
+    ba.warning("swarm count for " .. weaponClass.Name .. " is " .. swarmproxy)
+     end gross hacks --]]
 	return {
 		HullDamage = baseDamage * weaponClass.ArmorFactor,
 		ShieldDamage = baseDamage * weaponClass.ShieldFactor,
@@ -35,10 +65,11 @@ local function weaponStats(weaponClass)
 		Velocity = velocity,
 		Range = range,
 		RoF = rof,
-		CargoSize = weaponClass.CargoSize,
-		Power = weaponClass.EnergyConsumed * 100,
+		CargoSize = round(weaponClass.CargoSize, 2),
+		Power = round(weaponClass.EnergyConsumed / weaponClass.FireWait, 2),
 		-- TODO: Use SwarmInfo and CorkscrewInfo to determine this automatically.
-		VolleySize = tonumber(weaponClass.CustomData["volley"] or 1)
+		--VolleySize = tonumber(weaponClass.CustomData["volley"] or 1)
+        VolleySize = 1
 	}
 end
 

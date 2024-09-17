@@ -752,10 +752,12 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	ScpuiSystem:ClearEntries(infoEl)
 	
-	local power = math.floor(entry.Power)
+    local weapon = tb.WeaponClasses[entry.Index]
+    ba.warning("Weapon reported as " .. weapon.Name)
+	local power = round(entry.Power)
 	local rof = entry.RoF
-	local velocity = math.floor(entry.Velocity)
-	local range = math.floor(entry.Range)
+	local velocity = round(entry.Velocity)
+	local range = round(1 * entry.Range)
 	local cargoSize = entry.CargoSize
 	
 	local desc_el = self.document:CreateElement("p")
@@ -768,17 +770,21 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	local stats2_el = self.document:CreateElement("p")
 	stats2_el:SetClass("info", true)
+    if weapon.SwarmInfo then
+        local isSwarmer, swarmcount, swarmwait = weapon.SwarmInfo
+        ba.warning("Swarm weapon " .. weapon.Name .. "detected with swarmcount" .. swarmcount)
+    end
 	local volley = entry.VolleySize or 1
 	if entry.Type == "secondary" and entry.FireWait >= 1 then
-		local hull = math.floor(entry.HullDamage * volley)
-		local shield = math.floor(entry.ShieldDamage * volley)
-		local subsystem = math.floor(entry.SubsystemDamage * volley)
+		local hull = round(entry.HullDamage * volley)
+		local shield = round(entry.ShieldDamage * volley)
+		local subsystem = round(entry.SubsystemDamage * volley)
 		local label = (volley == 1) and ba.XSTR("Damage per missile", 888432) or ba.XSTR("Damage per volley", 888433)
 		stats2_el.inner_rml = label .. ": " .. hull .. " " .. ba.XSTR("Hull", 888434) .. ", " .. shield .. " " .. ba.XSTR("Shield", 888435) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", 888436)
 	else
-		local hull = math.floor(entry.HullDamage * volley / entry.FireWait)
-		local shield = math.floor(entry.ShieldDamage * volley / entry.FireWait)
-		local subsystem = math.floor(entry.SubsystemDamage * volley / entry.FireWait)
+		local hull = round(entry.HullDamage * volley / entry.FireWait)
+		local shield = round(entry.ShieldDamage * volley / entry.FireWait)
+		local subsystem = round(entry.SubsystemDamage * volley / entry.FireWait)
 		stats2_el.inner_rml = ba.XSTR("Damage per second", 888437) .. ": " .. hull .. " " .. ba.XSTR("Hull", 888434) .. ", " .. shield .. " " .. ba.XSTR("Shield", 888435) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", 888436)
 	end
 	stats2_el:SetClass("red", true)
