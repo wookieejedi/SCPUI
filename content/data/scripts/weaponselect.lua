@@ -753,8 +753,6 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	ScpuiSystem:ClearEntries(infoEl)
 	
-    local weapon = tb.WeaponClasses[entry.Index]
-    ba.warning("Weapon reported as " .. weapon.Name)
 	local power = utils.round(entry.Power)
 	local rof = entry.RoF
 	local velocity = utils.round(entry.Velocity)
@@ -771,11 +769,9 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	local stats2_el = self.document:CreateElement("p")
 	stats2_el:SetClass("info", true)
-    if weapon.SwarmInfo then
-        local isSwarmer, swarmcount, swarmwait = weapon.SwarmInfo
-        ba.warning("Swarm weapon " .. weapon.Name .. "detected with swarmcount" .. swarmcount)
-    end
+
 	local volley = entry.VolleySize or 1
+
 	if entry.Type == "secondary" and entry.FireWait >= 1 then
 		local hull = utils.round(entry.HullDamage * volley)
 		local shield = utils.round(entry.ShieldDamage * volley)
