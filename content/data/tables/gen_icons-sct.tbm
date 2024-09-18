@@ -81,10 +81,36 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 	local function makeIconFromIconFile(filename)
 		local imag_h = nil
 		
+		local validExtensions = {".ani", ".eff", ".png"}
+		
+		--Iterate through the extensions and check if the file exists
+		local exists = false
+		for _, extension in ipairs(validExtensions) do
+			local fullFilename = filename .. extension
+			if cf.fileExists(fullFilename, "", true) then
+				exists = true
+				break
+			end
+		end
+		
+		--Warn but continue because icon generation will create an empty frame for the icon.
+		if not exists then
+			ba.warning("Could not generate an icon from file " .. filename .. "! Check that the file exists...")
+		end
+		
 		if is_ship == true then
 			imag_h = gr.loadTexture(tb.ShipClasses[item].SelectIconFilename, true, true)
 		else
 			imag_h = gr.loadTexture(tb.WeaponClasses[item].SelectIconFilename, true, true)
+		end
+		
+		local numFrames = 0
+		
+		--Invalid image files somehow don't fully error as a texture except when getting frames
+		--So in that case we leave frames at 0 and the draw function will just create an empty
+		--image for the icon frame. The log will show an error from the drawing function.
+		if imag_h:isValid() then
+			numFrames = imag_h:getFramesLeft()
 		end
 		
 		local width = imag_h:getWidth()
@@ -93,7 +119,7 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 		gr.setTarget(tex_h)
 		for j = 1, 6, 1 do
 			gr.clearScreen(0,0,0,0)
-			gr.drawImage(imag_h[j], 0, 0, width, height, 0, 1, 1, 0, 1)
+			gr.drawImage(imag_h[math.min(j, numFrames)], 0, 0, width, height, 0, 1, 1, 0, 1)
 			icon_details.Icon[j] = gr.screenToBlob()
 		end
 		icon_details.Width = width
