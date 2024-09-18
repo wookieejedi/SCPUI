@@ -1,11 +1,5 @@
 local Topic = require("Topic")
-
---round number function shared among all topics 
-function round(num, decimalPlaces)
-    local places = DecimalPlaces or 0
-    local multiplier = 10^places
-    return math.floor(num * multiplier + 0.5) / multiplier
-end
+local utils = require("utils") --to allow use of utils.round()
 
 local function altNameOrName(x)
 	local altName = x.AltName
@@ -41,7 +35,7 @@ local function weaponStats(weaponClass)
         else
         range = weaponClass.Range
     end
-	local rof = round(1 / weaponClass.FireWait, 2)
+	local rof = utils.round(1 / weaponClass.FireWait, 2)
     --[[ gross hacks begin here
     weapon = tb.WeaponClasses[weaponClass.Index]
     if weapon.SwarmInfo then
@@ -55,7 +49,7 @@ local function weaponStats(weaponClass)
     end
     local cscrewproxy = cscrewcount or 1 -- DANGEROUSLY CHEESY
     local burst = weaponClass.BurstShots
-    local volley = round(swarmproxy * cscrewproxy * burst)
+    local volley = utils.round(swarmproxy * cscrewproxy * burst)
     ba.warning("swarm count for " .. weaponClass.Name .. " is " .. swarmproxy)
      end gross hacks --]]
 	return {
@@ -65,8 +59,8 @@ local function weaponStats(weaponClass)
 		Velocity = velocity,
 		Range = range,
 		RoF = rof,
-		CargoSize = round(weaponClass.CargoSize, 2),
-		Power = round(weaponClass.EnergyConsumed / weaponClass.FireWait, 2),
+		CargoSize = utils.round(weaponClass.CargoSize, 2),
+		Power = utils.round(weaponClass.EnergyConsumed / weaponClass.FireWait, 2),
 		-- TODO: Use SwarmInfo and CorkscrewInfo to determine this automatically.
 		--VolleySize = tonumber(weaponClass.CustomData["volley"] or 1)
         VolleySize = 1

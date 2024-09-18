@@ -2,6 +2,14 @@ local utils = {}
 
 utils.table = {}
 
+
+--round number function shared among all topics 
+function utils.round(num, decimalPlaces)
+    local places = DecimalPlaces or 0
+    local multiplier = 10^places
+    return math.floor(num * multiplier + 0.5) / multiplier
+end
+
 --Parses an XSTR from Custom data if it's formated like so:
 -- +Val: NAME "string", #
 --and returns the string and id in a table
