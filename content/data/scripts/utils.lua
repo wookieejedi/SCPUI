@@ -5,7 +5,7 @@ utils.table = {}
 
 --round number function shared among all topics 
 function utils.round(num, decimalPlaces)
-    local places = DecimalPlaces or 0
+    local places = decimalPlaces or 0
     local multiplier = 10^places
     return math.floor(num * multiplier + 0.5) / multiplier
 end

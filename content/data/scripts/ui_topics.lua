@@ -23,10 +23,12 @@ local function weaponStats(weaponClass)
 	if weaponClass.OuterRadius > 0 then
 		-- This weapon has a shockwave, which gives it additional damage on a direct hit.
 		-- TODO: Most weapons have shockwave damage equal to their base damage, but not all.
-		local bonusDamage = baseDamage
+		local bonusDamage = weaponClass.ShockwaveDamage
 		baseDamage = baseDamage + bonusDamage
 	end
 	local velocity = weaponClass.Speed
+	local rof = utils.round(1 / weaponClass.FireWait, 2)
+
     -- account for +Weapon Range parameter -WW
     local range = weaponClass.Range or 999999
     local altrange = velocity * weaponClass.LifeMax
@@ -35,23 +37,23 @@ local function weaponStats(weaponClass)
         else
         range = weaponClass.Range
     end
-	local rof = utils.round(1 / weaponClass.FireWait, 2)
-    --[[ gross hacks begin here
-    weapon = tb.WeaponClasses[weaponClass.Index]
-    if weapon.SwarmInfo then
-        local isSwarmer, swarmcount, swarmwait = weapon.SwarmInfo
+
+    --[[ disabled until fix PR gets merged in FSO
+    if weaponClass.SwarmInfo then
+        local isSwarmer, swarmcount, swarmwait = weaponClass.SwarmInfo
         ba.warning("Swarm weapon " .. weaponClass.Name .. "detected with swarmcount" .. swarmcount)
     end
-    local swarmproxy = swarmcount or 1 -- there has got to be a better way to do this
-    if weapon.CorkscrewInfo then
-        local isCorkscrew, cscrewcount, cscrewwait, cscrewrotate, cscrewtwist = weapon.CorkscrewInfo
+    if weaponClass.CorkscrewInfo then
+        local isCorkscrew, cscrewcount, cscrewwait, cscrewrotate, cscrewtwist = weaponClass.CorkscrewInfo
         ba.warning("Corkscrew weapon " .. weaponClass.Name .. "detected with corkscrew " .. cscrewcount)
     end
-    local cscrewproxy = cscrewcount or 1 -- DANGEROUSLY CHEESY
+    --]]
+
+    local swarmproxy = swarmcount or 1 -- to prevent getting a nil value
+    local cscrewproxy = cscrewcount or 1
     local burst = weaponClass.BurstShots
     local volley = utils.round(swarmproxy * cscrewproxy * burst)
-    ba.warning("swarm count for " .. weaponClass.Name .. " is " .. swarmproxy)
-     end gross hacks --]]
+
 	return {
 		HullDamage = baseDamage * weaponClass.ArmorFactor,
 		ShieldDamage = baseDamage * weaponClass.ShieldFactor,
@@ -63,7 +65,7 @@ local function weaponStats(weaponClass)
 		Power = utils.round(weaponClass.EnergyConsumed / weaponClass.FireWait, 2),
 		-- TODO: Use SwarmInfo and CorkscrewInfo to determine this automatically.
 		--VolleySize = tonumber(weaponClass.CustomData["volley"] or 1)
-        VolleySize = 1
+        VolleySize = volley
 	}
 end
 

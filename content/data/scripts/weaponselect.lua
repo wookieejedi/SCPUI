@@ -753,11 +753,11 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	ScpuiSystem:ClearEntries(infoEl)
 	
-	local power = utils.round(entry.Power)
+	local power = entry.Power
 	local rof = entry.RoF
 	local velocity = utils.round(entry.Velocity)
-	local range = utils.round(1 * entry.Range)
-	local cargoSize = entry.CargoSize
+	local range = utils.round(entry.Range)
+	local cargoSize = utils.round(entry.CargoSize, 2)
 	
 	local desc_el = self.document:CreateElement("p")
 	desc_el.inner_rml = entry.Description
