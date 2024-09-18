@@ -22,10 +22,15 @@ local function weaponStats(weaponClass)
 	local baseDamage = weaponClass.Damage
 	if weaponClass.OuterRadius > 0 then
 		-- This weapon has a shockwave, which gives it additional damage on a direct hit.
-		-- TODO: Most weapons have shockwave damage equal to their base damage, but not all.
-		local bonusDamage = weaponClass.ShockwaveDamage
+		-- Added formula to calculate shockwave damage -- WW
+        if weaponClass.ShockwaveDamage and weaponClass.ShockwaveDamage > 0 then
+            bonusDamage = weaponClass.ShockwaveDamage
+        elseif weaponClass.ShockwaveDamage == 0 or weaponClass.ShockwaveDamage == nil then
+            bonusDamage = baseDamage
+        end
 		baseDamage = baseDamage + bonusDamage
 	end
+
 	local velocity = weaponClass.Speed
 	local rof = utils.round(1 / weaponClass.FireWait, 2)
 
