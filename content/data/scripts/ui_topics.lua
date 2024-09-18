@@ -23,41 +23,33 @@ local function weaponStats(weaponClass)
 	if weaponClass.OuterRadius > 0 then
 		-- This weapon has a shockwave, which gives it additional damage on a direct hit.
 		-- Added formula to calculate shockwave damage -- WW
-        if weaponClass.ShockwaveDamage and weaponClass.ShockwaveDamage > 0 then
-            bonusDamage = weaponClass.ShockwaveDamage
-        elseif weaponClass.ShockwaveDamage == 0 or weaponClass.ShockwaveDamage == nil then
-            bonusDamage = baseDamage
-        end
+		if weaponClass.ShockwaveDamage and weaponClass.ShockwaveDamage > 0 then
+			bonusDamage = weaponClass.ShockwaveDamage
+		elseif weaponClass.ShockwaveDamage == 0 or weaponClass.ShockwaveDamage == nil then
+			bonusDamage = baseDamage
+		end
 		baseDamage = baseDamage + bonusDamage
 	end
 
 	local velocity = weaponClass.Speed
 	local rof = utils.round(1 / weaponClass.FireWait, 2)
+	local range = math.min(weaponClass.Range, (velocity * weaponClass.LifeMax))
 
-    -- account for +Weapon Range parameter -WW
-    local range = weaponClass.Range or 999999
-    local altrange = velocity * weaponClass.LifeMax
-    if  range > altrange then
-        range = weaponClass.Speed * weaponClass.LifeMax
-        else
-        range = weaponClass.Range
-    end
+	--[[ disabled until fix PR gets merged in FSO
+	if weaponClass.SwarmInfo then
+		local isSwarmer, swarmcount, swarmwait = weaponClass.SwarmInfo
+		ba.warning("Swarm weapon " .. weaponClass.Name .. "detected with swarmcount" .. swarmcount)
+	end
+	if weaponClass.CorkscrewInfo then
+		local isCorkscrew, cscrewcount, cscrewwait, cscrewrotate, cscrewtwist = weaponClass.CorkscrewInfo
+		ba.warning("Corkscrew weapon " .. weaponClass.Name .. "detected with corkscrew " .. cscrewcount)
+	end
+	--]]
 
-    --[[ disabled until fix PR gets merged in FSO
-    if weaponClass.SwarmInfo then
-        local isSwarmer, swarmcount, swarmwait = weaponClass.SwarmInfo
-        ba.warning("Swarm weapon " .. weaponClass.Name .. "detected with swarmcount" .. swarmcount)
-    end
-    if weaponClass.CorkscrewInfo then
-        local isCorkscrew, cscrewcount, cscrewwait, cscrewrotate, cscrewtwist = weaponClass.CorkscrewInfo
-        ba.warning("Corkscrew weapon " .. weaponClass.Name .. "detected with corkscrew " .. cscrewcount)
-    end
-    --]]
-
-    local swarmproxy = swarmcount or 1 -- to prevent getting a nil value
-    local cscrewproxy = cscrewcount or 1
-    local burst = weaponClass.BurstShots
-    local volley = utils.round(swarmproxy * cscrewproxy * burst)
+	local swarmproxy = swarmcount or 1 -- to prevent getting a nil value
+	local cscrewproxy = cscrewcount or 1
+	local burst = weaponClass.BurstShots
+	local volley = utils.round(swarmproxy * cscrewproxy * burst)
 
 	return {
 		HullDamage = baseDamage * weaponClass.ArmorFactor,
@@ -70,7 +62,7 @@ local function weaponStats(weaponClass)
 		Power = utils.round(weaponClass.EnergyConsumed / weaponClass.FireWait, 2),
 		-- TODO: Use SwarmInfo and CorkscrewInfo to determine this automatically.
 		--VolleySize = tonumber(weaponClass.CustomData["volley"] or 1)
-        VolleySize = volley
+		VolleySize = volley
 	}
 end
 
