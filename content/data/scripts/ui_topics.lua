@@ -35,21 +35,23 @@ local function weaponStats(weaponClass)
 	local rof = utils.round(1 / weaponClass.FireWait, 2)
 	local range = math.min(weaponClass.Range, (velocity * weaponClass.LifeMax))
 
-	--[[ disabled until fix PR gets merged in FSO
-	if weaponClass.SwarmInfo then
-		local isSwarmer, swarmcount, swarmwait = weaponClass.SwarmInfo
-		ba.warning("Swarm weapon " .. weaponClass.Name .. "detected with swarmcount" .. swarmcount)
-	end
-	if weaponClass.CorkscrewInfo then
-		local isCorkscrew, cscrewcount, cscrewwait, cscrewrotate, cscrewtwist = weaponClass.CorkscrewInfo
-		ba.warning("Corkscrew weapon " .. weaponClass.Name .. "detected with corkscrew " .. cscrewcount)
-	end
-	--]]
+	-- new code to calculate volley size -- WW
+	local isSwarmer, swarmcount, swarmwait = weaponClass:getSwarmInfo()
+	local isCorkscrew, cscrewcount, cscrewwait, cscrewrotate, cscrewtwist = weaponClass:getCorkscrewInfo()
+	local swarmproxy = math.max(swarmcount, 1) --swarmcount returns -1 if invalid
 
-	local swarmproxy = swarmcount or 1 -- to prevent getting a nil value
-	local cscrewproxy = cscrewcount or 1
-	local burst = weaponClass.BurstShots
+	local cscrewproxy = 1
+	if isCorkscrew then
+		cscrewproxy = cscrewcount
+	end
+
+	local burst = 1
+	if weaponClass.BurstShots > 1 then
+		burst = weaponClass.BurstShots
+	end
+
 	local volley = utils.round(swarmproxy * cscrewproxy * burst)
+	-- end volley code
 
 	return {
 		HullDamage = baseDamage * weaponClass.ArmorFactor,
@@ -60,8 +62,6 @@ local function weaponStats(weaponClass)
 		RoF = rof,
 		CargoSize = utils.round(weaponClass.CargoSize, 2),
 		Power = utils.round(weaponClass.EnergyConsumed / weaponClass.FireWait, 2),
-		-- TODO: Use SwarmInfo and CorkscrewInfo to determine this automatically.
-		--VolleySize = tonumber(weaponClass.CustomData["volley"] or 1)
 		VolleySize = volley
 	}
 end
