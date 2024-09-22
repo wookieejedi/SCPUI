@@ -25,8 +25,8 @@ local function weaponStats(weaponClass)
 		-- Added formula to calculate shockwave damage -- WW
 		if weaponClass.ShockwaveDamage and weaponClass.ShockwaveDamage > 0 then
 			bonusDamage = weaponClass.ShockwaveDamage
-			else
-			ba.print("Shockwave damage is identical to base weapon damage. Assuming shockwave is not specified and skipping shockwave formula.\n")
+		else
+			ba.print("Shockwave damage returned zero. Assuming equal to base damage.\n")
 			bonusDamage = baseDamage
 		end
 		baseDamage = baseDamage + bonusDamage
