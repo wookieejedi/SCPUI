@@ -25,7 +25,7 @@ local function weaponStats(weaponClass)
 		-- Added formula to calculate shockwave damage -- WW
 		if weaponClass.ShockwaveDamage and weaponClass.ShockwaveDamage > 0 then
 			bonusDamage = weaponClass.ShockwaveDamage
-		elseif weaponClass.ShockwaveDamage == 0 or weaponClass.ShockwaveDamage == nil then
+			else
 			bonusDamage = baseDamage
 		end
 		baseDamage = baseDamage + bonusDamage
@@ -36,21 +36,19 @@ local function weaponStats(weaponClass)
 	local range = math.min(weaponClass.Range, (velocity * weaponClass.LifeMax))
 
 	-- new code to calculate volley size -- WW
-	local isSwarmer, swarmcount, swarmwait = weaponClass:getSwarmInfo()
-	local isCorkscrew, cscrewcount, cscrewwait, cscrewrotate, cscrewtwist = weaponClass:getCorkscrewInfo()
-	local swarmproxy = math.max(swarmcount, 1) --swarmcount returns -1 if invalid
+	local isSwarmer, SwarmCount = weaponClass:getSwarmInfo()
+	local isCorkscrew, CorkscrewCount = weaponClass:getCorkscrewInfo()
 
-	local cscrewproxy = 1
-	if isCorkscrew then
-		cscrewproxy = cscrewcount
+	if not isSwarmer then
+		SwarmCount = 1
 	end
 
-	local burst = 1
-	if weaponClass.BurstShots > 1 then
-		burst = weaponClass.BurstShots
+	if not isCorkscrew then
+		CorkscrewCount = 1
 	end
 
-	local volley = utils.round(swarmproxy * cscrewproxy * burst)
+	local burst = math.max(weaponClass.BurstShots, 1)
+	local volley = utils.round(SwarmCount * CorkscrewCount * burst)
 	-- end volley code
 
 	return {
