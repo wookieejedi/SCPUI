@@ -1,4 +1,5 @@
 local Topic = require("Topic")
+local utils = require("utils") --to allow use of utils.round()
 
 local function altNameOrName(x)
 	local altName = x.AltName
@@ -21,13 +22,36 @@ local function weaponStats(weaponClass)
 	local baseDamage = weaponClass.Damage
 	if weaponClass.OuterRadius > 0 then
 		-- This weapon has a shockwave, which gives it additional damage on a direct hit.
-		-- TODO: Most weapons have shockwave damage equal to their base damage, but not all.
-		local bonusDamage = baseDamage
+		-- Added formula to calculate shockwave damage -- WW
+		if weaponClass.ShockwaveDamage and weaponClass.ShockwaveDamage > 0 then
+			bonusDamage = weaponClass.ShockwaveDamage
+		else
+			ba.print("Shockwave damage returned zero. Assuming equal to base damage.\n")
+			bonusDamage = baseDamage
+		end
 		baseDamage = baseDamage + bonusDamage
 	end
+
 	local velocity = weaponClass.Speed
-	local range = velocity * weaponClass.LifeMax
-	local rof = math.floor(100 / weaponClass.FireWait) / 100
+	local rof = utils.round(1 / weaponClass.FireWait, 2)
+	local range = math.min(weaponClass.Range, (velocity * weaponClass.LifeMax))
+
+	-- new code to calculate volley size -- WW
+	local isSwarmer, SwarmCount = weaponClass:getSwarmInfo()
+	local isCorkscrew, CorkscrewCount = weaponClass:getCorkscrewInfo()
+
+	if not isSwarmer then
+		SwarmCount = 1
+	end
+
+	if not isCorkscrew then
+		CorkscrewCount = 1
+	end
+
+	local burst = math.max(weaponClass.BurstShots, 1)
+	local volley = utils.round(SwarmCount * CorkscrewCount * burst)
+	-- end volley code
+
 	return {
 		HullDamage = baseDamage * weaponClass.ArmorFactor,
 		ShieldDamage = baseDamage * weaponClass.ShieldFactor,
@@ -35,10 +59,9 @@ local function weaponStats(weaponClass)
 		Velocity = velocity,
 		Range = range,
 		RoF = rof,
-		CargoSize = weaponClass.CargoSize,
-		Power = weaponClass.EnergyConsumed * 100,
-		-- TODO: Use SwarmInfo and CorkscrewInfo to determine this automatically.
-		VolleySize = tonumber(weaponClass.CustomData["volley"] or 1)
+		CargoSize = utils.round(weaponClass.CargoSize, 2),
+		Power = utils.round(weaponClass.EnergyConsumed / weaponClass.FireWait, 2),
+		VolleySize = volley
 	}
 end
 

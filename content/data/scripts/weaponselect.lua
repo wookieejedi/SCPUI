@@ -3,6 +3,7 @@ local class = require("class")
 local async_util = require("async_util")
 local loadoutHandler = require("loadouthandler")
 local topics = require("ui_topics")
+local utils = require("utils")
 
 local WeaponSelectController = class()
 
@@ -752,11 +753,11 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	ScpuiSystem:ClearEntries(infoEl)
 	
-	local power = math.floor(entry.Power)
+	local power = entry.Power
 	local rof = entry.RoF
-	local velocity = math.floor(entry.Velocity)
-	local range = math.floor(entry.Range)
-	local cargoSize = entry.CargoSize
+	local velocity = utils.round(entry.Velocity)
+	local range = utils.round(entry.Range)
+	local cargoSize = utils.round(entry.CargoSize, 2)
 	
 	local desc_el = self.document:CreateElement("p")
 	desc_el.inner_rml = entry.Description
@@ -768,17 +769,19 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	local stats2_el = self.document:CreateElement("p")
 	stats2_el:SetClass("info", true)
+
 	local volley = entry.VolleySize or 1
+
 	if entry.Type == "secondary" and entry.FireWait >= 1 then
-		local hull = math.floor(entry.HullDamage * volley)
-		local shield = math.floor(entry.ShieldDamage * volley)
-		local subsystem = math.floor(entry.SubsystemDamage * volley)
+		local hull = utils.round(entry.HullDamage * volley)
+		local shield = utils.round(entry.ShieldDamage * volley)
+		local subsystem = utils.round(entry.SubsystemDamage * volley)
 		local label = (volley == 1) and ba.XSTR("Damage per missile", 888432) or ba.XSTR("Damage per volley", 888433)
 		stats2_el.inner_rml = label .. ": " .. hull .. " " .. ba.XSTR("Hull", 888434) .. ", " .. shield .. " " .. ba.XSTR("Shield", 888435) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", 888436)
 	else
-		local hull = math.floor(entry.HullDamage * volley / entry.FireWait)
-		local shield = math.floor(entry.ShieldDamage * volley / entry.FireWait)
-		local subsystem = math.floor(entry.SubsystemDamage * volley / entry.FireWait)
+		local hull = utils.round(entry.HullDamage * volley / entry.FireWait)
+		local shield = utils.round(entry.ShieldDamage * volley / entry.FireWait)
+		local subsystem = utils.round(entry.SubsystemDamage * volley / entry.FireWait)
 		stats2_el.inner_rml = ba.XSTR("Damage per second", 888437) .. ": " .. hull .. " " .. ba.XSTR("Hull", 888434) .. ", " .. shield .. " " .. ba.XSTR("Shield", 888435) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", 888436)
 	end
 	stats2_el:SetClass("red", true)

@@ -3,6 +3,7 @@ local class = require("class")
 local topics = require("ui_topics")
 local async_util = require("async_util")
 local loadoutHandler = require("loadouthandler")
+local utils = require("utils")
 
 --local AbstractBriefingController = require("briefingCommon")
 
@@ -471,13 +472,13 @@ function ShipSelectController:BuildInfo(entry)
 	
 	--Setup the hitpoints string
 	local hitpointsString = ''
-	for i = 1, math.floor(entry.Hitpoints / 50) do
+	for i = 1, utils.round(entry.Hitpoints / 50) do
 		hitpointsString = hitpointsString .. '++'
 	end
 	
 	--Setup the shield hitpoints string
 	local ShieldhitpointsString = ''
-	for i = 1, math.floor(entry.ShieldHitpoints / 50) do
+	for i = 1, utils.round(entry.ShieldHitpoints / 50) do
 		ShieldhitpointsString = ShieldhitpointsString .. '++'
 	end
 	
