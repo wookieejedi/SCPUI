@@ -43,7 +43,16 @@ end
 function ScpuiSystem:parseKeywords(data, inheritedAffixes)
   local keywordAlgorithm = require('keywordAlgorithm')
   parse.readFileText(data, "data/tables")
-  parse.requiredString("#Default") --For now we only parse the Default section!
+  local lang = "#" .. ba.getCurrentLanguage()
+  
+  --If we can't find the language section then reset the parse and skip to Default
+  --if not parse.skipToString(lang) then
+    --parse.stop()
+    --parse.readFileText(data, "data/tables")
+    if not parse.skipToString("#Default") then
+      ba.error(data .. " is missing a valid language section!")
+    end
+  --end
 
   local globalAffixes = self:parseKeywordAffixes(inheritedAffixes)
   while parse.optionalString("$Style:") do
