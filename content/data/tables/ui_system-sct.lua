@@ -267,6 +267,7 @@ function ScpuiSystem:stateStart()
 	local state = hv.NewState or ba.getCurrentGameState()
 	
 	if not self:hasOverrideForState(getRocketUiHandle(state)) then
+		ba.print("No SCPUI document defined for " .. getRocketUiHandle(state).Name .. " in scpui.tbl!\n")
 		return
 	end
 	
