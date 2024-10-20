@@ -46,13 +46,13 @@ function ScpuiSystem:parseKeywords(data, inheritedAffixes)
   local lang = "#" .. ba.getCurrentLanguage()
   
   --If we can't find the language section then reset the parse and skip to Default
-  --if not parse.skipToString(lang) then
-    --parse.stop()
-    --parse.readFileText(data, "data/tables")
+  if not parse.skipToString(lang) then
+    parse.stop()
+    parse.readFileText(data, "data/tables")
     if not parse.skipToString("#Default") then
       ba.error(data .. " is missing a valid language section!")
     end
-  --end
+  end
 
   local globalAffixes = self:parseKeywordAffixes(inheritedAffixes)
   while parse.optionalString("$Style:") do
