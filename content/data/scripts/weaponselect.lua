@@ -580,7 +580,6 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 		
 		self.SelectedShip = callsign
 		self.currentShipSlot = slot
-		self.currentShipIndex = shipIndex
 		
 		self.document:GetElementById("ship_name").inner_rml = callsign
 		
@@ -594,6 +593,7 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 		local overhead = thisEntry.Overhead
 
 		self:BuildWeaponSlots(shipIndex)
+		self.currentShipIndex = shipIndex
 		
 		self:ChangeIconAvailability(shipIndex)
 		
@@ -625,6 +625,8 @@ function WeaponSelectController:ClearWeaponSlots()
 	ScpuiSystem:ClearEntries(ScpuiSystem.modelDraw.banks.bank5)
 	ScpuiSystem:ClearEntries(ScpuiSystem.modelDraw.banks.bank6)
 	ScpuiSystem:ClearEntries(ScpuiSystem.modelDraw.banks.bank7)
+	
+	self.banks = {}
 	
 	for i = 1, loadoutHandler:GetMaxBanks() do
 		table.insert(self.banks, 0)
