@@ -82,8 +82,9 @@ div#secondary_slot_amounts
 
 .slot_3d
 {
-	border-width: 0.6%;
-	border-color: teal;
+	cborder-decorator: corner-borders;
+    cborder-thickness: 0.6%;
+	cborder-color: teal;
 }
 
 .slot_3d:valid
