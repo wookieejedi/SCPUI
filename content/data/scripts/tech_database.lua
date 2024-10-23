@@ -1047,11 +1047,7 @@ function TechDatabaseController:loadSeenDataFromFile()
 		config[ba.getCurrentPlayer():getName()] = {}
 	end
 	
-	local mod = ba.getModTitle()
-	
-	if mod == "" then
-		ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
-	end
+	local mod = ScpuiSystem:getModTitle()
 	
 	if not config[ba.getCurrentPlayer():getName()][mod] then
 		config[ba.getCurrentPlayer():getName()][mod] = {}
@@ -1082,11 +1078,7 @@ function TechDatabaseController:saveSeenDataToFile(data)
 		config[ba.getCurrentPlayer():getName()] = {}
 	end
 	
-	local mod = ba.getModTitle()
-	
-	if mod == "" then
-		ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
-	end
+	local mod = ScpuiSystem:getModTitle()
 	
 	config[ba.getCurrentPlayer():getName()][mod] = data
 	

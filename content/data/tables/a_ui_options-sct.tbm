@@ -5,12 +5,11 @@ $On Game Init:
 --Load up the options.tbl and tbms
 ScpuiSystem.CustomOptions = {}
 
---Verify that the mod has a proper title
-if ba.getModTitle() == "" then
-	ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
-end
-
 function ScpuiSystem:initCustomOptions()
+	
+	--Verfy that the mod has a proper title
+	ScpuiSystem:getModTitle()
+	
 	local utils = require('utils')
 
 	if cf.fileExists('options.tbl', '', true) then
@@ -273,11 +272,7 @@ function ScpuiSystem:loadOptionsFromFile()
 		config[ba.getCurrentPlayer():getName()] = {}
 	end
 	
-	local mod = ba.getModTitle()
-	
-	if mod == "" then
-		ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
-	end
+	local mod = ScpuiSystem:getModTitle()
 	
 	if not config[ba.getCurrentPlayer():getName()][mod] then
 		return nil
@@ -308,11 +303,7 @@ function ScpuiSystem:saveOptionsToFile(data)
 		config[ba.getCurrentPlayer():getName()] = {}
 	end
 	
-	local mod = ba.getModTitle()
-	
-	if mod == "" then
-		ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
-	end
+	local mod = ScpuiSystem:getModTitle()
 	
 	config[ba.getCurrentPlayer():getName()][mod] = data
 	

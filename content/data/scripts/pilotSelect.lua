@@ -57,7 +57,11 @@ function PilotSelectController:initialize(document)
 		self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 		
         document:GetElementById("fso_version_info").inner_rml = ba.getVersionString()
-		document:GetElementById("mod_version_info").inner_rml = ba.getModTitle() .. " v" .. ba.getModVersion()
+		local version = ba.getModVersion()
+		if version ~= "" then
+			version = " v" .. version
+		end
+		document:GetElementById("mod_version_info").inner_rml = ScpuiSystem:getModTitle() .. version
 		
 		--Hide Multi stuff maybe
 		if ScpuiSystem.hideMulti == true then

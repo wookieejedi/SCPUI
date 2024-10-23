@@ -470,6 +470,28 @@ function ScpuiSystem:dialogEnd()
 	self:CloseDialog()
 end
 
+function ScpuiSystem:getModTitle()
+    local title = ba.getModTitle()
+    
+    if title == "" then
+        title = ba.getModRootName()
+        
+        -- Extract title up to the first "-"
+        local extracted_title = title:match("^(.-)%s*%-")
+        if extracted_title then
+            title = extracted_title
+        end
+        
+        if title ~= "SCPUI" then
+            ba.warning("It is highly recommended that you set a Mod Title in your game settings.tbl!")
+        else
+            title = "SCPUI Development Mod"
+        end
+    end
+    
+    return title
+end
+
 function ScpuiSystem:addPreload(message, text, run, val)
 	if self.preloadCoroutines == nil then
 		self.preloadCoroutines = {}

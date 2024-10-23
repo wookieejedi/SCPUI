@@ -27,7 +27,7 @@ function datasaver:loadDataFromFile(source, persistent)
 	local json = require('dkjson')
 	local location = nil
 	local filename = nil
-	local id = self:basicStringHash(ba.getModTitle())
+	local id = self:basicStringHash(ScpuiSystem:getModTitle())
   
 	if persistent == true then
 		location = 'data/players'
@@ -77,7 +77,7 @@ function datasaver:saveDataToFile(source, data, persistent)
 	local json = require('dkjson')
 	local location = nil
 	local filename = nil
-	local id = self:basicStringHash(ba.getModTitle())
+	local id = self:basicStringHash(ScpuiSystem:getModTitle())
   
 	if persistent == true then
 		location = 'data/players'
@@ -124,7 +124,7 @@ function datasaver:backupSaveData()
 	
 	local sourfile = nil
 	local filename = nil
-	local id = self:basicStringHash(ba.getModTitle())
+	local id = self:basicStringHash(ScpuiSystem:getModTitle())
 	
 	local fileroot = id .. '_save_backup_'
 	

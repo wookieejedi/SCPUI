@@ -6,7 +6,7 @@ $On Game Init:
 ScpuiSystem.PlayerRibbons = {}
 
 mn.LuaSEXPs['grant-scpui-ribbon'].Action = function(title, desc_name, border_r, border_g, border_b, ...)	
-	local desc = "From " .. ba.getModTitle()
+	local desc = "From " .. ScpuiSystem:getModTitle()
 	if mn.hasCustomStrings() then
 		for _, v in ipairs(mn.CustomStrings) do
 			if v.Name == desc_name then
@@ -41,7 +41,7 @@ function ScpuiSystem:grantRibbon(title, description, border_color, stripe_colors
 	
 	ribbon.name = title
 	ribbon.description = description
-	ribbon.source = ba.getModTitle()
+	ribbon.source = ScpuiSystem:getModTitle()
 	ribbon.border = border_color
 	ribbon.colors = stripe_colors
 	

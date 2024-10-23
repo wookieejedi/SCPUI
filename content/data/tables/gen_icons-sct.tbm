@@ -13,7 +13,7 @@ function ScpuiSystem:openCache()
 	local location = 'data/config'
 	local file = nil
 	
-	local modname = string.sub(ba.getModTitle(), 1, 20)
+	local modname = string.sub(ScpuiSystem:getModTitle(), 1, 20)
 	
 	if modname == "" then
 		ba.print("SCPUI could not load the icon cache because no mod name was found!\n")
@@ -40,7 +40,7 @@ function ScpuiSystem:saveCache(cache)
 	local json = require('dkjson')
 	local location = 'data/config'
 	
-	local modname = string.sub(ba.getModTitle(), 1, 20)
+	local modname = string.sub(ScpuiSystem:getModTitle(), 1, 20)
 	
 	if modname == "" then
 		ba.print("SCPUI could not get a valid mod name. Skipping icon caching!\n")

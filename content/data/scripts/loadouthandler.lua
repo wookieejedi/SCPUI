@@ -1153,7 +1153,7 @@ function LoadoutHandler:loadLoadoutsFromFile()
 		config[ba.getCurrentPlayer():getName()] = {}
 	end
 	
-	local mod = ba.getModTitle()
+	local mod = ScpuiSystem:getModTitle()
 	
 	if mod == "" then
 		ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
@@ -1189,7 +1189,7 @@ function LoadoutHandler:saveLoadoutsToFile(data)
 		config[ba.getCurrentPlayer():getName()] = {}
 	end
 	
-	local mod = ba.getModTitle()
+	local mod = ScpuiSystem:getModTitle()
 	
 	if mod == "" then
 		ba.error("SCPUI requires the current mod have a title in game_settings.tbl!")
