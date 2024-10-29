@@ -9,7 +9,7 @@ mn.LuaSEXPs['grant-scpui-ribbon'].Action = function(title, desc_name, border_r, 
 	local desc = "From " .. ScpuiSystem:getModTitle()
 	if mn.hasCustomStrings() then
 		for _, v in ipairs(mn.CustomStrings) do
-			if v.Name == desc_name then
+			if v.Name == desc_name.Name then
 				desc = v.String
 			end
 		end
@@ -50,7 +50,7 @@ function ScpuiSystem:grantRibbon(title, description, border_color, stripe_colors
 	local ignore_ribbon = false
 	local count = 0
 	for _, v in ipairs(ScpuiSystem.PlayerRibbons) do
-		if v.name == ribbon.title then
+		if v.name == ribbon.name then
 			ignore_ribbon = true
 			ba.print("SCPUI: Ribbon '" .. title .. "' already exists!\n")
 			break
