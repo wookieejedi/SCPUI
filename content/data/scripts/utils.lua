@@ -83,8 +83,8 @@ function utils.runSEXP(sexp, ...)
 			elseif type(data) == "number" then
 				param = math.floor(data)
 			elseif type(data) == "string" then
-				param = "!" .. data .. "!"
-			end
+                param = "!" .. data:gsub("!", "!!") .. "!"
+            end
 		  
 			if param ~= "" then
 				sexp = sexp .. " " .. param
