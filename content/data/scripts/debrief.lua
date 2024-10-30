@@ -255,11 +255,11 @@ function DebriefingController:BuildStats()
     --Convert mission time to minutes + seconds
     missionTime = (math.floor(missionTime/60)) .. ":" .. (math.floor(missionTime % 60))
     
-    if difficulty == 1 then difficulty = "very easy" end
-    if difficulty == 2 then difficulty = "easy" end
-    if difficulty == 3 then difficulty = "medium" end
-    if difficulty == 4 then difficulty = "hard" end
-    if difficulty == 5 then difficulty = "very hard" end
+    if difficulty == 1 then difficulty = ba.XSTR("Very Easy", 469, false) end
+    if difficulty == 2 then difficulty = ba.XSTR("Easy", 470, false) end
+    if difficulty == 3 then difficulty = ba.XSTR("Medium", 471, false) end
+    if difficulty == 4 then difficulty = ba.XSTR("Hard", 472, false) end
+    if difficulty == 5 then difficulty = ba.XSTR("Very Hard", 473, false) end
     
     local text_el = self.document:GetElementById("debrief_text")
     
