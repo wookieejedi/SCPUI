@@ -146,7 +146,7 @@ return {
 		initialize = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	loadouts = {
-		initialize = Topic(nil), --Runs arbitrary script and expects no return value
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
 		saveLoadout = Topic(nil), --Runs arbitrary script and expects no return value. Sends the save data to be saved
 		loadLoadout = Topic(nil), --Runs arbitrary script and expects no return value. Sends the loaded save data
 		rejectSavedLoadout = Topic(false), --Runs arbitrary script and expects a boolean return, true to abort applying saved loadout
@@ -166,7 +166,8 @@ return {
 	options = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
 		changeEffectsVol = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
-		changeVoiceVol = Topic(nil) --Runs arbitrary script and expects no return value. Sends the context
+		changeVoiceVol = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		apply = Topic(nil) --Runs arbitrary script and expects no return value. Sends nothing. Runs when custom mod options should be applied to controlling scripts
 	},
 	missionlog = {
 		initialize = Topic(nil) --Runs arbitrary script and expects no return value. Sends the context

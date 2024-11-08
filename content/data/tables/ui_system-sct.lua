@@ -302,6 +302,11 @@ function ScpuiSystem:stateEnd(substate)
 
 	--This allows for states to correctly return to the previous state even if has no rocket ui defined
 	ScpuiSystem.lastState = ScpuiSystem.currentState
+	
+	--Provide a UI topic for custom mod options to apply user selections
+	if hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT" or hv.OldState.Name == "GS_STATE_OPTIONS_MENU" then
+		topics.options.apply:send(nil)
+	end
 
 	if not substate then
 		if not self:hasOverrideForState(getRocketUiHandle(hv.OldState)) then
