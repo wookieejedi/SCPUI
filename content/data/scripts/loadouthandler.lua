@@ -2,6 +2,8 @@ local LoadoutHandler = {}
 
 local topics = require('ui_topics')
 
+LoadoutHandler.version = 2
+
 function LoadoutHandler:init()
 	if not ScpuiSystem.selectInit then
 		ui.ShipWepSelect.initSelect()
@@ -89,6 +91,7 @@ function LoadoutHandler:saveCurrentLoadout()
 	local key = self:getMissionKey()
 	
 	ScpuiSystem.savedLoadouts[key] = {
+		version = self.version,
 		datetime = mn.getMissionModifiedDate(),
 		shipPool = ScpuiSystem.loadouts.shipPool,
 		weaponPool = ScpuiSystem.loadouts.weaponPool,
@@ -111,6 +114,12 @@ function LoadoutHandler:maybeApplySavedLoadout()
 	local key = self:getMissionKey()
 	
 	if ScpuiSystem.savedLoadouts[key] ~= nil then
+	
+		--Check the loadout handler version that was used for this save and discard if it's incorrect
+		if ScpuiSystem.savedLoadouts[key].version ~= self.version then
+			ScpuiSystem.savedLoadouts[key] = nil
+			return
+		end
 	
 		--Check the mission datetime matches. If not, then discard the loadout
 		if mn.getMissionModifiedDate() ~= ScpuiSystem.savedLoadouts[key].datetime then
@@ -177,6 +186,7 @@ function LoadoutHandler:getSlots()
 	local utils = require("utils")
 	local slots = {}
 	
+	-- If any of the data below is changed or added to then the LoadoutHandler.version global must be incremented!
 	for i = 1, #ui.ShipWepSelect.Loadout_Ships do
 		ba.print('LOADOUT HANDLER: Parsing ship slot ' .. i .. '\n')
 		local data = {}
