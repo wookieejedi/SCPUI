@@ -651,6 +651,10 @@ function ShipSelectController:DragPoolEnd(element, entry, shipIndex)
 
 		local targetSlot = loadoutHandler:GetShipLoadout(self.activeSlot)
 		
+		if targetSlot.isShipLocked then
+			return
+		end
+		
 		--If the target slot already has this ship, then abort!
 		if targetSlot.ShipClassIndex == shipIndex then
 			return
