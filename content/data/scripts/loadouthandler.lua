@@ -190,6 +190,7 @@ function LoadoutHandler:getSlots()
 		data.Name = ui.ShipWepSelect.Loadout_Wings[wing].Name .. " " .. wingSlot
 		data.displayName = utils.truncateAtHash(ui.ShipWepSelect.Loadout_Wings[wing].Name) .. " " .. wingSlot
 		data.WingName = ui.ShipWepSelect.Loadout_Wings[wing].Name
+		data.displayWingName = utils.truncateAtHash(ui.ShipWepSelect.Loadout_Wings[wing].Name)
 		data.Wing = wing
 		data.WingSlot = wingSlot
 		data.isShipLocked = ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isShipLocked
