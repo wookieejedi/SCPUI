@@ -260,6 +260,7 @@ div:drag
 .slot_name
 {
 	text-align: center;
+	font-size: 0.8em;
 }
 
 .available

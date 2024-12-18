@@ -116,7 +116,7 @@ function ShipSelectController:BuildWings()
 		--Add the wing name
 		local nameEl = self.document:CreateElement("div")
 		nameEl:SetClass("wing_name", true)
-		nameEl.inner_rml = loadoutHandler:GetWingName(i)
+		nameEl.inner_rml = loadoutHandler:GetWingDisplayName(i)
 		wingEl:AppendChild(nameEl)
 		
 		--Check that the wing actually has valid ship slots
@@ -176,7 +176,7 @@ function ShipSelectController:BuildWings()
 			slotEl:AppendChild(slotImg)
 			
 			local slotName = self.document:CreateElement("div")
-			slotName.inner_rml = slotInfo.Name
+			slotName.inner_rml = slotInfo.displayName
 			slotName.id = "callsign_" .. slotNum
 			slotName:SetClass("slot_name", true)
 			slotEl:AppendChild(slotName)

@@ -336,6 +336,18 @@ function utils.rml_escape(inputStr)
     end)
 end
 
+---
+--- @param inputStr string
+--- @return string
+function utils.truncateAtHash(inputString)
+    local hashPosition = inputString:find("#") -- Find the position of the first #
+    if hashPosition then
+        return inputString:sub(1, hashPosition - 1) -- Return the substring up to (but not including) the #
+    else
+        return inputString -- If no # is found, return the original string
+    end
+end
+
 function utils.table.ifind(tbl, val, compare)
     for i, v in ipairs(tbl) do
         if compare ~= nil then

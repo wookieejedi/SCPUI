@@ -174,6 +174,7 @@ end
 --mess with it as much as we want without having to worry about FSO getting
 --in the way. The loadout will be saved on mission close or cancel
 function LoadoutHandler:getSlots()
+	local utils = require("utils")
 	local slots = {}
 	
 	for i = 1, #ui.ShipWepSelect.Loadout_Ships do
@@ -187,6 +188,7 @@ function LoadoutHandler:getSlots()
 		local wing, wingSlot = self:GetWingSlot(i)
 		
 		data.Name = ui.ShipWepSelect.Loadout_Wings[wing].Name .. " " .. wingSlot
+		data.displayName = utils.truncateAtHash(ui.ShipWepSelect.Loadout_Wings[wing].Name) .. " " .. wingSlot
 		data.WingName = ui.ShipWepSelect.Loadout_Wings[wing].Name
 		data.Wing = wing
 		data.WingSlot = wingSlot
@@ -542,6 +544,11 @@ end
 
 function LoadoutHandler:GetWingName(wing)
 	return ui.ShipWepSelect.Loadout_Wings[wing].Name
+end
+
+function LoadoutHandler:GetWingDisplayName(wing)
+	local utils = require("utils")
+	return utils.truncateAtHash(ui.ShipWepSelect.Loadout_Wings[wing].Name)
 end
 
 function LoadoutHandler:IsSlotDisabled(slot)
