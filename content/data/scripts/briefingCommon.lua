@@ -109,7 +109,7 @@ end
 
 function AbstractBriefingController:go_to_next_stage()
 	if self.current_stage >= #self.stages then
-		ui.playElementSound(el, "click", "fail")
+		ui.playElementSound(nil, "click", "fail")
 		return
 	end
 	
@@ -121,12 +121,12 @@ function AbstractBriefingController:go_to_next_stage()
 	end
 
 	self:go_to_stage(self.current_stage + 1)
-	ui.playElementSound(el, "click", "success")
+	ui.playElementSound(nil, "click", "success")
 end
 
 function AbstractBriefingController:go_to_prev_stage()
 	if self.current_stage <= 1 then
-		ui.playElementSound(el, "click", "fail")
+		ui.playElementSound(nil, "click", "fail")
 		return
 	end
 
@@ -138,7 +138,7 @@ function AbstractBriefingController:go_to_prev_stage()
 	end
 
 	self:go_to_stage(self.current_stage - 1)
-	ui.playElementSound(el, "click", "success")
+	ui.playElementSound(nil, "click", "success")
 end
 
 function AbstractBriefingController:registerEventHandlers()

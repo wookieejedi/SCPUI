@@ -317,7 +317,7 @@ end
 
 function HotkeyController:ResetKeys()
 
-    ui.playElementSound(element, "click", "success")
+    ui.playElementSound(nil, "click", "success")
 	ui.MissionHotkeys.resetHotkeys()
 	
 	local parent_el = self.document:GetElementById("log_text_wrapper")
@@ -328,7 +328,7 @@ end
 
 function HotkeyController:ClearKey()
 
-    ui.playElementSound(element, "click", "success")
+    ui.playElementSound(nil, "click", "success")
 	self:RemKey(self.currentKey)
 
 end

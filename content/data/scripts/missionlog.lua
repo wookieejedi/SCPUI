@@ -124,7 +124,7 @@ function MissionlogController:createGoalItem(title, status)
 	goal_el:AppendChild(self:makeBullet(status))
 	
 	local goal_text = self.document:CreateElement("div")
-	goal_text.inner_rml = goal.Message .. "<br></br>"
+	goal_text.inner_rml = title .. "<br></br>"
 	goal_el:AppendChild(goal_text)
 	
 	return goal_el
@@ -132,12 +132,12 @@ end
 
 function MissionlogController:initGoalsLog()
 
-	goals = ui.Briefing.Objectives
+	local goals = ui.Briefing.Objectives
 	local primaryWrapper = self.document:GetElementById("primary_goal_list")
 	local secondaryWrapper = self.document:GetElementById("secondary_goal_list")
 	local bonusWrapper = self.document:GetElementById("bonus_goal_list")
 	for i = 1, #goals do
-		goal = goals[i]
+		local goal = goals[i]
 		if goal.isGoalValid and goal.Message ~= "" then
 			local status = goal.isGoalSatisfied
 			local bulletHTML = nil
@@ -193,7 +193,7 @@ function MissionlogController:ChangeSection(section)
 	
 	if changeSection then
 	
-		ui.playElementSound(element, "click", "success")
+		ui.playElementSound(nil, "click", "success")
 	
 		--first we clean up
 		if self.currentSection == 1 then

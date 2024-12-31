@@ -52,7 +52,7 @@ function HudConfigController:initialize(document)
 	---Load the desired font size from the save file
 	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
-	hud_el = self.document:GetElementById("hud_drawn_content")
+	local hud_el = self.document:GetElementById("hud_drawn_content")
 	
 	--get coords to draw at
 	local hx = hud_el.offset_left + hud_el.parent_node.offset_left  + hud_el.parent_node.parent_node.offset_left
@@ -443,7 +443,7 @@ function HudConfigController:setGaugeFlags(flag)
 end
 
 function HudConfigController:togglePopupOption()
-	popup_el = self.document:GetElementById("popup_btn")
+	local popup_el = self.document:GetElementById("popup_btn")
 	
 	if self.selectedGauge.CanPopup then
 		popup_el:SetClass("hidden", false)

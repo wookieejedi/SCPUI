@@ -438,7 +438,7 @@ function TechMissionsController:select_next()
     local num = #self.visibleList
 	
 	if self.SelectedIndex == num then
-		ui.playElementSound(element, "click", "error")
+		ui.playElementSound(nil, "click", "error")
 	else
 		self:SelectEntry(self.visibleList[self.SelectedIndex + 1])
 	end
@@ -446,7 +446,7 @@ end
 
 function TechMissionsController:select_prev()	
 	if self.SelectedIndex == 1 then
-		ui.playElementSound(element, "click", "error")
+		ui.playElementSound(nil, "click", "error")
 	else
 		self:SelectEntry(self.visibleList[self.SelectedIndex - 1])
 	end

@@ -39,7 +39,7 @@ function ShipSelectController:initialize(document)
 	self.ship3d, self.shipEffect, self.icon3d = ui.ShipWepSelect.get3dShipChoices()
 	
 	--Get all the required weapons
-	j = 1
+	local j = 1
 	while (j < #tb.WeaponClasses) do
 		if tb.WeaponClasses[j]:isWeaponRequired() then
 			self.requiredWeps[#self.requiredWeps + 1] = tb.WeaponClasses[j].Name
@@ -904,7 +904,7 @@ function ShipSelectController:drawSelectModel()
 		local modelWidth = modelView.offset_width
 		local modelHeight = modelView.offset_height
 		
-		--This is just a multipler to make the rendered model a little bigger
+		--This is just a multiplier to make the rendered model a little bigger
 		--renderSelectModel() has forced centering, so we need to calculate
 		--the screen size so we can move it slightly left and up while we
 		--multiple it's size

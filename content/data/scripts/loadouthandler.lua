@@ -165,7 +165,7 @@ function LoadoutHandler:cleanLoadoutShips()
 end
 
 function LoadoutHandler:getPool(pool, shipPool)
-	data = {}
+	local data = {}
 	for i = 1, #pool do
 		if pool[i] > 0 then
 			if shipPool == true then
@@ -345,13 +345,15 @@ function LoadoutHandler:generateWeaponInfo()
 	for i = 1, self:GetNumSlots() do
 		if not self:IsSlotDisabled(i) then
 			local ship = self:GetShipLoadout(i)
-			if ship.ShipClassIndex > 0 then
-				for j = 1, #ship.Weapons do
-					local wepIdx = ship.Weapons[j]
-					if ship.Amounts[j] > 0 then
-						wep = self:GetWeaponInfo(wepIdx)
-						if wep == nil then
-							self:AppendToWeaponInfo(wepIdx)
+			if ship ~= nil then
+				if ship.ShipClassIndex > 0 then
+					for j = 1, #ship.Weapons do
+						local wepIdx = ship.Weapons[j]
+						if ship.Amounts[j] > 0 then
+							local wep = self:GetWeaponInfo(wepIdx)
+							if wep == nil then
+								self:AppendToWeaponInfo(wepIdx)
+							end
 						end
 					end
 				end
@@ -847,6 +849,8 @@ end
 --Add weapon to a weapon bank
 function LoadoutHandler:AddWeaponToBank(slot, bank, weaponIdx, amount)
 	local ship = self:GetShipLoadout(slot)
+	if ship == nil then return false end
+
 	local shipIdx = ship.ShipClassIndex
 	local w_type = self:GetWeaponType(weaponIdx)
 	local actualBank = self:ConvertBankSlotToBank(shipIdx, bank, w_type)
@@ -914,7 +918,7 @@ end
 
 function LoadoutHandler:SetFilled(slot, state)
 
-	ship = self:GetShipLoadout(slot)
+	local ship = self:GetShipLoadout(slot)
 	
 	ship.isFilled = state
 	ship.ShipClassIndex = -1
@@ -1152,7 +1156,7 @@ function LoadoutHandler:loadLoadoutsFromFile()
 
 	local json = require('dkjson')
 	
-	--Loadouts are explicitely not saved across mod versions
+	--Loadouts are explicitly not saved across mod versions
 	local location = 'data/config'
   
 	local file = nil
@@ -1188,7 +1192,7 @@ function LoadoutHandler:saveLoadoutsToFile(data)
 
 	local json = require('dkjson')
 	
-	--Loadouts are explicitely not saved across mod versions
+	--Loadouts are explicitly not saved across mod versions
 	local location = 'data/config'
   
 	local file = nil

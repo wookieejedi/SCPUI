@@ -203,7 +203,7 @@ function BriefingController:createGoalItem(title)
 	goal_el:AppendChild(self:makeBullet())
 	
 	local goal_text = self.document:CreateElement("div")
-	goal_text.inner_rml = goal.Message .. "<br></br>"
+	goal_text.inner_rml = title .. "<br></br>"
 	goal_el:AppendChild(goal_text)
 	
 	return goal_el
