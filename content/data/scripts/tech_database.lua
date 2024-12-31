@@ -549,8 +549,10 @@ function TechDatabaseController:CreateEntryItem(entry, index, selectable, headin
 	local vis_name = "<span>" .. entry.DisplayName .. "</span>"
 
 	--Maybe append "NEW!" to non-heading entries
-	if heading == false and not self:isSeen(entry.Name) then
-		vis_name = new_el .. vis_name
+	if ScpuiSystem.databaseShowNew then
+		if heading == false and not self:isSeen(entry.Name) then
+			vis_name = new_el .. vis_name
+		end
 	end
 	
 	li_el.inner_rml = vis_name

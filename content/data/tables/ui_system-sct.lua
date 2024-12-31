@@ -43,7 +43,8 @@ ScpuiSystem = {
 			width = 112,
 			height = 48,
 		}
-	}
+	},
+	databaseShowNew = true
 }
 
 ScpuiOptionValues = {}
@@ -129,6 +130,10 @@ function ScpuiSystem:parseTable(data)
 
 		if parse.optionalString("$Weapon Icon Height:") then
 			ScpuiSystem.iconDimentions.weapon.height = parse.getInt()
+		end
+		
+		if parse.optionalString("$Show New In Database:") then
+			ScpuiSystem.databaseShowNew = parse.getBoolean()
 		end
 		
 	end
