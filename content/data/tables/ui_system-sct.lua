@@ -55,6 +55,12 @@ if ba.inMissionEditor() then
 	return
 end
 
+--keep multiplayer standalone servers lean
+if ba.getCurrentMPStatus() == "MULTIPLAYER_STANDALONE" then
+	ScpuiSystem.active = nil
+	return
+end
+
 --setting this to true will completely disable SCPUI
 if false then
 	ScpuiSystem.active = nil
