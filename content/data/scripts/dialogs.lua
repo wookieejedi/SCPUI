@@ -149,7 +149,7 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
     end)
 
     if properties.click_escape and properties.escape_value then
-        bg_el = dialog_doc:GetElementById("click_detect")
+        local bg_el = dialog_doc:GetElementById("click_detect")
 
         bg_el:AddEventListener("click", function(event, _, _)
             finish_func(properties.escape_value)

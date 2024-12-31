@@ -122,7 +122,7 @@ end
 function datasaver:backupSaveData()
 	local json = require('dkjson')
 	
-	local sourfile = nil
+	local sourcefile = nil
 	local filename = nil
 	local id = self:basicStringHash(ScpuiSystem:getModTitle())
 	
@@ -143,6 +143,7 @@ function datasaver:backupSaveData()
 	--Backup the global data
 	filename = fileroot .. num .. '.cfg'
 	sourcefile = id .. '_save_data.cfg'
+	local file, config
 	if cf.fileExists(id .. '_save_data.cfg') then
 		file = cf.openFile(id .. '_save_data.cfg', 'r', 'data/players')
 		config = json.decode(file:read('*a'))
@@ -152,9 +153,11 @@ function datasaver:backupSaveData()
 			ba.error('Please ensure that ' .. sourcefile .. ' exists in data/players and is valid JSON.')
 		end
 	end
-	file = cf.openFile(filename, 'w', 'data/config')
-	file:write(json.encode(config))
-	file:close()
+	if config then
+		file = cf.openFile(filename, 'w', 'data/config')
+		file:write(json.encode(config))
+		file:close()
+	end
 	
 	--Backup the local data
 	filename = fileroot .. 'local_' .. num .. '.cfg'

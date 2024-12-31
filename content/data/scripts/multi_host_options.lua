@@ -196,14 +196,6 @@ function HostOptionsController:sendChat()
 	end
 end
 
-function HostOptionsController:sendChat()
-	if string.len(self.submittedValue) > 0 then
-		ui.MultiGeneral.sendChat(self.submittedValue)
-		self.input_id:SetAttribute("value", "")
-		self.submittedValue = ""
-	end
-end
-
 function HostOptionsController:InputFocusLost()
 	--do nothing
 end

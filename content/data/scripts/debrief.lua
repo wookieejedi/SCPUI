@@ -515,7 +515,7 @@ end
 
 function DebriefingController:page_pressed(command)
     if self.selectedSection == 1 then
-        ui.playElementSound(element, "click", "failure")
+        ui.playElementSound(nil, "click", "failure")
         --FIXMEEEE
     else
         if command == 1 then
@@ -537,7 +537,7 @@ function DebriefingController:page_pressed(command)
             end
         end
         
-        ui.playElementSound(element, "click", "success")
+        ui.playElementSound(nil, "click", "success")
         self:ClearText()
         self:BuildStats()
     end

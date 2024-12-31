@@ -312,7 +312,7 @@ function TechDatabaseController:SortList()
 	self:UncheckAllSortButtons()
 	
 	if self.currentSort == nil then
-		selfcurrentSort = "index_asc"
+		self.currentSort = "index_asc"
 	end
 	
 	if self.currentSortCategory == nil then
@@ -962,7 +962,7 @@ function TechDatabaseController:select_next()
     local num = #self.visibleList
 	
 	if self.SelectedIndex == num then
-		ui.playElementSound(element, "click", "error")
+		ui.playElementSound(nil, "click", "error")
 	else
 		local count = 1
 		while self.visibleList[self.SelectedIndex + count] ~= nil and self.visibleList[self.SelectedIndex + count].Selectable == false do
@@ -970,9 +970,9 @@ function TechDatabaseController:select_next()
 		end
 		
 		if (self.SelectedIndex + count) > num then
-			ui.playElementSound(element, "click", "error")
+			ui.playElementSound(nil, "click", "error")
 		elseif self.visibleList[self.SelectedIndex + count].Selectable == false then
-			ui.playElementSound(element, "click", "error")
+			ui.playElementSound(nil, "click", "error")
 		else
 			self:SelectEntry(self.visibleList[self.SelectedIndex + count])
 		end
@@ -981,7 +981,7 @@ end
 
 function TechDatabaseController:select_prev()	
 	if self.SelectedIndex == 1 then
-		ui.playElementSound(element, "click", "error")
+		ui.playElementSound(nil, "click", "error")
 	else
 		local count = 1
 		while self.visibleList[self.SelectedIndex - count] ~= nil and self.visibleList[self.SelectedIndex - count].Selectable == false do
@@ -989,9 +989,9 @@ function TechDatabaseController:select_prev()
 		end
 		
 		if (self.SelectedIndex - count) < 1 then
-			ui.playElementSound(element, "click", "error")
+			ui.playElementSound(nil, "click", "error")
 		elseif self.visibleList[self.SelectedIndex - count].Selectable == false then
-			ui.playElementSound(element, "click", "error")
+			ui.playElementSound(nil, "click", "error")
 		else
 			self:SelectEntry(self.visibleList[self.SelectedIndex - count])
 		end

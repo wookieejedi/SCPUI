@@ -1266,7 +1266,7 @@ function OptionsController:initialize_multi_options()
 			else
 				opt_el:SetPseudoClass("checked", false)
 			end
-			self:AddOptionTooltip(option, btn_el)
+			self:AddOptionTooltip(option, opt_el)
 		elseif option.Key == "Multi.TransferMissions" then
 			opt_el = self:createOptionElement(option, "multi_column_2")
 		elseif option.Key == "Multi.FlushCache" then
@@ -1410,7 +1410,7 @@ function OptionsController:acceptChanges(state)
 	ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
 	
 	--Save mod options to global file for recalling before a player is selected
-	saveFilename = "scpui_options_global.cfg"
+	local saveFilename = "scpui_options_global.cfg"
 	local json = require('dkjson')
     local file = cf.openFile(saveFilename, 'w', 'data/players')
     file:write(json.encode(ScpuiOptionValues))

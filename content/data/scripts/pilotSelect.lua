@@ -102,7 +102,7 @@ function PilotSelectController:initialize(document)
 	if not ScpuiSystem.WarningCountShown then
 		if ui.PilotSelect.WarningCount > 10 or ui.PilotSelect.ErrorCount > 0 then
 			local text    = string.format(ba.XSTR("The currently active mod has generated %d warnings and/or errors during"
-														  .. "program startup.  These could have been caused by anything from incorrectly formated table files to"
+														  .. "program startup.  These could have been caused by anything from incorrectly formatted table files to"
 														  .. " corrupt models.  While FreeSpace Open will attempt to compensate for these issues, it cannot"
 														  .. " guarantee a trouble-free gameplay experience.  Source Code Project staff cannot provide assistance"
 														  .. " or support for these problems, as they are caused by the mod's data files, not FreeSpace Open's"

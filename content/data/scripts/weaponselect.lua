@@ -57,7 +57,7 @@ function WeaponSelectController:initialize(document)
 	self.overhead3d, self.overheadEffect = ui.ShipWepSelect.get3dOverheadChoices()
 	
 	--Get all the required weapons
-	j = 1
+	local j = 1
 	while (j < #tb.WeaponClasses) do
 		if tb.WeaponClasses[j]:isWeaponRequired() then
 			self.requiredWeps[#self.requiredWeps + 1] = tb.WeaponClasses[j].Name
@@ -601,7 +601,7 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 		
 		topics.weaponselect.selectShip:send({self, shipIndex})
 		
-		if self.overhead3d or overhead == nil then
+		if self.overhead3d then
 			ScpuiSystem.modelDraw.OverheadClass = shipIndex
 			ScpuiSystem.modelDraw.OverheadElement = self.document:GetElementById("ship_view_wrapper")
 			ScpuiSystem.modelDraw.overheadEffect = self.overheadEffect
@@ -1034,7 +1034,7 @@ function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 		--If the slot can't accept the weapon then abort!
 		if not loadoutHandler:IsWeaponAllowedInBank(shipIdx, weaponIndex, self.activeSlot) then
 			self.replace = nil
-			text = ba.XSTR("That weapon slot can't accept that weapon type", 888444)
+			local text = ba.XSTR("That weapon slot can't accept that weapon type", 888444)
 			local title = ""
 			local buttons = {}
 			buttons[1] = {
@@ -1112,9 +1112,11 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 		end
 		
 		--Get the slot information of what's being dropped onto: weapon, and amount
+		local activeWeapon
+		local activeAmount
 		if dropSlot > 0 then
-			local activeWeapon = ship.Weapons[dropSlot]
-			local activeAmount = ship.Amounts[dropSlot]
+			activeWeapon = ship.Weapons[dropSlot]
+			--activeAmount = ship.Amounts[dropSlot] --unused ATM
 		else
 			--If we're just returning something to the pool then empty the slot and abort!
 			loadoutHandler:EmptyWeaponBank(self.currentShipSlot, slot)
@@ -1128,7 +1130,7 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 		--If the slot can't accept the weapon then abort!
 		if not loadoutHandler:IsWeaponAllowedInBank(shipIdx, slotWeapon, dropSlot) then
 			self.replace = nil
-			text = ba.XSTR("That weapon slot can't accept that weapon type", 888444)
+			local text = ba.XSTR("That weapon slot can't accept that weapon type", 888444)
 			local title = ""
 			local buttons = {}
 			buttons[1] = {
@@ -1304,13 +1306,13 @@ function WeaponSelectController:drawSelectModel()
 	if ScpuiSystem.modelDraw.class and (ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT") and (ScpuiSystem.modelDraw.element ~= nil) then  --Haaaaaaacks
 		
 		--local thisItem = tb.ShipClasses(modelDraw.class)
-		modelView = ScpuiSystem.modelDraw.element	
+		local modelView = ScpuiSystem.modelDraw.element	
 		local modelLeft = modelView.parent_node.offset_left + modelView.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + modelView.offset_top
 		local modelWidth = modelView.offset_width
 		local modelHeight = modelView.offset_height
 		
-		--This is just a multipler to make the rendered model a little bigger
+		--This is just a multiplier to make the rendered model a little bigger
 		--renderSelectModel() has forced centering, so we need to calculate
 		--the screen size so we can move it slightly left and up while it
 		--multiple it's size
@@ -1332,7 +1334,7 @@ function WeaponSelectController:drawSelectModel()
 end
 
 function WeaponSelectController:refreshOverheadSlot()
-	if self.overhead3d or overhead == nil then
+	if self.overhead3d then
 		local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
 		ScpuiSystem.modelDraw.Weapons = ship.Weapons
 	end
@@ -1346,7 +1348,7 @@ function WeaponSelectController:drawOverheadModel()
 		if ScpuiSystem.modelDraw.Hover == nil then ScpuiSystem.modelDraw.Hover = -1 end
 		
 		--local thisItem = tb.ShipClasses(modelDraw.class)
-		modelView = ScpuiSystem.modelDraw.OverheadElement	
+		local modelView = ScpuiSystem.modelDraw.OverheadElement	
 		local modelLeft = modelView.parent_node.offset_left + modelView.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + modelView.offset_top
 		local modelWidth = modelView.offset_width
@@ -1378,7 +1380,7 @@ function WeaponSelectController:drawOverheadModel()
 		local bank7_x = ScpuiSystem.modelDraw.banks.bank4.offset_left + ScpuiSystem.modelDraw.banks.bank7.parent_node.offset_left + modelLeft + secondary_offset
 		local bank7_y = ScpuiSystem.modelDraw.banks.bank7.offset_top + ScpuiSystem.modelDraw.banks.bank7.parent_node.offset_top + modelTop + (ScpuiSystem.modelDraw.banks.bank7.offset_height / 2)
 		
-		--This is just a multipler to make the rendered model a little bigger
+		--This is just a multiplier to make the rendered model a little bigger
 		--renderSelectModel() has forced centering, so we need to calculate
 		--the screen size so we can move it slightly left and up while it
 		--multiple it's size

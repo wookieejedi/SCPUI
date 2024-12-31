@@ -23,6 +23,7 @@ local function weaponStats(weaponClass)
 	if weaponClass.OuterRadius > 0 then
 		-- This weapon has a shockwave, which gives it additional damage on a direct hit.
 		-- Added formula to calculate shockwave damage -- WW
+		local bonusDamage
 		if weaponClass.ShockwaveDamage and weaponClass.ShockwaveDamage > 0 then
 			bonusDamage = weaponClass.ShockwaveDamage
 		else

@@ -10,7 +10,7 @@ function utils.round(num, decimalPlaces)
     return math.floor(num * multiplier + 0.5) / multiplier
 end
 
---Parses an XSTR from Custom data if it's formated like so:
+--Parses an XSTR from Custom data if it's formatted like so:
 -- +Val: NAME "string", #
 --and returns the string and id in a table
 function utils.parseCustomXSTR(text)
@@ -58,7 +58,7 @@ function utils.parseCommaSeparatedList(inputString)
     return result
 end
 
---Translates an XSTR from Custom data if it's formated like so:
+--Translates an XSTR from Custom data if it's formatted like so:
 -- +Val: NAME "string", #
 --and returns translated string
 function utils.translateCustomXSTR(text)

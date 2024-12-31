@@ -266,8 +266,8 @@ function ScpuiSystem:stateStart()
 	--If hv.NewState is nil then use the Current Game State; This allows for Script UIs to jump from substate to substate
 	local state = hv.NewState or ba.getCurrentGameState()
 	
-	if not self:hasOverrideForState(getRocketUiHandle(state)) then
-		ba.print("No SCPUI document defined for " .. getRocketUiHandle(state).Name .. " in scpui.tbl!\n")
+	if not self:hasOverrideForState(ScpuiSystem:getRocketUiHandle(state)) then
+		ba.print("No SCPUI document defined for " .. ScpuiSystem:getRocketUiHandle(state).Name .. " in scpui.tbl!\n")
 		return
 	end
 	
@@ -276,7 +276,7 @@ function ScpuiSystem:stateStart()
 		self:cleanSelf()
 	end
 	
-	ScpuiSystem.currentDoc = self:getDef(getRocketUiHandle(state).Name)
+	ScpuiSystem.currentDoc = self:getDef(ScpuiSystem:getRocketUiHandle(state).Name)
 	ba.print("SCPUI is loading document " .. ScpuiSystem.currentDoc.markup .. "\n")
 	ScpuiSystem.currentDoc.document = self.context:LoadDocument(ScpuiSystem.currentDoc.markup)
 	ScpuiSystem.currentDoc.document:Show()
@@ -309,7 +309,7 @@ function ScpuiSystem:stateEnd(substate)
 	end
 
 	if not substate then
-		if not self:hasOverrideForState(getRocketUiHandle(hv.OldState)) then
+		if not self:hasOverrideForState(ScpuiSystem:getRocketUiHandle(hv.OldState)) then
 			return
 		end
 	end
@@ -327,7 +327,7 @@ function ScpuiSystem:stateEnd(substate)
 	end
 end
 
-function getRocketUiHandle(state)
+function ScpuiSystem:getRocketUiHandle(state)
 	if state.Name == "GS_STATE_SCRIPTING" then
 		return {Name = ScpuiSystem.substate}
 	else
@@ -376,7 +376,7 @@ function ScpuiSystem:hasOverrideForState(state)
 end
 
 function ScpuiSystem:hasOverrideForCurrentState()
-	return self:hasOverrideForState(getRocketUiHandle(ba.getCurrentGameState()))
+	return self:hasOverrideForState(ScpuiSystem:getRocketUiHandle(ba.getCurrentGameState()))
 end
 
 function ScpuiSystem:dialogStart()
@@ -529,7 +529,7 @@ function ScpuiSystem:CloseDialog()
 	
 	--If we're going back to an SCPUI state, then give it control
 	--Otherwise cede control back to FSO
-	if self:hasOverrideForState(getRocketUiHandle(state)) then
+	if self:hasOverrideForState(ScpuiSystem:getRocketUiHandle(state)) then
 		ui.enableInput(self.context)
 	else
 		ui.disableInput()
@@ -605,7 +605,7 @@ function ScpuiSystem:CloseLoadScreen()
 	
 	--If we're going back to an SCPUI state, then give it control
 	--Otherwise cede control back to FSO
-	if self:hasOverrideForState(getRocketUiHandle(state)) then
+	if self:hasOverrideForState(ScpuiSystem:getRocketUiHandle(state)) then
 		ui.enableInput(self.context)
 	else
 		ui.disableInput()
@@ -617,7 +617,7 @@ ScpuiSystem:init()
 engine.addHook("On State Start", function()
 	ScpuiSystem:stateStart()
 end, {}, function()
-	return ScpuiSystem:hasOverrideForState(getRocketUiHandle(hv.NewState))
+	return ScpuiSystem:hasOverrideForState(ScpuiSystem:getRocketUiHandle(hv.NewState))
 end)
 
 engine.addHook("On Frame", function()
@@ -629,7 +629,7 @@ end)
 engine.addHook("On State End", function()
 	ScpuiSystem:stateEnd()
 end, {}, function()
-	return ScpuiSystem:hasOverrideForState(getRocketUiHandle(hv.OldState))
+	return ScpuiSystem:hasOverrideForState(ScpuiSystem:getRocketUiHandle(hv.OldState))
 end)
 
 engine.addHook("On Dialog Init", function()
