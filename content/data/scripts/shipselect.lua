@@ -96,12 +96,12 @@ function ShipSelectController:BuildWings()
 	ScpuiSystem:ClearEntries(wrapperEl)
 	
 	--Check that we actually have wing slots
-	if loadoutHandler.GetNumWings() <= 0 then
+	if loadoutHandler:GetNumWings() <= 0 then
 		ba.warning("Mission has no loadout wings! Check the loadout in FRED!")
 		return false
 	end
 
-	for i = 1, loadoutHandler.GetNumWings() do
+	for i = 1, loadoutHandler:GetNumWings() do
 
 		--First create a wrapper for the whole wing
 		local wingEl = self.document:CreateElement("div")
