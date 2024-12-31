@@ -539,7 +539,6 @@ end
 function HudConfigController:Show(text, title, input, buttons)
 	--Create a simple dialog box with the text and title
 
-	currentDialog = true
 	ScpuiSystem.drawHUD.draw = false
 	
 	local dialog = dialogs.new()

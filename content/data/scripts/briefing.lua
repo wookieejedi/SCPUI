@@ -430,7 +430,6 @@ end
 function BriefingController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
-	currentDialog = true
 	ScpuiSystem.drawBrMap.draw = false
 	
 	local dialog = dialogs.new()

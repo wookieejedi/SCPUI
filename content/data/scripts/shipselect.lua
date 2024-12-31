@@ -777,7 +777,6 @@ end
 function ShipSelectController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
-	currentDialog = true
 	ScpuiSystem.modelDraw.save = ScpuiSystem.modelDraw.class
 	ScpuiSystem.modelDraw.class = nil
 	

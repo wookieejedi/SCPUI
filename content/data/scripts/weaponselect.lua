@@ -1184,8 +1184,6 @@ end
 function WeaponSelectController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
-	currentDialog = true
-	ScpuiSystem.modelDraw.save = ScpuiSystem.modelDraw.class
 	ScpuiSystem.modelDraw.class = nil
 	ScpuiSystem.modelDraw.OverheadSave = ScpuiSystem.modelDraw.OverheadClass
 	ScpuiSystem.modelDraw.OverheadClass = nil
