@@ -957,4 +957,8 @@ function ControlConfigController:BindKey(idx, item)
 	
 end
 
+function ControlConfigController:unload()
+	topics.controlconfig.unload:send(self)
+end
+
 return ControlConfigController

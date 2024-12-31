@@ -56,6 +56,8 @@ function GamePausedController:unload()
 	ui.PauseScreen.closePause()
 	
 	screenRender = nil
+	
+	topics.gamepaused.unload:send(self)
 end
 
 return GamePausedController

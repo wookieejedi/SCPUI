@@ -210,6 +210,8 @@ function TechCreditsController:unload()
     end
 	ui.MainHall.startAmbientSound()
 	ui.MainHall.startMusic()
+	
+	topics.techcredits.unload:send(self)
 end
 
 engine.addHook("On Frame", function()

@@ -296,4 +296,8 @@ function JoinGameController:updateLists()
 	
 end
 
+function JoinGameController:unload()
+	topics.multijoingame.unload:send(self)
+end
+
 return JoinGameController

@@ -275,4 +275,8 @@ function JoinGameController:updateLists()
 	
 end
 
+function JoinGameController:unload()
+	topics.multistartgame.unload:send(self)
+end
+
 return JoinGameController

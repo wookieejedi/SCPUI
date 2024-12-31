@@ -471,4 +471,8 @@ function ClientSetupController:updateLists()
 	
 end
 
+function ClientSetupController:unload()
+	topics.multiclientsetup.unload:send(self)
+end
+
 return ClientSetupController

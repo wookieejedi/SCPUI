@@ -232,4 +232,8 @@ function TechCutscenesController:exit_pressed(element)
     ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 end
 
+function TechCutscenesController:unload()
+	topics.cutscenes.unload:send(self)
+end
+
 return TechCutscenesController

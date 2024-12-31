@@ -309,6 +309,10 @@ function MedalsController:drawText()
 	end
 end		
 
+function MedalsController:unload()
+	topics.medals.unload:send(self)
+end
+
 engine.addHook("On Frame", function()
 	if ba.getCurrentGameState().Name == "GS_STATE_VIEW_MEDALS" then
 		MedalsController:drawText()

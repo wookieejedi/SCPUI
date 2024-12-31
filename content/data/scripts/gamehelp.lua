@@ -133,4 +133,8 @@ function GamehelpController:global_keydown(_, event)
     end
 end
 
+function GamehelpController:unload()
+	topics.gamehelp.unload:send(self)
+end
+
 return GamehelpController

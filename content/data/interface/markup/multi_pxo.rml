@@ -11,7 +11,7 @@
 			controller = require("multi_pxo")()
 		</script>
 	</head>
-	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload(); controller = nil">
 		<div id=banner_div>
 		</div>
 		<div id=players_wrapper>

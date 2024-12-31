@@ -108,45 +108,54 @@ return {
 	},
 	loadscreen = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the UI context.
-		load_bar = Topic('LoadingBar') --Expects an image file returned, replaces the loading screen bar. Should be an animation.
+		load_bar = Topic('LoadingBar'), --Expects an image file returned, replaces the loading screen bar. Should be an animation.
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	briefcommon = {
 		initialize = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	fictionviewer = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
-		accept = Topic(true) --Whether or not to continue to with the Accept press. Sends the context and expects boolean return
+		accept = Topic(true), --Whether or not to continue to with the Accept press. Sends the context and expects boolean return
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	cmdbriefing = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the UI context.
-		stage = Topic(function(x) return x[1] end) --Sends the stage handle and the stage index in a table, expects the stage returned
+		stage = Topic(function(x) return x[1] end), --Sends the stage handle and the stage index in a table, expects the stage returned
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	briefing = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the UI context.
-		brief_bg = Topic('brief-main-window.png') --Expects an image file returned, replaces the briefing goals stage BG
+		brief_bg = Topic('brief-main-window.png'), --Expects an image file returned, replaces the briefing goals stage BG
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	redalert = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the UI context.
-		commit = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+		commit = Topic(nil), --Runs arbitrary script and expects no return value. Sends the UI context.
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	loopbrief = {
-		initialize = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the UI context.
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	debrief = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the document context
 		accept = Topic(nil), --Runs arbitrary script and expects no return value
 		reject = Topic(nil), --Runs arbitrary script and expects no return value
-		skip = Topic(nil) --Runs arbitrary script and expects no return value
+		skip = Topic(nil), --Runs arbitrary script and expects no return value
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	campaign = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the document context
-		listCampaign = Topic(function(x) return x[1] end) --Sends the campaign name string and filename string and expects a string returned
+		listCampaign = Topic(function(x) return x[1] end), --Sends the campaign name string and filename string and expects a string returned
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	barracks = {
-		initialize = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the document context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	loadouts = {
-		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value
 		saveLoadout = Topic(nil), --Runs arbitrary script and expects no return value. Sends the save data to be saved
 		loadLoadout = Topic(nil), --Runs arbitrary script and expects no return value. Sends the loaded save data
 		rejectSavedLoadout = Topic(false), --Runs arbitrary script and expects a boolean return, true to abort applying saved loadout
@@ -161,41 +170,51 @@ return {
 	},
 	medals = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
-		setRankBitmap = Topic(function(x) return x[2] end) --Sends the medal name and bitmap suffix. Expects a new bitmap suffix returned
+		setRankBitmap = Topic(function(x) return x[2] end), --Sends the medal name and bitmap suffix. Expects a new bitmap suffix returned
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	options = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
 		changeEffectsVol = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
 		changeVoiceVol = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
-		apply = Topic(nil) --Runs arbitrary script and expects no return value. Sends nothing. Runs when custom mod options should be applied to controlling scripts
+		apply = Topic(nil), -- Runs arbitrary script and expects no return value. Sends nothing. Runs when custom mod options should be applied to controlling scripts
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	missionlog = {
-		initialize = Topic(nil) --Runs arbitrary script and expects no return value. Sends the context
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	controlconfig = {
-		initialize = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the UI context.
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	hudconfig = {
-		initialize = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the UI context.
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	hotkeyconfig = {
-		initialize = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the UI context.
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	gamehelp = {
-		initialize = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the UI context.
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	gamepaused = {
-		initialize = Topic(nil) --Runs arbitrary script and expects no return value. Sends the UI context.
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the UI context.
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	shipselect = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
 		poolentry = Topic(true), --Runs arbitrary script and expects a boolean return for whether or not the pool item can be made draggable. Sends the UI context, the pool element and the entry
-		entryInfo = Topic(nil) --Runs arbitrary script and expects no return value. Sends the ship entry and the stats UI element
+		entryInfo = Topic(nil), --Runs arbitrary script and expects no return value. Sends the ship entry and the stats UI element
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	weaponselect = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context.
 		entryInfo = Topic(nil), --Runs arbitrary script and expects no return value. Sends the weapon entry and the stats UI element
-		selectShip = Topic(nil) --Runs arbitrary script and expects no return value. Sends the context and the selected ship.
+		selectShip = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context and the selected ship.
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	techroom = { --All tech room UIs!
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
@@ -218,10 +237,12 @@ return {
 		setSortCat = Topic(false), --Sends the context. Expects a boolean return for whether or not category was set
 		uncheckSorts = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
 		createHeader = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
-		selectHeader = Topic(nil) --Runs arbitrary script and expects no return value. Sends the context
+		selectHeader = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	techcredits = {
-		initialize = Topic(nil) --Runs arbitrary script and expects no return value. Sends the context
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	simulator = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
@@ -230,14 +251,16 @@ return {
 		newsection = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context and the section value
 		sectionname = Topic(nil), --Runs arbitrary script and expects a string return for the mission list internal name. Sends the section index.
 		allowall = Topic(true), --Return true or false for if ctrl-s should be allowed for the currently displayed section. Sends the context.
-		tabkey = Topic(simulatorTab) --Sends the currently selected section index and expects a number return for the new index to select when TAB is pressed.
+		tabkey = Topic(simulatorTab), --Sends the currently selected section index and expects a number return for the new index to select when TAB is pressed.
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	cutscenes = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
 		addParam = Topic(nil), --Can add a parameter to a cutscene list item. Sends the current list item and te current cutscene entry.
 		hideMovie = Topic(false), --Return true or false if the cutscene should be globally hidden from the visible list. Sends the cutscene item.
 		createList = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context and the current cutscene.
-		selectScene = Topic(nil) --Runs arbitrary script and expects no return value. Sends the context
+		selectScene = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	},
 	deathpopup = {
 		setText = Topic('') --Runs arbitrary script and expects no return value. Sends the context and expects a string return

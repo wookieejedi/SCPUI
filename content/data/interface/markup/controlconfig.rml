@@ -11,7 +11,7 @@
 			controller = require("controlconfig")()
 		</script>
 	</head>
-	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload(); controller = nil">
 		<div id=conflict_text_wrapper>
 			<div id=conflict_warning>
 			</div>

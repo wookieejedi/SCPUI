@@ -871,6 +871,8 @@ function ShipSelectController:unload()
 		ScpuiSystem.cutscenePlayed = nil
 		ScpuiSystem:stopMusic()
 	end
+	
+	topics.shipselect.unload:send(self)
 end
 
 function ShipSelectController:startMusic()

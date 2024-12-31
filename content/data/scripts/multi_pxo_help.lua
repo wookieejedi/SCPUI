@@ -59,4 +59,8 @@ function PXOHelpController:updateLists()
 	
 end
 
+function PXOHelpController:unload()
+	topics.multipxohelp.unload:send(self)
+end
+
 return PXOHelpController

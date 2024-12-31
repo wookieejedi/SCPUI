@@ -93,4 +93,8 @@ function LoopBriefController:global_keydown(_, event)
     end
 end
 
+function LoopBriefController:unload()
+	topics.loopbrief.unload:send(self)
+end
+
 return LoopBriefController

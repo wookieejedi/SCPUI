@@ -1279,6 +1279,8 @@ function WeaponSelectController:unload()
 		ScpuiSystem:stopMusic()
 	end
 	
+	topics.weaponselect.unload:send(self)
+	
 end
 
 function WeaponSelectController:startMusic()

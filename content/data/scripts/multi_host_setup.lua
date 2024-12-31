@@ -748,4 +748,8 @@ function HostSetupController:updateLists()
 	
 end
 
+function HostSetupController:unload()
+	topics.multihostsetup.unload:send(self)
+end
+
 return HostSetupController

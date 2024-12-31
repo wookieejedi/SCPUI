@@ -214,6 +214,10 @@ function JournalController:registerEventHandlers()
 
 end
 
+function JournalController:unload()
+	journal_topics.journal.unload:send(self)
+end
+
 function JournalController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()

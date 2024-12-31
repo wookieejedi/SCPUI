@@ -95,6 +95,8 @@ end
 function MultiPausedController:unload()
 	ui.MultiPauseScreen.closePause()
 	self.screenRender = nil
+	
+	topics.multipaused.unload:send(self)
 end
 
 function MultiPausedController:updateLists()

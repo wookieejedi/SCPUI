@@ -473,4 +473,8 @@ function TechMissionsController:help_clicked(element)
     end
 end
 
+function TechMissionsController:unload()
+	topics.simulator.unload:send(self)
+end
+
 return TechMissionsController

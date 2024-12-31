@@ -350,4 +350,8 @@ function HostOptionsController:updateLists()
 	
 end
 
+function HostOptionsController:unload()
+	topics.multihostoptions.unload:send(self)
+end
+
 return HostOptionsController

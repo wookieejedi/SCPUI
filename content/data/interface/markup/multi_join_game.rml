@@ -11,7 +11,7 @@
 			controller = require("multi_join_game")()
 		</script>
 	</head>
-	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload(); controller = nil">
 		<div id=games_list_wrapper>
 			<div id=games_list_header>
 				<div class="game_status game_item">XSTR("Status", 888115)</div>

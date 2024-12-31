@@ -1094,6 +1094,8 @@ function TechDatabaseController:unload()
 	ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
 	self:saveSeenDataToFile(self.seenData)
     ScpuiSystem:freeAllModels()
+	
+	topics.techdatabase.unload:send(self)
 end
 
 engine.addHook("On Frame", function()

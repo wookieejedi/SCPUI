@@ -751,6 +751,8 @@ end
 function DebriefingController:unload()
 	self.selectedSection = 0
     self:StopVoice()
+	
+	topics.debrief.unload:send(self)
 end
 
 --Prevent the debriefing UI from being drawn if we're just going

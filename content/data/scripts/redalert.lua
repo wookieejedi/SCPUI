@@ -84,6 +84,7 @@ function RedAlertController:unload()
     if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
         self.current_voice_handle:close(false)
     end
+	topics.redalert.unload:send(self)
 end
 
 function RedAlertController:global_keydown(_, event)

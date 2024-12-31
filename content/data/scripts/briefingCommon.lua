@@ -214,6 +214,14 @@ function AbstractBriefingController:unload()
 	
     -- We need to keep track of if we are loaded or not to abort coroutines that still have references to this instance
     self.loaded = false
+	
+	if self.briefState == "briefing" then
+		topics.briefing.unload:send(self)
+	elseif self.briefState == "command" then
+		topics.cmdbriefing.unload:send(self)
+	elseif self.briefState == "fiction" then
+		topics.fictionviewer.unload:send(self)
+	end
 end
 
 function AbstractBriefingController:startMusic()

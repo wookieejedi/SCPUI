@@ -428,4 +428,8 @@ function HotkeyController:global_keydown(_, event)
 	end
 end
 
+function HotkeyController:unload()
+	topics.hotkeyconfig.unload:send(self)
+end
+
 return HotkeyController

@@ -141,4 +141,8 @@ function CampaignController:restart_pressed(element)
     end)
 end
 
+function CampaignController:unload()
+	topics.campaign.unload:send(self)
+end
+
 return CampaignController

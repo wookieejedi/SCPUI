@@ -87,6 +87,8 @@ function LoadScreenController:unload()
 	ScpuiSystem.loadingBar.tex:destroyRenderTarget()
 	ScpuiSystem.loadingBar.tex = nil
 	ScpuiSystem.loadingBar = nil
+	
+	topics.loadscreen.unload:send(self)
 end
 
 engine.addHook("On Frame", function()

@@ -345,4 +345,8 @@ function BarracksScreenController:global_keydown(element, event)
 	end
 end
 
+function BarracksScreenController:unload()
+	topics.barracks.unload:send(self)
+end
+
 return BarracksScreenController

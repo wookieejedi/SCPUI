@@ -402,4 +402,8 @@ function MultiSyncController:updateLists()
 	
 end
 
+function MultiSyncController:unload()
+	topics.multisync.unload:send(self)
+end
+
 return MultiSyncController

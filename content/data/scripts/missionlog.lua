@@ -393,4 +393,8 @@ function MissionlogController:global_keydown(_, event)
 	end
 end
 
+function MissionlogController:unload()
+	topics.missionlog.unload:send(self)
+end
+
 return MissionlogController

@@ -2022,4 +2022,8 @@ function OptionsController:exit_game_clicked()
     end)
 end
 
+function OptionsController:unload()
+	topics.options.unload:send(self)
+end
+
 return OptionsController

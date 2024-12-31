@@ -607,4 +607,8 @@ function PXOController:updateLists()
 	
 end
 
+function PXOController:unload()
+	topics.multipxo.unload:send(self)
+end
+
 return PXOController

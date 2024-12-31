@@ -584,6 +584,10 @@ function HudConfigController:dialog_response(response)
 	end
 end
 
+function HudConfigController:unload()
+	topics.hudconfig.unload:send(self)
+end
+
 engine.addHook("On Frame", function()
 	if (ba.getCurrentGameState().Name == "GS_STATE_HUD_CONFIG") and (ScpuiSystem.render == true) then
 		HudConfigController:drawHUD()
