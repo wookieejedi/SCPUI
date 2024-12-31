@@ -81,7 +81,7 @@ function BriefingController:initialize(document)
 	self.input_id = self.document:GetElementById("chat_input")
 	
 	--Get all the required weapons
-	j = 1
+	local j = 1
 	while (j < #tb.WeaponClasses) do
 		if tb.WeaponClasses[j]:isWeaponRequired() then
 			self.requiredWeps[#self.requiredWeps + 1] = tb.WeaponClasses[j].Name
@@ -211,12 +211,12 @@ end
 
 function BriefingController:buildGoals()
     if mn.hasGoalsStage() then
-		goals = ui.Briefing.Objectives
+		local goals = ui.Briefing.Objectives
 		local primaryList = self.document:GetElementById("primary_goal_list")
 		local secondaryList = self.document:GetElementById("secondary_goal_list")
 		local bonusList = self.document:GetElementById("bonus_goal_list")
 		for i = 1, #goals do
-			goal = goals[i]
+			local goal = goals[i]
 			if goal.isGoalValid and goal.Message ~= "" then
 				if goal.Type == "primary" then
 					primaryList:AppendChild(self:createGoalItem(goal.Message))
@@ -464,7 +464,6 @@ function BriefingController:acceptPressed()
 		self.Commit = true
 		loadoutHandler:SaveInFSO_API()
 		--Cleanup
-		text = nil
 		if ScpuiSystem.drawBrMap then
 			ScpuiSystem.drawBrMap.tex:unload()
 			ScpuiSystem.drawBrMap.tex = nil

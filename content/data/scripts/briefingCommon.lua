@@ -196,10 +196,10 @@ function AbstractBriefingController:unload()
     if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
         self.current_voice_handle:close(false)
     end
-	if drawMap then
-		drawMap.tex:unload()
-		drawMap.tex = nil
-		drawMap = nil
+	if ScpuiSystem.drawBrMap then
+		ScpuiSystem.drawBrMap.tex:unload()
+		ScpuiSystem.drawBrMap.tex = nil
+		ScpuiSystem.drawBrMap = nil
 	end
 	
 	if self.briefState == "briefing" then

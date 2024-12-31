@@ -105,8 +105,8 @@ function DataSourceWrapper:init(option)
 		source.GetRow	= function(_, i, columns)
 			local val = self.values[i]
 			local out = {}
-			for _, v in ipairs(columns) do
-				table.insert(out, val)
+			for j, _ in ipairs(columns) do
+				out[j] = val
 			end
 			return out
 		end
@@ -436,13 +436,12 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
 			noDefault = option.NoDefault
 		}
 	else
-		for k, v in pairs(graphicsPresets) do
+		for _, v in pairs(graphicsPresets) do
 			if el_actual.id == v then
 				graphicsOptions[Key] = {
 					key = Key,
 					title = option.Title,
 					optType = "Binary",
-					validVals = vals,
 					optionID = option,
 					currentValue = value,
 					savedValue = value,
@@ -533,7 +532,7 @@ function OptionsController:init_selection_element(element, option, vals, change_
 				customOptions[Key].currentValue = vals[count]
 				customOptions[Key].savedValue = vals[count]
 			else
-				for k, v in pairs(graphicsPresets) do
+				for _, v in pairs(graphicsPresets) do
 					if el_actual.id == v then
 						if el_actual.id == "option_graphics_anisotropy_element" then
 							--This option saves reports the string so we need to save the known index
@@ -651,8 +650,8 @@ function OptionsController:init_range_element(element, value_el, option, change_
 			
 			--Clear all possible font classes
 			for i = 1, ScpuiSystem.numFontSizes do
-				local class = "base_font" .. i
-				self.document:GetElementById("main_background"):SetClass(class, false)
+				local f_class = "base_font" .. i
+				self.document:GetElementById("main_background"):SetClass(f_class, false)
 			end
 			
 			--Now apply the new class
@@ -767,7 +766,7 @@ function OptionsController:createCustomOptionElement(option, parent_id, onchange
     elseif option.Type == "Range" then
         return self:createRangeOptionElement(option, parent_id, onchange_func)
 	elseif option.Type == "TenPoint" then
-		local wrapper = option.Key .. "_wrapper"
+		--local wrapper = option.Key .. "_wrapper"
 		return self:createTenPointRangeElement(option, parent_id, {
                 text_alignment = "left",
                 no_background  = false
@@ -1344,7 +1343,7 @@ function OptionsController:initialize(document)
         end
 		
 		--Creates data sources for custom dropdowns
-		for i, v in ipairs(ScpuiSystem.CustomOptions) do
+		for _, v in ipairs(ScpuiSystem.CustomOptions) do
 			v.Category = "Custom"
 			if (v.Type == "Multi") or (v.Type == "Binary") then
 				self.sources[v.Key] = createOptionSource(v)
@@ -1498,10 +1497,10 @@ end
 
 function OptionsController:GraphicsMinimum(element)
 
-	for k, v in pairs(graphicsOptions) do
-		local option = graphicsOptions[k]
-		for k, v in pairs(graphicsPresets) do
-			if option.parentID.id == v then
+	for k_gr_option, _ in pairs(graphicsOptions) do
+		local option = graphicsOptions[k_gr_option]
+		for _, v_gr_preset in pairs(graphicsPresets) do
+			if option.parentID.id == v_gr_preset then
 				local parent = self.document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
 				if option.optType == "Multi" then
@@ -1521,9 +1520,9 @@ function OptionsController:GraphicsMinimum(element)
 					parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
 					parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
 					local opts = opt.Options
-					for k, v in pairs(opts) do
-						if v.Key == option.key then
-							v.Value = option.validVals[1]
+					for _, v_opt in pairs(opts) do
+						if v_opt.Key == option.key then
+							v_opt.Value = option.validVals[1]
 						end
 					end
 				end
@@ -1539,10 +1538,10 @@ end
 
 function OptionsController:GraphicsLow(element)
 	
-	for k, v in pairs(graphicsOptions) do
-		local option = graphicsOptions[k]
-		for k, v in pairs(graphicsPresets) do
-			if option.parentID.id == v then
+	for k_gr_option, _ in pairs(graphicsOptions) do
+		local option = graphicsOptions[k_gr_option]
+		for _, v_gr_preset in pairs(graphicsPresets) do
+			if option.parentID.id == v_gr_preset then
 				local parent = self.document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
 				if option.optType == "Multi" then
@@ -1562,9 +1561,9 @@ function OptionsController:GraphicsLow(element)
 					parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
 					parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
 					local opts = opt.Options
-					for k, v in pairs(opts) do
-						if v.Key == option.key then
-							v.Value = option.validVals[1]
+					for _, v_opt in pairs(opts) do
+						if v_opt.Key == option.key then
+							v_opt.Value = option.validVals[1]
 						end
 					end
 				end
@@ -1580,10 +1579,10 @@ end
 
 function OptionsController:GraphicsMedium(element)
 	
-	for k, v in pairs(graphicsOptions) do
-		local option = graphicsOptions[k]
-		for k, v in pairs(graphicsPresets) do
-			if option.parentID.id == v then
+	for k_gr_option, _ in pairs(graphicsOptions) do
+		local option = graphicsOptions[k_gr_option]
+		for _, v_gr_preset in pairs(graphicsPresets) do
+			if option.parentID.id == v_gr_preset then
 				local parent = self.document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
 				if option.optType == "Multi" then
@@ -1603,9 +1602,9 @@ function OptionsController:GraphicsMedium(element)
 					parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
 					parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
 					local opts = opt.Options
-					for k, v in pairs(opts) do
-						if v.Key == option.key then
-							v.Value = option.validVals[1]
+					for _, v_opt in pairs(opts) do
+						if v_opt.Key == option.key then
+							v_opt.Value = option.validVals[1]
 						end
 					end
 				end
@@ -1621,10 +1620,10 @@ end
 
 function OptionsController:GraphicsHigh(element)
 	
-	for k, v in pairs(graphicsOptions) do
-		local option = graphicsOptions[k]
-		for k, v in pairs(graphicsPresets) do
-			if option.parentID.id == v then
+	for k_gr_option, _ in pairs(graphicsOptions) do
+		local option = graphicsOptions[k_gr_option]
+		for _, v_gr_preset in pairs(graphicsPresets) do
+			if option.parentID.id == v_gr_preset then
 				local parent = self.document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
 				if option.optType == "Multi" then
@@ -1644,9 +1643,9 @@ function OptionsController:GraphicsHigh(element)
 					parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
 					parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
 					local opts = opt.Options
-					for k, v in pairs(opts) do
-						if v.Key == option.key then
-							v.Value = option.validVals[2]
+					for _, v_opt in pairs(opts) do
+						if v_opt.Key == option.key then
+							v_opt.Value = option.validVals[2]
 						end
 					end
 				end
@@ -1662,10 +1661,10 @@ end
 
 function OptionsController:GraphicsUltra(element)
 	
-	for k, v in pairs(graphicsOptions) do
-		local option = graphicsOptions[k]
-		for k, v in pairs(graphicsPresets) do
-			if option.parentID.id == v then
+	for k_gr_option, _ in pairs(graphicsOptions) do
+		local option = graphicsOptions[k_gr_option]
+		for _, v_gr_preset in pairs(graphicsPresets) do
+			if option.parentID.id == v_gr_preset then
 				local parent = self.document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
 				if option.optType == "Multi" then
@@ -1685,9 +1684,9 @@ function OptionsController:GraphicsUltra(element)
 					parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
 					parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
 					local opts = opt.Options
-					for k, v in pairs(opts) do
-						if v.Key == option.key then
-							v.Value = option.validVals[2]
+					for _, v_opt in pairs(opts) do
+						if v_opt.Key == option.key then
+							v_opt.Value = option.validVals[2]
 						end
 					end
 				end
@@ -1704,10 +1703,10 @@ end
 function OptionsController:GraphicsCustom(element)
 	
 	if graphicsCustom == false then
-		for k, v in pairs(graphicsOptions) do
-			local option = graphicsOptions[k]
-			for k, v in pairs(graphicsPresets) do
-				if option.parentID.id == v then
+		for k_gr_option, _ in pairs(graphicsOptions) do
+			local option = graphicsOptions[k_gr_option]
+			for _, v_gr_preset in pairs(graphicsPresets) do
+				if option.parentID.id == v_gr_preset then
 					local parent = self.document:GetElementById(option.parentID.id)
 					if option.optType == "Multi" then
 						option.currentValue = option.savedValue
@@ -1718,9 +1717,9 @@ function OptionsController:GraphicsCustom(element)
 						parent.first_child.next_sibling.first_child.first_child:SetPseudoClass("checked", not right_selected)
 						parent.first_child.next_sibling.first_child.next_sibling.first_child:SetPseudoClass("checked", right_selected)
 						local opts = opt.Options
-						for k, v in pairs(opts) do
-							if v.Key == option.key then
-								v.Value = option.savedValue
+						for _, v_opt in pairs(opts) do
+							if v_opt.Key == option.key then
+								v_opt.Value = option.savedValue
 							end
 						end
 					end
@@ -1735,8 +1734,8 @@ function OptionsController:GraphicsCustom(element)
 end
 
 function OptionsController:isGraphicsPreset(value)
-	for k, v in pairs(graphicsOptions) do
-		local option = graphicsOptions[k]
+	for k_gr_option, _ in pairs(graphicsOptions) do
+		local option = graphicsOptions[k_gr_option]
 		if option.parentID.id == "option_graphics_aamode_element" then
 			local a_value = 8
 			if value == 1 then a_value = 1 end
@@ -1810,7 +1809,7 @@ end
 
 function OptionsController:ModDefault(element)
 
-	for k, v in pairs(customOptions) do
+	for k, _ in pairs(customOptions) do
 		local option = customOptions[k]
 		if not option.noDefault then
 			if option.optType == "Binary" and option.currentValue ~= option.defaultValue then
@@ -1882,10 +1881,10 @@ end
 function OptionsController:ModCustom(element)
 
 	if modCustom == false then
-		for k, v in pairs(customOptions) do
+		for k, _ in pairs(customOptions) do
 			local option = customOptions[k]
 			if not option.noDefault then
-				if option.optType == "Binary" and option.currentValue ~=savedValue then
+				if option.optType == "Binary" and option.currentValue ~= option.savedValue then
 					local parent = self.document:GetElementById(option.parentID.id)
 					customValues[option.key] = option.savedValue
 					option.currentValue = option.savedValue
@@ -1948,7 +1947,7 @@ function OptionsController:ModCustom(element)
 end
 
 function OptionsController:isModDefault()
-	for k, v in pairs(customOptions) do
+	for k, _ in pairs(customOptions) do
 		local option = customOptions[k]
 		if not option.noDefault then
 			if option.currentValue ~= option.defaultValue then

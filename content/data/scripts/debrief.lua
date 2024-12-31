@@ -628,7 +628,7 @@ end
 
 function DebriefingController:accept_pressed()
     if ui.Debriefing:mustReplay() then
-        local text = nil
+        local text
         if ui.Debriefing.getTraitor() then
             text = ba.XSTR("Your career is over, Traitor!  You can't accept new missions!", 888327)
         else

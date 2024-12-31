@@ -122,7 +122,7 @@ function ControlConfigController:UnselectPreset()
 	if self.oldPreset == nil then
 		return
 	else
-		presetID = "preset_" .. self.oldPreset
+		local presetID = "preset_" .. self.oldPreset
 		self.document:GetElementById(presetID):SetPseudoClass("checked", false)
 		
 		self.oldPreset = nil
