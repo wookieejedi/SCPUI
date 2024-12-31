@@ -19,7 +19,7 @@ function BarracksScreenController:initialize(document)
 
     PilotSelectController.initialize(self, document)
 	
-	--Hide Multistuff maybe
+	--Hide Multi stuff maybe
 	if ScpuiSystem.hideMulti == true then
 		self.document:GetElementById("multiplayer_btn"):SetClass("hidden", true)
 	end

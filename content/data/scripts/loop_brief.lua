@@ -65,8 +65,6 @@ end
 function LoopBriefController:Show(text, title)
 	--Create a simple dialog box with the text and title
 
-	currentDialog = true
-	
 	dialogs.new()
 		:title(title)
 		:text(text)

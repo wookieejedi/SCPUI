@@ -395,8 +395,6 @@ end
 function DebriefingController:Show(text, title, buttons)
     --Create a simple dialog box with the text and title
 
-    currentDialog = true
-    
     local dialog = dialogs.new()
         dialog:title(title)
         dialog:text(text)
@@ -628,7 +626,7 @@ end
 
 function DebriefingController:accept_pressed()
     if ui.Debriefing:mustReplay() then
-        local text = nil
+        local text
         if ui.Debriefing.getTraitor() then
             text = ba.XSTR("Your career is over, Traitor!  You can't accept new missions!", 888327)
         else

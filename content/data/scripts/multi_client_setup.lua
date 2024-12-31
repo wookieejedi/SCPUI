@@ -81,8 +81,6 @@ end
 function ClientSetupController:Show(text, title, input, buttons)
 	--Create a simple dialog box with the text and title
 
-	currentDialog = true
-	
 	local dialog = dialogs.new()
 		dialog:title(title)
 		dialog:text(text)

@@ -24,7 +24,7 @@ end
 --Iterate over all the ships, weapons, and intel but only grab the necessary data
 function TechDatabaseController:LoadData()
 	
-	--Initalize the lists
+	--Initialize the lists
 	self.ships = {}
 	self.weapons = {}
 	self.intel = {}
@@ -719,7 +719,6 @@ end
 function TechDatabaseController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
-	currentDialog = true
 	ScpuiSystem.modelDraw.save = ScpuiSystem.modelDraw.class
 	ScpuiSystem.modelDraw.class = nil
 	

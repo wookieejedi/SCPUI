@@ -777,7 +777,6 @@ end
 function ShipSelectController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
-	currentDialog = true
 	ScpuiSystem.modelDraw.save = ScpuiSystem.modelDraw.class
 	ScpuiSystem.modelDraw.class = nil
 	
@@ -821,7 +820,6 @@ function ShipSelectController:accept_pressed()
 		self.Commit = true
 		loadoutHandler:SaveInFSO_API()
 		--Cleanup
-		text = nil
 		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
 			ScpuiSystem.music_handle:close(true)
 		end

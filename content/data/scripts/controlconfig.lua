@@ -122,7 +122,7 @@ function ControlConfigController:UnselectPreset()
 	if self.oldPreset == nil then
 		return
 	else
-		presetID = "preset_" .. self.oldPreset
+		local presetID = "preset_" .. self.oldPreset
 		self.document:GetElementById(presetID):SetPseudoClass("checked", false)
 		
 		self.oldPreset = nil
@@ -358,7 +358,7 @@ function ControlConfigController:changeSection(tab)
 	self.document:GetElementById("weapon_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("misc_btn"):SetPseudoClass("checked", false)
 	
-	--unckeck all modifiers
+	--uncheck all modifiers
 	self.document:GetElementById("alt_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("shift_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("invert_btn"):SetPseudoClass("checked", false)
@@ -859,8 +859,6 @@ end
 function ControlConfigController:Show(text, title, input, buttons)
 	--Create a simple dialog box with the text and title
 
-	currentDialog = true
-	
 	local dialog = dialogs.new()
 		dialog:title(title)
 		dialog:text(text)
