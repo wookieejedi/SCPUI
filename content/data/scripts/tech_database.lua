@@ -23,8 +23,6 @@ end
 
 --Iterate over all the ships, weapons, and intel but only grab the necessary data
 function TechDatabaseController:LoadData()
-
-	local list = nil
 	
 	--Initalize the lists
 	self.ships = {}
@@ -50,20 +48,19 @@ function TechDatabaseController:LoadData()
 	
 	topics.techdatabase.beginDataLoad:send(self)
 	
-	list = tb.ShipClasses
-	
-	i = 1
-	while (i ~= #list + 1) do
-		if list[i]:hasCustomData() and list[i].CustomData["HideInTechRoom"] == "true" then
-			ba.print("Skipping ship " .. list[i].Name .. " in the tech room list!\n")
+	local list_ships = tb.ShipClasses
+	local i = 1
+	while (i < #list_ships) do
+		if list_ships[i]:hasCustomData() and list_ships[i].CustomData["HideInTechRoom"] == "true" then
+			ba.print("Skipping ship " .. list_ships[i].Name .. " in the tech room list!\n")
 		else
 			local ship = {
-				Name = tostring(list[i].Name),
-				DefaultPos = list[i]:getShipClassIndex(),
-				DisplayName = topics.ships.name:send(list[i]),
-				Description = topics.ships.description:send(list[i]),
-				Type = tostring(list[i].TypeString),
-				Visibility = topics.ships.filter:send(list[i])
+				Name = tostring(list_ships[i].Name),
+				DefaultPos = list_ships[i]:getShipClassIndex(),
+				DisplayName = topics.ships.name:send(list_ships[i]),
+				Description = topics.ships.description:send(list_ships[i]),
+				Type = tostring(list_ships[i].TypeString),
+				Visibility = topics.ships.filter:send(list_ships[i])
 			}
 			
 			--build the category tables
@@ -78,26 +75,25 @@ function TechDatabaseController:LoadData()
 		i = i + 1
 	end
 	
-	list = tb.WeaponClasses
-	
-	i = 1
-	while (i ~= #list + 1) do
-		if list[i]:hasCustomData() and list[i].CustomData["HideInTechRoom"] == "true" then
-			ba.print("Skipping weapon " .. list[i].Name .. " in the tech room list!\n")
+	local list_weapons = tb.WeaponClasses
+	local j = 1
+	while (j < #list_weapons) do
+		if list_weapons[j]:hasCustomData() and list_weapons[j].CustomData["HideInTechRoom"] == "true" then
+			ba.print("Skipping weapon " .. list_weapons[j].Name .. " in the tech room list!\n")
 		else
 			local t_string = utils.xstr("Primary", 888551)
-			if list[i]:isSecondary() then
+			if list_weapons[j]:isSecondary() then
 				t_string = utils.xstr("Secondary", 888552)
 			end
 			
 			local weapon = {
-				Name = tostring(list[i].Name),
-				DefaultPos = list[i]:getWeaponClassIndex(),
-				DisplayName = topics.weapons.name:send(list[i]),
-				Description = topics.weapons.description:send(list[i]),
-				Anim = tostring(list[i].TechAnimationFilename),
+				Name = tostring(list_weapons[j].Name),
+				DefaultPos = list_weapons[j]:getWeaponClassIndex(),
+				DisplayName = topics.weapons.name:send(list_weapons[j]),
+				Description = topics.weapons.description:send(list_weapons[j]),
+				Anim = tostring(list_weapons[j].TechAnimationFilename),
 				Type = t_string,
-				Visibility = topics.weapons.filter:send(list[i])
+				Visibility = topics.weapons.filter:send(list_weapons[j])
 			}
 			
 			--build the category tables
@@ -109,21 +105,20 @@ function TechDatabaseController:LoadData()
 			
 			table.insert(self.weapons, weapon)
 		end
-		i = i + 1
+		j = j + 1
 	end
 	
-	list = tb.IntelEntries
-	
-	i = 1
-	while (i ~= #list + 1) do
+	local list_intel = tb.IntelEntries
+	local k = 1
+	while (k < #list_intel) do
 		local intel = {
-			Name = tostring(list[i].Name),
-			DefaultPos = i,
-			DisplayName = topics.intel.name:send(list[i]),
-			Type = topics.intel.type:send(list[i]),
-			Description = topics.intel.description:send(list[i]),
-			Anim = tostring(list[i].AnimFilename),
-			Visibility = topics.intel.filter:send(list[i])
+			Name = tostring(list_intel[k].Name),
+			DefaultPos = k,
+			DisplayName = topics.intel.name:send(list_intel[k]),
+			Type = topics.intel.type:send(list_intel[k]),
+			Description = topics.intel.description:send(list_intel[k]),
+			Anim = tostring(list_intel[k].AnimFilename),
+			Visibility = topics.intel.filter:send(list_intel[k])
 		}
 		
 		--build the category tables
@@ -134,7 +129,7 @@ function TechDatabaseController:LoadData()
 		topics.techdatabase.initIntelData:send({self, intel})
 		
 		table.insert(self.intel, intel)
-		i = i + 1
+		k = k + 1
 	end
 
 end
