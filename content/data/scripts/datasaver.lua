@@ -122,8 +122,6 @@ end
 function datasaver:backupSaveData()
 	local json = require('dkjson')
 	
-	local sourcefile = nil
-	local filename = nil
 	local id = self:basicStringHash(ScpuiSystem:getModTitle())
 	
 	local fileroot = id .. '_save_backup_'
@@ -141,39 +139,42 @@ function datasaver:backupSaveData()
 	ba.print("Data Saver is backing up player save data...\n")
 	
 	--Backup the global data
-	filename = fileroot .. num .. '.cfg'
-	sourcefile = id .. '_save_data.cfg'
-	local file, config
+	local global_filename = fileroot .. num .. '.cfg'
+	local global_sourcefile = id .. '_save_data.cfg'
+	local global_file, global_config
 	if cf.fileExists(id .. '_save_data.cfg') then
-		file = cf.openFile(id .. '_save_data.cfg', 'r', 'data/players')
-		config = json.decode(file:read('*a'))
-		file:close()
+		global_file = cf.openFile(id .. '_save_data.cfg', 'r', 'data/players')
+		global_config = json.decode(global_file:read('*a'))
+		global_file:close()
 		
-		if not config then
-			ba.error('Please ensure that ' .. sourcefile .. ' exists in data/players and is valid JSON.')
+		if not global_config then
+			ba.error('Please ensure that ' .. global_sourcefile .. ' exists in data/players and is valid JSON.')
 		end
 	end
-	if config then
-		file = cf.openFile(filename, 'w', 'data/config')
-		file:write(json.encode(config))
-		file:close()
+	if global_config then
+		global_file = cf.openFile(global_filename, 'w', 'data/config')
+		global_file:write(json.encode(global_config))
+		global_file:close()
 	end
 	
 	--Backup the local data
-	filename = fileroot .. 'local_' .. num .. '.cfg'
-	sourcefile = id .. '_save_data_local.cfg'
-	if cf.fileExists(sourcefile) then
-		file = cf.openFile(sourcefile, 'r', 'data/config')
-		config = json.decode(file:read('*a'))
-		file:close()
+	local local_filename = fileroot .. 'local_' .. num .. '.cfg'
+	local local_sourcefile = id .. '_save_data_local.cfg'
+	local local_file, local_config
+	if cf.fileExists(local_sourcefile) then
+		local_file = cf.openFile(local_sourcefile, 'r', 'data/config')
+		local_config = json.decode(local_file:read('*a'))
+		local_file:close()
 		
-		if not config then
-			ba.error('Please ensure that ' .. sourcefile .. ' exists in ' .. 'data/config' .. ' and is valid JSON.')
+		if not local_config then
+			ba.error('Please ensure that ' .. local_sourcefile .. ' exists in ' .. 'data/config' .. ' and is valid JSON.')
 		end
 	end
-	file = cf.openFile(filename, 'w', 'data/config')
-	file:write(json.encode(config))
-	file:close()
+	if local_config then
+		local_file = cf.openFile(local_filename, 'w', 'data/config')
+		local_file:write(json.encode(local_config))
+		local_file:close()
+	end
 end
 
 return datasaver
