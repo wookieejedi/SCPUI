@@ -109,7 +109,7 @@ function ScpuiSystem:getFontPixelSize(val)
 	end
 	
 	if not val then
-		val = convert(ScpuiOptionValues.Font_Adjustment) or 0.5
+		val = convert(ScpuiOptionValues.Font_Adjustment or 0.5)
 	else
 		val = convert(val)
 	end
