@@ -75,7 +75,7 @@ function HudConfigController:initialize(document)
 	self.b = 0
 	self.a = 0
 	
-	self.mutex = true -- stop circulur updates at start
+	self.mutex = true -- stop circular updates at start
 	
 	self:value_update(self.r, self.g, self.b, self.a)
 	

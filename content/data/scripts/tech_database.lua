@@ -24,7 +24,7 @@ end
 --Iterate over all the ships, weapons, and intel but only grab the necessary data
 function TechDatabaseController:LoadData()
 	
-	--Initalize the lists
+	--Initialize the lists
 	self.ships = {}
 	self.weapons = {}
 	self.intel = {}

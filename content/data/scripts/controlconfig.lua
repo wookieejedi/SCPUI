@@ -358,7 +358,7 @@ function ControlConfigController:changeSection(tab)
 	self.document:GetElementById("weapon_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("misc_btn"):SetPseudoClass("checked", false)
 	
-	--unckeck all modifiers
+	--uncheck all modifiers
 	self.document:GetElementById("alt_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("shift_btn"):SetPseudoClass("checked", false)
 	self.document:GetElementById("invert_btn"):SetPseudoClass("checked", false)
