@@ -176,8 +176,8 @@ end
 function BarracksScreenController:selectPilot(pilot)
     PilotSelectController.selectPilot(self, pilot)
 
-    if self.selectedPilot ~= nil then
-        self.selectedPilot:loadCampaignSavefile()
+    if PilotSelectController.selectedPilot ~= nil then
+        PilotSelectController.selectedPilot:loadCampaignSavefile()
     end
 
     if pilot == nil then

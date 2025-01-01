@@ -37,7 +37,7 @@ function PilotSelectController:initialize(document)
     if current ~= nil then
         -- Make sure that the last pilot appears at the top of the list
         local index = tblUtil.ifind(pilots, current)
-        if index >= 0 then
+        if index > 0 then
             table.remove(pilots, index)
             table.insert(pilots, 1, current)
         end
@@ -326,7 +326,7 @@ function PilotSelectController:begin_callsign_input(end_action)
     self.callsign_submit_action = end_action
 end
 
-function PilotSelectController:finish_pilot_create(element, callsign, clone_from)
+function PilotSelectController:finish_pilot_create(element, callsign, clone_from, overwrite_pilot)
     local result
     if clone_from ~= nil then
         result = ui.PilotSelect.createPilot(callsign, self.current_mode == "multi", clone_from)
@@ -339,10 +339,13 @@ function PilotSelectController:finish_pilot_create(element, callsign, clone_from
         return
     end
 
-    local pilot_ul = self.document:GetElementById("pilotlist_ul")
-    local new_li   = self:create_pilot_li(callsign)
-    -- If first_child is nil then this will add at the end of the list
-    pilot_ul:InsertBefore(new_li, pilot_ul.first_child)
+    if not overwrite_pilot then
+        -- If first_child is nil then this will add at the end of the list
+        table.insert(self.pilots, 1, callsign)
+        local pilot_ul = self.document:GetElementById("pilotlist_ul")
+        local new_li = self:create_pilot_li(callsign)
+        pilot_ul:InsertBefore(new_li, pilot_ul.first_child)
+    end
 
     self:selectPilot(callsign)
 end
@@ -361,12 +364,12 @@ function PilotSelectController:actual_pilot_create(element, callsign, clone_from
             if not result then
                 return
             end
-            self:finish_pilot_create(element, callsign, clone_from)
+            self:finish_pilot_create(element, callsign, clone_from, true)
         end)
         return
     end
 
-    self:finish_pilot_create(element, callsign, clone_from)
+    self:finish_pilot_create(element, callsign, clone_from, false)
 end
 
 function PilotSelectController:create_player(element)
