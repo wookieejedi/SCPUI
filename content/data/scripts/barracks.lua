@@ -175,7 +175,9 @@ end
 
 function BarracksScreenController:selectPilot(pilot)
     PilotSelectController.selectPilot(self, pilot)
-
+    --PilotSelectController.selectPilot(self, pilot) explicitly calls the selectPilot method of the PilotSelectController class.
+    --This ensures that the parent class's implementation of selectPilot is executed first.
+    
     if self.selectedPilot ~= nil then
         self.selectedPilot:loadCampaignSavefile()
     end
