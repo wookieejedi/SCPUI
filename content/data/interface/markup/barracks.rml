@@ -175,7 +175,7 @@
 			</div>
 			<div id=pilot_squad_select>
 				<div id=pilot_squad_images>
-					<img id="pilot_squad_img_el" src="lion1.pcx"></img>
+					<img id="pilot_squad_img_el" src=""></img>
 				</div>
 				<div id=pilot_squad_counter>
 					<p id="pilot_squad_text_el">1 of N</p>
