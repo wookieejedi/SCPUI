@@ -103,9 +103,9 @@ function ScpuiSystem:getFontPixelSize(val)
 	
 	function convert(value)
 		if not value then return nil end
-	    local clamped_value = math.max(0, math.min(1, value))
+		local clamped_value = math.max(0, math.min(1, value))
 	    local scaled_value = (clamped_value - 0.5) * 20
-	    return math.floor(scaled_value + 0.5)
+		return math.floor(scaled_value + 0.5)
 	end
 	
 	if not val then
@@ -114,7 +114,7 @@ function ScpuiSystem:getFontPixelSize(val)
 		val = convert(val)
 	end
 	
-	local finalSize = math.max(1, math.min(40, pixelSize + val))
+	local finalSize = math.max(1, math.min(ScpuiSystem.numFontSizes, pixelSize + val))
 	
 	return tostring(finalSize)
 end

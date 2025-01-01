@@ -71,16 +71,6 @@
   height: 10%;
 }
 
-#button_hack_fix
-{
-	position: absolute;
-	top: 54%;
-	right: 8%;
-	width: 58%;
-	height: 45%;
-	z-index: 5;
-}
-
 #dialog_body button .button_text_dialog
 {
   position: absolute;
@@ -108,13 +98,13 @@
   background-image: select.png;
 }
 
-.button_positive:hover .button_image_dialog
+.button_positive .button_image_dialog:hover
 {
   background-decorator: image;
   background-image: select-pos-h.png;
 }
 
-.button_positive:active .button_image_dialog
+.button_positive .button_image_dialog:active
 {
   background-decorator: image;
   background-image: select-pos-o.png;
@@ -126,13 +116,13 @@
   background-image: decline.png;
 }
 
-.button_negative:hover .button_image_dialog
+.button_negative .button_image_dialog:hover
 {
   background-decorator: image;
   background-image: decline-h.png;
 }
 
-.button_negative:active .button_image_dialog
+.button_negative .button_image_dialog:active
 {
   background-decorator: image;
   background-image: decline-o.png;
@@ -144,44 +134,44 @@
   background-image: bullet-l.png;
 }
 
-.button_neutral:hover .button_image_dialog
+.button_neutral .button_image_dialog:hover
 {
   background-decorator: image;
   background-image: bullet-l-h.png;
 }
 
-.button_neutral:active .button_image_dialog
+.button_neutral .button_image_dialog:active
 {
   background-decorator: image;
   background-image: bullet-l-o.png;
 }
 
-.button_positive:hover .button_text_dialog
+.button_positive .button_text_dialog:hover
 {
   color: #abbbab;
 }
 
-.button_positive:active .button_text_dialog
+.button_positive .button_text_dialog:active
 {
   color: #c9e4c9;
 }
 
-.button_negative:hover .button_text_dialog
+.button_negative .button_text_dialog:hover
 {
   color: #946565;
 }
 
-.button_negative:active .button_text_dialog
+.button_negative .button_text_dialog:active
 {
   color: #dd9393;
 }
 
-.button_neutral:hover .button_text_dialog
+.button_neutral .button_text_dialog:hover
 {
   color: #abbbab;
 }
 
-.button_neutral:active .button_text_dialog
+.button_neutral .button_text_dialog:active
 {
   color: #c9e4c9;
 }

@@ -42,23 +42,25 @@ end
 local function initialize_buttons(document, properties, finish_func)
     for i, v in ipairs(properties.buttons) do
         local button_id = 'button_' .. tostring(i)
-            local button = document:GetElementById(button_id)
+        local button = document:GetElementById(button_id)
         button:SetClass(module.BUTTON_MAPPING[v.type], true)
         button:SetClass("button_1", true)
         button:SetClass("button_img", true)
+
         button:AddEventListener("click", function(_, _, _)
-        local val = v.value
-        if properties.input_choice then
-            val = document:GetElementById("dialog_input"):GetAttribute("value")
-        end
-        if finish_func then finish_func(val) end
-        --document:Close()
-		ScpuiSystem:CloseDialog()
-    end)
+            local val = v.value
+            if properties.input_choice then
+                val = document:GetElementById("dialog_input"):GetAttribute("value")
+            end
+            if finish_func then finish_func(val) end
+            --document:Close()
+            ScpuiSystem:CloseDialog()
+        end)
+
         local button_text_id = button_id .. '_text'
-            local button_text = document:GetElementById(button_text_id)
-            button_text.inner_rml = text_with_keypress(v.text, v.keypress)
-            button_text:SetClass(module.BUTTON_TEXT_MAPPING[v.type], true)
+        local button_text = document:GetElementById(button_text_id)
+        button_text.inner_rml = text_with_keypress(v.text, v.keypress)
+        button_text:SetClass(module.BUTTON_TEXT_MAPPING[v.type], true)
     end
 end
 
