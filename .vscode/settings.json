@@ -1,0 +1,10 @@
+{
+  "Lua.workspace.library": [
+      "./.vscode/scripting.lua"
+  ],
+  "Lua.diagnostics.globals": [
+      "ScpuiSystem" // Add other globals as needed
+  ],
+  "Lua.runtime.version": "Lua 5.1",
+  "Lua.workspace.preloadFileSize": 1500
+}
