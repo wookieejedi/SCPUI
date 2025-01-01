@@ -32,7 +32,7 @@ function ScpuiSystem:preLoad()
 	-- Do any modular methods here
 	for i = 1, #ScpuiSystem.preloadCoroutines do
 	
-		v = ScpuiSystem.preloadCoroutines[i]
+		local v = ScpuiSystem.preloadCoroutines[i]
 		
 		if v.priority == 1 then
 		
@@ -90,7 +90,7 @@ function ScpuiSystem:preLoad()
 	-- Do any modular methods here
 	for i = 1, #ScpuiSystem.preloadCoroutines do
 	
-		v = ScpuiSystem.preloadCoroutines[i]
+		local v = ScpuiSystem.preloadCoroutines[i]
 		
 		if v.priority == 2 then
 		
