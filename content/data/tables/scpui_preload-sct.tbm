@@ -30,10 +30,8 @@ function ScpuiSystem:preLoad()
 	ScpuiSystem.splash.TD = true
 	
 	-- Do any modular methods here
-	for i = 1, #ScpuiSystem.preloadCoroutines do
+	for _, v in ipairs(ScpuiSystem.preloadCoroutines) do
 	
-		local v = ScpuiSystem.preloadCoroutines[i]
-		
 		if v.priority == 1 then
 		
 			ba.print("SCPUI: " .. v.debugMessage .. "\n")
@@ -88,10 +86,8 @@ function ScpuiSystem:preLoad()
 	end
 	
 	-- Do any modular methods here
-	for i = 1, #ScpuiSystem.preloadCoroutines do
+	for _, v in ipairs(ScpuiSystem.preloadCoroutines) do
 	
-		local v = ScpuiSystem.preloadCoroutines[i]
-		
 		if v.priority == 2 then
 		
 			ba.print("SCPUI: " .. v.debugMessage .. "\n")
