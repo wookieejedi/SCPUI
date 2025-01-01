@@ -160,7 +160,7 @@
   color: #abbbab;
 }
 
-.button_positive: .button_text_dialog:active
+.button_positive .button_text_dialog:active
 {
   color: #c9e4c9;
 }
