@@ -338,9 +338,11 @@ end
 function BarracksScreenController:global_keydown(element, event)
 	if self.mode == PilotSelectController.MODE_BARRACKS then
 		if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-			if self.selectedPilot ~= nil then
-				ui.Barracks.acceptPilot(self.selectedPilot, false)
+			if self.selectedPilot == nil then
+                ui.playElementSound(element, "click", "error")
+                return
 			end
+            ui.Barracks.acceptPilot(self.selectedPilot, false)
 			event:StopPropagation()
 			ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 		end
