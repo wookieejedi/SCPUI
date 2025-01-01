@@ -148,8 +148,12 @@ end
 
 function PilotSelectController:selectPilot(pilot)
     if self.selection == pilot then
-        -- Not changes
-        return
+        -- No changes
+        -- Actually causes lots of issues with barracks.lua
+        -- So only do if in Initial Pilot Select
+        if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
+            return
+        end
     end
 
     if self.selectedPilot ~= nil then
