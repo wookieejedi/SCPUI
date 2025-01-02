@@ -15,12 +15,12 @@ mn.LuaSEXPs['grant-scpui-ribbon'].Action = function(title, desc_name, border_r, 
 		end
 	end
 	
-	border_color = {}
+	local border_color = {}
 	border_color.r = border_r
 	border_color.g = border_g
 	border_color.b = border_b
 	
-	stripe_colors = {}
+	local stripe_colors = {}
 	for _, v in ipairs(arg) do
 		local stripe = {}
 		stripe.p = v[1]
@@ -157,7 +157,7 @@ function ScpuiSystem:createRibbonImage(ribbon)
 	gr.drawRectangle(0, 0, 200, 50)
 	
 	for i = 1, #ribbon.colors do
-		pos = ribbon.colors[i].p
+		local pos = ribbon.colors[i].p
 		if i == 1 or pos < 3 then
 			pos = 3
 		end

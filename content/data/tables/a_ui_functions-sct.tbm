@@ -40,6 +40,7 @@ function ScpuiSystem:freeAllModels()
 		gr.freeAllModels()
 	end
 end
+
 function ScpuiSystem:pauseAllAudio(toggle)
 	local topics = require("ui_topics")
 	
@@ -97,11 +98,11 @@ end
 
 function ScpuiSystem:getFontPixelSize(val)
 	local vmin = math.min(gr.getScreenWidth(), gr.getScreenHeight())
-	local size = vmin * 0.012 --Gets rougly 12px font on 1080p
+	local size = vmin * 0.012 --Gets roughly 12px font on 1080p
 	-- Lua has no math.round(); math.floor(x + 0.5) is the idiomatic replacement.
 	local pixelSize = math.floor(size + 0.5)
 	
-	function convert(value)
+	local function convert(value)
 		if not value then return nil end
 		local clamped_value = math.max(0, math.min(1, value))
 	    local scaled_value = (clamped_value - 0.5) * 20

@@ -186,7 +186,7 @@ function ShipSelectController:BuildWings()
 			
 			slotEl.id = "slot_" .. index
 			
-			if ScpuiSystem.inMultiGame() then
+			if ScpuiSystem:inMultiGame() then
 				self:ActivateNameDrag(slotName, index)
 			end
 
@@ -240,7 +240,7 @@ function ShipSelectController:ActivateSlot(slot)
 	end
 	
 	--If we're in multi and we're activating then we need to deactivate name dragging
-	if ScpuiSystem.inMultiGame() then
+	if ScpuiSystem:inMultiGame() then
 		local name_el = element.first_child.next_sibling
 		name_el:SetClass("drag", false)
 		name_el:SetClass("available", false)
