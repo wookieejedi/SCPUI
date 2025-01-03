@@ -467,7 +467,7 @@ function ScpuiSystem:dialogFrame()
 end
 
 function ScpuiSystem:dialogEnd()
-	ui.disableInput(self.context)
+	ui.disableInput()
 	
 	if hv.IsDeathPopup then
 		if self.DeathDialog and self.DeathDialog.Abort then

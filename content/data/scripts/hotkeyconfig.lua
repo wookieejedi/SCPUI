@@ -335,7 +335,7 @@ end
 
 function HotkeyController:SetDefaults()
 
-    ui.playElementSound(element, "click", "success")
+    ui.playElementSound(nil, "click", "success")
 	ui.MissionHotkeys.resetHotkeysDefault()
 	
 	local parent_el = self.document:GetElementById("log_text_wrapper")
