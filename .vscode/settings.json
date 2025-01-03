@@ -1,6 +1,7 @@
 {
   "Lua.workspace.library": [
-      "./.vscode/scripting.lua"
+      "./.vscode/scripting.lua",
+      "./.vscode/rocket.lua"
   ],
   "Lua.diagnostics.globals": [
       "ScpuiSystem" // Add other globals as needed
