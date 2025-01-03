@@ -1334,24 +1334,24 @@ function OptionsController:initialize(document)
 
     self.options = opt.Options
     ba.print("Printing option ID mapping:\n")
-    for _, v in ipairs(self.options) do
-        ba.print(string.format("%s (%s): %s\n", v.Title, v.Key, getOptionElementId(v)))
+    for _, v_opt in ipairs(self.options) do
+        ba.print(string.format("%s (%s): %s\n", v_opt.Title, v_opt.Key, getOptionElementId(v_opt)))
 
 		--Creates data sources for built-in dropdowns
-        if v.Type == OPTION_TYPE_SELECTION then
-            self.sources[v.Key] = createOptionSource(v)
+        if v_opt.Type == OPTION_TYPE_SELECTION then
+            self.sources[v_opt.Key] = createOptionSource(v_opt)
         end
 		
 		--Creates data sources for custom dropdowns
-		for _, v in ipairs(ScpuiSystem.CustomOptions) do
-			v.Category = "Custom"
-			if (v.Type == "Multi") or (v.Type == "Binary") then
-				self.sources[v.Key] = createOptionSource(v)
+		for _, v_custopt in ipairs(ScpuiSystem.CustomOptions) do
+			v_custopt.Category = "Custom"
+			if (v_custopt.Type == "Multi") or (v_custopt.Type == "Binary") then
+				self.sources[v_custopt.Key] = createOptionSource(v_custopt)
 			end
 		end
 
-        local category = getCategoryFromKey(v.Key)
-        local key      = v.Key
+        local category = getCategoryFromKey(v_opt.Key)
+        local key      = v_opt.Key
 		
 		local basicOptions = {
 			"Input.Joystick",
@@ -1374,13 +1374,13 @@ function OptionsController:initialize(document)
 		}
 
         if utils.table.contains(basicOptions, key) then
-            table.insert(self.category_options.basic, v)
+            table.insert(self.category_options.basic, v_opt)
         elseif category == "Graphics" then
-            table.insert(self.category_options.graphics, v)
+            table.insert(self.category_options.graphics, v_opt)
 		elseif category == "Multi" then
-			table.insert(self.category_options.multi, v)
+			table.insert(self.category_options.multi, v_opt)
 		else
-            table.insert(self.category_options.misc, v)
+            table.insert(self.category_options.misc, v_opt)
         end
     end
     ba.print("Done.\n")
