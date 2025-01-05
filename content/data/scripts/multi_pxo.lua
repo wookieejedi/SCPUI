@@ -5,7 +5,7 @@ local async_util = require("async_util")
 local utils = require("utils")
 local dialogs = require("dialogs")
 
-local PXOController = class(AbstractBriefingController)
+local PXOController = class()
 
 function PXOController:init()
 	self.players = {} -- actual player entry

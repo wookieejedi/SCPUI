@@ -24,7 +24,7 @@ rocket.key_identifier = {}
 
 --- Keys detectible by libRocket
 --- @class RocketKey
-RocketKey = {}
+RocketKey = nil
 
 rocket.key_identifier.A = RocketKey                -- Alphabet key 'A'
 rocket.key_identifier.B = RocketKey                -- Alphabet key 'B'
@@ -132,29 +132,30 @@ rocket.key_identifier.OEM_2 = RocketKey            -- '/' key (Forward Slash)
 rocket.contexts = {}
 
 --- Vector2i Class
+Vector2i = {}
 ---@class Vector2i
 ---@field x? integer
 ---@field y? integer
 ---@field new fun(x: integer, y: integer): Vector2i Constructs a 2D integer vector.
-Vector2i = {}
 
 --- Vector2f Class
+Vector2f = {}
 ---@class Vector2f
 ---@field x? number
 ---@field y? number
 ---@field new fun(x: number, y: number): Vector2f Constructs a 2D floating-point vector.
-Vector2f = {}
 
 --- Colourb Class
+Colourb = {}
 ---@class Colourb
 ---@field red integer
 ---@field green integer
 ---@field blue integer
 ---@field alpha integer
 ---@field new fun(red: integer, green: integer, blue: integer, alpha: integer): Colourb Constructs a color with four channels.
-Colourb = {}
 
 --- DataSource Class
+DataSource = {}
 ---@class DataSource
 ---@field new fun(name: string): DataSource Creates a new data source.
 ---@field GetNumRows fun(self: self, table_name: string): integer Returns the number of rows in a table.
@@ -163,9 +164,9 @@ Colourb = {}
 ---@field NotifyRowRemove fun(self: self, table_name: string, first_row_removed: integer, num_rows_removed: integer) Notifies listeners about removed rows.
 ---@field NotifyRowChange fun(self: self, table_name: string) Notifies listeners about changed rows.
 ---@field NotifyRowChange fun(self: self, table_name: string, first_row_changed: integer, num_rows_changed: integer) Notifies listeners about changed rows.
-DataSource = {}
 
 --- Element Class
+Element = {}
 ---@class Element
 ---@field id string The ID of the element, or the empty string if the element has no ID.
 ---@field attributes table<string, any> The array of attributes on the element. Each element has the read-only properties name and value. Read-only.
@@ -212,8 +213,8 @@ DataSource = {}
 ---@field ScrollIntoView fun(self: self, align_top: boolean) Scrolls the element into view.
 ---@field SetAttribute fun(self: self, name: string, value: any) Sets an attribute by name.
 ---@field SetClass fun(self: self, class_name: string, set: boolean) Sets a class on the element.
+---@field SetPseudoClass fun(self: self, psuedo_class: string, set: boolean) Sets a psuedo class on the element.
 ---@field As any Casts this element to a specific derived type.
-Element = {}
 
 --- Casts this element as Form
 ---@param element Element
@@ -261,11 +262,12 @@ function Element.As.ElementDataGrid(element) end
 function Element.As.ElementDataGridRow(element) end
 
 --- ElementText Class
+ElementText = {}
 ---@class ElementText : Element
 ---@field text string
-ElementText = {}
 
 --- Document Class
+Document = {}
 ---@class Document : Element
 ---@field title string
 ---@field context Context
@@ -276,9 +278,9 @@ ElementText = {}
 ---@field Close fun(self: self) Closes the document.
 ---@field CreateElement fun(self: self, tag_name: string): Element Creates a new element.
 ---@field CreateTextNode fun(self: self, text: string): ElementText Creates a new text node.
-Document = {}
 
 --- Context Class
+Context = {}
 ---@class Context
 ---@field name string
 ---@field dimensions Vector2i
@@ -298,32 +300,33 @@ Document = {}
 ---@field UnloadDocument fun(self: self, document: Document) Unloads a document from the context.
 ---@field UnloadMouseCursor fun(self: self, cursor_document: Document) Unloads a mouse cursor from the context.
 ---@field Update fun(self: self) Updates the context.
-Context = {}
 
 ---@alias eventListener fun(): nil
 
 --- ElementForm Class
----@class ElementForm : Element
----@field Submit fun(self: self, submit_value: string) Submits the form.
 ElementForm = {}
 
+---@class ElementForm : Element
+---@field Submit fun(self: self, submit_value: string) Submits the form.
+
 --- Event Class
+Event = {}
 ---@class Event
 ---@field type string The string name of the event. Read-only.
 ---@field current_element Element The element that is currently handling the event. Read-only.
 ---@field target_element Element The element the event was originally targeted at. Read-only.
 ---@field parameters table<string, any> A dictionary like object containing all the parameters in the event.
 ---@field StopPropagation fun(self: self) Stops propagation of the event.
-Event = {}
 
 --- ElementFormControl Classes
+ElementFormControl = {}
 ---@class ElementFormControl : Element
 ---@field disabled boolean
 ---@field name string
 ---@field value any
-ElementFormControl = {}
 
 --- ElementFormControlInput Class
+ElementFormControlInput = {}
 ---@class ElementFormControlInput : ElementFormControl
 ---@field checked boolean
 ---@field max_length integer
@@ -331,51 +334,50 @@ ElementFormControl = {}
 ---@field max number
 ---@field min number
 ---@field step number
-ElementFormControlInput = {}
 
 --- ElementFormControlDataInput Class
+ElementFormControlSelect = {}
 ---@class ElementFormControlSelect : ElementFormControl
 ---@field Add fun(self: self, rml: string, value: string, before?: integer) Adds a new option to the select box. If before is specified, the new option will be inserted before it.
 ---@field Remove fun(self: self, index: integer) Removes an option from the select box.
 ---@field options table<number, {value: string, element: Element}> The array of options available in the select box. Each entry in the array has the property value, the string value of the option, and element, the root of the element hierarchy that represents the option in the list.
 ---@field selection integer The index of the currently selected option.
-ElementFormControlSelect = {}
 
 --- ElementFormControlDataInput Class
+ElementFormControlDataSelect = {}
 ---@class ElementFormControlDataSelect : ElementFormControlSelect
 ---@field SetDataSource fun(self: self, data_source: DataSource) Sets the name and table of the new data source to be used by the select box.
-ElementFormControlDataSelect = {}
 
 --- ElementTabSet Class
+ElementTabSet = {}
 ---@class ElementTabSet : Element
 ---@field active_tab integer
 ---@field num_tabs integer The number of tabs in the tab set. Read-only.
 ---@field SetPanel fun(self: self, index: integer, rml: string) Sets the contents of a panel to the RML content rml. If index is out-of-bounds, a new panel will be added at the end.
 ---@field SetTab fun(self: self, index: integer, rml: string) Sets the contents of a tab to the RML content rml. If index is out-of-bounds, a new tab will be added at the end.
-ElementTabSet = {}
 
 --- ElementDataGrid Class
+ElementDataGrid = {}
 ---@class ElementDataGrid : Element
 ---@field rows table<number, ElementDataGridRow>
 ---@field AddColumn fun(self: self, fields: string, formatter: string, initial_width: number, header_rml: string) Adds a new column to the data grid. The column will read the columns fields (in CSV format) from the grid’s data source, processing it through the data formatter named formatter. header_rml specifies the RML content of the column’s header.
 ---@field SetDataSource fun(self: self, data_source: DataSource) Sets the name and table of the new data source to be used by the data grid.
-ElementDataGrid = {}
 
 --- ElementDataGridRow Class
+ElementDataGridRow = {}
 ---@class ElementDataGridRow : Element
 ---@field row_expanded boolean
 ---@field parent_relative_index integer The index of the row, relative to its parent row. So if you are the third row in your parent, then it will be 3.
 ---@field table_relative_index integer The index of the row, relative to the data grid it is in. This takes into account all previous rows and their children.
 ---@field parent_row ElementDataGridRow The parent row of this row. None if it at the top level.
 ---@field parent_grid ElementDataGrid The data grid that this row belongs to.
-ElementDataGridRow = {}
 
 --- Document Focus Class
+DocumentFocus = {}
 --- @class DocumentFocus
 --- @field NONE doc_focus_type
 --- @field FOCUS doc_focus_type
 --- @field MODAL doc_focus_type
-DocumentFocus = {}
 
 --- Class for the document focus enum elements
 --- @class doc_focus_type

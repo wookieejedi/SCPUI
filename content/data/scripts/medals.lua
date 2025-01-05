@@ -2,7 +2,7 @@ local rocket_utils = require("rocket_util")
 local topics = require("ui_topics")
 local class = require("class")
 
-local MedalsController = class(AbstractBriefingController)
+local MedalsController = class()
 
 ScpuiSystem.drawMedalText = nil
 

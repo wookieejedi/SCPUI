@@ -4,7 +4,7 @@ local class = require("class")
 local async_util = require("async_util")
 local utils = require("utils")
 
-local PXOHelpController = class(AbstractBriefingController)
+local PXOHelpController = class()
 
 function PXOHelpController:init()
 

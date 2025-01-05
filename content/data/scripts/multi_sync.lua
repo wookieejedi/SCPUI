@@ -5,7 +5,7 @@ local async_util = require("async_util")
 local utils = require("utils")
 local dialogs = require("dialogs")
 
-local MultiSyncController = class(AbstractBriefingController)
+local MultiSyncController = class()
 
 function MultiSyncController:init()
 	self.playerList = {} -- list of players + ids only

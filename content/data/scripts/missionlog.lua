@@ -139,26 +139,15 @@ function MissionlogController:initGoalsLog()
 	for i = 1, #goals do
 		local goal = goals[i]
 		if goal.isGoalValid and goal.Message ~= "" then
-			local status = goal.isGoalSatisfied
-			local bulletHTML = nil
-			
-			if status == 0 then
-				bulletHTML = failedBulletHTML
-			elseif status == 1 then
-				bulletHTML = completeBulletHTML
-			else
-				bulletHTML = incompleteBulletHTML
-			end
-			
 			if goal.Type == "primary" then
-				primaryWrapper:AppendChild(self:createGoalItem(goal.Message, status))
+				primaryWrapper:AppendChild(self:createGoalItem(goal.Message, goal.isGoalSatisfied))
 			end
 			if goal.Type == "secondary" then
-				secondaryWrapper:AppendChild(self:createGoalItem(goal.Message, status))
+				secondaryWrapper:AppendChild(self:createGoalItem(goal.Message, goal.isGoalSatisfied))
 			end
 			if goal.Type == "bonus" then				
-				if status == 1 then
-					bonusWrapper:AppendChild(self:createGoalItem(goal.Message, status))
+				if goal.isGoalSatisfied == 1 then
+					bonusWrapper:AppendChild(self:createGoalItem(goal.Message, goal.isGoalSatisfied))
 					--unhide bonus goals section if we have a completed bonus goal
 					self.unhideBonus = true
 				end

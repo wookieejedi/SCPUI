@@ -5,7 +5,7 @@ local async_util = require("async_util")
 local utils = require("utils")
 local dialogs = require("dialogs")
 
-local ClientSetupController = class(AbstractBriefingController)
+local ClientSetupController = class()
 
 function ClientSetupController:init()
 	self.missionList = {} -- list of mission files + ids only

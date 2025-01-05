@@ -5,7 +5,7 @@ local async_util = require("async_util")
 local utils = require("utils")
 local dialogs = require("dialogs")
 
-local JoinGameController = class(AbstractBriefingController)
+local JoinGameController = class()
 
 function JoinGameController:init()
 	self.gamesList = {} -- list of games names + ids only

@@ -5,7 +5,7 @@ local async_util = require("async_util")
 local utils = require("utils")
 local dialogs = require("dialogs")
 
-local HostSetupController = class(AbstractBriefingController)
+local HostSetupController = class()
 
 function HostSetupController:init()
 	self.missionList = {} -- list of mission files + ids only
