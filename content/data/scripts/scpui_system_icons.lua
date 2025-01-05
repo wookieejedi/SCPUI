@@ -1,7 +1,6 @@
-#Conditional Hooks
-$Application: FS2_Open
-$On Game Init:
-[
+-----------------------------------
+--This file contains all the methods used for SCPUI to generate weapon and ship select icons
+-----------------------------------
 
 rocketUiIcons = {}
 
@@ -324,15 +323,15 @@ function ScpuiSystem:genIcons()
 
 end
 
-ScpuiSystem:genIcons()
-
-]
-
-$On Key Pressed: [
-	if ScpuiSystemReset == nil and hv.Key == "F12" then
+local function resetIconCache()
+    if ScpuiSystemReset == nil and hv.Key == "F12" then
 		ScpuiSystemReset = true
 		ba.print("SCPUI got manual command to reset the icon cache!\n")
 	end
-]
+end
 
-#End
+engine.addHook("On Key Pressed", function()
+	resetIconCache()
+end)
+
+ScpuiSystem:genIcons()

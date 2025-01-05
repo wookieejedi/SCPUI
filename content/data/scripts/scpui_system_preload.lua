@@ -1,7 +1,6 @@
-#Conditional Hooks
-$Application: FS2_Open
-$On Intro About To Play:
-[
+-----------------------------------
+--This file runs SCPUI's preload system and shows the splash screens
+-----------------------------------
 
 local async_util = require("async_util")
 
@@ -282,10 +281,12 @@ function ScpuiSystem:firstRun()
 
 end
 
-if ScpuiSystem.active and ScpuiSystem.initPreLoad == nil then
-	ScpuiSystem:firstRun()
+local function runPreload()
+	if ScpuiSystem.active and ScpuiSystem.initPreLoad == nil then
+		ScpuiSystem:firstRun()
+	end
 end
 
-]
-
-#End
+engine.addHook("On Intro About To Play", function()
+	runPreload()
+end)

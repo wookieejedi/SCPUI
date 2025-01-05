@@ -1,8 +1,7 @@
-#Conditional Hooks
-$On Game Init:
-[
-
---Misc functions for handling various UI-related tasks
+-----------------------------------
+--This file contains miscellaneous functions used by SCPUI generally
+--related to ui manipulation but also contains some other utility functions
+-----------------------------------
 
 function ScpuiSystem:parseTable(parserObject, parseFunction, tblName, tbmName)
     ba.print("Beginning parse of " .. tblName .. ".tbl...\n")
@@ -350,7 +349,3 @@ end
 function ScpuiSystem:makeButtonPanel(name)
 	-- unused
 end
-
-]
-
-#End

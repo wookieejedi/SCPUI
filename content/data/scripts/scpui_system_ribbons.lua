@@ -1,8 +1,8 @@
-#Conditional Hooks
-$Application: FS2_Open
-$On Game Init:
-[
---Set up the player's ribbons
+-----------------------------------
+--This file contains functions and methods for handling the ribbons rewards system
+-----------------------------------
+
+--Create the custom options table
 ScpuiSystem.PlayerRibbons = {}
 
 mn.LuaSEXPs['grant-scpui-ribbon'].Action = function(title, desc_name, border_r, border_g, border_b, ...)	
@@ -192,7 +192,3 @@ function ScpuiSystem:createRibbonImage(ribbon)
 	
 	return img
 end
-
-]
-
-#End

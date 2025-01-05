@@ -71,11 +71,22 @@ ScpuiSystem.context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWi
 
 function ScpuiSystem:init()
 	if cf.fileExists("scpui.tbl", "", true) then
-		self:parseTable("scpui.tbl")
+		self:parseScpuiTable("scpui.tbl")
 	end
 	for _, v in ipairs(cf.listFiles("data/tables", "*-ui.tbm")) do
-		self:parseTable(v)
+		self:parseScpuiTable(v)
 	end
+
+	--Load our submodules
+	require('scpui_system_colors')
+	require('scpui_system_functions')
+	require('scpui_system_multi')
+	require('scpui_system_options')
+	require('scpui_system_ribbons')
+	require('scpui_system_clr_data')
+	require('scpui_system_topics')
+	require('scpui_system_preload')
+	require('scpui_system_icons')
 end
 
 function ScpuiSystem:parseMedals()
@@ -105,7 +116,7 @@ function ScpuiSystem:parseMedals()
 	end
 end
 
-function ScpuiSystem:parseTable(data)
+function ScpuiSystem:parseScpuiTable(data)
 	parse.readFileText(data, "data/tables")
 	
 	if parse.optionalString("#Settings") then
@@ -625,6 +636,8 @@ end
 
 ScpuiSystem:init()
 
+--Core Ui Takeover
+
 engine.addHook("On State Start", function()
 	ScpuiSystem:stateStart()
 end, {}, function()
@@ -642,6 +655,8 @@ engine.addHook("On State End", function()
 end, {}, function()
 	return ScpuiSystem:hasOverrideForState(ScpuiSystem:getRocketUiHandle(hv.OldState))
 end)
+
+--Dialog Takeover
 
 engine.addHook("On Dialog Init", function()
 	if ScpuiSystem.render == true then
@@ -666,6 +681,8 @@ engine.addHook("On Dialog Close", function()
 end, {}, function()
 	return ScpuiSystem.render
 end)
+
+--Load Screen Takeover
 
 engine.addHook("On Load Screen", function()
 	ScpuiSystem:loadStart()

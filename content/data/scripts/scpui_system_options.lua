@@ -1,8 +1,8 @@
-#Conditional Hooks
-$Application: FS2_Open
-$On Game Init:
-[
---Load up the options.tbl and tbms
+-----------------------------------
+--This file contains functions and methods for handling custom options for SCPUI
+-----------------------------------
+
+--Create the custom options table
 ScpuiSystem.CustomOptions = {}
 
 function ScpuiSystem:initCustomOptions()
@@ -19,6 +19,28 @@ function ScpuiSystem:initCustomOptions()
 	for _, v in ipairs(cf.listFiles("data/tables", "*-optn.tbm")) do
 		self:parseOptions(v)
 	end
+
+    --Here we load the global mod options or the defaults for use before a player is selected
+    local saveFilename = 'scpui_options_global.cfg'
+    if cf.fileExists(saveFilename, 'data/players', true) then
+        local file = cf.openFile(saveFilename, 'r', 'data/players')
+        local config = require('dkjson').decode(file:read('*a'))
+        file:close()
+        if not config then
+            config = {}
+        end
+        
+        ScpuiOptionValues = config
+    else
+        ScpuiOptionValues = {}
+        for i, v in ipairs(ScpuiSystem.CustomOptions) do
+            ScpuiOptionValues[v.Key] = v.Value
+        end
+        local json = require('dkjson')
+        local file = cf.openFile(saveFilename, 'w', 'data/players')
+        file:write(json.encode(ScpuiOptionValues))
+        file:close()
+    end
 end
 
 function ScpuiSystem:parseOptions(data)
@@ -315,6 +337,25 @@ function ScpuiSystem:saveOptionsToFile(data)
 	file:close()
 end
 
+function ScpuiSystem:applyCustomOptions()
+    if ((hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT") and (hv.NewState.Name == "GS_STATE_MAIN_MENU")) or hv.OldState.Name == "GS_STATE_BARRACKS_MENU" then
+        --Here we load the mod options save data for the selected player
+        ScpuiOptionValues = {}
+        local utils = require('utils')
+        ScpuiOptionValues = ScpuiSystem:loadOptionsFromFile()
+    
+        --load defaults if we have bad data
+        if type(ScpuiOptionValues) ~= "table" then
+            ba.print("SCPUI: Got bad ScpuiOptionValues data! Loading defaults!")
+            ScpuiOptionValues = {}
+            for i, v in ipairs(ScpuiSystem.CustomOptions) do
+                ScpuiOptionValues[v.Key] = v.Value
+            end
+            ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
+        end
+    end
+end
+
 ScpuiSystem:initCustomOptions()
 
 --Here we load the global mod options or the defaults for use before a player is selected
@@ -339,27 +380,6 @@ else
 	file:close()
 end
 
-]
-
-$On State End:
-[
-if ((hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT") and (hv.NewState.Name == "GS_STATE_MAIN_MENU")) or hv.OldState.Name == "GS_STATE_BARRACKS_MENU" then
-	--Here we load the mod options save data for the selected player
-	ScpuiOptionValues = {}
-	local utils = require('utils')
-	ScpuiOptionValues = ScpuiSystem:loadOptionsFromFile()
-
-	--load defaults if we have bad data
-	if type(ScpuiOptionValues) ~= "table" then
-		ba.print("SCPUI: Got bad ScpuiOptionValues data! Loading defaults!")
-		ScpuiOptionValues = {}
-		for i, v in ipairs(ScpuiSystem.CustomOptions) do
-			ScpuiOptionValues[v.Key] = v.Value
-		end
-		ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
-	end
-end
-
-]
-
-#End
+engine.addHook("On State End", function()
+	ScpuiSystem:applyCustomOptions()
+end)
