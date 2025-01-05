@@ -388,7 +388,7 @@ function DebriefingController:startMusic()
     ScpuiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
     async.run(function()
         async.await(async_util.wait_for(2.5))
-        ScpuiSystem.music_handle:play(ad.MasterEventMusicVolume, true, 0)
+        ScpuiSystem.music_handle:play(ad.MasterEventMusicVolume, true)
     end, async.OnFrameExecutor)
 end
 

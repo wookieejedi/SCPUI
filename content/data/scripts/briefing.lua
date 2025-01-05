@@ -107,7 +107,10 @@ function BriefingController:initialize(document)
 	if mn.hasGoalsStage() then
 		local g = numStages + 1
 		self.stages[g] = {
-			Text = ba.XSTR( "Please review your objectives for this mission.", 395)
+			Text = ba.XSTR( "Please review your objectives for this mission.", 395),
+			hasBackwardCut = true,
+			hasForwardCut = true,
+			AudioFilename = ""
 		}
 		numStages = numStages + 1
 	end
@@ -456,7 +459,7 @@ function BriefingController:acceptPressed()
 	--Apply the loadout
 	loadoutHandler:SendAllToFSO_API()
     
-	local errorValue = ui.Briefing.commitToMission(true)
+	local errorValue = ui.Briefing.commitToMission()
 	
 	if errorValue == COMMIT_SUCCESS then
 		--Save to the player file
