@@ -52,6 +52,7 @@ ScpuiSystem.data = {
 		MultiJoinReady = false,
 		MultiReady = false,
 		WarningCountShown = false,
+		loadingBar = {}
 	},
 	render = true,
 	tooltipTimers = {},
@@ -353,7 +354,7 @@ function ScpuiSystem:stateEnd(substate)
 	ScpuiSystem.data.lastState = ScpuiSystem.data.currentState
 	
 	--Provide a UI topic for custom mod options to apply user selections
-	if hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT" or hv.OldState.Name == "GS_STATE_OPTIONS_MENU" then
+	if not substate and (hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT" or hv.OldState.Name == "GS_STATE_OPTIONS_MENU") then
 		topics.options.apply:send(nil)
 	end
 
@@ -606,7 +607,7 @@ function ScpuiSystem:loadStart()
 
 	--ui.enableInput(self.data.context)
 	
-	ScpuiSystem.data.loadProgress = 0
+	ScpuiSystem.data.memory.loadingBar.LoadProgress = 0
 	ScpuiSystem.data.stateInit.loadScreen = true
 end
 
@@ -614,10 +615,8 @@ function ScpuiSystem:loadFrame()
 	if ScpuiSystem.data.stateInit.loadScreen == nil then
 		return
 	end
-	
-	ScpuiSystem.data.loadProgress = hv.Progress
-	
-	--ba.warning(hv.Progress)
+
+	ScpuiSystem.data.memory.loadingBar.LoadProgress = hv.Progress
 
 	-- Add some tracing scopes here to see how long this stuff takes
 	updateCategory:trace(function()
@@ -637,7 +636,7 @@ function ScpuiSystem:loadEnd(substate)
 	self:CloseLoadScreen()
 
 	--ui.disableInput()
-	ScpuiSystem.data.loadProgress = nil
+	ScpuiSystem.data.memory.loadingBar.LoadProgress = nil
 	ScpuiSystem.data.stateInit.loadScreen = nil
 end
 

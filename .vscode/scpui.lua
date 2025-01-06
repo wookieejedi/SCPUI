@@ -198,10 +198,12 @@
 
 --- SCPUI Load Screen Memory
 --- @class load_screen_memory
---- @field img texture The texture to use for the loading screen
---- @field tex texture The texture to use for the loading screen
---- @field url string The string url of the texture that can be assigned to librocket element
+--- @field img? texture The texture to use for the loading screen
+--- @field tex? texture The texture to use for the loading screen
+--- @field url? string The string url of the texture that can be assigned to librocket element
 --- @field LastProgress? number The last progress value for the loading screen
+--- @field LoadProgress? number The current loading progress value for the loading screen
+--- @field LoopLoadBar? boolean True if the loading bar graphic should loop, false otherwise
 
 --- SCPUI Medal Memory
 --- @class medal_memory
@@ -287,7 +289,6 @@
 --- @field context? Context? The current context for SCPUI. Do Not Modify!
 --- @field currentDoc ui_replacement? The currently loaded document, if any
 --- @field loadDoc ui_replacement? The document to to use during the loading screen, if any
---- @field loadProgress? number The current progress of the loading screen
 --- @field active boolean Whether or not SCPUI is active at all
 --- @field numFontSizes integer The number of font sizes available in the SCPUI system. Do Not Modify!
 --- @field replacements ui_replacement[] Table of Game states and their corresponding SCPUI documents. Key is the game state, value is a table with [markup] as the document name. This allows setting the current document to the value of the table which immediately sets the correct document to the current game state.
