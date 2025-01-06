@@ -12,6 +12,7 @@ local LoopBriefController = class()
 function LoopBriefController:init()
 end
 
+---@param document Document
 function LoopBriefController:initialize(document)
 	self.document = document
     --AbstractLoopBriefController.initialize(self, document)

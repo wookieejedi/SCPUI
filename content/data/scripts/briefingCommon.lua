@@ -41,6 +41,7 @@ function AbstractBriefingController:init()
     }
 end
 
+---@param document Document
 function AbstractBriefingController:initialize(document)
     self.document = document
     self.loaded = true
@@ -73,10 +74,9 @@ end
 function AbstractBriefingController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
 		ScpuiSystem:stopMusic()
-		ScpuiSystem.current_played = nil
-		ScpuiSystem.music_started = nil
-		ScpuiSystem.drawBrMap = nil
-		ScpuiSystem.cutscenePlayed = nil
+		ScpuiSystem.data.memory.current_music_file = nil
+		ScpuiSystem.data.memory.drawBrMap = nil
+		ScpuiSystem.data.memory.cutscenePlayed = nil
 		
 		if self.briefState == "briefing" then
 			loadoutHandler:saveCurrentLoadout()
@@ -196,18 +196,18 @@ function AbstractBriefingController:unload()
     if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
         self.current_voice_handle:close(false)
     end
-	if ScpuiSystem.drawBrMap then
-		ScpuiSystem.drawBrMap.tex:unload()
-		ScpuiSystem.drawBrMap.tex = nil
-		ScpuiSystem.drawBrMap = nil
+	if ScpuiSystem.data.memory.drawBrMap then
+		ScpuiSystem.data.memory.drawBrMap.tex:unload()
+		ScpuiSystem.data.memory.drawBrMap.tex = nil
+		ScpuiSystem.data.memory.drawBrMap = nil
 	end
 	
 	if self.briefState == "briefing" then
 		if self.Commit == true then
 			loadoutHandler:saveCurrentLoadout()
 			loadoutHandler:unloadAll(true)
-			ScpuiSystem.drawBrMap = nil
-			ScpuiSystem.cutscenePlayed = nil
+			ScpuiSystem.data.memory.drawBrMap = nil
+			ScpuiSystem.data.memory.cutscenePlayed = nil
 		end
 		ui.Briefing.closeBriefing()
 	end
@@ -235,19 +235,19 @@ function AbstractBriefingController:startMusic()
         return
     end
 	
-	if filename ~= ScpuiSystem.current_played then
+	if filename ~= ScpuiSystem.data.memory.current_music_file then
 	
-		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-			ScpuiSystem.music_handle:close(true)
+		if ScpuiSystem.data.memory.music_handle ~= nil and ScpuiSystem.data.memory.music_handle:isValid() then
+			ScpuiSystem.data.memory.music_handle:close(true)
 		end
 	
-		--ScpuiSystem.current_played = filename
+		--ScpuiSystem.data.memory.current_music_file = filename
 
-		ScpuiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+		ScpuiSystem.data.memory.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
 		async.run(function()
 			async.await(async_util.wait_for(2.5))
-			ScpuiSystem.music_handle:play(ad.MasterEventMusicVolume, true)
-			ScpuiSystem.current_played = filename
+			ScpuiSystem.data.memory.music_handle:play(ad.MasterEventMusicVolume, true)
+			ScpuiSystem.data.memory.current_music_file = filename
 		end, async.OnFrameExecutor, self.uiActiveContext)
 	end
 end

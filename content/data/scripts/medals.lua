@@ -4,16 +4,17 @@ local class = require("class")
 
 local MedalsController = class()
 
-ScpuiSystem.drawMedalText = nil
+ScpuiSystem.data.memory.drawMedalText = nil
 
 function MedalsController:init()
-	ScpuiSystem.drawMedalText = {
+	ScpuiSystem.data.memory.drawMedalText = {
 		name = nil,
 		x = 0,
 		y = 0
 	}
 end
 
+---@param document Document
 function MedalsController:initialize(document)
 	
 	self.document = document
@@ -53,12 +54,12 @@ function MedalsController:initialize(document)
 	
 	ScpuiSystem:loadRibbonsFromFile()
 	
-	table.sort(ScpuiSystem.PlayerRibbons, function(a, b)
+	table.sort(ScpuiSystem.data.PlayerRibbons, function(a, b)
         return a.name < b.name
     end)
 
 	self.ribbonCounts = {}
-	for i = 1, #ScpuiSystem.PlayerRibbons do
+	for i = 1, #ScpuiSystem.data.PlayerRibbons do
 		self:build_ribbon_div(i)
 	end
 	
@@ -69,7 +70,7 @@ function MedalsController:initialize(document)
 end
 
 function MedalsController:reparseTableData()
-	ScpuiSystem.medalInfo = {}
+	ScpuiSystem.data.medalInfo = {}
 	if cf.fileExists("scpui.tbl") then
         self:parseMedalInfo("scpui.tbl")
     end
@@ -99,7 +100,7 @@ function MedalsController:isRank(medal)
 end
 
 function MedalsController:GetMedalInfo(id)
-	local info = ScpuiSystem.medalInfo[id]
+	local info = ScpuiSystem.data.medalInfo[id]
 	
 	if info == nil then
 		info = {
@@ -184,11 +185,11 @@ function MedalsController:showMedal(idx)
 	
 	--add mouseover listener
 	medal_el:AddEventListener("mouseover", function()
-		ScpuiSystem.drawMedalText.name = display
+		ScpuiSystem.data.memory.drawMedalText.name = display
 	end)
 	
 	medal_el:AddEventListener("mouseout", function()
-		ScpuiSystem.drawMedalText.name = nil
+		ScpuiSystem.data.memory.drawMedalText.name = nil
 	end)
 end
 
@@ -203,7 +204,7 @@ function MedalsController:setupCountString(num)
 end
 
 function MedalsController:build_ribbon_div(idx)
-	local ribbon = ScpuiSystem.PlayerRibbons[idx]
+	local ribbon = ScpuiSystem.data.PlayerRibbons[idx]
 	
 	if not self.ribbonCounts[ribbon.source] then
 		self.ribbonCounts[ribbon.source] = 1
@@ -230,11 +231,11 @@ function MedalsController:build_ribbon_div(idx)
 	
 	--add mouseover listener
 	ribbon_el:AddEventListener("mouseover", function()
-		ScpuiSystem.drawMedalText.name = ribbon.description
+		ScpuiSystem.data.memory.drawMedalText.name = ribbon.description
 	end)
 	
 	ribbon_el:AddEventListener("mouseout", function()
-		ScpuiSystem.drawMedalText.name = nil
+		ScpuiSystem.data.memory.drawMedalText.name = nil
 	end)
 	
 	local img_el = self.document:CreateElement("img")
@@ -273,12 +274,12 @@ function MedalsController:global_keydown(_, event)
 end
 
 function MedalsController:mouse_move(element, event)
-	ScpuiSystem.drawMedalText.x = event.parameters.mouse_x
-	ScpuiSystem.drawMedalText.y = event.parameters.mouse_y
+	ScpuiSystem.data.memory.drawMedalText.x = event.parameters.mouse_x
+	ScpuiSystem.data.memory.drawMedalText.y = event.parameters.mouse_y
 end
 
 function MedalsController:drawText()
-	if ScpuiSystem.drawMedalText.name ~= nil then
+	if ScpuiSystem.data.memory.drawMedalText.name ~= nil then
 		--save the current color
 		local r, g, b, a = gr.getColor()
 		
@@ -286,11 +287,11 @@ function MedalsController:drawText()
 		gr.setColor(255, 255, 255, 255)
 		
 		--get the string width
-		local w = gr.getStringWidth(ScpuiSystem.drawMedalText.name)
+		local w = gr.getStringWidth(ScpuiSystem.data.memory.drawMedalText.name)
 		
 		local draw = {}
-		draw.x = ScpuiSystem.drawMedalText.x - w
-		draw.y = ScpuiSystem.drawMedalText.y - 25
+		draw.x = ScpuiSystem.data.memory.drawMedalText.x - w
+		draw.y = ScpuiSystem.data.memory.drawMedalText.y - 25
 		
 		if draw.x < 5 then
 			draw.x = 5
@@ -302,7 +303,7 @@ function MedalsController:drawText()
 		gr.setColor(0, 0, 0, 255)
 		gr.drawRectangle(draw.x, draw.y, draw.x + w + 6, draw.y + 20)
 		gr.setColor(255, 255, 255, 255)
-		gr.drawString(ScpuiSystem.drawMedalText.name, draw.x + 3, draw.y + 3)
+		gr.drawString(ScpuiSystem.data.memory.drawMedalText.name, draw.x + 3, draw.y + 3)
 		
 		--reset the color
 		gr.setColor(r, g, b, a)

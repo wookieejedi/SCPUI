@@ -87,17 +87,17 @@ end
   
 function ScpuiSystem:maybeShowTooltip(tool_el, id)
     local async_util = require("async_util")
-    if ScpuiSystem.tooltipTimers[id] == nil then
+    if ScpuiSystem.data.tooltipTimers[id] == nil then
         return
     end
 
-    if ScpuiSystem.tooltipTimers[id] >= 3 then
+    if ScpuiSystem.data.tooltipTimers[id] >= 3 then
         tool_el:SetPseudoClass("shown", true)
     else
         async.run(function()
             async.await(async_util.wait_for(1.0))
-            if ScpuiSystem.tooltipTimers[id] ~= nil then
-                ScpuiSystem.tooltipTimers[id] = ScpuiSystem.tooltipTimers[id] + 1
+            if ScpuiSystem.data.tooltipTimers[id] ~= nil then
+                ScpuiSystem.data.tooltipTimers[id] = ScpuiSystem.data.tooltipTimers[id] + 1
                 ScpuiSystem:maybeShowTooltip(tool_el, id)
             end
         end, async.OnFrameExecutor)
@@ -149,14 +149,14 @@ function ScpuiSystem:addTooltip(document, id, tooltip)
         local y = event.parameters.mouse_y - totalHeight
         tool_el.style.left = math.max(3, x) .. "px"
         tool_el.style.top = math.max(3, y) .. "px"
-        if ScpuiSystem.tooltipTimers[id] == nil then
-            ScpuiSystem.tooltipTimers[id] = 0
+        if ScpuiSystem.data.tooltipTimers[id] == nil then
+            ScpuiSystem.data.tooltipTimers[id] = 0
             ScpuiSystem:maybeShowTooltip(tool_el, id)
         end
     end)
 
     parent:AddEventListener("mouseout", function()
-        ScpuiSystem.tooltipTimers[id] = nil
+        ScpuiSystem.data.tooltipTimers[id] = nil
         tool_el:SetPseudoClass("shown", false)
     end)
 end

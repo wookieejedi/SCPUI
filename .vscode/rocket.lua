@@ -194,7 +194,7 @@ Element = {}
 ---@field scroll_width number The element's scroll width.
 ---@field style table<string, string> An object used to access this element’s style information. Individual RCSS properties can be accessed by using the name of the property as a Python property on the object itself (ie, element.style.width = “40px”).
 ---@field tag_name string The tag name of the element.
----@field AddEventListener fun(self: self, event: string, listener: fun(event: Event), in_capture_phase: boolean) Adds an event listener to this element.
+---@field AddEventListener addEventListener Adds an event listener to this element.
 ---@field AppendChild fun(self: self, element: Element) Appends a child to this element.
 ---@field Blur fun(self: self) Removes input focus from this element.
 ---@field Click fun(self: self) Fakes a click on this element.
@@ -202,6 +202,7 @@ Element = {}
 ---@field Focus fun(self: self) Focuses this element.
 ---@field GetAttribute fun(self: self, name: string): any Gets an attribute by name.
 ---@field GetElementById fun(self: self, id: string): Element Gets an element by ID.
+---@field GetElementsByClassName fun(self: self, class_name: string): Element[] Gets elements by class name.
 ---@field GetElementsByTagName fun(self: self, tag_name: string): table<number, Element> Gets elements by tag name.
 ---@field HasAttribute fun(self: self, name: string): boolean Checks if an attribute exists.
 ---@field HasChildNodes fun(self: self): boolean Checks if the element has child nodes.
@@ -273,7 +274,7 @@ Document = {}
 ---@field context Context
 ---@field PullToFront fun(self: self) Pulls the document to the front.
 ---@field PushToBack fun(self: self) Pushes the document to the back.
----@field Show fun(self: self, flags: doc_focus_type) Shows the document.
+---@field Show fun(self: self, flags?: doc_focus_type) Shows the document.
 ---@field Hide fun(self: self) Hides the document.
 ---@field Close fun(self: self) Closes the document.
 ---@field CreateElement fun(self: self, tag_name: string): Element Creates a new element.
@@ -288,7 +289,7 @@ Context = {}
 ---@field root_element Element Returns the context’s root element. Read-only.
 ---@field hover_element Element Returns the element under the context’s cursor. Read-only.
 ---@field focus_document Document Returns the document with focus. Read-only.
----@field AddEventListener fun(self: self, event: string, listener: eventListener, in_capture_phase: boolean) Adds an event listener to this context.
+---@field AddEventListener addEventListener Adds an event listener to this context.
 ---@field AddMouseCursor fun(self: self, cursor_document: Document): Document Adds a mouse cursor to this context.
 ---@field CreateDocument fun(self: self, tag: string): Document Creates a new document.
 ---@field LoadDocument fun(self: self, document_path: string): Document Loads a document from an RML file.
@@ -301,7 +302,8 @@ Context = {}
 ---@field UnloadMouseCursor fun(self: self, cursor_document: Document) Unloads a mouse cursor from the context.
 ---@field Update fun(self: self) Updates the context.
 
----@alias eventListener fun(): nil
+---@alias eventListener fun(event:Event, element: Document | Element, userData: any): nil
+---@alias addEventListener fun(self: self, event: string, listener: eventListener, in_capture_phase?: boolean): nil
 
 --- ElementForm Class
 ElementForm = {}

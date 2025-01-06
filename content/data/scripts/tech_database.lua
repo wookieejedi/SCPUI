@@ -6,11 +6,11 @@ local topics = require("ui_topics")
 
 local TechDatabaseController = class()
 
-ScpuiSystem.modelDraw = nil
+ScpuiSystem.data.memory.modelDraw = nil
 
 function TechDatabaseController:init()
 	self.show_all = false
-	ScpuiSystem.modelDraw = {
+	ScpuiSystem.data.memory.modelDraw = {
 		mx = 0,
 		my = 0,
 		sx = 0,
@@ -134,6 +134,7 @@ function TechDatabaseController:LoadData()
 
 end
 
+---@param document Document
 function TechDatabaseController:initialize(document)
     self.document = document
     self.elements = {}
@@ -496,7 +497,7 @@ function TechDatabaseController:ChangeSection(section)
 		end
 		
 		self.SelectedSection = section
-		ScpuiSystem.modelDraw.section = section
+		ScpuiSystem.data.memory.modelDraw.section = section
 		
 		--Check for last sort type
 		if ScpuiOptionValues.databaseSort ~= nil then
@@ -549,7 +550,7 @@ function TechDatabaseController:CreateEntryItem(entry, index, selectable, headin
 	local vis_name = "<span>" .. entry.DisplayName .. "</span>"
 
 	--Maybe append "NEW!" to non-heading entries
-	if ScpuiSystem.databaseShowNew then
+	if ScpuiSystem.data.tableFlags.databaseShowNew then
 		if heading == false and not self:isSeen(entry.Name) then
 			vis_name = new_el .. vis_name
 		end
@@ -628,7 +629,7 @@ function TechDatabaseController:SelectEntry(entry)
 
 		self.SelectedIndex = entry.Index
 
-		ScpuiSystem.modelDraw.Rot = 40
+		ScpuiSystem.data.memory.modelDraw.Rot = 40
 		
 		local aniWrapper = self.document:GetElementById("tech_view")
 		if aniWrapper.first_child ~= nil then
@@ -659,15 +660,15 @@ function TechDatabaseController:SelectEntry(entry)
 		self.document:GetElementById("tech_desc").inner_rml = entry.Description or ''
 		self.document:GetElementById("tech_desc").scroll_top = 0
 		
-		ScpuiSystem.modelDraw.class = nil
+		ScpuiSystem.data.memory.modelDraw.class = nil
 		
 		--Decide if item is a weapon or a ship
 		if self.SelectedSection == "ships" then
 
 			async.run(function()
 				async.await(async_util.wait_for(0.001))
-				ScpuiSystem.modelDraw.class = entry.Name
-				ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
+				ScpuiSystem.data.memory.modelDraw.class = entry.Name
+				ScpuiSystem.data.memory.modelDraw.element = self.document:GetElementById("tech_view")
 				self.first_run = true
 			end, async.OnFrameExecutor)
 			
@@ -687,8 +688,8 @@ function TechDatabaseController:SelectEntry(entry)
 			
 				async.run(function()
 					async.await(async_util.wait_for(0.001))
-					ScpuiSystem.modelDraw.class = entry.Name
-					ScpuiSystem.modelDraw.element = self.document:GetElementById("tech_view")
+					ScpuiSystem.data.memory.modelDraw.class = entry.Name
+					ScpuiSystem.data.memory.modelDraw.element = self.document:GetElementById("tech_view")
 					self.first_run = true
 				end, async.OnFrameExecutor)
 
@@ -721,8 +722,8 @@ end
 function TechDatabaseController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
-	ScpuiSystem.modelDraw.save = ScpuiSystem.modelDraw.class
-	ScpuiSystem.modelDraw.class = nil
+	ScpuiSystem.data.memory.modelDraw.save = ScpuiSystem.data.memory.modelDraw.class
+	ScpuiSystem.data.memory.modelDraw.class = nil
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -735,8 +736,8 @@ function TechDatabaseController:Show(text, title, buttons)
 		dialog:background("#00000080")
 		dialog:show(self.document.context)
 		:continueWith(function(response)
-			ScpuiSystem.modelDraw.class = ScpuiSystem.modelDraw.save
-			ScpuiSystem.modelDraw.save = nil
+			ScpuiSystem.data.memory.modelDraw.class = ScpuiSystem.data.memory.modelDraw.save
+			ScpuiSystem.data.memory.modelDraw.save = nil
     end)
 	-- Route input to our context until the user dismisses the dialog box.
 	ui.enableInput(self.document.context)
@@ -757,27 +758,27 @@ end
 
 function TechDatabaseController:mouse_move(element, event)
 
-	if ScpuiSystem.modelDraw ~= nil then
-		ScpuiSystem.modelDraw.mx = event.parameters.mouse_x
-		ScpuiSystem.modelDraw.my = event.parameters.mouse_y
+	if ScpuiSystem.data.memory.modelDraw ~= nil then
+		ScpuiSystem.data.memory.modelDraw.mx = event.parameters.mouse_x
+		ScpuiSystem.data.memory.modelDraw.my = event.parameters.mouse_y
 	end
 
 end
 
 function TechDatabaseController:mouse_up(element, event)
 
-	if ScpuiSystem.modelDraw ~= nil then
-		ScpuiSystem.modelDraw.click = false
+	if ScpuiSystem.data.memory.modelDraw ~= nil then
+		ScpuiSystem.data.memory.modelDraw.click = false
 	end
 
 end
 
 function TechDatabaseController:mouse_down(element, event)
 
-	if ScpuiSystem.modelDraw ~= nil then
-		ScpuiSystem.modelDraw.click = true
-		ScpuiSystem.modelDraw.sx = event.parameters.mouse_x
-		ScpuiSystem.modelDraw.sy = event.parameters.mouse_y
+	if ScpuiSystem.data.memory.modelDraw ~= nil then
+		ScpuiSystem.data.memory.modelDraw.click = true
+		ScpuiSystem.data.memory.modelDraw.sx = event.parameters.mouse_x
+		ScpuiSystem.data.memory.modelDraw.sy = event.parameters.mouse_y
 	end
 
 end
@@ -796,7 +797,7 @@ end
 
 function TechDatabaseController:update_angle_slider(val)
 	local angle = (val * 3) - 1.5
-	ScpuiSystem.modelDraw.angle = angle
+	ScpuiSystem.data.memory.modelDraw.angle = angle
 end
 
 function TechDatabaseController:update_speed(element, event)
@@ -808,42 +809,52 @@ end
 
 function TechDatabaseController:update_speed_slider(val)
 	local speed = (val * 2)
-	ScpuiSystem.modelDraw.speed = speed
+	ScpuiSystem.data.memory.modelDraw.speed = speed
 end
 
 function TechDatabaseController:DrawModel()
 
-	if ScpuiSystem.modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU" then  --Haaaaaaacks
+	if ScpuiSystem.data.memory.modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU" then  --Haaaaaaacks
 
 		local thisItem = nil
-		if ScpuiSystem.modelDraw.section == "ships" then
-			thisItem = tb.ShipClasses[ScpuiSystem.modelDraw.class]
-		elseif ScpuiSystem.modelDraw.section == "weapons" then
-			thisItem = tb.WeaponClasses[ScpuiSystem.modelDraw.class]
-		end
-		
-		if not ScpuiSystem.modelDraw.click then
-			ScpuiSystem.modelDraw.Rot = ScpuiSystem.modelDraw.Rot + (ScpuiSystem.modelDraw.speed * ba.getRealFrametime())
+		if ScpuiSystem.data.memory.modelDraw.section == "ships" then
+			thisItem = tb.ShipClasses[ScpuiSystem.data.memory.modelDraw.class]
+		elseif ScpuiSystem.data.memory.modelDraw.section == "weapons" then
+			thisItem = tb.WeaponClasses[ScpuiSystem.data.memory.modelDraw.class]
 		end
 
-		if ScpuiSystem.modelDraw.Rot >= 100 then
-			ScpuiSystem.modelDraw.Rot = ScpuiSystem.modelDraw.Rot - 100
+		--- If we somehow have a class that's not valid then we can't draw
+		if not thisItem then
+			return
 		end
 		
-		local modelView = ScpuiSystem.modelDraw.element
+		if not ScpuiSystem.data.memory.modelDraw.click then
+			ScpuiSystem.data.memory.modelDraw.Rot = ScpuiSystem.data.memory.modelDraw.Rot + (ScpuiSystem.data.memory.modelDraw.speed * ba.getRealFrametime())
+		end
+
+		if ScpuiSystem.data.memory.modelDraw.Rot >= 100 then
+			ScpuiSystem.data.memory.modelDraw.Rot = ScpuiSystem.data.memory.modelDraw.Rot - 100
+		end
+		
+		local modelView = ScpuiSystem.data.memory.modelDraw.element
+
+		--- If the modelView is not found, then we can't draw the model this frame
+		if not modelView then
+			return
+		end
 						
 		local modelLeft = modelView.offset_left + modelView.parent_node.offset_left + modelView.parent_node.parent_node.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + 2 --Does not include modelView.offset_top because that element's padding is set for anims
 		local modelWidth = modelView.offset_width
 		local modelHeight = modelView.offset_height + 10
 		
-		local calcX = (ScpuiSystem.modelDraw.sx - ScpuiSystem.modelDraw.mx) * -1
-		local calcY = (ScpuiSystem.modelDraw.sy - ScpuiSystem.modelDraw.my) * -1
+		local calcX = (ScpuiSystem.data.memory.modelDraw.sx - ScpuiSystem.data.memory.modelDraw.mx) * -1
+		local calcY = (ScpuiSystem.data.memory.modelDraw.sy - ScpuiSystem.data.memory.modelDraw.my) * -1
 		
-		local orient = ba.createOrientation(ScpuiSystem.modelDraw.angle, 0, ScpuiSystem.modelDraw.Rot)
+		local orient = ba.createOrientation(ScpuiSystem.data.memory.modelDraw.angle, 0, ScpuiSystem.data.memory.modelDraw.Rot)
 		
 		--Move model based on mouse coordinates
-		if ScpuiSystem.modelDraw.click then
+		if ScpuiSystem.data.memory.modelDraw.click then
 			local dx = calcX * 1
 			local dy = calcY * 1
 			local radius = 100
@@ -877,9 +888,9 @@ function TechDatabaseController:DrawModel()
 			local uvec = ba.createVector(((dxdr*dydr)*cos_theta1), (cos_theta + ((dxdr*dxdr)*cos_theta1)), 1)
 			local rvec = ba.createVector((cos_theta + (dydr*dydr)*cos_theta1), 1, 1)
 			
-			ScpuiSystem.modelDraw.clickOrient = ba.createOrientationFromVectors(fvec, uvec, rvec)
+			ScpuiSystem.data.memory.modelDraw.clickOrient = ba.createOrientationFromVectors(fvec, uvec, rvec)
 		
-			orient = ScpuiSystem.modelDraw.clickOrient * orient
+			orient = ScpuiSystem.data.memory.modelDraw.clickOrient * orient
 		end
 		
 		--thisItem:renderTechModel(modelLeft, modelTop, modelLeft + modelWidth, modelTop + modelHeight, modelDraw.Rot, -15, 0, 1.1)
@@ -898,7 +909,7 @@ end
 
 function TechDatabaseController:ClearData()
 
-	ScpuiSystem.modelDraw.class = nil
+	ScpuiSystem.data.memory.modelDraw.class = nil
 	local aniWrapper = self.document:GetElementById("tech_view")
 	aniWrapper:RemoveChild(aniWrapper.first_child)
 	self.document:GetElementById("tech_desc").inner_rml = "<p></p>"
@@ -1095,7 +1106,7 @@ function TechDatabaseController:unload()
 end
 
 engine.addHook("On Frame", function()
-	if (ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU") and (ScpuiSystem.render == true) then
+	if (ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU") and (ScpuiSystem.data.render == true) then
 		TechDatabaseController:DrawModel()
 	end
 end, {}, function()

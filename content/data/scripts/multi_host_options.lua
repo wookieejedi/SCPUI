@@ -17,6 +17,7 @@ function HostOptionsController:init()
 	self.team_elements = {}
 end
 
+---@param document Document
 function HostOptionsController:initialize(document)
 	
 	self.document = document

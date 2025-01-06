@@ -13,14 +13,18 @@ function BarracksScreenController:init()
     self.help_shown = false
 end
 
+---@param document Document
 function BarracksScreenController:initialize(document)
     self.pilotImages = ui.Barracks.listPilotImages()
     self.squadImages = ui.Barracks.listSquadImages()
 
+    ---@type Document
+    self.document = nil
+
     PilotSelectController.initialize(self, document)
 	
 	--Hide Multi stuff maybe
-	if ScpuiSystem.hideMulti == true then
+	if ScpuiSystem.data.tableFlags.hideMulti == true then
 		self.document:GetElementById("multiplayer_btn"):SetClass("hidden", true)
 	end
 

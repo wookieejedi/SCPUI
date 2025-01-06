@@ -7,6 +7,7 @@ local CampaignController = class()
 function CampaignController:init()
 end
 
+---@param document Document
 function CampaignController:initialize(document)
     self.document = document
     self.elements = {}

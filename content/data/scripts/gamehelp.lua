@@ -6,6 +6,7 @@ local GamehelpController = class()
 function GamehelpController:init()
 end
 
+---@param document Document
 function GamehelpController:initialize(document)
 
     self.document = document
@@ -23,14 +24,14 @@ function GamehelpController:initialize(document)
 	ui.GameHelp.initGameHelp()
 	
 	self.numSections = #ui.GameHelp.Help_Sections
-	if ScpuiSystem.hideMulti then
+	if ScpuiSystem.data.tableFlags.hideMulti then
 		self.numSections = self.numSections - 1
 	end
 	self.sections = {}
 	
 	local count = 1
 	for i = 1, #ui.GameHelp.Help_Sections do
-		if ui.GameHelp.Help_Sections[i].Title == 'Multiplayer Keys' and ScpuiSystem.hideMulti then
+		if ui.GameHelp.Help_Sections[i].Title == 'Multiplayer Keys' and ScpuiSystem.data.tableFlags.hideMulti then
 			--Skip adding the multi keys
 		else
 			self.sections[count] = {

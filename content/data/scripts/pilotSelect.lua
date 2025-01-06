@@ -20,6 +20,7 @@ function PilotSelectController:init()
     self.mode                  = PilotSelectController.MODE_PLAYER_SELECT
 end
 
+---@param document Document
 function PilotSelectController:initialize(document)
     self.document  = document
 	
@@ -64,7 +65,7 @@ function PilotSelectController:initialize(document)
 		document:GetElementById("mod_version_info").inner_rml = ScpuiSystem:getModTitle() .. version
 		
 		--Hide Multi stuff maybe
-		if ScpuiSystem.hideMulti == true then
+		if ScpuiSystem.data.tableFlags.hideMulti == true then
 			self.document:GetElementById("singleplayer_text"):SetClass("hidden", true)
 			self.document:GetElementById("multiplayer_text"):SetClass("hidden", true)
 			self.document:GetElementById("singleplayer_btn"):SetClass("hidden", true)
@@ -99,7 +100,7 @@ function PilotSelectController:initialize(document)
 	end
 
 	--Only show this warning on first boot
-	if not ScpuiSystem.WarningCountShown then
+	if not ScpuiSystem.data.memory.WarningCountShown then
 		if ui.PilotSelect.WarningCount > 10 or ui.PilotSelect.ErrorCount > 0 then
 			local text    = string.format(ba.XSTR("The currently active mod has generated %d warnings and/or errors during"
 														  .. "program startup.  These could have been caused by anything from incorrectly formatted table files to"
@@ -117,7 +118,7 @@ function PilotSelectController:initialize(document)
 		end
 	end
 	
-	ScpuiSystem.WarningCountShown = true
+	ScpuiSystem.data.memory.WarningCountShown = true
 
     if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
         if ui.PilotSelect.isAutoselect() then

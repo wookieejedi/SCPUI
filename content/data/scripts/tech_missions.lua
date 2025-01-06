@@ -14,6 +14,7 @@ function TechMissionsController:init()
 	self.help_shown = false
 end
 
+---@param document Document
 function TechMissionsController:initialize(document)
     self.document = document
     self.elements = {}

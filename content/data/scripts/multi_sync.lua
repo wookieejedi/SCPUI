@@ -18,6 +18,7 @@ function MultiSyncController:init()
 	self.countdown = nil
 end
 
+---@param document Document
 function MultiSyncController:initialize(document)
 	
 	self.document = document

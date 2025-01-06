@@ -11,6 +11,7 @@ function JoinGameController:init()
 
 end
 
+---@param document Document
 function JoinGameController:initialize(document)
 	
 	self.document = document

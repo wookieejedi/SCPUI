@@ -95,6 +95,8 @@ beam = {}
 -- briefing: Briefing handle
 briefing = {}
 --- @class briefing
+--- @field [number] briefing_stage # The list of stages in the briefing.
+--- @operator len(): number # The number of stages in the briefing
 
 -- briefing_stage: Briefing stage handle
 briefing_stage = {}
@@ -107,6 +109,7 @@ briefing_stage = {}
 -- bytearray: An array of binary data
 bytearray = {}
 --- @class bytearray
+--- @operator len(): number # The number of bytes in this array
 
 -- camera: Camera handle
 camera = {}
@@ -127,6 +130,8 @@ camera = {}
 -- cmd_briefing: Command briefing handle
 cmd_briefing = {}
 --- @class cmd_briefing
+--- @field [number] cmd_briefing_stage # The list of stages in the command briefing.
+--- @operator len(): number # The number of stages in the command briefing
 
 -- cmd_briefing_stage: Command briefing stage handle
 cmd_briefing_stage = {}
@@ -138,6 +143,8 @@ cmd_briefing_stage = {}
 -- cockpitdisplays: Array of cockpit display information
 cockpitdisplays = {}
 --- @class cockpitdisplays
+--- @operator len(): number # Number of cockpit displays for this ship class
+--- @field [number | string] display_info # Returns the handle at the requested index or the handle with the specified name
 --- @field isValid fun(self: self): boolean # Detects whether this handle is valid
 
 -- collision_info: Information about a collision
@@ -170,7 +177,7 @@ control = {}
 --- @field Disabled boolean # True for disabled, false otherwise,  Whether or not the control is disabled and should be hidden.
 --- @field IsAxis boolean # True for axis, false otherwise,  Whether or not the bound control is an axis control.
 --- @field IsModifier boolean # True for modifier, false otherwise,  Whether or not the bound control is a modifier.
---- @field Conflicted boolean # Returns the conflict string if true, nil otherwise,  Whether or not the bound control has a conflict.
+--- @field Conflicted string # Returns the conflict string if true, nil otherwise,  Whether or not the bound control has a conflict.
 --- @field detectKeypress fun(self: self, Item: number): number # Waits for a keypress to use as a keybind. Binds the key if found. Will need to disable UI input if enabled first. Should run On Frame. Item is first bind (1) or second bind (2)
 --- @field clearBind fun(self: self, Item: number): boolean # Clears the control binding. Item is all controls (1), first control (2), or second control (3)
 --- @field clearConflicts fun(self: self): boolean # Clears all binds that conflict with the selected bind index.
@@ -214,6 +221,8 @@ cutscene_info = {}
 -- debriefing: Debriefing handle
 debriefing = {}
 --- @class debriefing
+--- @field [number] debriefing_stage # The list of stages in the debriefing.
+--- @operator len(): number # The number of stages in the debriefing
 
 -- debriefing_stage: Debriefing stage handle
 debriefing_stage = {}
@@ -246,10 +255,14 @@ decaldefinition = {}
 -- default_primary: weapon index
 default_primary = {}
 --- @class default_primary
+--- @field [number] weaponclass? # Array of ship default primaries for each bank. Returns the Weapon Class or nil if the bank is invalid for the ship class.
+--- @operator len(): number # The number of primary banks with defaults
 
 -- default_secondary: weapon index
 default_secondary = {}
 --- @class default_secondary
+--- @field [number] weaponclass? # Array of ship default secondaries for each bank. Returns the Weapon Class or nil if the bank is invalid for the ship class.
+--- @operator len(): number # The number of secondary banks with defaults
 
 -- display: Cockpit display handle
 display = {}
@@ -276,11 +289,14 @@ display_info = {}
 -- displays: Player cockpit displays array handle
 displays = {}
 --- @class displays
+--- @operator len(): number # Gets the number of cockpit displays for the player ship
+--- @field [number | string] display # Gets a cockpit display from the present player displays by either the index or the name of the display
 --- @field isValid fun(self: self): boolean # Detects whether this handle is valid or not
 
 -- dockingbay: Handle to a model docking bay
 dockingbay = {}
 --- @class dockingbay
+--- @operator len(): number # Gets the number of docking points in this bay
 --- @field getName fun(self: self): string # Gets the name of this docking bay
 --- @field getPoint fun(self: self, index: number): vector # Gets the location of a docking point in this bay
 --- @field getNormal fun(self: self, index: number): vector # Gets the normal of a docking point in this bay
@@ -290,6 +306,8 @@ dockingbay = {}
 -- dockingbays: The docking bays of a model
 dockingbays = {}
 --- @class dockingbays
+--- @field [dockingbay] dockingbay # Gets a dockingbay handle from this model. If a string is given then a dockingbay with that name is searched.
+--- @operator len(): number # Retrieves the number of dockingbays on this model
 
 -- dogfight_scores: Dogfight scores handle
 dogfight_scores = {}
@@ -341,6 +359,8 @@ eyepoint = {}
 -- eyepoints: Array of model eye points
 eyepoints = {}
 --- @class eyepoints
+--- @operator len(): number # Gets the number of eyepoints on this model
+--- @field [eyepoint] eyepoint # Gets an eyepoint handle
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid or not
 
 -- fiction_viewer_stage: Fiction Viewer stage handle
@@ -358,7 +378,7 @@ file = {}
 --- @field flush fun(self: self): boolean # Flushes file buffer to disk.
 --- @field getName fun(self: self): string # Returns the name of the given file
 --- @field getPath fun(self: self): string # Determines path of the given file
---- @field read fun(self: self, param2: number | string, ...: any): number | string # Reads part of or all of a file, depending on arguments passed. Based on basic Lua file:read function.Returns nil when the end of the file is reached.<br><ul><li>"*n" - Reads a number.</li><li>"*a" - Reads the rest of the file and returns it as a string.</li><li>"*l" - Reads a line. Skips the end of line markers.</li><li>(number) - Reads given number of characters, then returns them as a string.</li></ul>
+--- @field read fun(self: self, param2: number | string, ...: any): string # Reads part of or all of a file, depending on arguments passed. Based on basic Lua file:read function.Returns nil when the end of the file is reached.<br><ul><li>"*n" - Reads a number.</li><li>"*a" - Reads the rest of the file and returns it as a string.</li><li>"*l" - Reads a line. Skips the end of line markers.</li><li>(number) - Reads given number of characters, then returns them as a string.</li></ul>
 --- @field seek fun(self: self, Whence?: string, Offset?: number): number # Changes position of file, or gets location.Whence can be:<li>"set" - File start.</li><li>"cur" - Current position in file.</li><li>"end" - File end.</li></ul>
 --- @field write fun(self: self, param2: string | number, ...: any): number # Writes a series of Lua strings or numbers to the current file.
 --- @field writeBytes fun(self: self, bytes: bytearray): number # Writes the specified data to the file
@@ -427,11 +447,15 @@ glowpoint = {}
 -- glowpointbank: A model glow point bank
 glowpointbank = {}
 --- @class glowpointbank
+--- @operator len(): number # Gets the number of glow points in this bank
+--- @field [glowpoint] glowpoint # Gets a glow point handle
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid or not
 
 -- glowpointbanks: Array of model glow point banks
 glowpointbanks = {}
 --- @class glowpointbanks
+--- @operator len(): number # Gets the number of glow point banks on this model
+--- @field [glowpointbank] glowpointbank # Gets a glow point bank handle
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid or not
 
 -- help_section: Help Section handle
@@ -515,6 +539,8 @@ keybinding = {}
 -- loadout_amount: Loadout handle
 loadout_amount = {}
 --- @class loadout_amount
+--- @field [number] number # Array of ship bank weapons. 1-3 are Primary weapons. 4-7 are Secondary weapons. Note that banks that do not exist on the ship class are still valid here as a loadout slot. Also note that primary banks will hold the value of 1 even if it is ballistic. If the amount to set is greater than the bank's capacity then it will be set to capacity. Set to -1 to empty the slot. Amounts less than -1 will be set to -1.
+--- @operator len(): number # The number of weapon banks in the slot
 
 -- loadout_ship: Loadout handle
 loadout_ship = {}
@@ -526,10 +552,14 @@ loadout_ship = {}
 -- loadout_weapon: Loadout handle
 loadout_weapon = {}
 --- @class loadout_weapon
+--- @field [number] number # Array of ship bank weapons. 1-3 are Primary weapons. 4-7 are Secondary weapons. Note that banks that do not exist on the ship class are still valid here as a loadout slot. When setting the weapon it will be checked if it is valid for the ship and bank. If it is not then it will be set to -1 and the amount will be set to -1. If it is valid for the ship then the amount is set to 0. Use .Amounts to set the amount afterwards. Set to -1 to empty the slot.
+--- @operator len(): number # The number of weapon banks in the slot
 
 -- loadout_wing: Loadout handle
 loadout_wing = {}
 --- @class loadout_wing
+--- @field [number] loadout_wing_slot # Array of loadout wing slot data
+--- @operator len(): number # The number of slots in the wing
 --- @field Name string # The wing,  The name of the wing
 
 -- loadout_wing_slot: Loadout wing slot handle
@@ -575,6 +605,8 @@ LuaAISEXP = {}
 LuaEnum = {}
 --- @class LuaEnum
 --- @field Name string # The enum name or nil if handle is invalid,  The enum name
+--- @field [number] string # Array of enum items
+--- @operator len(): number # The number of Lua enum items
 --- @field addEnumItem fun(self: self, itemname: string): boolean # Adds an enum item with the given string.
 --- @field removeEnumItem fun(self: self, itemname: string): boolean # Removes an enum item with the given string.
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
@@ -656,12 +688,16 @@ model_instance = {}
 -- modelinstancetextures: Model instance textures handle
 modelinstancetextures = {}
 --- @class modelinstancetextures
+--- @operator len(): number # Number of textures on a model instance
+--- @field [number | string] texture # Array of model instance textures
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
 
 -- modelpath: Path of a model
 modelpath = {}
 --- @class modelpath
+--- @operator len(): number # Gets the number of points in this path
 --- @field isValid fun(self: self): boolean # Determines if the handle is valid
+--- @field [number] modelpathpoint # Returns the point in the path with the specified index
 --- @field Name string # The name or empty string if handle is invalid,  The name of this model path
 
 -- modelpathpoint: Point in a model path
@@ -818,6 +854,8 @@ order = {}
 -- orientation: Orientation matrix object
 orientation = {}
 --- @class orientation
+--- @field [string] number # Orientation component - pitch, bank, heading, or index into 3x3 matrix (1-9)
+--- @field [number] number # Orientation component - pitch, bank, heading, or index into 3x3 matrix (1-9)
 --- @operator mul(orientation): orientation # Multiplies two matrix objects)
 --- @field copy fun(self: self): orientation # Returns a copy of the orientation
 --- @field getInterpolated fun(self: self, Final: orientation, Factor: number): orientation # Returns orientation that has been interpolated to Final by Factor (0.0-1.0).  This is a pure linear interpolation with no consideration given to matrix validity or normalization.  You may want 'rotationalInterpolate' instead.
@@ -1047,6 +1085,8 @@ sexpvariable = {}
 -- shields: Shields handle
 shields = {}
 --- @class shields
+--- @operator len(): number # Number of shield segments
+--- @field [enumeration | number] number # Gets or sets shield segment strength. Use "SHIELD_*" enumerations (for standard 4-quadrant shields) or index of a specific segment, or NONE for the entire shield
 --- @field CombinedLeft number # Combined shield strength, or 0 if handle is invalid,  Total shield hitpoints left (for all segments combined)
 --- @field CombinedMax number # Combined maximum shield strength, or 0 if handle is invalid,  Maximum shield hitpoints (for all segments combined)
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
@@ -1054,6 +1094,8 @@ shields = {}
 -- ship: Ship handle
 ship = {}
 --- @class ship : object
+--- @field [string | number] subsystem # Array of ship subsystems
+--- @operator len(): number # Number of subsystems on ship
 --- @field setFlag fun(self: self, set_it: boolean, flag_name: string): nil # Sets or clears one or more flags - this function can accept an arbitrary number of flag arguments.  The flag names can be any string that the alter-ship-flag SEXP operator supports.
 --- @field getFlag fun(self: self, flag_name: string): boolean # Checks whether one or more flags are set - this function can accept an arbitrary number of flag arguments.  The flag names can be any string that the alter-ship-flag SEXP operator supports.
 --- @field ShieldArmorClass string # Armor class name, or empty string if none is set,  Current Armor class of the ships' shield
@@ -1235,6 +1277,8 @@ shipclass = {}
 -- shiporders: Ship orders
 shiporders = {}
 --- @class shiporders
+--- @operator len(): number # Number of ship orders
+--- @field [number] order # Array of ship orders
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
 
 -- shiptype: Ship type handle
@@ -1353,11 +1397,15 @@ submodel_instance = {}
 -- submodel_instances: Array of submodel instances
 submodel_instances = {}
 --- @class submodel_instances
+--- @operator len(): number # Number of submodel instances on model
+--- @field [submodel_instance] submodel_instance # number|string IndexOrName
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
 
 -- submodels: Array of submodels
 submodels = {}
 --- @class submodels
+--- @operator len(): number # Number of submodels on model
+--- @field [submodel] submodel # number|string IndexOrName
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
 
 -- subsystem: Ship subsystem handle
@@ -1422,6 +1470,7 @@ team = {}
 -- texture: Texture handle
 texture = {}
 --- @class texture
+--- @field [number] texture # Returns texture handle to specified frame number in current texture's animation.This means that [1] will always return the first frame in an animation, no matter what frame an animation is.You cannot change a texture animation frame.
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
 --- @field unload fun(self: self): nil # Unloads a texture from memory
 --- @field destroyRenderTarget fun(self: self): nil # Destroys a texture's render target. Call this when done drawing to a texture, as it frees up resources.
@@ -1435,16 +1484,22 @@ texture = {}
 -- textures: Array of textures
 textures = {}
 --- @class textures
+--- @operator len(): number # Number of textures on model
+--- @field [texture] texture # number Index/string TextureName
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
 
 -- thrusterbank: A model thrusterbank
 thrusterbank = {}
 --- @class thrusterbank
+--- @operator len(): number # Number of thrusters on this thrusterbank
+--- @field [number] glowpoint # Array of glowpoint
 --- @field isValid fun(self: self): boolean # Detects if this handle is valid
 
 -- thrusters: The thrusters of a model
 thrusters = {}
 --- @class thrusters
+--- @operator len(): number # Number of thruster banks on the model
+--- @field [number] thrusterbank # Array of all thrusterbanks on this thruster
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
 
 -- timespan: A difference between two time stamps
@@ -1471,6 +1526,8 @@ ValueDescription = {}
 -- vector: Vector object
 vector = {}
 --- @class vector
+--- @field [string] number # Vector component
+--- @field [number] number # Vector component
 --- @operator add(number | vector): vector # Adds vector by another vector, or adds all axes by value
 --- @operator sub(number | vector): vector # Subtracts vector from another vector, or subtracts all axes by value
 --- @operator mul(number | vector): vector # Scales vector object (Multiplies all axes by number), or multiplies each axes by the other vector's axes.
@@ -1501,6 +1558,8 @@ waypoint = {}
 -- waypointlist: waypointlist handle
 waypointlist = {}
 --- @class waypointlist
+--- @field [number] waypoint # Array of waypoints that are part of the waypoint list
+--- @operator len(): number # Number of waypoints in the list. Note that the value returned cannot be relied on for more than one frame.
 --- @field Name string # Waypointlist name, or empty string if handle is invalid,  Name of WaypointList
 --- @field isValid fun(self: self): boolean # Return if this waypointlist handle is valid
 
@@ -1540,9 +1599,11 @@ weaponbank = {}
 -- weaponbanktype: Ship/subsystem weapons bank type handle
 weaponbanktype = {}
 --- @class weaponbanktype
+--- @field [number] weaponbank # Array of weapon banks
 --- @field Linked boolean # Link status, or false if handle is invalid,  Whether bank is in linked or unlinked fire mode (Primary-only)
 --- @field DualFire boolean # Dual fire status, or false if handle is invalid,  Whether bank is in dual fire mode (Secondary-only)
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
+--- @operator len(): number # Number of weapons in the mounted bank
 
 -- weaponclass: Weapon class handle
 weaponclass = {}
@@ -1600,7 +1661,7 @@ weaponclass = {}
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
 --- @field renderTechModel fun(self: self, X1: number, Y1: number, X2: number, Y2: number, RotationPercent?: number, PitchPercent?: number, BankPercent?: number, Zoom?: number, Lighting?: boolean): boolean # Draws weapon tech model. True for regular lighting, false for flat lighting.
 --- @field renderTechModel2 fun(self: self, X1: number, Y1: number, X2: number, Y2: number, Orientation?: orientation, Zoom?: number): boolean # Draws weapon tech model
---- @field renderSelectModel fun(self: self, x: number, y: number, width?: number, height?: number, currentEffectSetting?: number, zoom?: number): boolean # Draws the 3D select weapon model with the chosen effect at the specified coordinates. Restart should be true on the first frame this is called and false on subsequent frames. Note that primary weapons will not render anything if they do not have a valid pof model defined! Valid selection effects are 1 (fs1) or 2 (fs2), defaults to the mod setting or the model's setting. Zoom is a multiplier to the model's closeup_zoom value.
+--- @field renderSelectModel fun(self: self, restart: boolean, x: number, y: number, width?: number, height?: number, currentEffectSetting?: number, zoom?: number): boolean # Draws the 3D select weapon model with the chosen effect at the specified coordinates. Restart should be true on the first frame this is called and false on subsequent frames. Note that primary weapons will not render anything if they do not have a valid pof model defined! Valid selection effects are 1 (fs1) or 2 (fs2), defaults to the mod setting or the model's setting. Zoom is a multiplier to the model's closeup_zoom value.
 --- @field getWeaponClassIndex fun(self: self): number # Gets the index value of the weapon class
 --- @field isLaser fun(self: self): boolean # Return true if the weapon is a 'laser' weapon, which also includes ballistic (ammo-based) weapons.  This also includes most beams, but not necessarily all of them.  See also isPrimary().
 --- @field isMissile fun(self: self): boolean # Return true if the weapon is a 'missile' weapon.  See also isSecondary().
@@ -1617,6 +1678,8 @@ weaponclass = {}
 -- wing: Wing handle
 wing = {}
 --- @class wing
+--- @field [number] ship # Array of ships in the wing
+--- @operator len(): number # Gets the number of ships in the wing
 --- @field Name string # Wing name, or empty string if handle is invalid,  Name of Wing
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
 --- @field getBreedName fun(self: self): string # Gets the FreeSpace type name
@@ -1651,25 +1714,25 @@ wingformation = {}
 --- @field Name string # Wing formation name, or empty string if handle is invalid,  Wing formation name
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
 
+--- context: Support library for creating execution contexts.
+--- @class context
+--- @field captureGameState fun(): execution_context # Captures the current game state as an execution context
+--- @field createLuaState fun(param1: aliasFunc_9): execution_context # Creates an execution state by storing the passed function and calling that when the state is required.
+--- @field combineContexts fun(...: execution_context): execution_context # Combines several execution contexts into a single one by only return a valid state if all contexts are valid.
+async.context = {}
+
 --- Async: Support library for asynchronous operations
 --- @class Async
 --- @field OnFrameExecutor executor # The executor handle,  An executor that executes operations at the end of rendering a frame.
 --- @field OnSimulationExecutor executor # The executor handle,  An executor that executes operations after all object simulation has been done but before rendering starts. This is the place to do physics manipulations.
---- @field promise fun(body: body_11): promise # Creates a promise that resolves when the resolve function of the callback is called or errors if the reject function is called. The function will be called on its own.
+--- @field promise fun(body: body_12): promise # Creates a promise that resolves when the resolve function of the callback is called or errors if the reject function is called. The function will be called on its own.
 --- @field resolved fun(...: any): promise # Creates a resolved promise with the values passed to this function.
 --- @field errored fun(...: any): promise # Creates an errored promise with the values passed to this function.
---- @field run fun(body: body_12, executeOn?: executor, captureContext?: boolean | execution_context): promise # Runs an asynchronous function. Inside this function you can use async.await to suspend the function until a promise resolves. Also allows to specify an executor on which the code of the coroutine should be executed. If captureContext is true then the game context (the game state) at the time of the call is captured and the coroutine is only run if that state is still active.
---- @field awaitRunOnFrame fun(body: body_12, allowMultiProcessing?: boolean): any | nil # Runs an asynchronous function in an OnFrameExecutor context and busy-waits for the coroutine to finish. Inside this function you can use async.await to suspend the function until a promise resolves. This is useful for cases where you need a scripting process to run over multiple frames, even when the engine is not in a stable game state (such as showing animations during game state switches, etc.).
+--- @field run fun(body: body_13, executeOn?: executor, captureContext?: boolean | execution_context): promise # Runs an asynchronous function. Inside this function you can use async.await to suspend the function until a promise resolves. Also allows to specify an executor on which the code of the coroutine should be executed. If captureContext is true then the game context (the game state) at the time of the call is captured and the coroutine is only run if that state is still active.
+--- @field awaitRunOnFrame fun(body: body_13, allowMultiProcessing?: boolean): any | nil # Runs an asynchronous function in an OnFrameExecutor context and busy-waits for the coroutine to finish. Inside this function you can use async.await to suspend the function until a promise resolves. This is useful for cases where you need a scripting process to run over multiple frames, even when the engine is not in a stable game state (such as showing animations during game state switches, etc.).
 --- @field await fun(param1: promise): any # Suspends an asynchronous coroutine until the passed promise resolves.
 --- @field yield fun(): promise # Returns a promise that will resolve on the next execution of the current executor. Effectively allows to asynchronously wait until the next frame.
 --- @field error fun(...: any): nil # Causes the currently running coroutine to fail with an error with the specified values.
-
---- context: Support library for creating execution contexts.
---- @class context
---- @field captureGameState fun(): execution_context # Captures the current game state as an execution context
---- @field createLuaState fun(param1: aliasFunc_13): execution_context # Creates an execution state by storing the passed function and calling that when the state is required.
---- @field combineContexts fun(...: execution_context): execution_context # Combines several execution contexts into a single one by only return a valid state if all contexts are valid.
-async.context = {}
 async = {}
 
 --- Audio: Sound/Music Library
@@ -1909,6 +1972,7 @@ gr = {}
 
 --- HookVariables: Hook variables repository
 --- @class HookVariables
+--- @field [string] any # Retrieves a hook variable value
 --- @field Globals string[] # Array of current HookVariable names - Hookvariable name, or empty string if invalid index specified
 --- @field Action? string
 --- @field Ship? ship
@@ -2107,7 +2171,7 @@ multi = {}
 
 --- Options: Options library
 --- @class Options
---- @field Options option # A table of all the options.,  The available options.
+--- @field Options table # A table of all the options.,  The available options.
 --- @field persistChanges fun(): option # Persist any changes made to the options system. Options can be incapable of applying changes immediately in which case they are returned here.
 --- @field discardChanges fun(): boolean # Discard any changes made to the options system.
 --- @field MultiLogin string # The login name,  The multiplayer PXO login name
@@ -2127,8 +2191,8 @@ opt = {}
 --- @field requiredString fun(token: string): boolean # Require that a string appears at the current position.
 --- @field optionalString fun(token: string): boolean # Check if the string appears at the current position in the file.
 --- @field getString fun(): string # Gets a single line of text from the file
---- @field getFloat fun(): string # Gets a floating point number from the file
---- @field getInt fun(): string # Gets an integer number from the file
+--- @field getFloat fun(): number # Gets a floating point number from the file
+--- @field getInt fun(): number # Gets an integer number from the file
 --- @field getBoolean fun(): boolean # Gets a boolean value from the file
 parse = {}
 
@@ -2168,20 +2232,6 @@ time = {}
 --- @field sub fun(arg: string, start: number, endVal?: number): string # This function is similar to the standard library string.sub but this can operate on UTF-8 encoded unicode strings. This function will respect the unicode mode setting of the current mod so you can use it even if you don't use Unicode strings.
 --- @field len fun(arg: string): number # Determines the number of codepoints in the given string. This respects the unicode mode setting of the mod.
 utf8 = {}
-
---- UserInterface: Functions for managing the "SCPUI" user interface system.
---- @class UserInterface
---- @field setOffset fun(x: number, y: number): boolean # Sets the offset from the top left corner at which <b>all</b> rocket contexts will be rendered
---- @field enableInput fun(context: any): boolean # Enables input for the specified libRocket context
---- @field disableInput fun(): nil # Disables UI input
---- @field ColorTags table<string, color> # A mapping from tag string to color value,  The available tagged colors
---- @field DefaultTextColorTag fun(UiScreen: number): string # Gets the default color tag string for the specified state. 1 for Briefing, 2 for CBriefing, 3 for Debriefing, 4 for Fiction Viewer, 5 for Red Alert, 6 for Loop Briefing, 7 for Recommendation text. Defaults to 1. Index into ColorTags.
---- @field playElementSound fun(element: any, event: string, state?: string): boolean # Plays an element specific sound with an optional state for differentiating different UI states.
---- @field maybePlayCutscene fun(MovieType: enumeration, RestartMusic: boolean, ScoreIndex: number): nil # Plays a cutscene, if one exists, for the appropriate state transition.  If RestartMusic is true, then the music score at ScoreIndex will be started after the cutscene plays.
---- @field playCutscene fun(Filename: string, RestartMusic: boolean, ScoreIndex: number): nil # Plays a cutscene.  If RestartMusic is true, then the music score at ScoreIndex will be started after the cutscene plays.
---- @field isCutscenePlaying fun(): boolean # Checks if a cutscene is playing.
---- @field launchURL fun(url: string): nil # Launches the given URL in a web browser
---- @field linkTexture fun(texture: texture): string # Links a texture directly to librocket.
 
 --- PilotSelect: API for accessing values specific to the Pilot Select UI.
 --- @class PilotSelect
@@ -2305,14 +2355,6 @@ ui.FictionViewer = {}
 --- @field sendWeaponRequestPacket fun(FromBank: number, ToBank: number, fromPoolWepIdx: number, toPoolWepIdx: number, shipSlot: number): nil # Sends a request to the host to change a ship slot.
 ui.ShipWepSelect = {}
 
---- TechRoom: API for accessing data related to the Tech Room UIs.
---- @class TechRoom
---- @field buildMissionList fun(): number # Builds the mission list for display. Must be called before the sim_mission handle will have data
---- @field buildCredits fun(): number # Builds the credits for display. Must be called before the credits_info handle will have data
---- @field SingleMissions sim_mission[] # Array of simulator missions - Mission handle, or invalid handle if index is invalid
---- @field CampaignMissions sim_mission[] # Array of campaign missions - Mission handle, or invalid handle if index is invalid
---- @field Cutscenes cutscene_info[] # Array of cutscenes - Cutscene handle, or invalid handle if index is invalid
-
 --- Credits: 
 --- @class Credits
 --- @field Music string # The music filename,  The credits music filename
@@ -2323,6 +2365,14 @@ ui.ShipWepSelect = {}
 --- @field ScrollRate number # The scroll rate,  The scroll rate of the text
 --- @field Complete string # The credits,  The complete credits string
 ui.TechRoom.Credits = {}
+
+--- TechRoom: API for accessing data related to the Tech Room UIs.
+--- @class TechRoom
+--- @field buildMissionList fun(): number # Builds the mission list for display. Must be called before the sim_mission handle will have data
+--- @field buildCredits fun(): number # Builds the credits for display. Must be called before the credits_info handle will have data
+--- @field SingleMissions sim_mission[] # Array of simulator missions - Mission handle, or invalid handle if index is invalid
+--- @field CampaignMissions sim_mission[] # Array of campaign missions - Mission handle, or invalid handle if index is invalid
+--- @field Cutscenes cutscene_info[] # Array of cutscenes - Cutscene handle, or invalid handle if index is invalid
 ui.TechRoom = {}
 
 --- Medals: API for accessing data related to the Medals UI.
@@ -2408,7 +2458,7 @@ ui.PauseScreen = {}
 --- @field bannerFilename string # the banner filename,  The current banner filename
 --- @field bannerURL string # the banner url,  The current banner URL
 --- @field Channels pxo_channel[] # Array of channels - channel handle, or invalid handle if index is invalid
---- @field joinPrivateChannel fun(): nil # Joins the specified private channel
+--- @field joinPrivateChannel fun(channel: string): nil # Joins the specified private channel
 --- @field getHelpText fun(): string # Gets the help text lines as a table of strings
 ui.MultiPXO = {}
 
@@ -2494,6 +2544,20 @@ ui.MultiPauseScreen = {}
 --- @field closeDebrief fun(Accept?: boolean): nil # Makes sure everything is done correctly to accept or close the debrief. True to accept, False to quit
 --- @field runNetwork fun(): nil # Runs the network required commands.
 ui.MultiDogfightDebrief = {}
+
+--- UserInterface: Functions for managing the "SCPUI" user interface system.
+--- @class UserInterface
+--- @field setOffset fun(x: number, y: number): boolean # Sets the offset from the top left corner at which <b>all</b> rocket contexts will be rendered
+--- @field enableInput fun(context: any): boolean # Enables input for the specified libRocket context
+--- @field disableInput fun(): nil # Disables UI input
+--- @field ColorTags table<string, color> # A mapping from tag string to color value,  The available tagged colors
+--- @field DefaultTextColorTag fun(UiScreen: number): string # Gets the default color tag string for the specified state. 1 for Briefing, 2 for CBriefing, 3 for Debriefing, 4 for Fiction Viewer, 5 for Red Alert, 6 for Loop Briefing, 7 for Recommendation text. Defaults to 1. Index into ColorTags.
+--- @field playElementSound fun(element: any, event: string, state?: string): boolean # Plays an element specific sound with an optional state for differentiating different UI states.
+--- @field maybePlayCutscene fun(MovieType: enumeration, RestartMusic: boolean, ScoreIndex: number): nil # Plays a cutscene, if one exists, for the appropriate state transition.  If RestartMusic is true, then the music score at ScoreIndex will be started after the cutscene plays.
+--- @field playCutscene fun(Filename: string, RestartMusic: boolean, ScoreIndex: number): nil # Plays a cutscene.  If RestartMusic is true, then the music score at ScoreIndex will be started after the cutscene plays.
+--- @field isCutscenePlaying fun(): boolean # Checks if a cutscene is playing.
+--- @field launchURL fun(url: string): nil # Launches the given URL in a web browser
+--- @field linkTexture fun(texture: texture): string # Links a texture directly to librocket.
 ui = {}
 
 -- Aliases help with nested function calls in the above pseudo classes
@@ -2509,11 +2573,11 @@ ui = {}
 --- @alias body_6 fun(po: parse_object): nil
 --- @alias aliasFunc_7 fun(args: any): any
 --- @alias body_8 fun(): nil
---- @alias aliasFunc_9 fun(resolveVal: any): nil
---- @alias aliasFunc_10 fun(errorVal: any): nil
---- @alias body_11 fun(resolve: aliasFunc_9, reject: aliasFunc_10): nil
---- @alias body_12 fun(): any
---- @alias aliasFunc_13 fun(): enumeration
+--- @alias aliasFunc_9 fun(): enumeration
+--- @alias aliasFunc_10 fun(resolveVal: any): nil
+--- @alias aliasFunc_11 fun(errorVal: any): nil
+--- @alias body_12 fun(resolve: aliasFunc_10, reject: aliasFunc_11): nil
+--- @alias body_13 fun(): any
 --- @alias rpc_body fun(arg: any): nil
 
 -- Enumerations

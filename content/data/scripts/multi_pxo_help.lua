@@ -10,6 +10,7 @@ function PXOHelpController:init()
 
 end
 
+---@param document Document
 function PXOHelpController:initialize(document)
 	
 	self.document = document

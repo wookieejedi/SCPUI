@@ -16,6 +16,7 @@ end
 local alert_el = nil
 local alert_bool = true
 
+---@param document Document
 function RedAlertController:initialize(document)
 	self.document = document
 	
@@ -38,9 +39,9 @@ function RedAlertController:initialize(document)
 	end
 
 	--Whenever we start a new mission, we reset the log ui to goals
-	ScpuiSystem.logSection = 1
+	ScpuiSystem.data.memory.logSection = 1
 	
-	alert_el = self.document:GetElementById("incoming_transmission")
+	ScpuiSystem.data.memory.AlertElement = self.document:GetElementById("incoming_transmission")
 	RedAlertController:blink()
 	
 	topics.redalert.initialize:send(self)
@@ -52,11 +53,11 @@ function RedAlertController:blink()
 	async.run(function()
         async.await(async_util.wait_for(0.5))
 		if alert_bool then
-			alert_el:SetClass("hidden", true)
+			ScpuiSystem.data.memory.AlertElement:SetClass("hidden", true)
 			alert_bool = false
 			RedAlertController:blink()
 		else
-			alert_el:SetClass("hidden", false)
+			ScpuiSystem.data.memory.AlertElement:SetClass("hidden", false)
 			alert_bool = true
 			RedAlertController:blink()
 		end
@@ -84,12 +85,12 @@ function RedAlertController:unload()
     if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
         self.current_voice_handle:close(false)
     end
+	ScpuiSystem.data.memory.AlertElement = nil
 	topics.redalert.unload:send(self)
 end
 
 function RedAlertController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-        --self.music_handle:stop()
 		event:StopPropagation()
 		loadoutHandler:unloadAll(false)
 		

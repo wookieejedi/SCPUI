@@ -11,11 +11,11 @@ local utils = require("utils")
 
 local ShipSelectController = class()
 
-ScpuiSystem.modelDraw = nil
+ScpuiSystem.data.memory.modelDraw = nil
 
 function ShipSelectController:init()
 	loadoutHandler:init()
-	ScpuiSystem.modelDraw = {}
+	ScpuiSystem.data.memory.modelDraw = {}
 	self.help_shown = false
 	self.enabled = false
 	self.ships = {}
@@ -23,6 +23,7 @@ function ShipSelectController:init()
 	self.selectedShip = ''
 end
 
+---@param document Document
 function ShipSelectController:initialize(document)
     --AbstractBriefingController.initialize(self, document)
 	self.document = document
@@ -137,9 +138,9 @@ function ShipSelectController:BuildWings()
 			slotsEl:AppendChild(slotEl)
 			
 			--default to empty slot image for now, but don't show disabled slots
-			local slotIcon = loadoutHandler:getEmptyWingSlot()[2]
+			local slotIcon = loadoutHandler:getEmptyWingSlotIcon()[2]
 			if slotInfo.isDisabled then
-				slotIcon = loadoutHandler:getEmptyWingSlot()[1]
+				slotIcon = loadoutHandler:getEmptyWingSlotIcon()[1]
 			end
 			
 			if slotInfo.WingSlot == 1 then
@@ -164,10 +165,14 @@ function ShipSelectController:BuildWings()
 					loadoutHandler:AppendToShipInfo(shipIndex)
 					entry = loadoutHandler:GetShipInfo(shipIndex)
 				end
-				if slotInfo.isShipLocked then
-					slotIcon = entry.GeneratedIcon[5]
+				if entry then
+					if slotInfo.isShipLocked then
+						slotIcon = entry.GeneratedIcon[5]
+					else
+						slotIcon = entry.GeneratedIcon[1]
+					end
 				else
-					slotIcon = entry.GeneratedIcon[1]
+					ba.error("Failed to generate ship info for " .. tb.ShipClasses[shipIndex].Name .. "!")
 				end
 			end
 			
@@ -304,7 +309,7 @@ end
 
 function ShipSelectController:ReloadList()
 
-	ScpuiSystem.modelDraw.class = nil
+	ScpuiSystem.data.memory.modelDraw.class = nil
 	local list_items_el = self.document:GetElementById("ship_icon_list_ul")
 	ScpuiSystem:ClearEntries(list_items_el)
 	self.SelectedEntry = nil
@@ -325,7 +330,7 @@ function ShipSelectController:CreateEntryItem(entry, idx)
 	li_el:AppendChild(iconWrapper)
 	
 	local countEl = self.document:CreateElement("div")
-	countEl.inner_rml = loadoutHandler:GetShipPoolAmount(entry.Index)
+	countEl.inner_rml = tostring(loadoutHandler:GetShipPoolAmount(entry.Index))
 	countEl:SetClass("amount", true)
 	
 	iconWrapper:AppendChild(countEl)
@@ -447,9 +452,9 @@ function ShipSelectController:SelectEntry(entry, slot)
 		self:BuildInfo(entry)
 		
 		if self.ship3d or entry.Anim == nil then
-			ScpuiSystem.modelDraw.class = entry.Index
-			ScpuiSystem.modelDraw.element = self.document:GetElementById("ship_view_wrapper")
-			ScpuiSystem.modelDraw.start = true
+			ScpuiSystem.data.memory.modelDraw.class = entry.Index
+			ScpuiSystem.data.memory.modelDraw.element = self.document:GetElementById("ship_view_wrapper")
+			ScpuiSystem.data.memory.modelDraw.start = true
 		else
 			--the anim is already created so we only need to remove and reset the src
 			self.aniEl:RemoveAttribute("src")
@@ -563,9 +568,9 @@ function ShipSelectController:UpdateSlot(slot)
 	
 	self.ships[slot] = slotInfo.ShipClassIndex
 	
-	local slotIcon = loadoutHandler:getEmptyWingSlot()[2]
+	local slotIcon = loadoutHandler:getEmptyWingSlotIcon()[2]
 	if slotInfo.isDisabled then
-		slotIcon = loadoutHandler:getEmptyWingSlot()[1]
+		slotIcon = loadoutHandler:getEmptyWingSlotIcon()[1]
 	end
 	
 	--Get the current ship in this slot
@@ -574,11 +579,12 @@ function ShipSelectController:UpdateSlot(slot)
 		local entry = loadoutHandler:GetShipInfo(shipIndex)
 		if entry == nil then
 			ba.error("Could not find " .. tb.ShipClasses[shipIndex].Name .. " in the loadout!")
-		end
-		if slotInfo.isShipLocked then
-			slotIcon = entry.GeneratedIcon[5]
 		else
-			slotIcon = entry.GeneratedIcon[1]
+			if slotInfo.isShipLocked then
+				slotIcon = entry.GeneratedIcon[5]
+			else
+				slotIcon = entry.GeneratedIcon[1]
+			end
 		end
 	end
 	
@@ -719,7 +725,7 @@ function ShipSelectController:DragSlotEnd(element, entry, slot)
 		local replace_el = self.document:GetElementById(self.replace.id)
 		self:UpdateSlotImage(replace_el, element.first_child:GetAttribute("src"))
 		
-		element.first_child:SetAttribute("src", loadoutHandler:getEmptyWingSlot()[2])
+		element.first_child:SetAttribute("src", loadoutHandler:getEmptyWingSlotIcon()[2])
 		element:SetClass("drag", false)
 		
 		loadoutHandler:SetFilled(self.activeSlot, true)
@@ -751,7 +757,7 @@ function ShipSelectController:DragSlotEnd(element, entry, slot)
 		end
 		element:SetClass("drag", false)
 		
-		element.first_child:SetAttribute("src", loadoutHandler:getEmptyWingSlot()[2])
+		element.first_child:SetAttribute("src", loadoutHandler:getEmptyWingSlotIcon()[2])
 		loadoutHandler:TakeShipFromSlot(slot)
 		
 		self.replace = nil
@@ -777,8 +783,8 @@ end
 function ShipSelectController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
-	ScpuiSystem.modelDraw.save = ScpuiSystem.modelDraw.class
-	ScpuiSystem.modelDraw.class = nil
+	ScpuiSystem.data.memory.modelDraw.save = ScpuiSystem.data.memory.modelDraw.class
+	ScpuiSystem.data.memory.modelDraw.class = nil
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -789,8 +795,8 @@ function ShipSelectController:Show(text, title, buttons)
 		end
 		dialog:show(self.document.context)
 		:continueWith(function(response)
-			ScpuiSystem.modelDraw.class = ScpuiSystem.modelDraw.save
-			ScpuiSystem.modelDraw.save = nil
+			ScpuiSystem.data.memory.modelDraw.class = ScpuiSystem.data.memory.modelDraw.save
+			ScpuiSystem.data.memory.modelDraw.save = nil
     end)
 	-- Route input to our context until the user dismisses the dialog box.
 	ui.enableInput(self.document.context)
@@ -813,18 +819,18 @@ function ShipSelectController:accept_pressed()
 	--Apply the loadout
 	loadoutHandler:SendAllToFSO_API()
 	
-	local errorValue = ui.Briefing.commitToMission(true)
+	local errorValue = ui.Briefing.commitToMission()
 	
 	if errorValue == COMMIT_SUCCESS then
 		--Save to the player file
 		self.Commit = true
 		loadoutHandler:SaveInFSO_API()
 		--Cleanup
-		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-			ScpuiSystem.music_handle:close(true)
+		if ScpuiSystem.data.memory.music_handle ~= nil and ScpuiSystem.data.memory.music_handle:isValid() then
+			ScpuiSystem.data.memory.music_handle:close(true)
 		end
-		ScpuiSystem.music_handle = nil
-		ScpuiSystem.current_played = nil
+		ScpuiSystem.data.memory.music_handle = nil
+		ScpuiSystem.data.memory.current_music_file = nil
 	end
 
 end
@@ -861,12 +867,12 @@ end
 function ShipSelectController:unload()
 	
 	loadoutHandler:saveCurrentLoadout()
-	ScpuiSystem.modelDraw.class = nil
+	ScpuiSystem.data.memory.modelDraw.class = nil
 	
 	if self.Commit == true then
 		loadoutHandler:unloadAll(true)
-		ScpuiSystem.drawBrMap = nil
-		ScpuiSystem.cutscenePlayed = nil
+		ScpuiSystem.data.memory.drawBrMap = nil
+		ScpuiSystem.data.memory.cutscenePlayed = nil
 		ScpuiSystem:stopMusic()
 	end
 	
@@ -880,25 +886,31 @@ function ShipSelectController:startMusic()
         return
     end
 
-	if filename ~= ScpuiSystem.current_played then
+	if filename ~= ScpuiSystem.data.memory.current_music_file then
 	
-		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-			ScpuiSystem.music_handle:close(true)
+		if ScpuiSystem.data.memory.music_handle ~= nil and ScpuiSystem.data.memory.music_handle:isValid() then
+			ScpuiSystem.data.memory.music_handle:close(true)
 		end
 
-		ScpuiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
-		ScpuiSystem.music_handle:play(ad.MasterEventMusicVolume, true)
-		ScpuiSystem.current_played = filename
+		ScpuiSystem.data.memory.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+		ScpuiSystem.data.memory.music_handle:play(ad.MasterEventMusicVolume, true)
+		ScpuiSystem.data.memory.current_music_file = filename
 	end
 end
 
 function ShipSelectController:drawSelectModel()
 
-	if ScpuiSystem.modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_SHIP_SELECT" then  --Haaaaaaacks
+	if ScpuiSystem.data.memory.modelDraw.class and ba.getCurrentGameState().Name == "GS_STATE_SHIP_SELECT" then  --Haaaaaaacks
 
 		--local thisItem = tb.ShipClasses(modelDraw.class)
 		
-		local modelView = ScpuiSystem.modelDraw.element	
+		local modelView = ScpuiSystem.data.memory.modelDraw.element
+		
+		--If the modelView is not valid then abort this frame
+		if not modelView then
+			return
+		end
+
 		local modelLeft = modelView.parent_node.offset_left + modelView.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + modelView.offset_top
 		local modelWidth = modelView.offset_width
@@ -917,9 +929,9 @@ function ShipSelectController:drawSelectModel()
 		modelWidth = modelWidth * (1 + val)
 		modelHeight = modelHeight * (1 + val)
 		
-		tb.ShipClasses[ScpuiSystem.modelDraw.class]:renderSelectModel(ScpuiSystem.modelDraw.start, modelLeft, modelTop, modelWidth, modelHeight, -1, 1.3)
+		tb.ShipClasses[ScpuiSystem.data.memory.modelDraw.class]:renderSelectModel(ScpuiSystem.data.memory.modelDraw.start, modelLeft, modelTop, modelWidth, modelHeight, -1, 1.3)
 		
-		ScpuiSystem.modelDraw.start = false
+		ScpuiSystem.data.memory.modelDraw.start = false
 		
 	end
 

@@ -34,7 +34,7 @@ function ScpuiSystem:replaceAngleBrackets(inputString)
 end
 
 function ScpuiSystem:freeAllModels()
-	if ScpuiSystem.missionLoaded == false then
+	if ScpuiSystem.data.memory.missionLoaded == false then
 		ba.print("SCPUI is freeing all models!\n")
 		gr.freeAllModels()
 	end
@@ -72,25 +72,25 @@ function ScpuiSystem:getAbsoluteTop(element)
 end
 
 function ScpuiSystem:stopMusic()
-	if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-		ScpuiSystem.music_handle:close(true)
+	if ScpuiSystem.data.memory.music_handle ~= nil and ScpuiSystem.data.memory.music_handle:isValid() then
+		ScpuiSystem.data.memory.music_handle:close(true)
 	end
-	ScpuiSystem.music_handle = nil
+	ScpuiSystem.data.memory.music_handle = nil
 end
 
 function ScpuiSystem:maybePlayCutscene(scene)
 	local topics = require("ui_topics")
 	topics.playcutscene.start:send(self)
-	if ScpuiSystem.music_handle ~= nil then
-		ScpuiSystem.music_handle:pause()
+	if ScpuiSystem.data.memory.music_handle ~= nil then
+		ScpuiSystem.data.memory.music_handle:pause()
 	end
 	--Setting this to false so it doesn't try to restart music
 	--that SCPUI handles internally
-	ScpuiSystem.render = false
+	ScpuiSystem.data.render = false
 	ui.maybePlayCutscene(scene, false, 0)
-	ScpuiSystem.render = true
-	if ScpuiSystem.music_handle ~= nil then
-		ScpuiSystem.music_handle:unpause()
+	ScpuiSystem.data.render = true
+	if ScpuiSystem.data.memory.music_handle ~= nil then
+		ScpuiSystem.data.memory.music_handle:unpause()
 	end
 	topics.playcutscene.finish:send(self)
 end
@@ -114,7 +114,7 @@ function ScpuiSystem:getFontPixelSize(val)
 		val = convert(val)
 	end
 	
-	local finalSize = math.max(1, math.min(ScpuiSystem.numFontSizes, pixelSize + val))
+	local finalSize = math.max(1, math.min(ScpuiSystem.data.numFontSizes, pixelSize + val))
 	
 	return tostring(finalSize)
 end
@@ -165,7 +165,7 @@ end
 
 function ScpuiSystem:getBackgroundClass()
 	local campaignfilename = ba.getCurrentPlayer():getCampaignFilename()
-	local bgclass = self.backgrounds[campaignfilename]
+	local bgclass = self.data.backgrounds[campaignfilename]
 	
 	if not bgclass then
 		bgclass = "general_bg"
@@ -178,11 +178,11 @@ function ScpuiSystem:getBriefingBackground(mission, stage)
 
 	local file = nil
 	
-	if self.briefBackgrounds[mission] ~= nil then
-		file = self.briefBackgrounds[mission][stage]
+	if self.data.briefBackgrounds[mission] ~= nil then
+		file = self.data.briefBackgrounds[mission][stage]
 	
 		if file == nil then
-			file = self.briefBackgrounds[mission]["default"]
+			file = self.data.briefBackgrounds[mission]["default"]
 		end
 	end
 	

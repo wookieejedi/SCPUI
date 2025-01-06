@@ -4,20 +4,18 @@
 
 --Clears all the current loadout if F12 is detected during mission load
 local function clearLoadoutWithKeypress()
-    if hv.Key == "F12" then
-		if ba.getCurrentGameState().Name == "GS_STATE_START_GAME" then
-			local loadoutHandler = require("loadouthandler")
-			
-			local key = loadoutHandler:getMissionKey()
-			ba.print("SCPUI got command to delete loadout file '" .. key .. "'!\n")
-			
-			local data = loadoutHandler:loadLoadoutsFromFile()
-			
-			data[key] = nil
-			
-			loadoutHandler:saveLoadoutsToFile(data)
-		end
-	end
+	local loadoutHandler = require("loadouthandler")
+	
+	local key = loadoutHandler:getMissionKey()
+	ba.print("SCPUI got command to delete loadout file '" .. key .. "'!\n")
+	
+	local data = loadoutHandler:loadLoadoutsFromFile()
+
+	if data == nil then return end
+	
+	data[key] = nil
+	
+	loadoutHandler:saveLoadoutsToFile(data)
 end
 
 --Clears all campaign related loadout save data on campaign start or restart
@@ -29,7 +27,8 @@ local function clearLoadoutOnCampaignStart()
 	
 	if data == nil then return end
 	
-	for k, v in pairs(data) do
+	---@param k string
+	for k, _ in pairs(data) do
 		if k:sub(-1) == "c" then
 			data[k] = nil
 		end
@@ -40,7 +39,8 @@ end
 
 engine.addHook("On Key Pressed", function()
 	clearLoadoutWithKeypress()
-end)
+end,
+{State="GS_STATE_START_GAME", KeyPress="F12"})
 
 engine.addHook("On Campaign Begin", function()
 	clearLoadoutOnCampaignStart()

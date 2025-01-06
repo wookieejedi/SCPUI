@@ -5,11 +5,11 @@ local async_util = require("async_util")
 
 local HudConfigController = class()
 
-ScpuiSystem.drawHUD = nil
+ScpuiSystem.data.memory.drawHUD = nil
 
 function HudConfigController:init()
 
-	ScpuiSystem.drawHUD = {}
+	ScpuiSystem.data.memory.drawHUD = {}
 	
 	self.default = "hud_3.hcf"
 	
@@ -66,9 +66,9 @@ function HudConfigController:initialize(document)
 	
 	ui.HudConfig.initHudConfig(hx, hy, hw)
 	
-	ScpuiSystem.drawHUD.mx = 0
-	ScpuiSystem.drawHUD.my = 0
-	ScpuiSystem.drawHUD.draw = true
+	ScpuiSystem.data.memory.drawHUD.mx = 0
+	ScpuiSystem.data.memory.drawHUD.my = 0
+	ScpuiSystem.data.memory.drawHUD.draw = true
 	
 	self.r = 0
 	self.g = 0
@@ -301,11 +301,11 @@ function HudConfigController:global_keydown(_, event)
 end
 
 function HudConfigController:drawHUD()
-	if ScpuiSystem.drawHUD ~= nil then
-		if ScpuiSystem.drawHUD.draw == false then
+	if ScpuiSystem.data.memory.drawHUD ~= nil then
+		if ScpuiSystem.data.memory.drawHUD.draw == false then
 			return
 		end
-		ScpuiSystem.drawHUD.gauge = ui.HudConfig.drawHudConfig(ScpuiSystem.drawHUD.mx, ScpuiSystem.drawHUD.my)
+		ScpuiSystem.data.memory.drawHUD.gauge = ui.HudConfig.drawHudConfig(ScpuiSystem.data.memory.drawHUD.mx, ScpuiSystem.data.memory.drawHUD.my)
 	end
 end
 
@@ -506,9 +506,9 @@ function HudConfigController:mouse_click()
 	
 	self.click = true
 
-	if ScpuiSystem.drawHUD.gauge then
+	if ScpuiSystem.data.memory.drawHUD.gauge then
 		self.curGaugeName = nil
-		self.selectedGauge = ScpuiSystem.drawHUD.gauge
+		self.selectedGauge = ScpuiSystem.data.memory.drawHUD.gauge
 		self.selectedGauge:setSelected(true)
 		
 		local color = self.selectedGauge.CurrentColor
@@ -529,9 +529,9 @@ end
 
 function HudConfigController:mouse_move(element, event)
 
-	if ScpuiSystem.drawHUD ~= nil then
-		ScpuiSystem.drawHUD.mx = event.parameters.mouse_x
-		ScpuiSystem.drawHUD.my = event.parameters.mouse_y
+	if ScpuiSystem.data.memory.drawHUD ~= nil then
+		ScpuiSystem.data.memory.drawHUD.mx = event.parameters.mouse_x
+		ScpuiSystem.data.memory.drawHUD.my = event.parameters.mouse_y
 	end
 	
 end
@@ -539,7 +539,7 @@ end
 function HudConfigController:Show(text, title, input, buttons)
 	--Create a simple dialog box with the text and title
 
-	ScpuiSystem.drawHUD.draw = false
+	ScpuiSystem.data.memory.drawHUD.draw = false
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -577,7 +577,7 @@ end
 function HudConfigController:dialog_response(response)
 	local path = self.promptControl
 	self.promptControl = nil
-	ScpuiSystem.drawHUD.draw = true
+	ScpuiSystem.data.memory.drawHUD.draw = true
 	if path == 1 then
 		self:savePreset(response)
 	end
@@ -588,7 +588,7 @@ function HudConfigController:unload()
 end
 
 engine.addHook("On Frame", function()
-	if (ba.getCurrentGameState().Name == "GS_STATE_HUD_CONFIG") and (ScpuiSystem.render == true) then
+	if (ba.getCurrentGameState().Name == "GS_STATE_HUD_CONFIG") and (ScpuiSystem.data.render == true) then
 		HudConfigController:drawHUD()
 	end
 end, {}, function()

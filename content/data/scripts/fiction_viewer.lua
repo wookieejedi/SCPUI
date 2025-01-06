@@ -12,7 +12,12 @@ function FictionViewerController:init()
 	ScpuiSystem:maybePlayCutscene(MOVIE_PRE_FICTION)
 end
 
+---@param document Document
 function FictionViewerController:initialize(document)
+
+	---@type Document
+	self.document = nil
+
 	AbstractBriefingController.initialize(self, document)
 	
 	---Load background choice
@@ -69,11 +74,11 @@ end
 
 function FictionViewerController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
-		if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-			ScpuiSystem.music_handle:close(true)
+		if ScpuiSystem.data.memory.music_handle ~= nil and ScpuiSystem.data.memory.music_handle:isValid() then
+			ScpuiSystem.data.memory.music_handle:close(true)
 		end
-		ScpuiSystem.music_handle = nil
-		ScpuiSystem.current_played = nil
+		ScpuiSystem.data.memory.music_handle = nil
+		ScpuiSystem.data.memory.current_music_file = nil
 		event:StopPropagation()
 
 		mn.unloadMission(true)

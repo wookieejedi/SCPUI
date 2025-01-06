@@ -6,6 +6,7 @@ local HotkeyController = class()
 function HotkeyController:init()
 end
 
+---@param document Document
 function HotkeyController:initialize(document)
 
     self.document = document
@@ -93,7 +94,7 @@ function HotkeyController:createHotkeysList()
 	
 		local group_el = self.document:CreateElement("div")
 		group_el.id = "group_" .. i
-		group_el:SetClass("hotkey_group")
+		group_el:SetClass("hotkey_group", true)
 		parent_el:AppendChild(group_el)
 		
 		--create the header for the group

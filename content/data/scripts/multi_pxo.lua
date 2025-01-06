@@ -16,6 +16,7 @@ function PXOController:init()
 	self.submittedValue = "" -- the player's text input
 end
 
+---@param document Document
 function PXOController:initialize(document)
 	
 	self.document = document
@@ -34,11 +35,11 @@ function PXOController:initialize(document)
 	self.input_id = self.document:GetElementById("chat_input")
 	self.motd = ""
 	
-	if not ScpuiSystem.MultiReady then
+	if not ScpuiSystem.data.memory.MultiReady then
 		ui.MultiPXO.initPXO()
 	end
 	
-	ScpuiSystem.MultiReady = true
+	ScpuiSystem.data.memory.MultiReady = true
 	
 	self:updateLists()
 	ui.MultiGeneral.setPlayerState()
@@ -345,7 +346,7 @@ end
 
 function PXOController:exit()
 	ui.MultiPXO.closePXO()
-	ScpuiSystem.MultiReady = false
+	ScpuiSystem.data.memory.MultiReady = false
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 end
 
@@ -471,7 +472,7 @@ end
 
 function PXOController:accept_pressed()
 	ui.MultiPXO.closePXO()
-	ScpuiSystem.MultiReady = false
+	ScpuiSystem.data.memory.MultiReady = false
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_MULTI_JOIN_GAME"])
 end
 

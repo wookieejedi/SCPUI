@@ -1,0 +1,345 @@
+--- SCPUI Meta File
+--- Comprehensive Definitions for Lua Integration
+---@meta
+
+--- Preload Coroutine
+--- @class preload_coroutine
+--- @field priority number 1 to run this coroutine during splash 1 and 2 for splash 2
+--- @field debugMessage string The string message to print to the debug log when this coroutine rus
+--- @field debugString string The string message to display on the splash screen when this coroutine runs
+--- @field func string the function to run with lua's loadstring method
+
+--- SCPUI Medal Info
+--- @class medal_info
+--- @field altBitmap? string the alternate bitmap filename
+--- @field altDebriefBitmap? string the alternate debrief bitmap filename
+--- @field x? number the x position of the medal
+--- @field y? number the y position of the medal
+--- @field w? number the width of the medal
+
+--- SCPUI RGB Color
+--- @class scpui_color
+--- @field r number The red value of the color
+--- @field g number The green value of the color
+--- @field b number The blue value of the color
+
+--- SCPUI Ribbon Stripe
+--- @class scpui_ribbon_stripe
+--- @field r number The red value of the color
+--- @field g number The green value of the color
+--- @field b number The blue value of the color
+--- @field p number The position of the stripe
+
+--- SCPUI Ribbon Info
+--- @class ribbon_info
+--- @field name string The name of the ribbon
+--- @field description string The description of the ribbon
+--- @field source string The source of the ribbon
+--- @field border scpui_color The border color of the ribbon
+--- @field colors scpui_ribbon_stripe[] The stripe colors of the ribbon
+
+--- SCPUI UI Replacements
+--- @class ui_replacement
+--- @field markup string The document to use to load
+--- @field document? Document The document object to use for this replacement
+
+--- SCPUI State Init Values
+--- @class state_init_values
+--- @field debrief boolean
+--- @field select boolean
+--- @field loadScreen boolean
+--- @field preLoad boolean
+
+--- SCPUI Ship Icon Size
+--- @class ship_icon_size
+--- @field width number the width of the ship icon
+--- @field height number the height of the ship icon
+
+--- SCPUI Weapon Icon Size
+--- @class weapon_icon_size
+--- @field width number the width of the weapon icon
+--- @field height number the height of the weapon icon
+
+---- SCPUI Icon Dimensions
+--- @class icon_dimensions
+--- @field ship ship_icon_size the size of the ship icon
+--- @field weapon weapon_icon_size the size of the weapon icon
+
+--- SCPUI Dialog Abort method
+--- @class dialog_abort
+--- @field Abort? function The abort function for the dialog
+
+--- SCPUI Dialog Methods
+--- @class dialog_method
+--- @field Abort? dialog_abort A callback function for if the dialog is aborted
+--- @field Submit? number|string A callback function that should be called if the popup resolves. Should be string only if it is an input popup. Pass nil to abort.
+
+--- SCPUI.tbl values
+--- @class table_values
+--- @field disableInMulti boolean True if SCPUI should render in multiplayer, false otherwise
+--- @field hideMulti boolean True if SCPUI should hide multiplayer menus and options, false otherwise
+--- @field dataSaverMulti integer A numeric multiplier used to generate SCPUI's save data hash. Generally this is not needed but can be useful if there are conflicts between mods.
+--- @field databaseShowNew boolean True if SCPUI should show the "NEW!" text in the database, false otherwise
+--- @field iconDimensions icon_dimensions The dimensions of the icons used in ship and weapon select
+
+--- SCPUI Loadout Icon
+--- @class loadout_icon
+--- @field Width number The width of the icon
+--- @field Height number The height of the icon
+--- @field Icon string[] The icon png blob array. Index is the frame number. 1 is plain, 2 full color mouseover, 3 full color highlighted, 4 orange dragged, 5 grey locked, 6 highlighted locked
+
+--- SCPUI Ship Loadout Info Struct
+--- @class ship_loadout_info
+--- @field Index integer The index of the ship in the ship in Ship Classes
+--- @field Amount integer The amount of the ship available in the loadout
+--- @field Icon string The icon filename for the ship class
+--- @field Overhead string The overhead filename for the ship class
+--- @field Anim string The animation filename for the ship class
+--- @field Name string The name of the ship
+--- @field Type string The name of the ship class
+--- @field Length string The length of the ship as a string
+--- @field AfterburnerVelocity string The afterburner velocity of the ship as a string
+--- @field Maneuverability string The maneuverability of the ship as a string
+--- @field Armor string The armor of the ship as a string
+--- @field GunMounts string The gun mounts of the ship as a string
+--- @field MissileBanks string The missile banks of the ship as a string
+--- @field Manufacturer string The manufacturer of the ship as a string
+--- @field Hitpoints number The hitpoints of the ship
+--- @field ShieldHitpoints number The shield hitpoints of the ship
+--- @field key string The key for the ship in the ship pool
+--- @field GeneratedWidth number The width of the ship icon
+--- @field GeneratedHeight number The height of the ship icon
+--- @field GeneratedIcon string[] The icon png blob array. Index is the frame number. 1 is plain, 2 full color mouseover, 3 full color highlighted, 4 orange dragged, 5 grey locked, 6 highlighted locked
+
+--- SCPUI Weapon Loadout Info Struct
+--- @class weapon_loadout_info
+--- @field Index integer The index of the weapon in the weapon in Weapon Classes
+--- @field Amount integer The amount of the weapon available in the loadout
+--- @field Icon string The icon filename for the weapon class
+--- @field Anim string The animation filename for the weapon class
+--- @field Name string The name of the weapon
+--- @field Title string The display name of the weapon class
+--- @field Description string The description of the weapon class
+--- @field FireWait number The fire wait of the weapon
+--- @field Type string The type of the weapon, usually "primary" or "secondary"
+--- @field key string The key for the weapon in the weapon pool
+--- @field GeneratedWidth number The width of the weapon icon
+--- @field GeneratedHeight number The height of the weapon icon
+--- @field GeneratedIcon string[] The icon png blob array. Index is the frame number. 1 is plain, 2 full color mouseover, 3 full color highlighted, 4 orange dragged, 5 grey locked, 6 highlighted locked
+
+--- SCPUI Loadout Slot Struct
+--- @class loadout_slot
+--- @field Name string The name of the ship in the slot
+--- @field displayName string The display name of the ship in the slot
+--- @field ShipClassIndex integer The index of the ship class
+--- @field Weapons integer[] The indices of the weapon classes
+--- @field Amounts integer[] The amounts of the weapon classes
+--- @field isDisabled boolean True if the slot is disabled, false otherwise
+--- @field isFilled boolean True if the slot is filled, false otherwise
+--- @field isWeaponLocked boolean True if the slot is weapon locked, false otherwise
+--- @field isShipLocked boolean True if the slot is ship locked, false otherwise
+--- @field WingSlot number The wing slot number
+--- @field displayWingName string The display name of the wing slot
+--- @field Wing number The wing number
+--- @field isPlayer boolean True if the slot is a player's ship, false otherwise
+--- @field WingName string The name of the wing
+
+--- SCPUI Saved Loadout Struct
+--- @class saved_loadout
+--- @field version number The version of loadout handler that saved the loadout
+--- @field datetime string The date time of the mission the loadout is saved for
+--- @field shipPool integer[] The amount of ships available in the loadout. Index is the ship class index, value is the amount of ships available
+--- @field weaponPool integer[] The amount of weapons available in the loadout. Index is the weapon class index, value is the amount of weapons available
+--- @field slots loadout_slot[] The slots for the loadout
+--- @field numShipClasses integer The number of ship classes in the game at the time the loadout was saved
+--- @field numWepClasses integer The number of weapon classes in the game at the time the loadout was saved
+
+--- SCPUI Loadout information
+--- @class loadout_info
+--- @field shipPool? integer[] The amount of ships available in the loadout. Index is the ship class index, value is the amount of ships available
+--- @field weaponPool? integer[] The amount of weapons available in the loadout. Index is the weapon class index, value is the amount of weapons available
+--- @field slots? loadout_slot[] The slots for the loadout
+--- @field shipInfo? ship_loadout_info[] The ship information for the loadout
+--- @field primaryInfo? weapon_loadout_info[] The primary weapon information for the loadout
+--- @field secondaryInfo? weapon_loadout_info[] The secondary weapon information for the loadout
+--- @field emptyWingSlotIcon? string[] The empty wing slot frame URLs for the loadout
+--- @field WING_SIZE? number The max wing size
+--- @field MAX_PRIMARIES? number The max number of primary weapons on a ship
+--- @field MAX_SECONDARIES? number The max number of secondary weapons on a ship
+
+--- SCPUI Briefing Map Memory
+--- @class briefing_map_memory
+--- @field tex? texture The texture to use for the briefing map
+--- @field x1? number The x position of the first corner of the briefing map
+--- @field y1? number The y position of the first corner of the briefing map
+--- @field x2? number The x position of the second corner of the briefing map
+--- @field y2? number The y position of the second corner of the briefing map
+--- @field url? string The string url of the texture that can be assigned to librocket element
+--- @field draw? boolean True if the briefing map should be drawn, false otherwise
+--- @field modelRot? number The rotation speed of the briefing map model
+--- @field goals? boolean True if the briefing has a goals stage, false otherwise
+--- @field bg? string The background image to use for the briefing map
+--- @field mx? number The x position of the mouse
+--- @field my? number The y position of the mouse
+--- @field bx? number The x position of the model ship box
+--- @field by? number The y position of the model ship box
+--- @field pof? string The pof file to render in the model ship box
+--- @field closeupZoom? number The zoom level for the model ship box
+--- @field closeupPos? vector The position of the model in the model ship box
+--- @field label? string The label to display in the model ship box
+--- @field iconID? number The icon ID of the model ship box
+
+--- SCPUI HUD Drawing Memory
+--- @class hud_draw_memory
+--- @field draw? boolean True if the HUD should be drawn, false otherwise
+--- @field mx? number The x position of the mouse
+--- @field my? number The y position of the mouse
+--- @field gauge? gauge_config The current gauge being hovered over
+
+--- SCPUI Load Screen Memory
+--- @class load_screen_memory
+--- @field img texture The texture to use for the loading screen
+--- @field tex texture The texture to use for the loading screen
+--- @field url string The string url of the texture that can be assigned to librocket element
+--- @field LastProgress? number The last progress value for the loading screen
+
+--- SCPUI Medal Memory
+--- @class medal_memory
+--- @field name string? The name of the medal
+--- @field x number The x position of the text to draw
+--- @field y number The y position of the text to draw
+
+--- SCPUI Multi Host Memory
+--- @class multi_host_memory
+--- @field MultiHostSetup? boolean True if the multi host setup is ready, false otherwise
+--- @field HostFilter enumeration The mission list filter type. One of the MUTLI_TYPE enumerations
+--- @field HostList string The mission list
+
+--- SCPUI Splash Screen Image
+--- @class splash_image
+--- @field A number The alpha value of the image
+--- @field File string The filename of the image
+--- @field H number The height of the image
+--- @field W number The width of the image
+--- @field X number The x position of the image
+--- @field Y number The y position of the image
+
+--- SCPUI Splash Screen Memory
+--- @class splash_screen_memory
+--- @field TD boolean True if the text should be drawn, false otherwise
+--- @field img? splash_image[] The images to display on the splash screen
+--- @field fade? number The fade time value for the splash screen
+--- @field debugString? string The debug string to display on the splash screen
+--- @field i integer The current splash index
+--- @field Text string The text to display on the splash screen
+--- @field TX number The x position of the text
+--- @field TY number The y position of the text
+--- @field TW number The width of the text
+--- @field F number The font size of the text
+--- @field debugMessage? string The debug message to display on the splash screen
+
+--- SCPUI Model Draw Memory
+--- @class model_draw_memory
+--- @field start? boolean True to draw the model animation from the start
+--- @field class? integer The ship class index to draw
+--- @field element? Element The element to draw the model in
+--- @field section? string The type of model to draw in the tech room, usually "ship" or "weapon"
+--- @field Rot? integer The rotation speed of the model
+--- @field save? integer A place to store the index of the model being rendered temporarily
+--- @field mx? integer The x position of the mouse
+--- @field my? integer The y position of the mouse
+--- @field click? boolean True if the model has been clicked, false otherwise
+--- @field sx? integer The x position of the mouse when the model was clicked
+--- @field sy? integer The y position of the mouse when the model was clicked
+--- @field angle? number The angle of the model
+--- @field speed? number The speed multipler of the model rotation
+--- @field clickOrient? orientation The orientation of the model when clicked
+--- @field Weapons? table The selected weapons table
+--- @field banks? Element[] The missile bank elements
+--- @field OverheadClass? integer The overhead class index
+--- @field Hover? integer The current slot being hovered over with the mouse
+--- @field OverheadElement? Element The overhead element
+--- @field overheadEffect? number The overhead effect choice
+--- @field OverheadSave? integer A place to store the index of the overhead model being rendered temporarily
+
+--- SCPUI Global Memory
+--- @class scpui_memory
+--- @field cutscene string The cutscene requested to be played by the tech room
+--- @field cutscenePlayed? boolean? True if a cutscene has been played for the current game state, nil otherwise
+--- @field music_handle? audio_stream? The handle for the current UI music, if any
+--- @field current_music_file? string? The current music file being played, if any
+--- @field logSection integer The last mission log section the player viewed
+--- @field missionLoaded boolean True if a mission is loaded, false otherwise
+--- @field MultiJoinReady boolean True if the multi join game is ready, false otherwise
+--- @field MultiReady boolean True if the multi game is ready, false otherwise
+--- @field AlertElement? Element The alert element to blink in the red alert screen
+--- @field WarningCountShown boolean True if the warning count has been shown, false otherwise
+--- @field drawBrMap? briefing_map_memory The current briefing map memory for SCPUI
+--- @field drawHUD? hud_draw_memory The current HUD drawing memory for SCPUI
+--- @field loadingBar? load_screen_memory The current loading screen memory for SCPUI
+--- @field drawMedalText? medal_memory The current medal memory for SCPUI
+--- @field splash? splash_screen_memory The current splash screen memory for SCPUI
+--- @field modelDraw? model_draw_memory The current model draw memory for SCPUI
+--- @field multiHost? multi_host_memory The current multi host memory for SCPUI
+
+--- SCPUI Global Documentation
+--- @class scpui_data
+--- @field context? Context? The current context for SCPUI. Do Not Modify!
+--- @field currentDoc ui_replacement? The currently loaded document, if any
+--- @field loadDoc ui_replacement? The document to to use during the loading screen, if any
+--- @field loadProgress? number The current progress of the loading screen
+--- @field active boolean Whether or not SCPUI is active at all
+--- @field numFontSizes integer The number of font sizes available in the SCPUI system. Do Not Modify!
+--- @field replacements ui_replacement[] Table of Game states and their corresponding SCPUI documents. Key is the game state, value is a table with [markup] as the document name. This allows setting the current document to the value of the table which immediately sets the correct document to the current game state.
+--- @field backgrounds table<string, string> Table of campaign background replacement rcss classes. Key is the campaign filename, value is the rcss class name.
+--- @field briefBackgrounds table<string, table<string, string>> This table is used to determine which background image to display during mission briefings. The structure: Outer keys: mission names (strings), Inner keys: either "default" (string) for the default background or a tring representation of a briefing stage number (e.g., "1", "2"), Values: filenames (strings).
+--- @field preloadCoroutines preload_coroutine[] The preload coroutines to run during SCPUI's splash screen startup.
+--- @field medalInfo medal_info[] The medal information for SCPUI to use when displaying medals.
+--- @field currentState? gamestate The current game state SCPUI is in
+--- @field lastState? gamestate The previous game state SCPUI was in
+--- @field substate string The current scripting substate. "none" if not in a scripting substate
+--- @field oldSubstate string The previous scripting substate. "none" if not in a scripting substate
+--- @field tableFlags table_values The table values for SCPUI as defined in the scpui.tbl
+--- @field stateInit state_init_values SCPUI's array of state init values
+--- @field memory scpui_memory The global memory for SCPUI. Often used to pass data between game states
+--- @field render boolean Whether or not SCPUI should render
+--- @field dialog? Document? The current dialog box document, if any
+--- @field tooltipTimers table<string, number> The timers for the tooltips. Key is the tooltip name, value is the timer
+--- @field DeathDialog? dialog_method The submit and abort functions for the death dialog
+--- @field Dialog? dialog_method The submit and abort functions for the dialog
+--- @field loadouts? loadout_info The loadout information for SCPUI
+--- @field backupLoadout? loadout_info The backup loadout information for SCPUI
+--- @field savedLoadouts? saved_loadout[] The saved loadouts for SCPUI
+--- @field CustomOptions? table The custom options for values
+--- @field PlayerRibbons? ribbon_info[] The player ribbons for SCPUI
+--- @field rocketUiIcons? loadout_icon[] The rocket UI icons for SCPUI loadout screens
+
+--- SCPUI Dialog Button
+--- @class dialog_button
+--- @field type integer The type of button to display, one of the dialog.BUTTON_TYPEs
+--- @field text string The text to display on the button
+--- @field value any The value to return when the button is clicked
+--- @field keypress? string The keypress to use for the button
+
+--- SCPUI Dialog Factory
+--- @class dialog_factory
+--- @field type_val integer The type of dialog to create
+--- @field buttons dialog_button[] The buttons to display on the dialog
+--- @field title_string string The title of the dialog
+--- @field text_string string The text of the dialog
+--- @field input_choice boolean True if the dialog should have an input choice, false otherwise
+--- @field escape_value any True if the dialog should have an escape value, false otherwise
+--- @field click_escape boolean? True if the dialog should have a click escape, false otherwise
+--- @field style_value? integer 1 for regular dialog, 2 for death dialog
+--- @field background_color? string The background color of the dialog
+--- @field type? fun(self: self, type: integer): self Sets the type_val
+--- @field title? fun(self: self, title: string): self Sets the title_string
+--- @field text? fun(self: self, text: string): self Sets the text_string
+--- @field button? fun(self: self, type: integer, text: string, value: any, keypress?: string): self Adds a button to the dialog
+--- @field input? fun(self: self, input: boolean): self Sets the input_choice
+--- @field escape? fun(self: self, escape: any): self Sets the escape_value
+--- @field clickescape? fun(self: self, clickEscape: boolean): self Sets the click_escape
+--- @field style? fun(self: self, style: integer): self Sets the style_value
+--- @field background? fun(self: self, color: string): self Sets the background_color
+--- @field show? fun(self: self, context: Context, abortTable?: dialog_abort): promise The function to show the dialog
+--- @field __index? dialog_factory The metatable for the dialog factory

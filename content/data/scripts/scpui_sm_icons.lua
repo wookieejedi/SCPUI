@@ -2,7 +2,7 @@
 --This file contains all the methods used for SCPUI to generate weapon and ship select icons
 -----------------------------------
 
-rocketUiIcons = {}
+ScpuiSystem.data.rocketUiIcons = {}
 
 local async_util = require("async_util")
 
@@ -20,7 +20,7 @@ function ScpuiSystem:openCache()
 	end
 	
 	local filename = "scpui_" .. modname:gsub(" ", "") .. ".cache"
-
+	local cache
 	if cf.fileExists(filename, location) then
 		file = cf.openFile(filename, 'r', location)
 		cache = json.decode(file:read('*a'))
@@ -57,7 +57,7 @@ end
 function ScpuiSystem:setIconFrames(item, is_ship)
 
 	--If the icon was preloaded, then skip!
-	if rocketUiIcons[item] ~= nil then
+	if ScpuiSystem.data.rocketUiIcons[item] ~= nil then
 		return
 	end
 	
@@ -70,7 +70,10 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 		gen3d = true
 	end
 	
+	---@type loadout_icon
 	local icon_details = {
+		Width = 0,
+		Height = 0,
 		Icon = {}
 	}
 	
@@ -150,8 +153,8 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 			name = tb.ShipClasses[item].Name
 			icon = tb.ShipClasses[item].SelectIconFilename
 			model_h = tb.ShipClasses[item]
-			modelDetails.width = ScpuiSystem.iconDimentions.ship.width
-			modelDetails.height = ScpuiSystem.iconDimentions.ship.height
+			modelDetails.width = ScpuiSystem.data.tableFlags.iconDimensions.ship.width
+			modelDetails.height = ScpuiSystem.data.tableFlags.iconDimensions.ship.height
 			modelDetails.heading = 50
 			modelDetails.pitch = 15
 			modelDetails.bank = 50
@@ -160,8 +163,8 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 			name = tb.WeaponClasses[item].Name
 			icon = tb.WeaponClasses[item].SelectIconFilename
 			model_h = tb.WeaponClasses[item]
-			modelDetails.width = ScpuiSystem.iconDimentions.weapon.width
-			modelDetails.height = ScpuiSystem.iconDimentions.weapon.height
+			modelDetails.width = ScpuiSystem.data.tableFlags.iconDimensions.weapon.width
+			modelDetails.height = ScpuiSystem.data.tableFlags.iconDimensions.weapon.height
 			modelDetails.heading = 75
 			modelDetails.pitch = 0
 			modelDetails.bank = 40
@@ -197,7 +200,7 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 			icon_details.Icon[j] = blob
 		end
 		
-		function colorize(color, loop, monochrome, index)
+		local function colorize(color, loop, monochrome, index)
 			gr.setTarget() --Have to clear the target between textures
 			local tex_i = gr.createTexture(modelDetails.width, modelDetails.height)
 			gr.setTarget(tex_i)
@@ -245,16 +248,16 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 		end
 	end
 
-	rocketUiIcons[item] = icon_details
+	ScpuiSystem.data.rocketUiIcons[item] = icon_details
 
 end
 
 function ScpuiSystem:beginIconGeneration()
-	rocketUiIcons = ScpuiSystem:openCache()
+	ScpuiSystem.data.rocketUiIcons = ScpuiSystem:openCache()
 	
-	if rocketUiIcons == nil or ScpuiSystemReset == true then
+	if ScpuiSystem.data.rocketUiIcons == nil or ScpuiSystemReset == true then
 		ba.print("SCPUI is resetting icon cache!\n")
-		rocketUiIcons = {}
+		ScpuiSystem.data.rocketUiIcons = {}
 	end
 	
 	--prevent the keypress hook now
@@ -262,7 +265,7 @@ function ScpuiSystem:beginIconGeneration()
 end
 
 function ScpuiSystem:finishIconGeneration()
-	ScpuiSystem:saveCache(rocketUiIcons)
+	ScpuiSystem:saveCache(ScpuiSystem.data.rocketUiIcons)
 
 	ba.print("SCPUI successfully generated ship and weapon loadout icons!\n")
 
@@ -271,7 +274,7 @@ end
 
 function ScpuiSystem:genIcons()
 
-	if not ScpuiSystem.active then
+	if not ScpuiSystem.data.active then
 		return
 	end
 	
@@ -324,7 +327,7 @@ function ScpuiSystem:genIcons()
 end
 
 local function resetIconCache()
-    if ScpuiSystemReset == nil and hv.Key == "F12" then
+    if ScpuiSystemReset == nil then
 		ScpuiSystemReset = true
 		ba.print("SCPUI got manual command to reset the icon cache!\n")
 	end
@@ -332,6 +335,7 @@ end
 
 engine.addHook("On Key Pressed", function()
 	resetIconCache()
-end)
+end,
+{KeyPress="F12"})
 
 ScpuiSystem:genIcons()

@@ -205,7 +205,7 @@ end
 function JournalController:Exit(element)
 
     ui.playElementSound(element, "click", "success")
-    ScpuiSystem:ReturnToState(ScpuiSystem.lastState)
+    ScpuiSystem:ReturnToState(ScpuiSystem.data.lastState)
     self.document:Close()
 
 end
@@ -222,7 +222,7 @@ function JournalController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
         self.document:Close()
-        ScpuiSystem:ReturnToState(ScpuiSystem.lastState)
+        ScpuiSystem:ReturnToState(ScpuiSystem.data.lastState)
     end
 end
 

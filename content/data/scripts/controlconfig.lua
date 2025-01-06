@@ -19,6 +19,7 @@ function ControlConfigController:init()
 
 end
 
+---@param document Document
 function ControlConfigController:initialize(document)
 
     self.document = document
@@ -828,11 +829,11 @@ function ControlConfigController:searchForBind()
 		
 			local bind = ui.ControlConfig.ControlConfigs[search]
 			
-			ui.enableInput(ScpuiSystem.context)
+			ui.enableInput(ScpuiSystem.data.context)
 			self:changeSection(bind.Tab)
 			self:SelectEntry(search)
 		else
-			ui.enableInput(ScpuiSystem.context)
+			ui.enableInput(ScpuiSystem.data.context)
 		end
     end, async.OnFrameExecutor)
 	
@@ -930,7 +931,7 @@ function ControlConfigController:BindKey(idx, item)
         
         --Do anything needed to unlock the UI after the binding phase
         
-		ui.enableInput(ScpuiSystem.context)
+		ui.enableInput(ScpuiSystem.data.context)
 		if status < 0 then
 			local text = "That key cannot be bound! Please try again."
 			local title = ""

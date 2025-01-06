@@ -9,7 +9,7 @@ local class = require("class")
 local DebriefingController = class()
 
 function DebriefingController:init()
-	if not ScpuiSystem.debriefInit then
+	if not ScpuiSystem.data.stateInit.debrief then
 		ScpuiSystem:maybePlayCutscene(MOVIE_PRE_DEBRIEF)
 	end
     self.stages = {}
@@ -19,13 +19,14 @@ function DebriefingController:init()
     self.help_shown = false
 end
 
+---@param document Document
 function DebriefingController:initialize(document)
     self.document = document
     self.selectedSection = 1
     self.audioPlaying = 0
 	self.audioFinished = false
     
-    if not ScpuiSystem.debriefInit then
+    if not ScpuiSystem.data.stateInit.debrief then
         ui.Debriefing.initDebriefing()
         if not mn.hasDebriefing() then
 			topics.debrief.skip:send()
@@ -35,7 +36,7 @@ function DebriefingController:initialize(document)
             return
         end
         self:startMusic()
-        ScpuiSystem.debriefInit = true
+        ScpuiSystem.data.stateInit.debrief = true
     end
     
     self.player = ba.getCurrentPlayer()    
@@ -94,9 +95,9 @@ function DebriefingController:initialize(document)
         
         if medalName then
 			--Check for an alt debrief bitmap
-			if ScpuiSystem.medalInfo[medalName] then
-				if ScpuiSystem.medalInfo[medalName].altDebriefBitmap then
-					medalFile = ScpuiSystem.medalInfo[medalName].altDebriefBitmap
+			if ScpuiSystem.data.medalInfo[medalName] then
+				if ScpuiSystem.data.medalInfo[medalName].altDebriefBitmap then
+					medalFile = ScpuiSystem.data.medalInfo[medalName].altDebriefBitmap
 				end
 			end
             self.document:GetElementById("awards_wrapper"):SetClass("hidden", false)
@@ -249,7 +250,11 @@ function DebriefingController:BuildStats()
 
     local stats = self.player.Stats
     local name = self.player:getName()
+
+    ---@type number | string
     local difficulty = ba.getGameDifficulty()
+
+    ---@type number | string
     local missionTime = mn.getMissionTime() + mn.MissionHUDTimerPadding 
     
     --Convert mission time to minutes + seconds
@@ -291,7 +296,7 @@ function DebriefingController:BuildStats()
     subheader:AppendChild(page_el)
     page_el:SetClass("stats_right", true)
     name_el.inner_rml = "Skill Level"
-    page_el.inner_rml = difficulty
+    page_el.inner_rml = tostring(difficulty)
     
     --Build stats page 1
     if self.page == 1 then
@@ -385,10 +390,10 @@ end
 function DebriefingController:startMusic()
     local filename = ui.Debriefing.getDebriefingMusicName()
     
-    ScpuiSystem.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+    ScpuiSystem.data.memory.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
     async.run(function()
         async.await(async_util.wait_for(2.5))
-        ScpuiSystem.music_handle:play(ad.MasterEventMusicVolume, true)
+        ScpuiSystem.data.memory.music_handle:play(ad.MasterEventMusicVolume, true)
     end, async.OnFrameExecutor)
 end
 
@@ -738,12 +743,12 @@ function DebriefingController:global_keydown(_, event)
 end
 
 function DebriefingController:close()
-    if ScpuiSystem.music_handle ~= nil and ScpuiSystem.music_handle:isValid() then
-        ScpuiSystem.music_handle:close(false)
-        ScpuiSystem.music_handle = nil
+    if ScpuiSystem.data.memory.music_handle ~= nil and ScpuiSystem.data.memory.music_handle:isValid() then
+        ScpuiSystem.data.memory.music_handle:close(false)
+        ScpuiSystem.data.memory.music_handle = nil
     end
 	self:unload()
-    ScpuiSystem.debriefInit = false
+    ScpuiSystem.data.stateInit.debrief = false
 end
 
 function DebriefingController:unload()

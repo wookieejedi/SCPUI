@@ -6,6 +6,7 @@ local LoadScreenController = class()
 function LoadScreenController:init()
 end
 
+---@param document Document
 function LoadScreenController:initialize(document)
 
     self.document = document
@@ -20,25 +21,30 @@ function LoadScreenController:initialize(document)
 	
 	self.document:GetElementById("title").inner_rml = mn.getMissionTitle()
 	
-	if not ScpuiSystem.loadProgress then
-		ScpuiSystem.loadProgress = 0
+	if not ScpuiSystem.data.loadProgress then
+		ScpuiSystem.data.loadProgress = 0
 	end
 
 	local load_img = topics.loadscreen.load_bar:send(self)
+	local img = gr.loadTexture(load_img, true)
+	local tex = gr.createTexture(img:getWidth(), img:getHeight())
+	local url = ui.linkTexture(tex)
 	
-	ScpuiSystem.loadingBar = {}
-	ScpuiSystem.loadingBar.img = gr.loadTexture(load_img, true)
-	ScpuiSystem.loadingBar.tex = gr.createTexture(ScpuiSystem.loadingBar.img:getWidth(), ScpuiSystem.loadingBar.img:getHeight())
-	ScpuiSystem.loadingBar.url = ui.linkTexture(ScpuiSystem.loadingBar.tex)
+	ScpuiSystem.data.memory.loadingBar = {
+		img = img,
+		tex = tex,
+		url = url,
+	}
+	
 	local aniEl = self.document:CreateElement("img")
-    aniEl:SetAttribute("src", ScpuiSystem.loadingBar.url)
+    aniEl:SetAttribute("src", ScpuiSystem.data.memory.loadingBar.url)
 	self.document:GetElementById("loadingbar"):AppendChild(aniEl)
 	
 	--Draw loading bar frame 0
-	gr.setTarget(ScpuiSystem.loadingBar.tex)
+	gr.setTarget(ScpuiSystem.data.memory.loadingBar.tex)
 	gr.clearScreen(0,0,0,0)
-	if ScpuiSystem.loadingBar.img and ScpuiSystem.loadingBar.img:isValid() then	
-		gr.drawImage(ScpuiSystem.loadingBar.img[0], 0, 0)
+	if ScpuiSystem.data.memory.loadingBar.img and ScpuiSystem.data.memory.loadingBar.img:isValid() then	
+		gr.drawImage(ScpuiSystem.data.memory.loadingBar.img[0], 0, 0)
 	end
 	gr.setTarget()
 
@@ -47,7 +53,7 @@ function LoadScreenController:initialize(document)
 end
 
 function LoadScreenController:setLoadingBar()
-	gr.setTarget(ScpuiSystem.loadingBar.tex)
+	gr.setTarget(ScpuiSystem.data.memory.loadingBar.tex)
 	gr.clearScreen(0,0,0,0)
 	
 	--find out which frame to draw
@@ -55,12 +61,12 @@ function LoadScreenController:setLoadingBar()
 
 	local index = 1
 		
-	if ScpuiSystem.loadingBar.img:getFramesLeft() then
-		if not ScpuiSystem.loadingBar.LastProgress or ScpuiSystem.loadingBar.LastProgress < (ScpuiSystem.loadProgress * ScpuiSystem.loadingBar.img:getFramesLeft()) then
-			index = math.floor(ScpuiSystem.loadProgress * ScpuiSystem.loadingBar.img:getFramesLeft())
-			ScpuiSystem.loadingBar.LastProgress = index
+	if ScpuiSystem.data.memory.loadingBar.img:getFramesLeft() then
+		if not ScpuiSystem.data.memory.loadingBar.LastProgress or ScpuiSystem.data.memory.loadingBar.LastProgress < (ScpuiSystem.data.loadProgress * ScpuiSystem.data.memory.loadingBar.img:getFramesLeft()) then
+			index = math.floor(ScpuiSystem.data.loadProgress * ScpuiSystem.data.memory.loadingBar.img:getFramesLeft())
+			ScpuiSystem.data.memory.loadingBar.LastProgress = index
 		else
-			index = ScpuiSystem.loadingBar.LastProgress
+			index = ScpuiSystem.data.memory.loadingBar.LastProgress
 		end
 				
 		if index == 0 then index = 1 end
@@ -68,8 +74,8 @@ function LoadScreenController:setLoadingBar()
 	
 	--then draw the loading bar
 	
-	if ScpuiSystem.loadingBar.img and ScpuiSystem.loadingBar.img:isValid() then	
-		gr.drawImage(ScpuiSystem.loadingBar.img[index], 0, 0)
+	if ScpuiSystem.data.memory.loadingBar.img and ScpuiSystem.data.memory.loadingBar.img:isValid() then	
+		gr.drawImage(ScpuiSystem.data.memory.loadingBar.img[index], 0, 0)
 	end
 	
 	gr.setTarget()
@@ -80,19 +86,19 @@ function LoadScreenController:global_keydown(_, event)
 end
 
 function LoadScreenController:unload()
-	ScpuiSystem.loadingBar.img:unload()
-	ScpuiSystem.loadingBar.img:destroyRenderTarget()
-	ScpuiSystem.loadingBar.img = nil
-	ScpuiSystem.loadingBar.tex:unload()
-	ScpuiSystem.loadingBar.tex:destroyRenderTarget()
-	ScpuiSystem.loadingBar.tex = nil
-	ScpuiSystem.loadingBar = nil
+	ScpuiSystem.data.memory.loadingBar.img:unload()
+	ScpuiSystem.data.memory.loadingBar.img:destroyRenderTarget()
+	ScpuiSystem.data.memory.loadingBar.img = nil
+	ScpuiSystem.data.memory.loadingBar.tex:unload()
+	ScpuiSystem.data.memory.loadingBar.tex:destroyRenderTarget()
+	ScpuiSystem.data.memory.loadingBar.tex = nil
+	ScpuiSystem.data.memory.loadingBar = nil
 	
 	topics.loadscreen.unload:send(self)
 end
 
 engine.addHook("On Frame", function()
-	if ScpuiSystem.loadDoc ~= nil then
+	if ScpuiSystem.data.loadDoc ~= nil then
 		LoadScreenController:setLoadingBar()
 	end
 end, {}, function()

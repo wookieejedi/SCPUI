@@ -204,9 +204,10 @@ end
 -- uuid.seed()
 -- print("here's a new uuid: ",uuid())
 function M.seed()
-  if _G.ngx ~= nil then
-    return M.randomseed(ngx.time() + ngx.worker.pid())
-  elseif package.loaded["socket"] and package.loaded["socket"].gettime then
+  -- Lua in FSO cannot have the ngx namespace ever
+  --if _G.ngx ~= nil then
+    --return M.randomseed(ngx.time() + ngx.worker.pid())
+  if package.loaded["socket"] and package.loaded["socket"].gettime then
     return M.randomseed(package.loaded["socket"].gettime()*10000)
   else
     return M.randomseed(os.time())

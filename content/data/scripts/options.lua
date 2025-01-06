@@ -647,9 +647,9 @@ function OptionsController:init_range_element(element, value_el, option, change_
 		element:AddEventListener("click", function(event, _, _)
 			range_el.value = customOptions[Key].currentValue
 			fontChoice = "base_font" .. ScpuiSystem:getFontPixelSize(customOptions[Key].currentValue)
-			
+			ScpuiSystem.data.numFontSizes = 5
 			--Clear all possible font classes
-			for i = 1, ScpuiSystem.numFontSizes do
+			for i = 1, ScpuiSystem.data.numFontSizes do
 				local f_class = "base_font" .. i
 				self.document:GetElementById("main_background"):SetClass(f_class, false)
 			end
@@ -1050,7 +1050,7 @@ end
 
 --Here are where we parse and place mod options into the Preferences tab
 function OptionsController:initialize_custom_options()
-    for _, option in ipairs(ScpuiSystem.CustomOptions) do
+    for _, option in ipairs(ScpuiSystem.data.CustomOptions) do
 		option.Category = "Custom"
 		--option.Title = option.Title
 		local el = self:createCustomOptionElement(option, string.format("custom_column_%d", option.Column))
@@ -1320,6 +1320,7 @@ function OptionsController:MaybeShowTooltip(tool_el, key)
 	end
 end
 
+---@param document Document
 function OptionsController:initialize(document)
     self.document = document
 	
@@ -1343,7 +1344,7 @@ function OptionsController:initialize(document)
         end
 		
 		--Creates data sources for custom dropdowns
-		for _, v_custopt in ipairs(ScpuiSystem.CustomOptions) do
+		for _, v_custopt in ipairs(ScpuiSystem.data.CustomOptions) do
 			v_custopt.Category = "Custom"
 			if (v_custopt.Type == "Multi") or (v_custopt.Type == "Binary") then
 				self.sources[v_custopt.Key] = createOptionSource(v_custopt)
@@ -1395,7 +1396,7 @@ function OptionsController:initialize(document)
 	
 	self:initialize_custom_options()
 	
-	if ScpuiSystem.hideMulti == true then
+	if ScpuiSystem.data.tableFlags.hideMulti == true then
 		self.document:GetElementById("multi_btn"):SetClass("hidden", true)
 	end
 	

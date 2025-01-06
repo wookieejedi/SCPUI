@@ -3,7 +3,7 @@
 -----------------------------------
 
 --Create the custom options table
-ScpuiSystem.PlayerRibbons = {}
+ScpuiSystem.data.PlayerRibbons = {}
 
 mn.LuaSEXPs['grant-scpui-ribbon'].Action = function(title, desc_name, border_r, border_g, border_b, ...)	
 	local desc = "From " .. ScpuiSystem:getModTitle()
@@ -49,7 +49,7 @@ function ScpuiSystem:grantRibbon(title, description, border_color, stripe_colors
 	
 	local ignore_ribbon = false
 	local count = 0
-	for _, v in ipairs(ScpuiSystem.PlayerRibbons) do
+	for _, v in ipairs(ScpuiSystem.data.PlayerRibbons) do
 		if v.name == ribbon.name then
 			ignore_ribbon = true
 			ba.print("SCPUI: Ribbon '" .. title .. "' already exists!\n")
@@ -70,7 +70,7 @@ function ScpuiSystem:grantRibbon(title, description, border_color, stripe_colors
 	
 	if not ignore_ribbon then
 		ba.print("SCPUI: Granted ribbon '" .. title .. "' to player!\n")
-		table.insert(ScpuiSystem.PlayerRibbons, ribbon)
+		table.insert(ScpuiSystem.data.PlayerRibbons, ribbon)
 	end
 	
 	ScpuiSystem:saveRibbonsToFile()
@@ -100,7 +100,7 @@ function ScpuiSystem:loadRibbonsFromFile()
 		config[ba.getCurrentPlayer():getName()] = {}
 	end]]--
 	
-	ScpuiSystem.PlayerRibbons = config
+	ScpuiSystem.data.PlayerRibbons = config
 end
 
 function ScpuiSystem:saveRibbonsToFile()
@@ -126,7 +126,7 @@ function ScpuiSystem:saveRibbonsToFile()
 		config[ba.getCurrentPlayer():getName()] = {}
 	end]]--
 	
-	config = ScpuiSystem.PlayerRibbons
+	config = ScpuiSystem.data.PlayerRibbons
 	
 	local utils = require('utils')
 	--config = utils.cleanPilotsFromSaveData(config)

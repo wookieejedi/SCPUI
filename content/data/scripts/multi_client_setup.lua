@@ -17,6 +17,7 @@ function ClientSetupController:init()
 	self.team_elements = {}
 end
 
+---@param document Document
 function ClientSetupController:initialize(document)
 	
 	self.document = document

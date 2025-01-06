@@ -65,6 +65,7 @@ local function initialize_buttons(document, properties, finish_func)
 end
 
 local function show_dialog(context, properties, finish_func, reject, abortCBTable)
+    ---@type Document
     local dialog_doc = nil
 
     if properties.style_value == 2 then
@@ -168,16 +169,16 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
 
     dialog_doc:Show(DocumentFocus.FOCUS) -- MODAL would be better than FOCUS but then the debugger cannot be used anymore
 
-    if ScpuiSystem.dialog ~= nil then
+    if ScpuiSystem.data.dialog ~= nil then
         ba.print("SCPUI got command to close a dialog while creating a dialog! This is unusual!\n")
         ScpuiSystem:CloseDialog()
     end
 
-    ScpuiSystem.dialog = dialog_doc
+    ScpuiSystem.data.dialog = dialog_doc
 end
 
 
----@class DialogFactory A dialog factory
+---@class dialog_factory A dialog factory
 local factory_mt   = {}
 
 factory_mt.__index = factory_mt
@@ -249,8 +250,9 @@ function factory_mt:show(context, abortCBTable)
 end
 
 --- Creates a new dialog factory
---- @return DialogFactory A factory for creating dialogs
+--- @return dialog_factory A factory for creating dialogs
 function module.new()
+    ---@type dialog_factory
     local factory = {
         type_val     = module.TYPE_SIMPLE,
         buttons      = {},

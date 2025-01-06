@@ -6,6 +6,7 @@ local MissionlogController = class()
 function MissionlogController:init()
 end
 
+---@param document Document
 function MissionlogController:initialize(document)
 
 	self.document = document
@@ -37,7 +38,7 @@ function MissionlogController:initialize(document)
 	
 	topics.missionlog.initialize:send(self)
 	
-	self:ChangeSection(ScpuiSystem.logSection)
+	self:ChangeSection(ScpuiSystem.data.memory.logSection)
 	
 end
 
@@ -200,7 +201,7 @@ function MissionlogController:ChangeSection(section)
 
 		--set the section
 		self.currentSection = section
-		ScpuiSystem.logSection = section
+		ScpuiSystem.data.memory.logSection = section
 
 		if section == 1 then
 			self:CreateGoalsLog()

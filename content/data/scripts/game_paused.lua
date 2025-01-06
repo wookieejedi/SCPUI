@@ -11,6 +11,7 @@ local screenRender = nil
 function GamePausedController:init()
 end
 
+---@param document Document
 function GamePausedController:initialize(document)
 
 	ui.PauseScreen.initPause()

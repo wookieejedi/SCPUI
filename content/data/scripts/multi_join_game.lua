@@ -12,6 +12,7 @@ function JoinGameController:init()
 	self.games = {} -- list of actual games
 end
 
+---@param document Document
 function JoinGameController:initialize(document)
 	
 	self.document = document
@@ -28,11 +29,11 @@ function JoinGameController:initialize(document)
 	
 	ScpuiSystem:ClearEntries(self.games_list_el)
 	
-	if not ScpuiSystem.MultiJoinReady then
+	if not ScpuiSystem.data.memory.MultiJoinReady then
 		ui.MultiJoinGame.initMultiJoin()
 	end
 	
-	ScpuiSystem.MultiJoinReady = true
+	ScpuiSystem.data.memory.MultiJoinReady = true
 	
 	self:updateLists()
 	ui.MultiGeneral.setPlayerState()
@@ -97,7 +98,7 @@ function JoinGameController:CreateGameEntry(entry)
 	end)
 	li_el:AddEventListener("dblclick", function(_, _, _)
 		self:SelectGame(entry)
-		ui.MultiJoinGame:sendJoinRequest()
+		ui.MultiJoinGame.sendJoinRequest()
 	end)
 	entry.key = li_el.id
 	
@@ -141,7 +142,7 @@ end
 
 function JoinGameController:exit()
 	ui.MultiJoinGame.closeMultiJoin()
-	ScpuiSystem.MultiJoinReady = false
+	ScpuiSystem.data.memory.MultiJoinReady = false
 	
 	--Go back to mainhall if not in pxo!
 	if self.network == 2 then
@@ -194,7 +195,7 @@ function JoinGameController:Show(text, title, input, buttons)
 end
 
 function JoinGameController:join_pressed()
-	ui.MultiJoinGame:sendJoinRequest()
+	ui.MultiJoinGame.sendJoinRequest()
 end
 
 function JoinGameController:help_pressed()
@@ -206,7 +207,7 @@ function JoinGameController:create_pressed()
 end
 
 function JoinGameController:observer_pressed()
-	ui.MultiJoinGame:sendJoinRequest(true)
+	ui.MultiJoinGame.sendJoinRequest(true)
 end
 
 function JoinGameController:cancel_pressed()

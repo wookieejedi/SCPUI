@@ -3,7 +3,7 @@
 -----------------------------------
 
 --Create the custom options table
-ScpuiSystem.CustomOptions = {}
+ScpuiSystem.data.CustomOptions = {}
 
 function ScpuiSystem:initCustomOptions()
 	
@@ -33,7 +33,7 @@ function ScpuiSystem:initCustomOptions()
         ScpuiOptionValues = config
     else
         ScpuiOptionValues = {}
-        for i, v in ipairs(ScpuiSystem.CustomOptions) do
+        for i, v in ipairs(ScpuiSystem.data.CustomOptions) do
             ScpuiOptionValues[v.Key] = v.Value
         end
         local json = require('dkjson')
@@ -62,7 +62,7 @@ function ScpuiSystem:parseOptions(data)
 		entry.Key = parse.getString()
 		
 		--Warn if Key already exists for another option
-		for _, v in pairs(ScpuiSystem.CustomOptions) do
+		for _, v in pairs(ScpuiSystem.data.CustomOptions) do
 			if v.Key == entry.Key then
 				ba.error("SCPUI Custom Options Key '" .. entry.Key .. "' already exists. This needs to be fixed!")
 			end
@@ -233,7 +233,7 @@ function ScpuiSystem:parseOptions(data)
 			end
 		end
 		
-		table.insert(ScpuiSystem.CustomOptions, entry)
+		table.insert(ScpuiSystem.data.CustomOptions, entry)
 	end
 	
 	parse.requiredString("#End")
@@ -348,7 +348,7 @@ function ScpuiSystem:applyCustomOptions()
         if type(ScpuiOptionValues) ~= "table" then
             ba.print("SCPUI: Got bad ScpuiOptionValues data! Loading defaults!")
             ScpuiOptionValues = {}
-            for i, v in ipairs(ScpuiSystem.CustomOptions) do
+            for i, v in ipairs(ScpuiSystem.data.CustomOptions) do
                 ScpuiOptionValues[v.Key] = v.Value
             end
             ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
@@ -371,7 +371,7 @@ if cf.fileExists(saveFilename, 'data/players', true) then
 	ScpuiOptionValues = config
 else
 	ScpuiOptionValues = {}
-	for i, v in ipairs(ScpuiSystem.CustomOptions) do
+	for i, v in ipairs(ScpuiSystem.data.CustomOptions) do
 		ScpuiOptionValues[v.Key] = v.Value
 	end
 	local json = require('dkjson')

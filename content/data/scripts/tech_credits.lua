@@ -11,6 +11,7 @@ local creditsImage = {}
 function TechCreditsController:init()
 end
 
+---@param document Document
 function TechCreditsController:initialize(document)
     self.document = document
     self.elements = {}
@@ -107,6 +108,7 @@ function TechCreditsController:ChangeTechState(state)
 end
 
 function TechCreditsController:chooseImage()
+	---@type integer | string
 	local imageIndex = creditsImage.index
 	
 	if creditsImage.timer <= 0 then

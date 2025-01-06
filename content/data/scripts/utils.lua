@@ -63,8 +63,7 @@ end
 --and returns translated string
 function utils.translateCustomXSTR(text)
 	local result = utils.parseCustomXSTR(text)
-	result = ba.XSTR(result[1], result[2])
-	return result
+	return ba.XSTR(result[1], result[2])
 end
 
 --A wrapper for mn.runSEXP that is not fucking stupid.
@@ -76,6 +75,7 @@ function utils.runSEXP(sexp, ...)
 	for _, data in ipairs(arg) do
   
 		if data ~= nil and data ~= "" then
+            ---@type any
 			local param = ""
 	
 			if type(data) == "boolean" then
@@ -313,9 +313,6 @@ function utils.find_first_either(str, patterns, startIdx)
     end
 end
 
----
---- @param inputStr string
---- @return string
 function utils.rml_escape(inputStr)
     return inputStr:gsub('[<>&"]', function(char)
         if char == "<" then
@@ -336,9 +333,6 @@ function utils.rml_escape(inputStr)
     end)
 end
 
----
---- @param inputStr string
---- @return string
 function utils.truncateAtHash(inputString)
     local hashPosition = inputString:find("#") -- Find the position of the first #
     if hashPosition then

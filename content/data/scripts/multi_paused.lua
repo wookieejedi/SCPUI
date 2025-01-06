@@ -13,6 +13,7 @@ local screenRender = nil
 function MultiPausedController:init()
 end
 
+---@param document Document
 function MultiPausedController:initialize(document)
 
 	ui.MultiPauseScreen.initPause()

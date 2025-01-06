@@ -9,6 +9,7 @@ function TechCutscenesController:init()
 	self.Counter = 0
 end
 
+---@param document Document
 function TechCutscenesController:initialize(document)
     self.document = document
     self.elements = {}
@@ -222,7 +223,7 @@ end
 
 function TechCutscenesController:play_pressed(element)
 	if self.SelectedEntry ~= nil then
-		ScpuiSystem.cutscene = self.SelectedEntry
+		ScpuiSystem.data.memory.cutscene = self.SelectedEntry
 		ScpuiSystem:beginSubstate("Cutscene")
 		self.document:Close()
 	end
