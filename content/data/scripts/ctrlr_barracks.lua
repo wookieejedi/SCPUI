@@ -19,20 +19,20 @@ function BarracksScreenController:initialize(document)
     self.squadImages = ui.Barracks.listSquadImages()
 
     ---@type Document
-    self.document = nil
+    self.Document = nil
 
     PilotSelectController.initialize(self, document)
 	
 	--Hide Multi stuff maybe
-	if ScpuiSystem.data.tableFlags.hideMulti == true then
-		self.document:GetElementById("multiplayer_btn"):SetClass("hidden", true)
+	if ScpuiSystem.data.table_flags.HideMulti == true then
+		self.Document:GetElementById("multiplayer_btn"):SetClass("hidden", true)
 	end
 
     ---Load background choice
-    self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+    self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 
     ---Load the desired font size from the save file
-    self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+    self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	topics.barracks.initialize:send(self)
 
@@ -40,8 +40,8 @@ end
 
 function BarracksScreenController:changeImage(new_img)
     if new_img == nil then
-        self.document:GetElementById("pilot_head_text_el").inner_rml = ""
-        self.document:GetElementById("pilot_head_img_el"):SetAttribute("src", "")
+        self.Document:GetElementById("pilot_head_text_el").inner_rml = ""
+        self.Document:GetElementById("pilot_head_img_el"):SetAttribute("src", "")
         return
     end
 
@@ -49,15 +49,15 @@ function BarracksScreenController:changeImage(new_img)
     local index = tblUtil.ifind(self.pilotImages, new_img)
 
     if index <= 0 then
-        local text_el     = self.document:GetElementById("pilot_head_text_el")
+        local text_el     = self.Document:GetElementById("pilot_head_text_el")
         text_el.inner_rml = ""
 
-        self.document:GetElementById("pilot_head_img_el"):SetAttribute("src", "")
+        self.Document:GetElementById("pilot_head_img_el"):SetAttribute("src", "")
     else
-        local text_el     = self.document:GetElementById("pilot_head_text_el")
+        local text_el     = self.Document:GetElementById("pilot_head_text_el")
         text_el.inner_rml = string.format("%d of %d", index, #self.pilotImages)
 
-        self.document:GetElementById("pilot_head_img_el"):SetAttribute("src", new_img)
+        self.Document:GetElementById("pilot_head_img_el"):SetAttribute("src", new_img)
     end
 end
 
@@ -92,8 +92,8 @@ function BarracksScreenController:prev_image_pressed(element)
 end
 
 function BarracksScreenController:add_heading_element(parent, text)
-    local container = self.document:CreateElement("div")
-    local text_el   = self.document:CreateTextNode(text)
+    local container = self.Document:CreateElement("div")
+    local text_el   = self.Document:CreateTextNode(text)
 
     container:AppendChild(text_el)
     container:SetClass("stats_heading", true)
@@ -103,13 +103,13 @@ function BarracksScreenController:add_heading_element(parent, text)
 end
 
 function BarracksScreenController:add_value_element(parent, text, value)
-    local text_container = self.document:CreateElement("div")
-    local text_el        = self.document:CreateTextNode(text)
+    local text_container = self.Document:CreateElement("div")
+    local text_el        = self.Document:CreateTextNode(text)
     text_container:AppendChild(text_el)
     text_container:SetClass("stats_value_label", true)
 
-    local value_container = self.document:CreateElement("div")
-    local value_el        = self.document:CreateTextNode(tostring(value))
+    local value_container = self.Document:CreateElement("div")
+    local value_el        = self.Document:CreateTextNode(tostring(value))
     value_container:AppendChild(value_el)
     value_container:SetClass("stats_value_text", true)
 
@@ -118,14 +118,14 @@ function BarracksScreenController:add_value_element(parent, text, value)
 end
 
 function BarracksScreenController:add_empty_line(parent)
-    local text_container = self.document:CreateElement("div")
+    local text_container = self.Document:CreateElement("div")
     text_container:SetClass("stats_empty_line", true)
 
     parent:AppendChild(text_container)
 end
 
 function BarracksScreenController:initialize_stats_text()
-    local text_container     = self.document:GetElementById("pilot_stats_text")
+    local text_container     = self.Document:GetElementById("pilot_stats_text")
 
     -- Always clear the container to remove old elements
     text_container.inner_rml = ""
@@ -252,9 +252,9 @@ function BarracksScreenController:set_player_mode(element, mode)
         self.selectedPilot.IsMultiplayer = is_multi
     end
 
-    self.document:GetElementById("squad_select_right_btn"):SetClass("hidden", not is_multi)
-    self.document:GetElementById("squad_select_left_btn"):SetClass("hidden", not is_multi)
-    self.document:GetElementById("pilot_squad_counter"):SetClass("hidden", not is_multi)
+    self.Document:GetElementById("squad_select_right_btn"):SetClass("hidden", not is_multi)
+    self.Document:GetElementById("squad_select_left_btn"):SetClass("hidden", not is_multi)
+    self.Document:GetElementById("pilot_squad_counter"):SetClass("hidden", not is_multi)
 
     if self.current_mode == "multi" then
         self:changeSquad(self.selectedPilot.MultiSquadFilename)
@@ -267,8 +267,8 @@ end
 
 function BarracksScreenController:changeSquad(new_img)
     if new_img == nil then
-        self.document:GetElementById("pilot_squad_text_el").inner_rml = ""
-        self.document:GetElementById("pilot_squad_img_el"):SetAttribute("src", "")
+        self.Document:GetElementById("pilot_squad_text_el").inner_rml = ""
+        self.Document:GetElementById("pilot_squad_img_el"):SetAttribute("src", "")
         return
     end
 
@@ -277,15 +277,15 @@ function BarracksScreenController:changeSquad(new_img)
 
     if index <= 0 then
         -- Invalid image found. Let's try to avoid displaying a warning here
-        local text_el     = self.document:GetElementById("pilot_squad_text_el")
+        local text_el     = self.Document:GetElementById("pilot_squad_text_el")
         text_el.inner_rml = ""
 
-        self.document:GetElementById("pilot_squad_img_el"):SetAttribute("src", "")
+        self.Document:GetElementById("pilot_squad_img_el"):SetAttribute("src", "")
     else
-        local text_el     = self.document:GetElementById("pilot_squad_text_el")
+        local text_el     = self.Document:GetElementById("pilot_squad_text_el")
         text_el.inner_rml = string.format("%d of %d", index, #self.squadImages)
 
-        self.document:GetElementById("pilot_squad_img_el"):SetAttribute("src", new_img)
+        self.Document:GetElementById("pilot_squad_img_el"):SetAttribute("src", new_img)
     end
 end
 
@@ -333,7 +333,7 @@ end
 function BarracksScreenController:help_clicked()
     self.help_shown  = not self.help_shown
 
-    local help_texts = self.document:GetElementsByClassName("tooltip")
+    local help_texts = self.Document:GetElementsByClassName("tooltip")
     for _, v in ipairs(help_texts) do
         v:SetPseudoClass("shown", self.help_shown)
     end

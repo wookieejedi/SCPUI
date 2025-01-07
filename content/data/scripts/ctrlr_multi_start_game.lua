@@ -13,7 +13,7 @@ end
 ---@param document Document
 function JoinGameController:initialize(document)
 	
-	self.document = document
+	self.Document = document
 	
 	self.missionTitle = ba.getCurrentPlayer():getName() .. "'s game"
 	self.password = ""
@@ -21,21 +21,21 @@ function JoinGameController:initialize(document)
 	self.game_type = MULTI_GAME_TYPE_OPEN
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
-	self.title_input_el = self.document:GetElementById("title_input")
+	self.title_input_el = self.Document:GetElementById("title_input")
 	self.title_input_el:SetAttribute("value", self.missionTitle)
 	
-	self.password_input_el = self.document:GetElementById("password_input")
+	self.password_input_el = self.Document:GetElementById("password_input")
 	
 	ui.MultiStartGame.initMultiStart()
 	
 	self:buildRankList()
 	
-	self.document:GetElementById("open_btn"):SetPseudoClass("checked", true)
+	self.Document:GetElementById("open_btn"):SetPseudoClass("checked", true)
 	
 	self:updateLists()
 	ui.MultiGeneral.setPlayerState()
@@ -45,7 +45,7 @@ function JoinGameController:initialize(document)
 end
 
 function JoinGameController:buildRankList()
-	local select_el = Element.As.ElementFormControlDataSelect(self.document:GetElementById("dropdown_cont").first_child)
+	local select_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("dropdown_cont").first_child)
 	
 	ScpuiSystem:clearDropdown(select_el)
 	
@@ -60,18 +60,18 @@ function JoinGameController:buildRankList()
 end
 
 function JoinGameController:uncheckButtons()
-	self.document:GetElementById("open_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("password_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("rank_above_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("rank_below_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("open_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("password_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("rank_above_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("rank_below_btn"):SetPseudoClass("checked", false)
 end
 
 function JoinGameController:lockPassword(lock)
-	self.document:GetElementById("password_lock"):SetClass("hidden", not lock)
+	self.Document:GetElementById("password_lock"):SetClass("hidden", not lock)
 end
 
 function JoinGameController:lockRank(lock)
-	self.document:GetElementById("rank_lock"):SetClass("hidden", not lock)
+	self.Document:GetElementById("rank_lock"):SetClass("hidden", not lock)
 end
 
 function JoinGameController:exit(continue)
@@ -113,12 +113,12 @@ function JoinGameController:Show(text, title, input, buttons)
 			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end
 		dialog:escape("")
-		dialog:show(self.document.context)
+		dialog:show(self.Document.context)
 		:continueWith(function(response)
 			self:dialog_response(response)
     end)
 	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.document.context)
+	ui.enableInput(self.Document.context)
 end
 
 function JoinGameController:join_pressed()
@@ -145,7 +145,7 @@ end
 
 function JoinGameController:open_pressed()
 	self:uncheckButtons()
-	self.document:GetElementById("open_btn"):SetPseudoClass("checked", true)
+	self.Document:GetElementById("open_btn"):SetPseudoClass("checked", true)
 	self:lockPassword(true)
 	self:lockRank(true)
 	
@@ -154,7 +154,7 @@ end
 
 function JoinGameController:password_pressed()
 	self:uncheckButtons()
-	self.document:GetElementById("password_btn"):SetPseudoClass("checked", true)
+	self.Document:GetElementById("password_btn"):SetPseudoClass("checked", true)
 	self:lockPassword(false)
 	self:lockRank(true)
 	
@@ -163,7 +163,7 @@ end
 
 function JoinGameController:rank_above_pressed()
 	self:uncheckButtons()
-	self.document:GetElementById("rank_above_btn"):SetPseudoClass("checked", true)
+	self.Document:GetElementById("rank_above_btn"):SetPseudoClass("checked", true)
 	self:lockPassword(true)
 	self:lockRank(false)
 	
@@ -172,7 +172,7 @@ end
 
 function JoinGameController:rank_below_pressed()
 	self:uncheckButtons()
-	self.document:GetElementById("rank_below_btn"):SetPseudoClass("checked", true)
+	self.Document:GetElementById("rank_below_btn"):SetPseudoClass("checked", true)
 	self:lockPassword(true)
 	self:lockRank(false)
 	
@@ -208,7 +208,7 @@ function JoinGameController:get_rank_index(rank_name)
 end
 
 function JoinGameController:rank_changed()
-	local select_el = Element.As.ElementFormControlDataSelect(self.document:GetElementById("dropdown_cont").first_child)
+	local select_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("dropdown_cont").first_child)
 	
 	local rank = select_el.options[select_el.selection - 1].value
 	
@@ -264,7 +264,7 @@ end
 function JoinGameController:updateLists()
 	ui.MultiStartGame.runNetwork()
 	
-	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
+	--self.Document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))

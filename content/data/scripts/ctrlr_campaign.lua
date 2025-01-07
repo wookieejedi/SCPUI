@@ -9,15 +9,15 @@ end
 
 ---@param document Document
 function CampaignController:initialize(document)
-    self.document = document
+    self.Document = document
     self.elements = {}
     self.selection = nil
 
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
     ui.CampaignMenu.loadCampaignList();
 
@@ -66,7 +66,7 @@ function CampaignController:selectCampaign(campaign)
 
     self.selection = campaign
 
-    local desc_el = self.document:GetElementById("desc_text")
+    local desc_el = self.Document:GetElementById("desc_text")
     if self.selection ~= nil then
         desc_el.inner_rml = self.descriptions[campaign]
     else
@@ -80,7 +80,7 @@ function CampaignController:selectCampaign(campaign)
 end
 
 function CampaignController:create_campaign_li(campaign)
-    local li_el = self.document:CreateElement("li")
+    local li_el = self.Document:CreateElement("li")
 	
 	local display = topics.campaign.listCampaign:send({campaign, self.fileNames[campaign]})
 
@@ -96,7 +96,7 @@ function CampaignController:create_campaign_li(campaign)
 end
 
 function CampaignController:init_campaign_list()
-    local campaign_list_el = self.document:GetElementById("campaignlist_ul")
+    local campaign_list_el = self.Document:GetElementById("campaignlist_ul")
     for _, v in ipairs(self.names) do
         -- Add all the elements
         campaign_list_el:AppendChild(self:create_campaign_li(v))
@@ -129,7 +129,7 @@ function CampaignController:restart_pressed(element)
 	builder:escape(false)
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), true, string.sub(ba.XSTR("Ok", 888286), 1, 1))
     builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", 888091), false, string.sub(ba.XSTR("Cancel", 888091), 1, 1))
-    builder:show(self.document.context):continueWith(function(accepted)
+    builder:show(self.Document.context):continueWith(function(accepted)
         if not accepted then
             ui.playElementSound(element, "click", "error")
             return

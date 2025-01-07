@@ -3,7 +3,7 @@
 -----------------------------------
 
 --Create the custom options table
-ScpuiSystem.data.PlayerRibbons = {}
+ScpuiSystem.data.Player_Ribbons = {}
 
 --LuaSexp to grant a ribbon permanently to the player
 mn.LuaSEXPs['grant-scpui-ribbon'].Action = function(title, desc_name, border_r, border_g, border_b, ...)	
@@ -18,9 +18,9 @@ mn.LuaSEXPs['grant-scpui-ribbon'].Action = function(title, desc_name, border_r, 
 	
 	---@type scpui_color
 	local border_color = {
-		r = border_r,
-		g = border_g,
-		b = border_b
+		R = border_r,
+		G = border_g,
+		B = border_b
 	}
 	
 	---@type scpui_ribbon_stripe[]
@@ -29,10 +29,10 @@ mn.LuaSEXPs['grant-scpui-ribbon'].Action = function(title, desc_name, border_r, 
 
 		---@type scpui_ribbon_stripe
 		local stripe = {
-			p = v[1],
-			r = v[2],
-			g = v[3],
-			b = v[4]
+			P = v[1],
+			R = v[2],
+			G = v[3],
+			B = v[4]
 		}
 
 		table.insert(stripe_colors, stripe)
@@ -59,15 +59,15 @@ function ScpuiSystem:grantRibbon(title, description, border_color, stripe_colors
 	
 	local ignore_ribbon = false
 	local count = 0
-	for _, v in ipairs(ScpuiSystem.data.PlayerRibbons) do
-		if v.name == ribbon.name then
+	for _, v in ipairs(ScpuiSystem.data.Player_Ribbons) do
+		if v.Name == ribbon.name then
 			ignore_ribbon = true
 			ba.print("SCPUI: Ribbon '" .. title .. "' already exists!\n")
 			break
 		end
 		
 		-- Limit mods to 5 ribbons. It's semi arbitrary, but let's prevent mods from going nuts with these
-		if v.source == ribbon.source then
+		if v.Source == ribbon.source then
 			count = count + 1
 		end
 		
@@ -80,7 +80,7 @@ function ScpuiSystem:grantRibbon(title, description, border_color, stripe_colors
 	
 	if not ignore_ribbon then
 		ba.print("SCPUI: Granted ribbon '" .. title .. "' to player!\n")
-		table.insert(ScpuiSystem.data.PlayerRibbons, ribbon)
+		table.insert(ScpuiSystem.data.Player_Ribbons, ribbon)
 	end
 	
 	ScpuiSystem:saveRibbonsToFile()
@@ -112,7 +112,7 @@ function ScpuiSystem:loadRibbonsFromFile()
 		config[ba.getCurrentPlayer():getName()] = {}
 	end]]--
 	
-	ScpuiSystem.data.PlayerRibbons = config
+	ScpuiSystem.data.Player_Ribbons = config
 end
 
 --- Save the current ribbons to the save file
@@ -141,7 +141,7 @@ function ScpuiSystem:saveRibbonsToFile()
 		config[ba.getCurrentPlayer():getName()] = {}
 	end]]--
 	
-	config = ScpuiSystem.data.PlayerRibbons
+	config = ScpuiSystem.data.Player_Ribbons
 	
 	local utils = require("lib_utils")
 	--config = utils.cleanPilotsFromSaveData(config)
@@ -164,18 +164,18 @@ function ScpuiSystem:createRibbonImage(ribbon)
 	local img = nil
 	local border = gr.createColor(200, 200, 200, 255)
 	
-	if ribbon.border then
-		local r = utils.clamp(ribbon.border.r, 0, 255)
-		local g = utils.clamp(ribbon.border.g, 0, 255)
-		local b = utils.clamp(ribbon.border.b, 0, 255)
+	if ribbon.Border then
+		local r = utils.clamp(ribbon.Border.R, 0, 255)
+		local g = utils.clamp(ribbon.Border.G, 0, 255)
+		local b = utils.clamp(ribbon.Border.B, 0, 255)
 		border = gr.createColor(r, g, b, 255)
 	end
 	
 	gr.setColor(border)
 	gr.drawRectangle(0, 0, 200, 50)
 	
-	for i = 1, #ribbon.colors do
-		local pos = ribbon.colors[i].p
+	for i = 1, #ribbon.Stripes_List do
+		local pos = ribbon.Stripes_List[i].P
 		if i == 1 or pos < 3 then
 			pos = 3
 		end
@@ -183,9 +183,9 @@ function ScpuiSystem:createRibbonImage(ribbon)
 			pos = 99
 		end
 		
-		local r = utils.clamp(ribbon.colors[i].r, 0, 255)
-		local g = utils.clamp(ribbon.colors[i].g, 0, 255)
-		local b = utils.clamp(ribbon.colors[i].b, 0, 255)
+		local r = utils.clamp(ribbon.Stripes_List[i].R, 0, 255)
+		local g = utils.clamp(ribbon.Stripes_List[i].G, 0, 255)
+		local b = utils.clamp(ribbon.Stripes_List[i].B, 0, 255)
 		
 		local thisColor = gr.createColor(r, g, b, 255)
 		

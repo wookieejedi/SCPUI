@@ -13,16 +13,16 @@ end
 
 ---@param document Document
 function TechCreditsController:initialize(document)
-    self.document = document
+    self.Document = document
     self.elements = {}
     self.section = 1
 	self.scroll = 0
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	ui.TechRoom.buildCredits()
 	
@@ -32,7 +32,7 @@ function TechCreditsController:initialize(document)
 	ui.MainHall.stopAmbientSound()
 	self:startMusic()
 	
-	local text_el = self.document:GetElementById("credits_text")
+	local text_el = self.Document:GetElementById("credits_text")
 	
 	local CompleteCredits = string.gsub(ui.TechRoom.Credits.Complete,"\n","<br></br>")
 	
@@ -40,7 +40,7 @@ function TechCreditsController:initialize(document)
 	--so that we can cleanly loop the text. Get the height of the div, the height of
 	--a line, and do some math. Add that number of line breaks before and after!
 	local creditsHeight = text_el.offset_height
-	local lineHeight = self.document:GetElementById("bullet_img").next_sibling.offset_height
+	local lineHeight = self.Document:GetElementById("bullet_img").next_sibling.offset_height
 	local numBreaks = (math.ceil((creditsHeight / lineHeight) + ((10 - ScpuiSystem:getFontPixelSize()) * 1.3)))
 	local creditsBookend = ""
 	
@@ -60,7 +60,7 @@ function TechCreditsController:initialize(document)
 	
 	self:ScrollCredits()
 	
-	local image_el = self.document:GetElementById("credits_image")
+	local image_el = self.Document:GetElementById("credits_image")
 	local image_x1 = image_el.offset_left + image_el.parent_node.offset_left
 	local image_y1 = image_el.offset_top + image_el.parent_node.offset_top
 	
@@ -82,10 +82,10 @@ function TechCreditsController:initialize(document)
 	self:timeImages()
 
 	
-	self.document:GetElementById("tech_btn_1"):SetPseudoClass("checked", false)
-	self.document:GetElementById("tech_btn_2"):SetPseudoClass("checked", false)
-	self.document:GetElementById("tech_btn_3"):SetPseudoClass("checked", false)
-	self.document:GetElementById("tech_btn_4"):SetPseudoClass("checked", true)
+	self.Document:GetElementById("tech_btn_1"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("tech_btn_2"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("tech_btn_3"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("tech_btn_4"):SetPseudoClass("checked", true)
 	
 end
 

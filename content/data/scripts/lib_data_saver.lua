@@ -14,7 +14,7 @@ function datasaver:basicStringHash(inputString)
 	
 	--Check if we have SCPUI. If so, we can use the specified hash value
 	if ScpuiSystem ~= nil then
-		mult = ScpuiSystem.data.tableFlags.dataSaverMulti
+		mult = ScpuiSystem.data.table_flags.DataSaverMultiplier
 		if mult == nil then
 			mult = 1 -- No SCPUI, so just use 1
 		end

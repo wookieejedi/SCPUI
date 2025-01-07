@@ -8,14 +8,14 @@ local AbstractBriefingController = require("ctrlr_briefing_common")
 
 local BriefingController = class(AbstractBriefingController)
 
-ScpuiSystem.data.memory.drawBrMap = nil
+ScpuiSystem.data.memory.briefing_map = nil
 
 function BriefingController:init()
-	if not ScpuiSystem.data.memory.cutscenePlayed then
+	if not ScpuiSystem.data.memory.CutscenePlayed then
 		ScpuiSystem:maybePlayCutscene(MOVIE_PRE_BRIEF)
 	end
 	
-	ScpuiSystem.data.memory.cutscenePlayed = true
+	ScpuiSystem.data.memory.CutscenePlayed = true
     --- @type briefing_stage[]
     self.stages = {}
 	
@@ -32,7 +32,7 @@ function BriefingController:init()
 	loadoutHandler:init()
 	
 	--Whenever we start a new mission, we reset the log ui to goals
-	ScpuiSystem.data.memory.logSection = 1
+	ScpuiSystem.data.memory.LogSection = 1
 	
 	self.help_shown = false
 	
@@ -42,7 +42,7 @@ end
 function BriefingController:initialize(document)
 
 	---@type Document
-	self.document = nil
+	self.Document = nil
 
     AbstractBriefingController.initialize(self, document)
 	
@@ -50,40 +50,40 @@ function BriefingController:initialize(document)
 	self.requiredWeps = {}
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	ui.Briefing.initBriefing()
 	
 	if mn.hasNoBriefing() then
 		self.Commit = true
 		ScpuiSystem:stopMusic()
-		ScpuiSystem.data.memory.current_music_file = nil
+		ScpuiSystem.data.memory.CurrentMusicFile = nil
 		ui.Briefing.commitToMission()
 	end
 	
 	if mn.isScramble() or mn.isTraining() then
-		local ss_btn = self.document:GetElementById("s_select_btn")
-		local ws_btn = self.document:GetElementById("w_select_btn")
+		local ss_btn = self.Document:GetElementById("s_select_btn")
+		local ws_btn = self.Document:GetElementById("w_select_btn")
 		
 		ss_btn:SetClass("hidden", true)
 		ws_btn:SetClass("hidden", true)
 		
-		local text_el = self.document:CreateElement("div")
+		local text_el = self.Document:CreateElement("div")
 		text_el.style.width = "10%"
 		text_el.style.position = "absolute"
 		text_el.style.color = "#606060"
 		text_el.style.top = "8%"
 		text_el.style.left = "5%"
 		text_el.inner_rml = ba.XSTR("Loadout selection not available", 888279)
-		self.document:GetElementById("main_background"):AppendChild(text_el)
+		self.Document:GetElementById("main_background"):AppendChild(text_el)
 	end
 		
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
-	self.chat_el = self.document:GetElementById("chat_window")
-	self.input_id = self.document:GetElementById("chat_input")
+	self.chat_el = self.Document:GetElementById("chat_window")
+	self.input_id = self.Document:GetElementById("chat_input")
 	
 	--Get all the required weapons
 	local j = 1
@@ -94,7 +94,7 @@ function BriefingController:initialize(document)
 		j = j + 1
 	end
 	
-	self.document:GetElementById("mission_title").inner_rml = mn.getMissionTitle()
+	self.Document:GetElementById("mission_title").inner_rml = mn.getMissionTitle()
 
     local briefing = ui.Briefing.getBriefing()
 	
@@ -125,57 +125,57 @@ function BriefingController:initialize(document)
 	
 	if mn.isInCampaign() then
 		if mn.isTraining() then
-			self.document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Skip Training", 888280)
-			self.document:GetElementById("top_panel_a"):SetClass("hidden", false)
+			self.Document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Skip Training", 888280)
+			self.Document:GetElementById("top_panel_a"):SetClass("hidden", false)
 		elseif mn.isInCampaignLoop() then
-			self.document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Exit Loop", 888281)
-			self.document:GetElementById("top_panel_a"):SetClass("hidden", false)
+			self.Document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Exit Loop", 888281)
+			self.Document:GetElementById("top_panel_a"):SetClass("hidden", false)
 		elseif mn.isMissionSkipAllowed() then
-			self.document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Skip Mission", 888282)
-			self.document:GetElementById("top_panel_a"):SetClass("hidden", false)
+			self.Document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Skip Mission", 888282)
+			self.Document:GetElementById("top_panel_a"):SetClass("hidden", false)
 		else
-			self.document:GetElementById("top_panel_a"):SetClass("hidden", true)
+			self.Document:GetElementById("top_panel_a"):SetClass("hidden", true)
 		end
 	else
-		self.document:GetElementById("top_panel_a"):SetClass("hidden", true)
+		self.Document:GetElementById("top_panel_a"):SetClass("hidden", true)
 	end
 	
 	if ba.inDebug() then
 		local missionFile = mn.getMissionFilename() .. ".fs2"
 		local missionDate = mn.getMissionModifiedDate()
-		self.document:GetElementById("mission_debug_info").inner_rml = missionFile .. " mod " .. missionDate
+		self.Document:GetElementById("mission_debug_info").inner_rml = missionFile .. " mod " .. missionDate
 	end
 	
-	self.document:GetElementById("brief_btn"):SetPseudoClass("checked", true)
+	self.Document:GetElementById("brief_btn"):SetPseudoClass("checked", true)
 	
 	--Default width is 888, default height is 371
 	
-	local briefView = self.document:GetElementById("briefing_grid")
+	local briefView = self.Document:GetElementById("briefing_grid")
 	
 	--The grid needs to be a very specific aspect ratio, so we'll calculate
 	--the percent change here and use that to calculate the height below.
 	local percentChange = ((briefView.offset_width - 888) / 888) * 100
 	
-	ScpuiSystem.data.memory.drawBrMap.x1 = ScpuiSystem:getAbsoluteLeft(briefView)
-	ScpuiSystem.data.memory.drawBrMap.y1 = ScpuiSystem:getAbsoluteTop(briefView)
-	ScpuiSystem.data.memory.drawBrMap.x2 = briefView.offset_width
-	ScpuiSystem.data.memory.drawBrMap.y2 = self:calcPercent(371, (100 + percentChange))
+	ScpuiSystem.data.memory.briefing_map.X1 = ScpuiSystem:getAbsoluteLeft(briefView)
+	ScpuiSystem.data.memory.briefing_map.Y1 = ScpuiSystem:getAbsoluteTop(briefView)
+	ScpuiSystem.data.memory.briefing_map.X2 = briefView.offset_width
+	ScpuiSystem.data.memory.briefing_map.Y2 = self:calcPercent(371, (100 + percentChange))
 	
 	self:buildGoals()
 	
-	ScpuiSystem.data.memory.drawBrMap.tex = gr.createTexture(ScpuiSystem.data.memory.drawBrMap.x2, ScpuiSystem.data.memory.drawBrMap.y2)
-	ScpuiSystem.data.memory.drawBrMap.url = ui.linkTexture(ScpuiSystem.data.memory.drawBrMap.tex)
-	ScpuiSystem.data.memory.drawBrMap.draw = true
-	local aniEl = self.document:CreateElement("img")
-    aniEl:SetAttribute("src", ScpuiSystem.data.memory.drawBrMap.url)
+	ScpuiSystem.data.memory.briefing_map.Texture = gr.createTexture(ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
+	ScpuiSystem.data.memory.briefing_map.Url = ui.linkTexture(ScpuiSystem.data.memory.briefing_map.Texture)
+	ScpuiSystem.data.memory.briefing_map.Draw = true
+	local aniEl = self.Document:CreateElement("img")
+    aniEl:SetAttribute("src", ScpuiSystem.data.memory.briefing_map.Url)
 	briefView:ReplaceChild(aniEl, briefView.first_child)
 	
 	if ScpuiSystem:inMultiGame() then
 		ui.MainHall.stopMusic(true) -- In multi we're coming from the Multi Sync UI so we need to stop these manually
 		ui.MainHall.stopAmbientSound()
-		self.document:GetElementById("chat_wrapper"):SetClass("hidden", false)
-		--self.document:GetElementById("c_panel_wrapper_multi"):SetClass("hidden", false)
-		self.document:GetElementById("bottom_panel_c"):SetClass("hidden", false)
+		self.Document:GetElementById("chat_wrapper"):SetClass("hidden", false)
+		--self.Document:GetElementById("c_panel_wrapper_multi"):SetClass("hidden", false)
+		self.Document:GetElementById("bottom_panel_c"):SetClass("hidden", false)
 		self:updateLists()
 		ui.MultiGeneral.setPlayerState()
 	end
@@ -192,12 +192,12 @@ function BriefingController:calcPercent(value, percent)
 end
 
 function BriefingController:makeBullet()
-	local bullet_el = self.document:CreateElement("div")
+	local bullet_el = self.Document:CreateElement("div")
 	bullet_el.id = "goalsdot_img"
 	bullet_el:SetClass("goalsdot", true)
 	bullet_el:SetClass("brightblue", true)
 	
-	local bullet_img = self.document:CreateElement("img")
+	local bullet_img = self.Document:CreateElement("img")
 	bullet_img:SetClass("psuedo_img", true)
 	bullet_img:SetAttribute("src", "scroll-button.png")
 	bullet_el:AppendChild(bullet_img)
@@ -206,11 +206,11 @@ function BriefingController:makeBullet()
 end
 
 function BriefingController:createGoalItem(title)
-	local goal_el = self.document:CreateElement("li")
+	local goal_el = self.Document:CreateElement("li")
 	goal_el:SetClass("goal", true)
 	goal_el:AppendChild(self:makeBullet())
 	
-	local goal_text = self.document:CreateElement("div")
+	local goal_text = self.Document:CreateElement("div")
 	goal_text.inner_rml = title .. "<br></br>"
 	goal_el:AppendChild(goal_text)
 	
@@ -220,9 +220,9 @@ end
 function BriefingController:buildGoals()
     if mn.hasGoalsStage() then
 		local goals = ui.Briefing.Objectives
-		local primaryList = self.document:GetElementById("primary_goal_list")
-		local secondaryList = self.document:GetElementById("secondary_goal_list")
-		local bonusList = self.document:GetElementById("bonus_goal_list")
+		local primaryList = self.Document:GetElementById("primary_goal_list")
+		local secondaryList = self.Document:GetElementById("secondary_goal_list")
+		local bonusList = self.Document:GetElementById("bonus_goal_list")
 		for i = 1, #goals do
 			local goal = goals[i]
 			if goal.isGoalValid and goal.Message ~= "" then
@@ -263,32 +263,32 @@ function BriefingController:go_to_stage(stage_idx)
 	local old_stage = self.current_stage or 0
     self:leaveStage()
 	
-	if ScpuiSystem.data.memory.drawBrMap == nil then
-		ScpuiSystem.data.memory.drawBrMap = {
-			tex = nil,
-			modelRot = 40
+	if ScpuiSystem.data.memory.briefing_map == nil then
+		ScpuiSystem.data.memory.briefing_map = {
+			Texture = nil,
+			RotationSpeed = 40
 		}
 	end
 
     local stage = self.stages[stage_idx]
 	
-	ScpuiSystem.data.memory.drawBrMap.bg = ScpuiSystem:getBriefingBackground(mn.getMissionFilename(), tostring(stage_idx))
+	ScpuiSystem.data.memory.briefing_map.Bg = ScpuiSystem:getBriefingBackground(mn.getMissionFilename(), tostring(stage_idx))
 
 	local brief_img = topics.briefing.brief_bg:send((mn.hasGoalsStage() and stage_idx == #self.stages))
 
 	if mn.hasGoalsStage() and stage_idx == #self.stages then
 		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
-		self.document:GetElementById("briefing_goals"):SetClass("hidden", false)
-		ScpuiSystem.data.memory.drawBrMap.goals = true
+		self.Document:GetElementById("briefing_goals"):SetClass("hidden", false)
+		ScpuiSystem.data.memory.briefing_map.Goals = true
 	else
 		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
-		self.document:GetElementById("briefing_goals"):SetClass("hidden", true)
-		ScpuiSystem.data.memory.drawBrMap.goals = false
+		self.Document:GetElementById("briefing_goals"):SetClass("hidden", true)
+		ScpuiSystem.data.memory.briefing_map.Goals = false
 	end
 	
-	local brief_bg_src = self.document:CreateElement("img")
+	local brief_bg_src = self.Document:CreateElement("img")
 	brief_bg_src:SetAttribute("src", brief_img)
-	local brief_bg_el = self.document:GetElementById("brief_grid_window")
+	local brief_bg_el = self.Document:GetElementById("brief_grid_window")
 	brief_bg_el:ReplaceChild(brief_bg_src, brief_bg_el.last_child)
 	
 	ui.Briefing.runBriefingStageHook(old_stage, stage_idx)
@@ -296,34 +296,34 @@ end
 
 function BriefingController:CutToStage()
 	ad.playInterfaceSound(42)
-	ScpuiSystem.data.memory.drawBrMap.draw = false
-	self.aniWrapper = self.document:GetElementById("brief_grid_cut")
+	ScpuiSystem.data.memory.briefing_map.Draw = false
+	self.aniWrapper = self.Document:GetElementById("brief_grid_cut")
 	ad.playInterfaceSound(42)
-    local aniEl = self.document:CreateElement("ani")
+    local aniEl = self.Document:CreateElement("ani")
     aniEl:SetAttribute("src", "static.png")
 	self.aniWrapper:ReplaceChild(aniEl, self.aniWrapper.first_child)
 	
 	async.run(function()
         async.await(async_util.wait_for(0.7))
-        ScpuiSystem.data.memory.drawBrMap.draw = true
+        ScpuiSystem.data.memory.briefing_map.Draw = true
 		self.aniWrapper:RemoveChild(self.aniWrapper.first_child)
     end, async.OnFrameExecutor, self.uiActiveContext)
 end
 
 function BriefingController:drawMap()
 
-	if ScpuiSystem.data.memory.drawBrMap == nil then
+	if ScpuiSystem.data.memory.briefing_map == nil then
 		return
 	end
 	
 	--Testing icon ship rendering stuff
-	ScpuiSystem.data.memory.drawBrMap.modelRot = ScpuiSystem.data.memory.drawBrMap.modelRot + (7 * ba.getRealFrametime())
+	ScpuiSystem.data.memory.briefing_map.RotationSpeed = ScpuiSystem.data.memory.briefing_map.RotationSpeed + (7 * ba.getRealFrametime())
 
-	if ScpuiSystem.data.memory.drawBrMap.modelRot >= 100 then
-		ScpuiSystem.data.memory.drawBrMap.modelRot = ScpuiSystem.data.memory.drawBrMap.modelRot - 100
+	if ScpuiSystem.data.memory.briefing_map.RotationSpeed >= 100 then
+		ScpuiSystem.data.memory.briefing_map.RotationSpeed = ScpuiSystem.data.memory.briefing_map.RotationSpeed - 100
 	end
 
-	gr.setTarget(ScpuiSystem.data.memory.drawBrMap.tex)
+	gr.setTarget(ScpuiSystem.data.memory.briefing_map.Texture)
 	
 	local r = 160
 	local g = 144
@@ -331,39 +331,39 @@ function BriefingController:drawMap()
 	local a = 255
 	gr.setLineWidth(2)
 	
-	if ScpuiSystem.data.memory.drawBrMap.draw == true then
+	if ScpuiSystem.data.memory.briefing_map.Draw == true then
 		if ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option == nil then
 			ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option = "screen"
 		end
 		if string.lower(ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option) == "texture" then
-			gr.setTarget(ScpuiSystem.data.memory.drawBrMap.tex)
+			gr.setTarget(ScpuiSystem.data.memory.briefing_map.Texture)
 			gr.clearScreen(0,0,0,0)
-			if not ScpuiSystem.data.memory.drawBrMap.goals then
-				gr.drawImage(ScpuiSystem.data.memory.drawBrMap.bg, 0, 0, ScpuiSystem.data.memory.drawBrMap.x2, ScpuiSystem.data.memory.drawBrMap.y2)
+			if not ScpuiSystem.data.memory.briefing_map.Goals then
+				gr.drawImage(ScpuiSystem.data.memory.briefing_map.Bg, 0, 0, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
 			end
-			ui.Briefing.drawBriefingMap(0, 0, ScpuiSystem.data.memory.drawBrMap.x2, ScpuiSystem.data.memory.drawBrMap.y2)
+			ui.Briefing.drawBriefingMap(0, 0, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
 			
-			if not ScpuiSystem.data.memory.drawBrMap.goals then
+			if not ScpuiSystem.data.memory.briefing_map.Goals then
 				gr.setColor(r, g, b, a)
-				gr.drawLine(0, 0, 0, ScpuiSystem.data.memory.drawBrMap.y2)
-				gr.drawLine(0, 0, ScpuiSystem.data.memory.drawBrMap.x2, 0)
-				gr.drawLine(ScpuiSystem.data.memory.drawBrMap.x2, 0, ScpuiSystem.data.memory.drawBrMap.x2, ScpuiSystem.data.memory.drawBrMap.y2)
-				gr.drawLine(0, ScpuiSystem.data.memory.drawBrMap.y2, ScpuiSystem.data.memory.drawBrMap.x2, ScpuiSystem.data.memory.drawBrMap.y2)
+				gr.drawLine(0, 0, 0, ScpuiSystem.data.memory.briefing_map.Y2)
+				gr.drawLine(0, 0, ScpuiSystem.data.memory.briefing_map.X2, 0)
+				gr.drawLine(ScpuiSystem.data.memory.briefing_map.X2, 0, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
+				gr.drawLine(0, ScpuiSystem.data.memory.briefing_map.Y2, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
 			end
 			
 		elseif string.lower(ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option) == "screen" then
 			gr.clearScreen(0,0,0,0)
-			if not ScpuiSystem.data.memory.drawBrMap.goals then
-				gr.drawImage(ScpuiSystem.data.memory.drawBrMap.bg, 0, 0, ScpuiSystem.data.memory.drawBrMap.x2, ScpuiSystem.data.memory.drawBrMap.y2)
+			if not ScpuiSystem.data.memory.briefing_map.Goals then
+				gr.drawImage(ScpuiSystem.data.memory.briefing_map.Bg, 0, 0, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
 				
 				gr.setColor(r, g, b, a)
-				gr.drawLine(0, 0, 0, ScpuiSystem.data.memory.drawBrMap.y2)
-				gr.drawLine(0, 0, ScpuiSystem.data.memory.drawBrMap.x2, 0)
-				gr.drawLine(ScpuiSystem.data.memory.drawBrMap.x2, 0, ScpuiSystem.data.memory.drawBrMap.x2, ScpuiSystem.data.memory.drawBrMap.y2)
-				gr.drawLine(0, ScpuiSystem.data.memory.drawBrMap.y2, ScpuiSystem.data.memory.drawBrMap.x2, ScpuiSystem.data.memory.drawBrMap.y2)
+				gr.drawLine(0, 0, 0, ScpuiSystem.data.memory.briefing_map.Y2)
+				gr.drawLine(0, 0, ScpuiSystem.data.memory.briefing_map.X2, 0)
+				gr.drawLine(ScpuiSystem.data.memory.briefing_map.X2, 0, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
+				gr.drawLine(0, ScpuiSystem.data.memory.briefing_map.Y2, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
 			end
 			gr.setTarget()
-			ui.Briefing.drawBriefingMap(ScpuiSystem.data.memory.drawBrMap.x1, ScpuiSystem.data.memory.drawBrMap.y1, ScpuiSystem.data.memory.drawBrMap.x2, ScpuiSystem.data.memory.drawBrMap.y2)
+			ui.Briefing.drawBriefingMap(ScpuiSystem.data.memory.briefing_map.X1, ScpuiSystem.data.memory.briefing_map.Y1, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
 			
 		end
 		
@@ -371,15 +371,15 @@ function BriefingController:drawMap()
 		gr.clearScreen(0,0,0,0)
 		
 		gr.setColor(r, g, b, a)
-		gr.drawLine(0, 0, 0, ScpuiSystem.data.memory.drawBrMap.y2)
-		gr.drawLine(0, 0, ScpuiSystem.data.memory.drawBrMap.x2, 0)
-		gr.drawLine(ScpuiSystem.data.memory.drawBrMap.x2, 0, ScpuiSystem.data.memory.drawBrMap.x2, ScpuiSystem.data.memory.drawBrMap.y2)
-		gr.drawLine(0, ScpuiSystem.data.memory.drawBrMap.y2, ScpuiSystem.data.memory.drawBrMap.x2, ScpuiSystem.data.memory.drawBrMap.y2)
+		gr.drawLine(0, 0, 0, ScpuiSystem.data.memory.briefing_map.Y2)
+		gr.drawLine(0, 0, ScpuiSystem.data.memory.briefing_map.X2, 0)
+		gr.drawLine(ScpuiSystem.data.memory.briefing_map.X2, 0, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
+		gr.drawLine(0, ScpuiSystem.data.memory.briefing_map.Y2, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
 	end
 	
 	gr.setTarget()
 	
-	if ScpuiSystem.data.memory.drawBrMap.pof ~= nil then
+	if ScpuiSystem.data.memory.briefing_map.Pof ~= nil then
 		
 		--get the current color and save it
 		local prev_c = {
@@ -394,10 +394,10 @@ function BriefingController:drawMap()
 		--set the box coords and size
 		local bx_size = math.floor(0.20 * gr.getScreenHeight()) --size of the box is 15% of screen height
 		local bx_dist = 5 --this is the distance the box is drawn from the mouse in pixels
-		local bx1 = ScpuiSystem.data.memory.drawBrMap.bx - bx_size - bx_dist
-		local by1 = ScpuiSystem.data.memory.drawBrMap.by - bx_size - bx_dist
-		local bx2 = ScpuiSystem.data.memory.drawBrMap.bx - bx_dist
-		local by2 = ScpuiSystem.data.memory.drawBrMap.by - bx_dist
+		local bx1 = ScpuiSystem.data.memory.briefing_map.Bx - bx_size - bx_dist
+		local by1 = ScpuiSystem.data.memory.briefing_map.By - bx_size - bx_dist
+		local bx2 = ScpuiSystem.data.memory.briefing_map.Bx - bx_dist
+		local by2 = ScpuiSystem.data.memory.briefing_map.By - bx_dist
 		
 		--set the current color to black
 		gr.setColor(0, 0, 0, 255)
@@ -412,21 +412,21 @@ function BriefingController:drawMap()
 		gr.drawLine(bx2, by2, bx1, by2)
 		gr.drawLine(bx2, by2, bx2, by1)
 		
-		local ship = tb.ShipClasses[ScpuiSystem.data.memory.drawBrMap.pof]
+		local ship = tb.ShipClasses[ScpuiSystem.data.memory.briefing_map.Pof]
 		if ship.Name == "" then
 			local jumpnode = false
-			if ScpuiSystem.data.memory.drawBrMap.pof == "subspacenode.pof" then
+			if ScpuiSystem.data.memory.briefing_map.Pof == "subspacenode.pof" then
 				jumpnode = true
 			end
-			ui.Briefing.renderBriefingModel(ScpuiSystem.data.memory.drawBrMap.pof, ScpuiSystem.data.memory.drawBrMap.closeupZoom, ScpuiSystem.data.memory.drawBrMap.closeupPos, bx1+1, by1+1, bx2-1, by2-1, ScpuiSystem.data.memory.drawBrMap.modelRot, -15, 0, 1.1, true, jumpnode)
+			ui.Briefing.renderBriefingModel(ScpuiSystem.data.memory.briefing_map.Pof, ScpuiSystem.data.memory.briefing_map.CloseupZoom, ScpuiSystem.data.memory.briefing_map.CloseupPos, bx1+1, by1+1, bx2-1, by2-1, ScpuiSystem.data.memory.briefing_map.RotationSpeed, -15, 0, 1.1, true, jumpnode)
 		else
-			ship:renderTechModel(bx1+1, by1+1, bx2-1, by2-1, ScpuiSystem.data.memory.drawBrMap.modelRot, -15, 0, 1.1)
+			ship:renderTechModel(bx1+1, by1+1, bx2-1, by2-1, ScpuiSystem.data.memory.briefing_map.RotationSpeed, -15, 0, 1.1)
 		end
 		
 		--set the current color to light grey
 		gr.setColor(150, 150, 150, 255)
 		
-		gr.drawString(ScpuiSystem.data.memory.drawBrMap.label, bx1+1, by1+1, bx2-1, by2-1)
+		gr.drawString(ScpuiSystem.data.memory.briefing_map.Label, bx1+1, by1+1, bx2-1, by2-1)
 		
 		--reset the color
 		gr.setColor(prev_c.r, prev_c.g, prev_c.b, prev_c.a)
@@ -438,7 +438,7 @@ end
 function BriefingController:Show(text, title, buttons)
 	--Create a simple dialog box with the text and title
 
-	ScpuiSystem.data.memory.drawBrMap.draw = false
+	ScpuiSystem.data.memory.briefing_map.Draw = false
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -447,12 +447,12 @@ function BriefingController:Show(text, title, buttons)
 			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end
 		dialog:escape("")
-		dialog:show(self.document.context)
+		dialog:show(self.Document.context)
 		:continueWith(function(response)
-			ScpuiSystem.data.memory.drawBrMap.draw = true
+			ScpuiSystem.data.memory.briefing_map.Draw = true
     end)
 	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.document.context)
+	ui.enableInput(self.Document.context)
 end
 
 function BriefingController:acceptPressed()
@@ -471,14 +471,14 @@ function BriefingController:acceptPressed()
 		self.Commit = true
 		loadoutHandler:SaveInFSO_API()
 		--Cleanup
-		if ScpuiSystem.data.memory.drawBrMap then
-			ScpuiSystem.data.memory.drawBrMap.tex:unload()
-			ScpuiSystem.data.memory.drawBrMap.tex = nil
-			ScpuiSystem.data.memory.drawBrMap = nil
+		if ScpuiSystem.data.memory.briefing_map then
+			ScpuiSystem.data.memory.briefing_map.Texture:unload()
+			ScpuiSystem.data.memory.briefing_map.Texture = nil
+			ScpuiSystem.data.memory.briefing_map = nil
 		end
 		ScpuiSystem:stopMusic()
-		ScpuiSystem.data.memory.current_music_file = nil
-		ScpuiSystem.data.memory.cutscenePlayed = nil
+		ScpuiSystem.data.memory.CurrentMusicFile = nil
+		ScpuiSystem.data.memory.CutscenePlayed = nil
 	end
 
 end
@@ -488,7 +488,7 @@ function BriefingController:skip_pressed()
 	ScpuiSystem:stopMusic()
 	
 	loadoutHandler:unloadAll(false)
-	ScpuiSystem.data.memory.cutscenePlayed = nil
+	ScpuiSystem.data.memory.CutscenePlayed = nil
     
 	if mn.isTraining() then
 		ui.Briefing.skipMission()
@@ -502,44 +502,44 @@ end
 
 function BriefingController:mouse_move(element, event)
 
-	if ScpuiSystem.data.memory.drawBrMap ~= nil then
-		ScpuiSystem.data.memory.drawBrMap.mx = event.parameters.mouse_x
-		ScpuiSystem.data.memory.drawBrMap.my = event.parameters.mouse_y
+	if ScpuiSystem.data.memory.briefing_map ~= nil then
+		ScpuiSystem.data.memory.briefing_map.Mx = event.parameters.mouse_x
+		ScpuiSystem.data.memory.briefing_map.My = event.parameters.mouse_y
 		
 		--for the ship box preview coords regardless of briefing render type
-		ScpuiSystem.data.memory.drawBrMap.bx = event.parameters.mouse_x
-		ScpuiSystem.data.memory.drawBrMap.by = event.parameters.mouse_y
+		ScpuiSystem.data.memory.briefing_map.Bx = event.parameters.mouse_x
+		ScpuiSystem.data.memory.briefing_map.By = event.parameters.mouse_y
 		
 		--Get the grid coords
-		local grid_el = self.document:GetElementById("briefing_grid")
+		local grid_el = self.Document:GetElementById("briefing_grid")
 		local gx = grid_el.offset_left + grid_el.parent_node.offset_left + grid_el.parent_node.parent_node.offset_left
 		local gy = grid_el.offset_top + grid_el.parent_node.offset_top + grid_el.parent_node.parent_node.offset_top
 			
 		if string.lower(ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option) == "texture" then
 			
-			ScpuiSystem.data.memory.drawBrMap.mx = ScpuiSystem.data.memory.drawBrMap.mx - gx
-			ScpuiSystem.data.memory.drawBrMap.my = ScpuiSystem.data.memory.drawBrMap.my - gy
+			ScpuiSystem.data.memory.briefing_map.Mx = ScpuiSystem.data.memory.briefing_map.Mx - gx
+			ScpuiSystem.data.memory.briefing_map.My = ScpuiSystem.data.memory.briefing_map.My - gy
 
 		end
 		
-		if ((ScpuiSystem.data.memory.drawBrMap.mx ~= nil) and (ScpuiSystem.data.memory.drawBrMap.my ~= nil)) then
-			ScpuiSystem.data.memory.drawBrMap.pof, ScpuiSystem.data.memory.drawBrMap.closeupZoom, ScpuiSystem.data.memory.drawBrMap.closeupPos, ScpuiSystem.data.memory.drawBrMap.label, ScpuiSystem.data.memory.drawBrMap.iconID = ui.Briefing.checkStageIcons(ScpuiSystem.data.memory.drawBrMap.mx, ScpuiSystem.data.memory.drawBrMap.my)
+		if ((ScpuiSystem.data.memory.briefing_map.Mx ~= nil) and (ScpuiSystem.data.memory.briefing_map.My ~= nil)) then
+			ScpuiSystem.data.memory.briefing_map.Pof, ScpuiSystem.data.memory.briefing_map.CloseupZoom, ScpuiSystem.data.memory.briefing_map.CloseupPos, ScpuiSystem.data.memory.briefing_map.Label, ScpuiSystem.data.memory.briefing_map.IconIdentifier = ui.Briefing.checkStageIcons(ScpuiSystem.data.memory.briefing_map.Mx, ScpuiSystem.data.memory.briefing_map.My)
 		end
 		
 		--double check we're still inside the map X coords
-		if event.parameters.mouse_x < gx or event.parameters.mouse_x > (ScpuiSystem.data.memory.drawBrMap.x2 + gx) then
-			ScpuiSystem.data.memory.drawBrMap.pof = nil
+		if event.parameters.mouse_x < gx or event.parameters.mouse_x > (ScpuiSystem.data.memory.briefing_map.X2 + gx) then
+			ScpuiSystem.data.memory.briefing_map.Pof = nil
 			return
 		end
 	
 		--double check we're still inside the map Y coords
-		if event.parameters.mouse_y < gy or event.parameters.mouse_y > (ScpuiSystem.data.memory.drawBrMap.y2 + gy) then
-			ScpuiSystem.data.memory.drawBrMap.pof = nil
+		if event.parameters.mouse_y < gy or event.parameters.mouse_y > (ScpuiSystem.data.memory.briefing_map.Y2 + gy) then
+			ScpuiSystem.data.memory.briefing_map.Pof = nil
 			return
 		end
 		
-		if ScpuiSystem.data.memory.drawBrMap.pof == nil then
-			ScpuiSystem.data.memory.drawBrMap.modelRot = 40
+		if ScpuiSystem.data.memory.briefing_map.Pof == nil then
+			ScpuiSystem.data.memory.briefing_map.RotationSpeed = 40
 		end
 	end
 
@@ -548,7 +548,7 @@ end
 function BriefingController:help_clicked()
     self.help_shown  = not self.help_shown
 
-    local help_texts = self.document:GetElementsByClassName("tooltip")
+    local help_texts = self.Document:GetElementsByClassName("tooltip")
     for _, v in ipairs(help_texts) do
         v:SetPseudoClass("shown", self.help_shown)
     end
@@ -581,7 +581,7 @@ function BriefingController:InputChange(event)
 		local val = self.input_id:GetAttribute("value")
 		self.submittedValue = val
 	else
-		local submit_id = self.document:GetElementById("submit_btn")
+		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
 		self:sendChat()
 	end
@@ -604,9 +604,9 @@ function BriefingController:updateLists()
 	self.chat_el.scroll_top = self.chat_el.scroll_height
 	
 	if ui.MultiGeneral.getNetGame().Locked == true then
-		self.document:GetElementById("lock_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("lock_btn"):SetPseudoClass("checked", true)
 	else
-		self.document:GetElementById("lock_btn"):SetPseudoClass("checked", false)
+		self.Document:GetElementById("lock_btn"):SetPseudoClass("checked", false)
 	end
 	
 	async.run(function()
@@ -616,7 +616,7 @@ function BriefingController:updateLists()
 end
 
 engine.addHook("On Frame", function()
-	if (ba.getCurrentGameState().Name == "GS_STATE_BRIEFING") and (ScpuiSystem.data.render == true) then
+	if (ba.getCurrentGameState().Name == "GS_STATE_BRIEFING") and (ScpuiSystem.data.Render == true) then
 		BriefingController:drawMap()
 	end
 end, {}, function()

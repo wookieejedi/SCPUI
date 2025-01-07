@@ -14,70 +14,70 @@ ScpuiSystem = {}
 
 ---@type scpui_data
 ScpuiSystem.data = {
-	active = true,
-	numFontSizes = 40,
-	replacements = {},
-	backgrounds = {},
-	briefBackgrounds = {},
-	preloadCoroutines = {},
-	medalInfo = {},
-	substate = "none",
-	oldSubstate = "none",
-	tableFlags = {
-		disableInMulti = false,
-		hideMulti = false,
-		dataSaverMulti = 1,
-		databaseShowNew = true,
-		iconDimensions = {
+	Active = true,
+	NumFontSizes = 40,
+	Replacements_List = {},
+	Backgrounds_List = {},
+	Brief_Backgrounds_List = {},
+	Preload_Coroutines = {},
+	Medal_Info = {},
+	Substate = "none",
+	OldSubstate = "none",
+	table_flags = {
+		DisableInMulti = false,
+		HideMulti = false,
+		DataSaverMultiplier = 1,
+		DatabaseShowNew = true,
+		IconDimensions = {
 			ship = {
-				width = 128,
-				height = 112,
+				Width = 128,
+				Height = 112,
 			},
 			weapon = {
-				width = 112,
-				height = 48,
+				Width = 112,
+				Height = 48,
 			}
 		}
 	},
-	stateInit = {
-		debrief = false,
-		select = false,
-		loadScreen = false,
-		preLoad = false,
+	state_init_status = {
+		Debrief = false,
+		Select = false,
+		LoadScreen = false,
+		PreLoad = false,
 	},
 	memory = {
-		cutscene = "none",
-		logSection = 1,
-		missionLoaded = false,
+		Cutscene = "none",
+		LogSection = 1,
+		MissionLoaded = false,
 		MultiJoinReady = false,
 		MultiReady = false,
 		WarningCountShown = false,
-		loadingBar = {}
+		loading_bar = {}
 	},
-	render = true,
-	tooltipTimers = {},
+	Render = true,
+	Tooltip_Timers = {},
 	ScpuiOptionValues = {}
 }
 
 --RUN AWAY IT'S FRED!
 if ba.inMissionEditor() then
-	ScpuiSystem.data.active = nil
+	ScpuiSystem.data.Active = nil
 	return
 end
 
 --keep multiplayer standalone servers lean
 if ba.getCurrentMPStatus() == "MULTIPLAYER_STANDALONE" then
-	ScpuiSystem.data.active = nil
+	ScpuiSystem.data.Active = nil
 	return
 end
 
 --setting this to true will completely disable SCPUI
 if false then
-	ScpuiSystem.data.active = nil
+	ScpuiSystem.data.Active = nil
 	return
 end
 
-ScpuiSystem.data.context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
+ScpuiSystem.data.Context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
 
 --- Initialize ScpuiSystem and send relevant scpui.tbl files to the parser
 --- @return nil
@@ -127,24 +127,24 @@ function ScpuiSystem:parseMedals()
 	
 		local id = parse.getString()
 		
-		self.data.medalInfo[id] = {}
+		self.data.Medal_Info[id] = {}
 		
 		if parse.optionalString("+Alt Bitmap:") then
-			self.data.medalInfo[id].altBitmap = parse.getString()
+			self.data.Medal_Info[id].AltBitmap = parse.getString()
 		end
 		
 		if parse.optionalString("+Alt Debrief Bitmap:") then
-			self.data.medalInfo[id].altDebriefBitmap = parse.getString()
+			self.data.Medal_Info[id].AltDebriefBitmap = parse.getString()
 		end
 		
 		parse.requiredString("+Position X:")
-		self.data.medalInfo[id].x = parse.getFloat()
+		self.data.Medal_Info[id].X = parse.getFloat()
 		
 		parse.requiredString("+Position Y:")
-		self.data.medalInfo[id].y = parse.getFloat()
+		self.data.Medal_Info[id].Y = parse.getFloat()
 		
 		parse.requiredString("+Width:")
-		self.data.medalInfo[id].w = parse.getFloat()
+		self.data.Medal_Info[id].W = parse.getFloat()
 	
 	end
 end
@@ -158,35 +158,35 @@ function ScpuiSystem:parseScpuiTable(data)
 	if parse.optionalString("#Settings") then
 		
 		if parse.optionalString("$Hide Multiplayer:") then
-			ScpuiSystem.data.tableFlags.hideMulti = parse.getBoolean()
+			ScpuiSystem.data.table_flags.HideMulti = parse.getBoolean()
 		end
 		
 		if parse.optionalString("$Disable during Multiplayer:") then
-			ScpuiSystem.data.tableFlags.disableInMulti = parse.getBoolean()
+			ScpuiSystem.data.table_flags.DisableInMulti = parse.getBoolean()
 		end
 		
 		if parse.optionalString("$Data Saver Multiplier:") then
-			ScpuiSystem.data.tableFlags.dataSaverMulti = parse.getInt()
+			ScpuiSystem.data.table_flags.DataSaverMultiplier = parse.getInt()
 		end
 		
 		if parse.optionalString("$Ship Icon Width:") then
-			ScpuiSystem.data.tableFlags.iconDimensions.ship.width = parse.getInt()
+			ScpuiSystem.data.table_flags.IconDimensions.ship.Width = parse.getInt()
 		end
 
 		if parse.optionalString("$Ship Icon Height:") then
-			ScpuiSystem.data.tableFlags.iconDimensions.ship.height = parse.getInt()
+			ScpuiSystem.data.table_flags.IconDimensions.ship.Height = parse.getInt()
 		end
 
 		if parse.optionalString("$Weapon Icon Width:") then
-			ScpuiSystem.data.tableFlags.iconDimensions.weapon.width = parse.getInt()
+			ScpuiSystem.data.table_flags.IconDimensions.weapon.Width = parse.getInt()
 		end
 
 		if parse.optionalString("$Weapon Icon Height:") then
-			ScpuiSystem.data.tableFlags.iconDimensions.weapon.height = parse.getInt()
+			ScpuiSystem.data.table_flags.IconDimensions.weapon.Height = parse.getInt()
 		end
 		
 		if parse.optionalString("$Show New In Database:") then
-			ScpuiSystem.data.tableFlags.databaseShowNew = parse.getBoolean()
+			ScpuiSystem.data.table_flags.DatabaseShowNew = parse.getBoolean()
 		end
 		
 	end
@@ -202,15 +202,15 @@ function ScpuiSystem:parseScpuiTable(data)
 			parse.requiredString("+Markup:")
 			local markup = parse.getString()
 			ba.print("SCPUI found definition for script substate " .. state .. " : " .. markup .. "\n")
-			self.data.replacements[state] = {
-				markup = markup
+			self.data.Replacements_List[state] = {
+				Markup = markup
 			}
 		else
 			parse.requiredString("+Markup:")
 			local markup = parse.getString()
 			ba.print("SCPUI found definition for game state " .. state .. " : " .. markup .. "\n")
-			self.data.replacements[state] = {
-				markup = markup
+			self.data.Replacements_List[state] = {
+				Markup = markup
 			}
 		end
 	end
@@ -224,7 +224,7 @@ function ScpuiSystem:parseScpuiTable(data)
 			parse.requiredString("+RCSS Class Name:")
 			local classname = parse.getString()
 			
-			self.data.backgrounds[campaign] = classname
+			self.data.Backgrounds_List[campaign] = classname
 		end
 	
 	end
@@ -240,7 +240,7 @@ function ScpuiSystem:parseScpuiTable(data)
 			parse.requiredString("+RCSS Class Name:")
 			local classname = parse.getString()
 			
-			self.data.backgrounds[campaign] = classname
+			self.data.Backgrounds_List[campaign] = classname
 		end
 	
 	end
@@ -259,9 +259,9 @@ function ScpuiSystem:parseScpuiTable(data)
 				ba.warning("SCPUI parsed background file, " .. default_file .. ", that does not include an extension!")
 			end
 			
-			self.data.briefBackgrounds[mission] = {}
+			self.data.Brief_Backgrounds_List[mission] = {}
 			
-			self.data.briefBackgrounds[mission]["default"] = default_file
+			self.data.Brief_Backgrounds_List[mission]["default"] = default_file
 			
 			while parse.optionalString("+Stage Override:") do
 				local stage = tostring(parse.getInt())
@@ -273,7 +273,7 @@ function ScpuiSystem:parseScpuiTable(data)
 					ba.warning("SCPUI parsed background file, " .. default_file .. ", that does not include an extension!")
 				end
 				
-				self.data.briefBackgrounds[mission][stage] = file
+				self.data.Brief_Backgrounds_List[mission][stage] = file
 			end
 			
 		end
@@ -294,25 +294,25 @@ end
 --- @param state string The current state key
 --- @return ui_replacement? The current SCPUI document definition
 function ScpuiSystem:getDef(state)
-	if self.data.render == false then
+	if self.data.Render == false then
 		return nil
 	end
-	return self.data.replacements[state]
+	return self.data.Replacements_List[state]
 end
 
 --- When a document is closed this function tries to make sure everything is properly cleaned up
 --- @return nil
 function ScpuiSystem:cleanSelf()
-	ba.print("SCPUI is closing document " .. ScpuiSystem.data.currentDoc.markup .. "\n")
-	while ScpuiSystem.data.currentDoc.document:HasChildNodes() do
-		ScpuiSystem.data.currentDoc.document:RemoveChild(ScpuiSystem.data.currentDoc.document.first_child)
+	ba.print("SCPUI is closing document " .. ScpuiSystem.data.CurrentDoc.Markup .. "\n")
+	while ScpuiSystem.data.CurrentDoc.Document:HasChildNodes() do
+		ScpuiSystem.data.CurrentDoc.Document:RemoveChild(ScpuiSystem.data.CurrentDoc.Document.first_child)
 		ba.print("SCPUI HAS KILLED A CHILD! But that's allowed in America.\n")
 	end
 
-	ScpuiSystem.data.currentDoc.document:Close()
-	ScpuiSystem.data.currentDoc.document = nil
-	ScpuiSystem.data.currentDoc = nil
-	ScpuiSystem.data.tooltipTimers = {}
+	ScpuiSystem.data.CurrentDoc.Document:Close()
+	ScpuiSystem.data.CurrentDoc.Document = nil
+	ScpuiSystem.data.CurrentDoc = nil
+	ScpuiSystem.data.Tooltip_Timers = {}
 end
 
 --- On start of a new game state this function will try to load the related SCPUI document, if any exists for the state
@@ -320,13 +320,13 @@ end
 function ScpuiSystem:stateStart()
 
 	if ba.MultiplayerMode then
-		self.data.render = not ScpuiSystem.data.tableFlags.disableInMulti
+		self.data.Render = not ScpuiSystem.data.table_flags.DisableInMulti
 	else
-		self.data.render = true
+		self.data.Render = true
 	end
 
 	--This allows for states to correctly return to the previous state even if has no rocket ui defined
-	ScpuiSystem.data.currentState = ba.getCurrentGameState()
+	ScpuiSystem.data.CurrentState = ba.getCurrentGameState()
 	
 	--If hv.NewState is nil then use the Current Game State; This allows for Script UIs to jump from substate to substate
 	local state = hv.NewState or ba.getCurrentGameState()
@@ -337,16 +337,16 @@ function ScpuiSystem:stateStart()
 	end
 	
 	--Make sure we're all cleaned up
-	if ScpuiSystem.data.currentDoc then
+	if ScpuiSystem.data.CurrentDoc then
 		self:cleanSelf()
 	end
 	
-	ScpuiSystem.data.currentDoc = self:getDef(ScpuiSystem:getRocketUiHandle(state).Name)
-	ba.print("SCPUI is loading document " .. ScpuiSystem.data.currentDoc.markup .. "\n")
-	ScpuiSystem.data.currentDoc.document = self.data.context:LoadDocument(ScpuiSystem.data.currentDoc.markup)
-	ScpuiSystem.data.currentDoc.document:Show()
+	ScpuiSystem.data.CurrentDoc = self:getDef(ScpuiSystem:getRocketUiHandle(state).Name)
+	ba.print("SCPUI is loading document " .. ScpuiSystem.data.CurrentDoc.Markup .. "\n")
+	ScpuiSystem.data.CurrentDoc.Document = self.data.Context:LoadDocument(ScpuiSystem.data.CurrentDoc.Markup)
+	ScpuiSystem.data.CurrentDoc.Document:Show()
 
-	ui.enableInput(self.data.context)
+	ui.enableInput(self.data.Context)
 end
 
 --- On each frame of a game state this function will update and render the related SCPUI document, if any exists for the state
@@ -358,10 +358,10 @@ function ScpuiSystem:stateFrame()
 
 	-- Add some tracing scopes here to see how long this stuff takes
 	updateCategory:trace(function()
-		self.data.context:Update()
+		self.data.Context:Update()
 	end)
 	renderCategory:trace(function()
-		self.data.context:Render()
+		self.data.Context:Render()
 	end)
 end
 
@@ -372,7 +372,7 @@ end
 function ScpuiSystem:stateEnd(substate)
 
 	--This allows for states to correctly return to the previous state even if has no rocket ui defined
-	ScpuiSystem.data.lastState = ScpuiSystem.data.currentState
+	ScpuiSystem.data.LastState = ScpuiSystem.data.CurrentState
 	
 	--Provide a UI topic for custom mod options to apply user selections
 	if not substate and (hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT" or hv.OldState.Name == "GS_STATE_OPTIONS_MENU") then
@@ -390,11 +390,11 @@ function ScpuiSystem:stateEnd(substate)
 	ui.disableInput()
 	
 	if not substate and hv.OldState.Name == "GS_STATE_SCRIPTING" then
-		ScpuiSystem.data.substate = "none"
+		ScpuiSystem.data.Substate = "none"
 	end
 	
 	if ba.MultiplayerMode then
-		self.data.render = ScpuiSystem.data.tableFlags.disableInMulti
+		self.data.Render = ScpuiSystem.data.table_flags.DisableInMulti
 	end
 end
 
@@ -404,7 +404,7 @@ end
 --- @return gamestate state The game state or substate table
 function ScpuiSystem:getRocketUiHandle(state)
 	if state.Name == "GS_STATE_SCRIPTING" then
-		return {Name = ScpuiSystem.data.substate}
+		return {Name = ScpuiSystem.data.Substate}
 	else
 		return state
 	end
@@ -414,17 +414,17 @@ end
 --- @param state string The substate to begin
 --- @return nil
 function ScpuiSystem:beginSubstate(state) 
-	ScpuiSystem.data.oldSubstate = ScpuiSystem.data.substate
-	ScpuiSystem.data.substate = state
+	ScpuiSystem.data.OldSubstate = ScpuiSystem.data.Substate
+	ScpuiSystem.data.Substate = state
 	--If we're already in GS_STATE_SCRIPTING then force loading the new scpui define
 	if ba.getCurrentGameState().Name == "GS_STATE_SCRIPTING" then
-		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.data.substate .. " in SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.data.oldSubstate .. "\n")
+		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.data.Substate .. " in SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.data.OldSubstate .. "\n")
 		--We don't actually change game states so we need to manually clean up
 		ScpuiSystem:stateEnd(true)
 		--Now we can start the new state
 		ScpuiSystem:stateStart()
 	else
-		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.data.substate .. "\n")
+		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.data.Substate .. "\n")
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_SCRIPTING"])
 	end
 end
@@ -442,7 +442,7 @@ function ScpuiSystem:ReturnToState(state)
 	elseif state.Name == "GS_STATE_VIEW_CUTSCENES" then
 		event = "GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"
 	elseif state.Name == "GS_STATE_SCRIPTING" then
-		ScpuiSystem:beginSubstate(ScpuiSystem.data.oldSubstate)
+		ScpuiSystem:beginSubstate(ScpuiSystem.data.OldSubstate)
 		return
 	else
 		event = string.gsub(state.Name, "STATE", "EVENT")
@@ -499,17 +499,17 @@ function ScpuiSystem:dialogStart()
 	end
 	
 	if hv.IsDeathPopup then
-		dialog:show(self.data.context, self.data.Dialog.Abort)
+		dialog:show(self.data.Context, self.data.Dialog.Abort)
 			:continueWith(function(response)
 				self.data.DeathDialog.Submit = response
 			end)
 	else
-		dialog:show(self.data.context, self.data.Dialog.Abort)
+		dialog:show(self.data.Context, self.data.Dialog.Abort)
 			:continueWith(function(response)
 				self.data.Dialog.Submit = response
 			end)
 	end
-	ui.enableInput(self.data.context)
+	ui.enableInput(self.data.Context)
 end
 
 --- For a dialog frame, check for any user input and handle it while also
@@ -519,16 +519,16 @@ function ScpuiSystem:dialogFrame()
 	-- Add some tracing scopes here to see how long this stuff takes
 	updateCategory:trace(function()
 		if hv.Freeze ~= nil and hv.Freeze ~= true then
-			self.data.context:Update()
+			self.data.Context:Update()
 		end
 	end)
 	renderCategory:trace(function()
-		self.data.context:Render()
+		self.data.Context:Render()
 	end)
 
 	if hv.IsDeathPopup then
 		local submit = self.data.DeathDialog.Submit
-		if submit == nil and not ScpuiSystem.data.dialog then
+		if submit == nil and not ScpuiSystem.data.Dialog then
 			-- We aren't showing a death popup when we should be, which is a softlock;
 			-- default to 0 (Quickstart Mission) to get to a state we can proceed from
 			submit = 0
@@ -601,11 +601,11 @@ end
 --- @param val number The priority of the preload coroutine, should be 1 or 2
 --- @return nil
 function ScpuiSystem:addPreload(message, text, run, val)
-	if self.data.preloadCoroutines == nil then
-		self.data.preloadCoroutines = {}
+	if self.data.Preload_Coroutines == nil then
+		self.data.Preload_Coroutines = {}
 	end
 	
-	local num = #self.data.preloadCoroutines + 1
+	local num = #self.data.Preload_Coroutines + 1
 	
 	if val > 1 then
 		val = 2
@@ -613,21 +613,21 @@ function ScpuiSystem:addPreload(message, text, run, val)
 		val = 1
 	end
 	
-	self.data.preloadCoroutines[num] = {
-		debugMessage = message,
-		debugString = text,
-		func = run,
-		priority = val
+	self.data.Preload_Coroutines[num] = {
+		DebugMessage = message,
+		DebugString = text,
+		FunctionString = run,
+		Priority = val
 	}
 end
 
 --- Closes the current dialog and returns control to the state that called it
 --- @return nil
 function ScpuiSystem:CloseDialog()
-	if ScpuiSystem.data.dialog ~= nil then
-		ba.print("SCPUI is closing dialog `" .. ScpuiSystem.data.dialog.title .. "`\n")
-		ScpuiSystem.data.dialog:Close()
-		ScpuiSystem.data.dialog = nil
+	if ScpuiSystem.data.DialogDoc ~= nil then
+		ba.print("SCPUI is closing dialog `" .. ScpuiSystem.data.DialogDoc.title .. "`\n")
+		ScpuiSystem.data.DialogDoc:Close()
+		ScpuiSystem.data.DialogDoc = nil
 	end
 	
 	local state = hv.NewState or ba.getCurrentGameState()
@@ -635,7 +635,7 @@ function ScpuiSystem:CloseDialog()
 	--If we're going back to an SCPUI state, then give it control
 	--Otherwise cede control back to FSO
 	if self:hasOverrideForState(ScpuiSystem:getRocketUiHandle(state)) then
-		ui.enableInput(self.data.context)
+		ui.enableInput(self.data.Context)
 	else
 		ui.disableInput()
 	end
@@ -645,47 +645,47 @@ end
 --- @return nil
 function ScpuiSystem:loadStart()
 
-	if ScpuiSystem.data.stateInit.loadScreen then
+	if ScpuiSystem.data.state_init_status.LoadScreen then
 		return
 	end
 
 	if ba.MultiplayerMode then
-		ScpuiSystem.data.render = not ScpuiSystem.data.tableFlags.disableInMulti
+		ScpuiSystem.data.Render = not ScpuiSystem.data.table_flags.DisableInMulti
 	else
-		ScpuiSystem.data.render = true
+		ScpuiSystem.data.Render = true
 	end
 	
 	if not self:hasOverrideForState({Name = "LOAD_SCREEN"}) then
 		return
 	end
 	
-	ScpuiSystem.data.loadDoc = self:getDef("LOAD_SCREEN")
-	ba.print("SCPUI is loading document " .. ScpuiSystem.data.loadDoc.markup .. "\n")
-	ScpuiSystem.data.loadDoc.document = self.data.context:LoadDocument(ScpuiSystem.data.loadDoc.markup)
-	ScpuiSystem.data.loadDoc.document:Show(DocumentFocus.FOCUS)
+	ScpuiSystem.data.LoadDoc = self:getDef("LOAD_SCREEN")
+	ba.print("SCPUI is loading document " .. ScpuiSystem.data.LoadDoc.Markup .. "\n")
+	ScpuiSystem.data.LoadDoc.Document = self.data.Context:LoadDocument(ScpuiSystem.data.LoadDoc.Markup)
+	ScpuiSystem.data.LoadDoc.Document:Show(DocumentFocus.FOCUS)
 
 	--ui.enableInput(self.data.context)
 	
-	ScpuiSystem.data.memory.loadingBar.LoadProgress = 0
-	ScpuiSystem.data.stateInit.loadScreen = true
+	ScpuiSystem.data.memory.loading_bar.LoadProgress = 0
+	ScpuiSystem.data.state_init_status.LoadScreen = true
 end
 
 --- During the loading screen, SCPUI will update and render the custom loading screen if defined
 --- The LoadProgress variable is updated to show the progress of the loading bar
 --- @return nil
 function ScpuiSystem:loadFrame()
-	if ScpuiSystem.data.stateInit.loadScreen == nil then
+	if ScpuiSystem.data.state_init_status.LoadScreen == nil then
 		return
 	end
 
-	ScpuiSystem.data.memory.loadingBar.LoadProgress = hv.Progress
+	ScpuiSystem.data.memory.loading_bar.LoadProgress = hv.Progress
 
 	-- Add some tracing scopes here to see how long this stuff takes
 	updateCategory:trace(function()
-		self.data.context:Update()
+		self.data.Context:Update()
 	end)
 	renderCategory:trace(function()
-		self.data.context:Render()
+		self.data.Context:Render()
 	end)
 end
 
@@ -693,24 +693,24 @@ end
 --- @return nil
 function ScpuiSystem:loadEnd()
 
-	if ScpuiSystem.data.stateInit.loadScreen == nil then
+	if ScpuiSystem.data.state_init_status.LoadScreen == nil then
 		return
 	end
 
 	self:CloseLoadScreen()
 
 	--ui.disableInput()
-	ScpuiSystem.data.memory.loadingBar.LoadProgress = nil
-	ScpuiSystem.data.stateInit.loadScreen = nil
+	ScpuiSystem.data.memory.loading_bar.LoadProgress = nil
+	ScpuiSystem.data.state_init_status.LoadScreen = nil
 end
 
 --- Closes the loading screen and returns control back to the state that called it, if any
 --- @return nil
 function ScpuiSystem:CloseLoadScreen()
-	if ScpuiSystem.data.loadDoc ~= nil then
+	if ScpuiSystem.data.LoadDoc ~= nil then
 		ba.print("SCPUI is closing loading screen\n")
-		ScpuiSystem.data.loadDoc.document:Close()
-		ScpuiSystem.data.loadDoc = nil
+		ScpuiSystem.data.LoadDoc.Document:Close()
+		ScpuiSystem.data.LoadDoc = nil
 	end
 	
 	local state = hv.NewState or ba.getCurrentGameState()
@@ -718,7 +718,7 @@ function ScpuiSystem:CloseLoadScreen()
 	--If we're going back to an SCPUI state, then give it control
 	--Otherwise cede control back to FSO
 	if self:hasOverrideForState(ScpuiSystem:getRocketUiHandle(state)) then
-		ui.enableInput(self.data.context)
+		ui.enableInput(self.data.Context)
 	else
 		ui.disableInput()
 	end
@@ -749,27 +749,27 @@ end)
 --Dialog Takeover
 
 engine.addHook("On Dialog Init", function()
-	if ScpuiSystem.data.render == true then
+	if ScpuiSystem.data.Render == true then
 		ScpuiSystem:dialogStart()
 	end
 end, {}, function()
-	return ScpuiSystem.data.render
+	return ScpuiSystem.data.Render
 end)
 
 engine.addHook("On Dialog Frame", function()
-	if ScpuiSystem.data.render == true then
+	if ScpuiSystem.data.Render == true then
 		ScpuiSystem:dialogFrame()
 	end
 end, {}, function()
-	return ScpuiSystem.data.render
+	return ScpuiSystem.data.Render
 end)
 
 engine.addHook("On Dialog Close", function()
-	if ScpuiSystem.data.render == true then
+	if ScpuiSystem.data.Render == true then
 		ScpuiSystem:dialogEnd()
 	end
 end, {}, function()
-	return ScpuiSystem.data.render
+	return ScpuiSystem.data.Render
 end)
 
 --Load Screen Takeover
@@ -795,13 +795,13 @@ end)
 --Helpers
 
 engine.addHook("On Load Screen", function()
-	ScpuiSystem.data.memory.missionLoaded = true
+	ScpuiSystem.data.memory.MissionLoaded = true
 end, {}, function()
 	return false
 end)
 
 engine.addHook("On Mission End", function()
-	ScpuiSystem.data.memory.missionLoaded = false
+	ScpuiSystem.data.memory.MissionLoaded = false
 end, {}, function()
 	return false
 end)

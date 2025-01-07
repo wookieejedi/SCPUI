@@ -20,22 +20,22 @@ function GamePausedController:initialize(document)
 		screenRender = gr.screenToBlob()
 	end
 
-    self.document = document
+    self.Document = document
 	
 	if mn.isInMission() then
 		ui.PauseScreen.initPause()
 	end
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
-	local main_bg = self.document:GetElementById("screenrender")
-	local imgEl = self.document:CreateElement("img")
+	local main_bg = self.Document:GetElementById("screenrender")
+	local imgEl = self.Document:CreateElement("img")
 	main_bg:AppendChild(imgEl)
 	imgEl:RemoveAttribute("src")
 	imgEl:SetAttribute("src", screenRender)
 	
-	self.document:GetElementById("text").inner_rml = utils.xstr(pausedText)
+	self.Document:GetElementById("text").inner_rml = utils.xstr(pausedText)
 	
 	topics.gamepaused.initialize:send(self)
 	

@@ -3,7 +3,7 @@
 -----------------------------------
 
 --Create the custom options table
-ScpuiSystem.data.CustomOptions = {}
+ScpuiSystem.data.Custom_Options = {}
 
 --- Init the custom options by sending the tbl and tbm files to the parser and initializing the global options cache from disk, if possible
 --- @return nil
@@ -45,7 +45,7 @@ function ScpuiSystem:parseOptions(data)
 		entry.Key = parse.getString()
 		
 		--Warn if Key already exists for another option
-		for _, v in pairs(ScpuiSystem.data.CustomOptions) do
+		for _, v in pairs(ScpuiSystem.data.Custom_Options) do
 			if v.Key == entry.Key then
 				ba.error("SCPUI Custom Options Key '" .. entry.Key .. "' already exists. This needs to be fixed!")
 			end
@@ -216,7 +216,7 @@ function ScpuiSystem:parseOptions(data)
 			end
 		end
 		
-		table.insert(ScpuiSystem.data.CustomOptions, entry)
+		table.insert(ScpuiSystem.data.Custom_Options, entry)
 	end
 	
 	parse.requiredString("#End")
@@ -346,7 +346,7 @@ function ScpuiSystem:applyCustomOptions()
         if type(ScpuiSystem.data.ScpuiOptionValues) ~= "table" then
             ba.print("SCPUI: Got bad ScpuiSystem.data.ScpuiOptionValues data! Loading defaults!")
             ScpuiSystem.data.ScpuiOptionValues = {}
-            for i, v in ipairs(ScpuiSystem.data.CustomOptions) do
+            for i, v in ipairs(ScpuiSystem.data.Custom_Options) do
                 ScpuiSystem.data.ScpuiOptionValues[v.Key] = v.Value
             end
             ScpuiSystem:saveOptionsToFile(ScpuiSystem.data.ScpuiOptionValues)
@@ -372,7 +372,7 @@ if cf.fileExists(saveFilename, 'data/players', true) then
 	ScpuiSystem.data.ScpuiOptionValues = config
 else
 	ScpuiSystem.data.ScpuiOptionValues = {}
-	for i, v in ipairs(ScpuiSystem.data.CustomOptions) do
+	for i, v in ipairs(ScpuiSystem.data.Custom_Options) do
 		ScpuiSystem.data.ScpuiOptionValues[v.Key] = v.Value
 	end
 	---@type json

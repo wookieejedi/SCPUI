@@ -6,17 +6,17 @@ local CutsceneController = class()
 function CutsceneController:init()
 	ad.stopMusic(0, true, "mainhall")
 	ui.MainHall.stopAmbientSound()
-	ui.playCutscene(ScpuiSystem.data.memory.cutscene, true, 0)
+	ui.playCutscene(ScpuiSystem.data.memory.Cutscene, true, 0)
 end
 
 ---@param document Document
 function CutsceneController:initialize(document)
-	self.document = document
+	self.Document = document
 	ui.MainHall.startAmbientSound()
 	ui.MainHall.startMusic()
-	ScpuiSystem.data.memory.cutscene = "none"
+	ScpuiSystem.data.memory.Cutscene = "none"
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"])
-	self.document:Close()
+	self.Document:Close()
 end
 
 return CutsceneController

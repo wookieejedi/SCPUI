@@ -20,23 +20,23 @@ end
 ---@param document Document
 function MultiSyncController:initialize(document)
 	
-	self.document = document
+	self.Document = document
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	--Hide these until we know if we're the host or not
-	self.document:GetElementById("bottom_panel_a"):SetClass("hidden", true)
-	self.document:GetElementById("bottom_panel_c"):SetClass("hidden", true)
+	self.Document:GetElementById("bottom_panel_a"):SetClass("hidden", true)
+	self.Document:GetElementById("bottom_panel_c"):SetClass("hidden", true)
 	
-	self.players_list_el = self.document:GetElementById("players_list_ul")
-	self.chat_el = self.document:GetElementById("chat_window")
-	self.input_id = self.document:GetElementById("chat_input")
-	self.common_text_el = self.document:GetElementById("common_text")
-	--self.status_text_el = self.document:GetElementById("status_text")
+	self.players_list_el = self.Document:GetElementById("players_list_ul")
+	self.chat_el = self.Document:GetElementById("chat_window")
+	self.input_id = self.Document:GetElementById("chat_input")
+	self.common_text_el = self.Document:GetElementById("common_text")
+	--self.status_text_el = self.Document:GetElementById("status_text")
 	
 	ui.MultiSync.initMultiSync()
 	
@@ -93,12 +93,12 @@ function MultiSyncController:Show(text, title, input, buttons)
 			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end
 		dialog:escape("")
-		dialog:show(self.document.context)
+		dialog:show(self.Document.context)
 		:continueWith(function(response)
 			self:dialog_response(response)
     end)
 	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.document.context)
+	ui.enableInput(self.Document.context)
 end
 
 function MultiSyncController:submit_pressed()
@@ -149,7 +149,7 @@ function MultiSyncController:InputChange(event)
 		local val = self.input_id:GetAttribute("value")
 		self.submittedValue = val
 	else
-		local submit_id = self.document:GetElementById("submit_btn")
+		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
 		self:sendChat()
 	end
@@ -158,22 +158,22 @@ end
 
 function MultiSyncController:CreatePlayerEntry(entry)
 	
-	local li_el = self.document:CreateElement("li")
+	local li_el = self.Document:CreateElement("li")
 	
-	local name_el = self.document:CreateElement("div")
+	local name_el = self.Document:CreateElement("div")
 	name_el:SetClass("player_name", true)
 	name_el:SetClass("player_item", true)
 	name_el.inner_rml = entry.Name
 	li_el:AppendChild(name_el)
 	
-	local team_el = self.document:CreateElement("div")
+	local team_el = self.Document:CreateElement("div")
 	team_el.id = entry.InternalID .. "_team"
 	team_el:SetClass("player_team", true)
 	team_el:SetClass("player_item", true)
 	team_el.inner_rml = "Team" .. entry.Team + 1
 	li_el:AppendChild(team_el)
 	
-	local state_el = self.document:CreateElement("div")
+	local state_el = self.Document:CreateElement("div")
 	state_el.id = entry.InternalID .. "_state"
 	state_el:SetClass("player_state", true)
 	state_el:SetClass("player_item", true)
@@ -207,7 +207,7 @@ function MultiSyncController:SelectPlayer(player)
 	if self.selectedPlayer then
 		self.selectedPlayer:SetPseudoClass("checked", false)
 	end
-	self.selectedPlayer = self.document:GetElementById(player.key)
+	self.selectedPlayer = self.Document:GetElementById(player.key)
 	self.selectedPlayer:SetPseudoClass("checked", true)
 end
 
@@ -227,7 +227,7 @@ end
 function MultiSyncController:removePlayer(idx)
 	local player_idx = self:getPlayerIndexByID(self.playerList[idx])
 	if player_idx > 0 then
-		local el = self.document:GetElementById(self.players[player_idx].key)
+		local el = self.Document:GetElementById(self.players[player_idx].key)
 		--Also remove the team element to prevent an error later
 		self:remove_team_element(self.playerList[idx] .. "_team")
 		self.players_list_el:RemoveChild(el)
@@ -238,12 +238,12 @@ end
 
 function MultiSyncController:updateTeam(player)
 	player.Team = player.Entry.Team
-	self.document:GetElementById(player.InternalID .. "_team").inner_rml = "Team" .. player.Team + 1
+	self.Document:GetElementById(player.InternalID .. "_team").inner_rml = "Team" .. player.Team + 1
 end
 
 function MultiSyncController:updateState(player)
 	player.State = player.Entry.State
-	self.document:GetElementById(player.InternalID .. "_state").inner_rml = player.State
+	self.Document:GetElementById(player.InternalID .. "_state").inner_rml = player.State
 end
 
 function MultiSyncController:remove_team_element(id)
@@ -278,9 +278,9 @@ function MultiSyncController:countdownBegins()
 		return
 	end
 	
-	local aniEl = self.document:CreateElement("ani")
+	local aniEl = self.Document:CreateElement("ani")
     aniEl:SetAttribute("src", "countdown.png")
-	self.document:GetElementById("countdown"):AppendChild(aniEl)
+	self.Document:GetElementById("countdown"):AppendChild(aniEl)
 	ui.disableInput() --Probably need to still allow chat.. but :shrug:
 	self.countdownStarted = true
 end
@@ -319,8 +319,8 @@ function MultiSyncController:updateLists()
 				if self.host == nil then
 					if ui.MultiGeneral.NetPlayers[i]:isSelf() and ui.MultiGeneral.NetPlayers[i].Host then
 						self.host = true
-						self.document:GetElementById("bottom_panel_a"):SetClass("hidden", false)
-						self.document:GetElementById("bottom_panel_c"):SetClass("hidden", false)
+						self.Document:GetElementById("bottom_panel_a"):SetClass("hidden", false)
+						self.Document:GetElementById("bottom_panel_c"):SetClass("hidden", false)
 					end
 				end
 				
@@ -386,7 +386,7 @@ function MultiSyncController:updateLists()
 	--get the current countdown, if any
 	self.countdown = ui.MultiSync:getCountdownTime()
 	
-	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
+	--self.Document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	self.common_text_el.inner_rml = string.gsub(ui.MultiGeneral.InfoText,"\n","<br></br>")
 	
 	if self.countdown and self.countdown > 0 then

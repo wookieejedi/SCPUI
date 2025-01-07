@@ -7,11 +7,11 @@ local AbstractBriefingController = require("ctrlr_briefing_ommon")
 local CommandBriefingController = class(AbstractBriefingController)
 
 function CommandBriefingController:init()
-	if not ScpuiSystem.data.memory.cutscenePlayed then
+	if not ScpuiSystem.data.memory.CutscenePlayed then
 		ScpuiSystem:maybePlayCutscene(MOVIE_PRE_CMD_BRIEF)
 	end
 	
-	ScpuiSystem.data.memory.cutscenePlayed = true
+	ScpuiSystem.data.memory.CutscenePlayed = true
     --- @type cmd_briefing_stage[]
     self.stages = {}
 
@@ -31,15 +31,15 @@ end
 function CommandBriefingController:initialize(document)
 
     ---@type Document
-    self.document = nil
+    self.Document = nil
 
     AbstractBriefingController.initialize(self, document)
 
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
     local briefing = ui.CommandBriefing.getCmdBriefing()
 	
@@ -55,7 +55,7 @@ function CommandBriefingController:initialize(document)
 end
 
 function CommandBriefingController:acceptPressed()
-	ScpuiSystem.data.memory.cutscenePlayed = nil
+	ScpuiSystem.data.memory.CutscenePlayed = nil
     if mn.isRedAlertMission() then
         ba.postGameEvent(ba.GameEvents["GS_EVENT_RED_ALERT"])
     else
@@ -71,9 +71,9 @@ function CommandBriefingController:go_to_stage(stage_idx)
 
     self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
 
-    local aniWrapper = self.document:GetElementById("cmd_anim")
+    local aniWrapper = self.Document:GetElementById("cmd_anim")
     if #stage.AniFilename > 0 then
-        local aniEl = self.document:CreateElement("ani")
+        local aniEl = self.Document:CreateElement("ani")
 		
 		local filename = stage.AniFilename
 		-- For legacy.. we need to try to load default
@@ -99,7 +99,7 @@ end
 function CommandBriefingController:help_clicked()
     self.help_shown  = not self.help_shown
 
-    local help_texts = self.document:GetElementsByClassName("tooltip")
+    local help_texts = self.Document:GetElementsByClassName("tooltip")
     for _, v in ipairs(help_texts) do
         v:SetPseudoClass("shown", self.help_shown)
     end

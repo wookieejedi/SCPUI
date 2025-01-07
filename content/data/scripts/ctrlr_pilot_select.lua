@@ -22,13 +22,13 @@ end
 
 ---@param document Document
 function PilotSelectController:initialize(document)
-    self.document  = document
+    self.Document  = document
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
-		self.document:GetElementById("copyright_info"):SetClass("s2", true)
+		self.Document:GetElementById("copyright_info"):SetClass("s2", true)
 	end
 
     local pilot_ul = document:GetElementById("pilotlist_ul")
@@ -55,7 +55,7 @@ function PilotSelectController:initialize(document)
 
     if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
 		---Load background choice
-		self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+		self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 		
         document:GetElementById("fso_version_info").inner_rml = ba.getVersionString()
 		local version = ba.getModVersion()
@@ -65,11 +65,11 @@ function PilotSelectController:initialize(document)
 		document:GetElementById("mod_version_info").inner_rml = ScpuiSystem:getModTitle() .. version
 		
 		--Hide Multi stuff maybe
-		if ScpuiSystem.data.tableFlags.hideMulti == true then
-			self.document:GetElementById("singleplayer_text"):SetClass("hidden", true)
-			self.document:GetElementById("multiplayer_text"):SetClass("hidden", true)
-			self.document:GetElementById("singleplayer_btn"):SetClass("hidden", true)
-			self.document:GetElementById("multiplayer_btn"):SetClass("hidden", true)
+		if ScpuiSystem.data.table_flags.HideMulti == true then
+			self.Document:GetElementById("singleplayer_text"):SetClass("hidden", true)
+			self.Document:GetElementById("multiplayer_text"):SetClass("hidden", true)
+			self.Document:GetElementById("singleplayer_btn"):SetClass("hidden", true)
+			self.Document:GetElementById("multiplayer_btn"):SetClass("hidden", true)
 		end
     end
 
@@ -114,7 +114,7 @@ function PilotSelectController:initialize(document)
 			builder:text(text)
 			builder:escape(false)
 			builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
-			builder:show(self.document.context)
+			builder:show(self.Document.context)
 		end
 	end
 	
@@ -122,7 +122,7 @@ function PilotSelectController:initialize(document)
 
     if self.mode == PilotSelectController.MODE_PLAYER_SELECT then
         if ui.PilotSelect.isAutoselect() then
-            self.document:GetElementById("playercommit_btn"):Click()
+            self.Document:GetElementById("playercommit_btn"):Click()
         end
 		
 		topics.pilotselect.initialize:send(self)
@@ -134,7 +134,7 @@ function PilotSelectController:getInitialCallsign()
 end
 
 function PilotSelectController:create_pilot_li(pilot_name)
-    local li_el     = self.document:CreateElement("li")
+    local li_el     = self.Document:CreateElement("li")
 
     li_el.inner_rml = pilot_name
     li_el:SetClass("pilotlist_element", true)
@@ -177,7 +177,7 @@ function PilotSelectController:selectPilot(pilot)
 end
 
 function PilotSelectController:commit_pressed()
-    local button = self.document:GetElementById("playercommit_btn")
+    local button = self.Document:GetElementById("playercommit_btn")
 	
 	topics.pilotselect.commit:send(self)
 
@@ -188,7 +188,7 @@ function PilotSelectController:commit_pressed()
         builder:text(ba.XSTR("You must select a valid pilot first", 888397))
 		builder:escape(false)
         builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
-        builder:show(self.document.context)
+        builder:show(self.Document.context)
         return
     end
 
@@ -209,7 +209,7 @@ function PilotSelectController:showWrongPilotLanguageDialog()
                                  "\n\nPlease select a different pilot or change the language", -1))
 	builder:escape(false)
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
-    builder:show(self.document.context)
+    builder:show(self.Document.context)
 end
 
 function PilotSelectController:set_player_mode(element, mode)
@@ -248,8 +248,8 @@ function PilotSelectController:set_player_mode(element, mode)
     self.current_mode = mode
 
     for _, v in ipairs(elements) do
-        local multi_el  = self.document:GetElementById(v.multi)
-        local single_el = self.document:GetElementById(v.single)
+        local multi_el  = self.Document:GetElementById(v.multi)
+        local single_el = self.Document:GetElementById(v.single)
 
         multi_el:SetPseudoClass("checked", not is_single)
         single_el:SetPseudoClass("checked", is_single)
@@ -283,7 +283,7 @@ function PilotSelectController:global_keydown(element, event)
 end
 
 function PilotSelectController:callsign_input_cancel()
-    local input_el = Element.As.ElementFormControlInput(self.document:GetElementById("pilot_name_input"))
+    local input_el = Element.As.ElementFormControlInput(self.Document:GetElementById("pilot_name_input"))
     input_el:SetClass("hidden", true) -- Show the element
     input_el.value              = ""
 
@@ -320,7 +320,7 @@ function PilotSelectController:callsign_input_change(event)
 end
 
 function PilotSelectController:begin_callsign_input(end_action)
-    local input_el = self.document:GetElementById("pilot_name_input")
+    local input_el = self.Document:GetElementById("pilot_name_input")
     input_el:SetClass("hidden", false) -- Show the element
     input_el:Focus()
     ui.playElementSound(input_el, "click", "success")
@@ -347,7 +347,7 @@ function PilotSelectController:finish_pilot_create(element, callsign, clone_from
     if not overwrite_pilot then
         -- If first_child is nil then this will add at the end of the list
         table.insert(self.pilots, 1, callsign)
-        local pilot_ul = self.document:GetElementById("pilotlist_ul")
+        local pilot_ul = self.Document:GetElementById("pilotlist_ul")
         local new_li = self:create_pilot_li(callsign)
         pilot_ul:InsertBefore(new_li, pilot_ul.first_child)
     end
@@ -365,7 +365,7 @@ function PilotSelectController:actual_pilot_create(element, callsign, clone_from
 		builder:escape(false)
         builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", 888298), false, "n")
         builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Yes", 888296), true, "y")
-        builder:show(self.document.context):continueWith(function(result)
+        builder:show(self.Document.context):continueWith(function(result)
             if not result then
                 return
             end
@@ -420,7 +420,7 @@ function PilotSelectController:delete_player(element)
                                      " single-player menu.", -1))
 		builder:escape(false)
         builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
-        builder:show(self.document.context)
+        builder:show(self.Document.context)
         return
     end
 
@@ -430,7 +430,7 @@ function PilotSelectController:delete_player(element)
 	builder:escape(false)
     builder:button(dialogs.BUTTON_TYPE_NEGATIVE, "No", false, "n")
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Yes", true, "y")
-    builder:show(self.document.context):continueWith(function(result)
+    builder:show(self.Document.context):continueWith(function(result)
         if not result then
             return
         end
@@ -445,7 +445,7 @@ function PilotSelectController:delete_player(element)
             builder:text(ba.XSTR("Failed to delete pilot file. File may be read-only.", 888409))
 			builder:escape(false)
             builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, string.sub(ba.XSTR("Ok", 888286), 1, 1))
-            builder:show(self.document.context)
+            builder:show(self.Document.context)
             return
         end
 

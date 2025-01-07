@@ -13,18 +13,18 @@ end
 
 ---@param document Document
 function LoopBriefController:initialize(document)
-	self.document = document
+	self.Document = document
     --AbstractLoopBriefController.initialize(self, document)
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
     local loop = ui.LoopBrief.getLoopBrief()
 	
-	local text_el = self.document:GetElementById("loop_text")
+	local text_el = self.Document:GetElementById("loop_text")
 	
 	local color_text = ScpuiSystem:set_briefing_text(text_el, loop.Text)
 	
@@ -34,9 +34,9 @@ function LoopBriefController:initialize(document)
 		self.voice_handle:play(ad.MasterVoiceVolume)
 	end
 	
-	local aniWrapper = self.document:GetElementById("loop_anim")
+	local aniWrapper = self.Document:GetElementById("loop_anim")
     if loop.AniFilename then
-        local aniEl = self.document:CreateElement("ani")
+        local aniEl = self.Document:CreateElement("ani")
         aniEl:SetAttribute("src", loop.AniFilename)
 
         aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
@@ -70,7 +70,7 @@ function LoopBriefController:Show(text, title)
 		:text(text)
 		:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Accept", 888014), true, string.sub(ba.XSTR("Accept", 888014), 1, 1))
 		:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Decline", 888354), false, string.sub(ba.XSTR("Decline", 888354), 1, 1))
-		:show(self.document.context)
+		:show(self.Document.context)
 		:continueWith(function(accepted)
         if not accepted then
             self:deny_pressed()
@@ -79,7 +79,7 @@ function LoopBriefController:Show(text, title)
         self:accept_pressed()
     end)
 	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.document.context)
+	ui.enableInput(self.Document.context)
 end
 
 function LoopBriefController:global_keydown(_, event)

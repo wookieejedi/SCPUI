@@ -35,7 +35,7 @@ end
 --- Frees all model data only if a mission is not loaded
 --- @return nil
 function ScpuiSystem:freeAllModels()
-	if ScpuiSystem.data.memory.missionLoaded == false then
+	if ScpuiSystem.data.memory.MissionLoaded == false then
 		ba.print("SCPUI is freeing all models!\n")
 		gr.freeAllModels()
 	end
@@ -84,10 +84,10 @@ end
 --- Stops the music contained in the SCPUI music handle, if any
 --- @return nil
 function ScpuiSystem:stopMusic()
-	if ScpuiSystem.data.memory.music_handle ~= nil and ScpuiSystem.data.memory.music_handle:isValid() then
-		ScpuiSystem.data.memory.music_handle:close(true)
+	if ScpuiSystem.data.memory.MusicHandle ~= nil and ScpuiSystem.data.memory.MusicHandle:isValid() then
+		ScpuiSystem.data.memory.MusicHandle:close(true)
 	end
-	ScpuiSystem.data.memory.music_handle = nil
+	ScpuiSystem.data.memory.MusicHandle = nil
 end
 
 --- Checks if a cutscene should be played for the current scene. Will pause any currently playing music, play the cutscene, and then resume the music.
@@ -96,19 +96,19 @@ end
 function ScpuiSystem:maybePlayCutscene(scene)
 	local topics = require("lib_ui_topics")
 	topics.playcutscene.start:send(self)
-	if ScpuiSystem.data.memory.music_handle ~= nil then
-		ScpuiSystem.data.memory.music_handle:pause()
+	if ScpuiSystem.data.memory.MusicHandle ~= nil then
+		ScpuiSystem.data.memory.MusicHandle:pause()
 	end
 	
 	--Stop rendering SCPUI during the cutscene
-	ScpuiSystem.data.render = false
+	ScpuiSystem.data.Render = false
 
 	--Setting this to false so it doesn't try to restart music
 	--that SCPUI handles internally
 	ui.maybePlayCutscene(scene, false, 0)
-	ScpuiSystem.data.render = true
-	if ScpuiSystem.data.memory.music_handle ~= nil then
-		ScpuiSystem.data.memory.music_handle:unpause()
+	ScpuiSystem.data.Render = true
+	if ScpuiSystem.data.memory.MusicHandle ~= nil then
+		ScpuiSystem.data.memory.MusicHandle:unpause()
 	end
 	topics.playcutscene.finish:send(self)
 end
@@ -135,7 +135,7 @@ function ScpuiSystem:getFontPixelSize(val)
 		val = convert(val)
 	end
 	
-	local finalSize = math.max(1, math.min(ScpuiSystem.data.numFontSizes, pixelSize + val))
+	local finalSize = math.max(1, math.min(ScpuiSystem.data.NumFontSizes, pixelSize + val))
 	
 	return tostring(finalSize)
 end
@@ -193,7 +193,7 @@ end
 --- @return string class The rcss class to use to set the background image
 function ScpuiSystem:getBackgroundClass()
 	local campaignfilename = ba.getCurrentPlayer():getCampaignFilename()
-	local bgclass = self.data.backgrounds[campaignfilename]
+	local bgclass = self.data.Backgrounds_List[campaignfilename]
 	
 	if not bgclass then
 		bgclass = "general_bg"
@@ -210,11 +210,11 @@ function ScpuiSystem:getBriefingBackground(mission, stage)
 
 	local file = nil
 	
-	if self.data.briefBackgrounds[mission] ~= nil then
-		file = self.data.briefBackgrounds[mission][stage]
+	if self.data.Brief_Backgrounds_List[mission] ~= nil then
+		file = self.data.Brief_Backgrounds_List[mission][stage]
 	
 		if file == nil then
-			file = self.data.briefBackgrounds[mission]["default"]
+			file = self.data.Brief_Backgrounds_List[mission]["default"]
 		end
 	end
 	
@@ -295,7 +295,7 @@ end
 --- @param id string The id to assign to the element.
 --- @return Element
 function ScpuiSystem:makeElement(context, t, id)
-	local el = context.document:CreateElement(t)
+	local el = context.Document:CreateElement(t)
 	if id ~= nil then
 		el.id = id
 	end
@@ -312,7 +312,7 @@ function ScpuiSystem:makeElementPanel(context, id, img)
 		ba.error("SCPUI: ID is required to make an element panel!")
 	end
 	
-	local el = context.document:CreateElement("div")
+	local el = context.Document:CreateElement("div")
 	el.id = tostring(id)
 	
 	local img_el = ScpuiSystem:makeImg(context, img)
@@ -341,7 +341,7 @@ function ScpuiSystem:makeImg(context, file, animated)
 	if animated == true then
 		t = "ani"
 	end
-	local el = context.document:CreateElement(t)
+	local el = context.Document:CreateElement(t)
 	el:SetAttribute("src", file)
 	return el
 end
@@ -356,22 +356,22 @@ end
 --- @param text string The text to display on the button.
 --- @return Element, Element elements The container and button elements.
 function ScpuiSystem:makeTextButton(context, cont_id, button_id, button_classes, text_id, text_classes, text)
-	local cont_el = context.document:CreateElement("div")
+	local cont_el = context.Document:CreateElement("div")
 	cont_el.id = cont_id
 	
-	local button_el = context.document:CreateElement("button")
+	local button_el = context.Document:CreateElement("button")
 	button_el.id = button_id
 	for _, v in ipairs(button_classes) do
 		button_el:SetClass(v, true)
 	end
 	
-	local button_text_el = context.document:CreateElement("span")
+	local button_text_el = context.Document:CreateElement("span")
 	button_text_el.id = text_id
 	for _, v in ipairs(text_classes) do
 		button_text_el:SetClass(v, true)
 	end
 	
-	local button_text = context.document:CreateElement("p")
+	local button_text = context.Document:CreateElement("p")
 	button_text.inner_rml = text
 	
 	button_text_el:AppendChild(button_text)
@@ -393,31 +393,31 @@ end
 --- @param text string The text to display on the button.
 --- @return Element, Element elements The container and button elements.
 function ScpuiSystem:makeButton(context, cont_id, button_id, button_classes, img_base, img_file, text_id, text_classes, text)
-	local cont_el = context.document:CreateElement("div")
+	local cont_el = context.Document:CreateElement("div")
 	cont_el.id = cont_id
 	
-	local button_el = context.document:CreateElement("button")
+	local button_el = context.Document:CreateElement("button")
 	button_el.id = button_id
 	for _, v in ipairs(button_classes) do
 		button_el:SetClass(v, true)
 	end
 	
-	local button_img_el = context.document:CreateElement("span")
+	local button_img_el = context.Document:CreateElement("span")
 	button_img_el.id = img_base .. "_img"
 	button_img_el:SetClass(img_base, true)
 	button_img_el:SetClass("button_img", true)
 	
-	local button_img = context.document:CreateElement("img")
+	local button_img = context.Document:CreateElement("img")
 	button_img:SetAttribute("src", img_file)
 	button_img:SetClass("psuedo_img", true)
 	
-	local button_text_el = context.document:CreateElement("span")
+	local button_text_el = context.Document:CreateElement("span")
 	button_text_el.id = text_id
 	for _, v in ipairs(text_classes) do
 		button_text_el:SetClass(v, true)
 	end
 	
-	local button_text = context.document:CreateElement("p")
+	local button_text = context.Document:CreateElement("p")
 	button_text.inner_rml = text
 	
 	button_text_el:AppendChild(button_text)

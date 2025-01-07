@@ -10,7 +10,7 @@ function ScpuiSystem:initKeywords()
     local utils = require("lib_utils")
 
     ---@type scpui_keywords
-    local affixes = {prefixes = {''}, suffixes = {''}}
+    local affixes = {Prefixes = {''}, Suffixes = {''}}
     if cf.fileExists('keywords.tbl') then
         affixes = self:parseKeywords('keywords.tbl', affixes)
     end
@@ -26,10 +26,10 @@ end
 function ScpuiSystem:parseKeywordAffixes(source)
     local prefixes = {}
     local suffixes = {}
-    for _, prefix in ipairs(source.prefixes) do
+    for _, prefix in ipairs(source.Prefixes) do
         table.insert(prefixes, prefix)
     end
-    for _, suffix in ipairs(source.suffixes) do
+    for _, suffix in ipairs(source.Suffixes) do
         table.insert(suffixes, suffix)
     end
     while true do
@@ -52,7 +52,7 @@ end
 --- @param inheritedAffixes scpui_keywords
 --- @return scpui_keywords
 function ScpuiSystem:parseKeywords(data, inheritedAffixes)
-    local keywordAlgorithm = require("lib_keyword_agorithm")
+    local keywordAlgorithm = require("lib_keyword_algorithm")
     parse.readFileText(data, "data/tables")
     local lang = "#" .. ba.getCurrentLanguage()
 
@@ -78,8 +78,8 @@ function ScpuiSystem:parseKeywords(data, inheritedAffixes)
             if parse.optionalString("++Tooltip:") then
                 tooltip = parse.getString()
             end
-            for _, prefix in ipairs(affixes.prefixes) do
-                for _, suffix in ipairs(affixes.suffixes) do
+            for _, prefix in ipairs(affixes.Prefixes) do
+                for _, suffix in ipairs(affixes.Suffixes) do
                     local t = prefix .. text .. suffix
                     if not keywordAlgorithm.registerKeyword(t, style, tooltip) then
                         parse.displayMessage("SCPUI Keyword '" .. t .. "' already exists. Skipping!")
@@ -103,17 +103,17 @@ end
 --- @return nil
 function ScpuiSystem:maybeShowTooltip(tool_el, id)
     local async_util = require("lib_async")
-    if ScpuiSystem.data.tooltipTimers[id] == nil then
+    if ScpuiSystem.data.Tooltip_Timers[id] == nil then
         return
     end
 
-    if ScpuiSystem.data.tooltipTimers[id] >= 3 then
+    if ScpuiSystem.data.Tooltip_Timers[id] >= 3 then
         tool_el:SetPseudoClass("shown", true)
     else
         async.run(function()
             async.await(async_util.wait_for(1.0))
-            if ScpuiSystem.data.tooltipTimers[id] ~= nil then
-                ScpuiSystem.data.tooltipTimers[id] = ScpuiSystem.data.tooltipTimers[id] + 1
+            if ScpuiSystem.data.Tooltip_Timers[id] ~= nil then
+                ScpuiSystem.data.Tooltip_Timers[id] = ScpuiSystem.data.Tooltip_Timers[id] + 1
                 ScpuiSystem:maybeShowTooltip(tool_el, id)
             end
         end, async.OnFrameExecutor)
@@ -169,14 +169,14 @@ function ScpuiSystem:addTooltip(document, id, tooltip)
         local y = event.parameters.mouse_y - totalHeight
         tool_el.style.left = math.max(3, x) .. "px"
         tool_el.style.top = math.max(3, y) .. "px"
-        if ScpuiSystem.data.tooltipTimers[id] == nil then
-            ScpuiSystem.data.tooltipTimers[id] = 0
+        if ScpuiSystem.data.Tooltip_Timers[id] == nil then
+            ScpuiSystem.data.Tooltip_Timers[id] = 0
             ScpuiSystem:maybeShowTooltip(tool_el, id)
         end
     end)
 
     parent:AddEventListener("mouseout", function()
-        ScpuiSystem.data.tooltipTimers[id] = nil
+        ScpuiSystem.data.Tooltip_Timers[id] = nil
         tool_el:SetPseudoClass("shown", false)
     end)
 end
@@ -185,7 +185,7 @@ end
 --- @param inputText string The text to colorize
 --- @return string, table register The colorized text and a table of tooltips
 function ScpuiSystem:applyKeywordClasses(inputText)
-    local keywordAlgorithm = require("lib_keyword_agorithm")
+    local keywordAlgorithm = require("lib_keyword_algorithm")
     return keywordAlgorithm.colorize(inputText)
 end
 

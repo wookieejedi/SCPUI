@@ -5,11 +5,11 @@ local async_util = require("lib_async")
 
 local HudConfigController = class()
 
-ScpuiSystem.data.memory.drawHUD = nil
+ScpuiSystem.data.memory.hud_config = nil
 
 function HudConfigController:init()
 
-	ScpuiSystem.data.memory.drawHUD = {}
+	ScpuiSystem.data.memory.hud_config = {}
 	
 	self.default = "hud_3.hcf"
 	
@@ -44,15 +44,15 @@ end
 
 function HudConfigController:initialize(document)
 
-    self.document = document
+    self.Document = document
 
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
-	local hud_el = self.document:GetElementById("hud_drawn_content")
+	local hud_el = self.Document:GetElementById("hud_drawn_content")
 	
 	--get coords to draw at
 	local hx = hud_el.offset_left + hud_el.parent_node.offset_left  + hud_el.parent_node.parent_node.offset_left
@@ -66,9 +66,9 @@ function HudConfigController:initialize(document)
 	
 	ui.HudConfig.initHudConfig(hx, hy, hw)
 	
-	ScpuiSystem.data.memory.drawHUD.mx = 0
-	ScpuiSystem.data.memory.drawHUD.my = 0
-	ScpuiSystem.data.memory.drawHUD.draw = true
+	ScpuiSystem.data.memory.hud_config.Mx = 0
+	ScpuiSystem.data.memory.hud_config.My = 0
+	ScpuiSystem.data.memory.hud_config.Draw = true
 	
 	self.r = 0
 	self.g = 0
@@ -81,9 +81,9 @@ function HudConfigController:initialize(document)
 	
 	self.mutex = false -- now allow updates
 	
-	self.document:GetElementById("popup_btn"):SetClass("hidden", true)
-	self.document:GetElementById("hud_on_btn"):SetClass("hidden", true)
-	self.document:GetElementById("hud_off_btn"):SetClass("hidden", true)
+	self.Document:GetElementById("popup_btn"):SetClass("hidden", true)
+	self.Document:GetElementById("hud_on_btn"):SetClass("hidden", true)
+	self.Document:GetElementById("hud_off_btn"):SetClass("hidden", true)
 	
 	self.selectAll = false
 	
@@ -93,7 +93,7 @@ function HudConfigController:initialize(document)
 end
 
 function HudConfigController:initPresets()
-	local parent_el = self.document:GetElementById("list_presets_ul")
+	local parent_el = self.Document:GetElementById("list_presets_ul")
 	
 	ScpuiSystem:ClearEntries(parent_el)
 	
@@ -102,7 +102,7 @@ function HudConfigController:initPresets()
 	for i = 1, #self.presetColors do
 		local entry = self.presetColors[i]
 		
-		local li_el = self.document:CreateElement("li")
+		local li_el = self.Document:CreateElement("li")
 		li_el.id = "preset_" .. i
 		
 		li_el:SetClass("preset_list_element", true)
@@ -120,7 +120,7 @@ function HudConfigController:initPresets()
 	for i = 1, #ui.HudConfig.GaugePresets do
 		local entry = ui.HudConfig.GaugePresets[i]
 		
-		local li_el = self.document:CreateElement("li")
+		local li_el = self.Document:CreateElement("li")
 		li_el.id = "preset_" .. i + #self.presetColors
 		
 		li_el:SetClass("preset_list_element", true)
@@ -169,13 +169,13 @@ function HudConfigController:SelectPreset(idx, name)
 		self.oldPreset = idx
 	else
 		local presetID = "preset_" .. self.oldPreset
-		self.document:GetElementById(presetID):SetPseudoClass("checked", false)
+		self.Document:GetElementById(presetID):SetPseudoClass("checked", false)
 			
 		self.oldPreset = idx
 	end
 	
 	local presetID = "preset_" .. self.oldPreset
-	self.document:GetElementById(presetID):SetPseudoClass("checked", true)
+	self.Document:GetElementById(presetID):SetPseudoClass("checked", true)
 	
 	--is this a built-in preset?
 	local builtin = 0
@@ -205,7 +205,7 @@ function HudConfigController:UnselectAllPresets()
 	if not self.click then
 		if self.oldPreset ~= nil then
 			local presetID = "preset_" .. self.oldPreset
-			self.document:GetElementById(presetID):SetPseudoClass("checked", false)
+			self.Document:GetElementById(presetID):SetPseudoClass("checked", false)
 		end
 				
 		self.oldPreset = nil
@@ -285,7 +285,7 @@ end
 function HudConfigController:Exit(element)
 
     ui.playElementSound(element, "click", "success")
-	self.draw = nil
+	ScpuiSystem.data.memory.hud_config.Draw = nil
 	ui.HudConfig.closeHudConfig(true)
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
 
@@ -294,18 +294,18 @@ end
 function HudConfigController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
-		self.draw = nil
+		ScpuiSystem.data.memory.hud_config.Draw = nil
 		ui.HudConfig.closeHudConfig(false)
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
 	end
 end
 
 function HudConfigController:drawHUD()
-	if ScpuiSystem.data.memory.drawHUD ~= nil then
-		if ScpuiSystem.data.memory.drawHUD.draw == false then
+	if ScpuiSystem.data.memory.hud_config ~= nil then
+		if ScpuiSystem.data.memory.hud_config.Draw == false then
 			return
 		end
-		ScpuiSystem.data.memory.drawHUD.gauge = ui.HudConfig.drawHudConfig(ScpuiSystem.data.memory.drawHUD.mx, ScpuiSystem.data.memory.drawHUD.my)
+		ScpuiSystem.data.memory.hud_config.Gauge = ui.HudConfig.drawHudConfig(ScpuiSystem.data.memory.hud_config.Mx, ScpuiSystem.data.memory.hud_config.My)
 	end
 end
 
@@ -402,14 +402,14 @@ function HudConfigController:slider_update(element, event, id)
 end
 
 function HudConfigController:value_update(r, g, b, a)
-	Element.As.ElementFormControlInput(self.document:GetElementById("r_slider")).value = self:convert_val_to_slider(r)
-	Element.As.ElementFormControlInput(self.document:GetElementById("g_slider")).value = self:convert_val_to_slider(g)
-	Element.As.ElementFormControlInput(self.document:GetElementById("b_slider")).value = self:convert_val_to_slider(b)
-	Element.As.ElementFormControlInput(self.document:GetElementById("a_slider")).value = self:convert_val_to_slider(a)
+	Element.As.ElementFormControlInput(self.Document:GetElementById("r_slider")).value = self:convert_val_to_slider(r)
+	Element.As.ElementFormControlInput(self.Document:GetElementById("g_slider")).value = self:convert_val_to_slider(g)
+	Element.As.ElementFormControlInput(self.Document:GetElementById("b_slider")).value = self:convert_val_to_slider(b)
+	Element.As.ElementFormControlInput(self.Document:GetElementById("a_slider")).value = self:convert_val_to_slider(a)
 end
 
 function HudConfigController:lockColorControls(lock)
-	local color_lock_el = self.document:GetElementById("color_lock")
+	local color_lock_el = self.Document:GetElementById("color_lock")
 	
 	if lock then
 		color_lock_el:SetClass("locked", true)
@@ -443,7 +443,7 @@ function HudConfigController:setGaugeFlags(flag)
 end
 
 function HudConfigController:togglePopupOption()
-	local popup_el = self.document:GetElementById("popup_btn")
+	local popup_el = self.Document:GetElementById("popup_btn")
 	
 	if self.selectedGauge.CanPopup then
 		popup_el:SetClass("hidden", false)
@@ -453,9 +453,9 @@ function HudConfigController:togglePopupOption()
 end
 
 function HudConfigController:setupButtonOptions()
-	local popup_el = self.document:GetElementById("popup_btn")
-	local hud_on_el = self.document:GetElementById("hud_on_btn")
-	local hud_off_el = self.document:GetElementById("hud_off_btn")
+	local popup_el = self.Document:GetElementById("popup_btn")
+	local hud_on_el = self.Document:GetElementById("hud_on_btn")
+	local hud_off_el = self.Document:GetElementById("hud_off_btn")
 	
 	if self.selectedGauge.PopupGaugeFlag then
 		hud_on_el:SetPseudoClass("checked", false)
@@ -492,23 +492,23 @@ function HudConfigController:select_all()
 		self.selectAll = true
 	end
 	self:mouse_click()
-	self.document:GetElementById("select_all_btn"):SetPseudoClass("checked", self.selectAll)
+	self.Document:GetElementById("select_all_btn"):SetPseudoClass("checked", self.selectAll)
 	ui.HudConfig.selectAllGauges(self.selectAll)
 	self:lockColorControls(not self.selectAll)
 end
 
 function HudConfigController:mouse_click()
 	
-	self.document:GetElementById("hud_on_btn"):SetClass("hidden", true)
-	self.document:GetElementById("hud_off_btn"):SetClass("hidden", true)
-	self.document:GetElementById("popup_btn"):SetClass("hidden", true)
+	self.Document:GetElementById("hud_on_btn"):SetClass("hidden", true)
+	self.Document:GetElementById("hud_off_btn"):SetClass("hidden", true)
+	self.Document:GetElementById("popup_btn"):SetClass("hidden", true)
 	self:lockColorControls(false)
 	
 	self.click = true
 
-	if ScpuiSystem.data.memory.drawHUD.gauge then
+	if ScpuiSystem.data.memory.hud_config.Gauge then
 		self.curGaugeName = nil
-		self.selectedGauge = ScpuiSystem.data.memory.drawHUD.gauge
+		self.selectedGauge = ScpuiSystem.data.memory.hud_config.Gauge
 		self.selectedGauge:setSelected(true)
 		
 		local color = self.selectedGauge.CurrentColor
@@ -516,8 +516,8 @@ function HudConfigController:mouse_click()
 		self.curGaugeName = self.selectedGauge.Name
 		
 		if self.curGaugeName ~= nil then
-			self.document:GetElementById("hud_on_btn"):SetClass("hidden", false)
-			self.document:GetElementById("hud_off_btn"):SetClass("hidden", false)
+			self.Document:GetElementById("hud_on_btn"):SetClass("hidden", false)
+			self.Document:GetElementById("hud_off_btn"):SetClass("hidden", false)
 		
 			self:togglePopupOption()
 			self:setupButtonOptions()
@@ -529,9 +529,9 @@ end
 
 function HudConfigController:mouse_move(element, event)
 
-	if ScpuiSystem.data.memory.drawHUD ~= nil then
-		ScpuiSystem.data.memory.drawHUD.mx = event.parameters.mouse_x
-		ScpuiSystem.data.memory.drawHUD.my = event.parameters.mouse_y
+	if ScpuiSystem.data.memory.hud_config ~= nil then
+		ScpuiSystem.data.memory.hud_config.Mx = event.parameters.mouse_x
+		ScpuiSystem.data.memory.hud_config.My = event.parameters.mouse_y
 	end
 	
 end
@@ -539,7 +539,7 @@ end
 function HudConfigController:Show(text, title, input, buttons)
 	--Create a simple dialog box with the text and title
 
-	ScpuiSystem.data.memory.drawHUD.draw = false
+	ScpuiSystem.data.memory.hud_config.Draw = false
 	
 	local dialog = dialogs.new()
 		dialog:title(title)
@@ -549,12 +549,12 @@ function HudConfigController:Show(text, title, input, buttons)
 			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end
 		dialog:escape("")
-		dialog:show(self.document.context)
+		dialog:show(self.Document.context)
 		:continueWith(function(response)
 			self:dialog_response(response)
     end)
 	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.document.context)
+	ui.enableInput(self.Document.context)
 end
 
 function HudConfigController:getPresetInput()
@@ -577,7 +577,7 @@ end
 function HudConfigController:dialog_response(response)
 	local path = self.promptControl
 	self.promptControl = nil
-	ScpuiSystem.data.memory.drawHUD.draw = true
+	ScpuiSystem.data.memory.hud_config.Draw = true
 	if path == 1 then
 		self:savePreset(response)
 	end
@@ -588,7 +588,7 @@ function HudConfigController:unload()
 end
 
 engine.addHook("On Frame", function()
-	if (ba.getCurrentGameState().Name == "GS_STATE_HUD_CONFIG") and (ScpuiSystem.data.render == true) then
+	if (ba.getCurrentGameState().Name == "GS_STATE_HUD_CONFIG") and (ScpuiSystem.data.Render == true) then
 		HudConfigController:drawHUD()
 	end
 end, {}, function()

@@ -42,7 +42,7 @@ end
 
 ---@param document Document
 function AbstractBriefingController:initialize(document)
-    self.document = document
+    self.Document = document
     self.loaded = true
 	
 	if ba.getCurrentGameState().Name == "GS_STATE_FICTION_VIEWER" then
@@ -63,7 +63,7 @@ function AbstractBriefingController:initialize(document)
     local autoAdvance = player.AutoAdvance
 	
 	if self.briefState ~= "fiction" then
-		self.document:GetElementById(self.element_names.pause_btn):SetPseudoClass("checked", not autoAdvance)
+		self.Document:GetElementById(self.element_names.pause_btn):SetPseudoClass("checked", not autoAdvance)
 	end
 	
 	topics.briefcommon.initialize:send(self)
@@ -73,9 +73,9 @@ end
 function AbstractBriefingController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
 		ScpuiSystem:stopMusic()
-		ScpuiSystem.data.memory.current_music_file = nil
-		ScpuiSystem.data.memory.drawBrMap = nil
-		ScpuiSystem.data.memory.cutscenePlayed = nil
+		ScpuiSystem.data.memory.CurrentMusicFile = nil
+		ScpuiSystem.data.memory.briefing_map = nil
+		ScpuiSystem.data.memory.CutscenePlayed = nil
 		
 		if self.briefState == "briefing" then
 			loadoutHandler:saveCurrentLoadout()
@@ -97,12 +97,12 @@ function AbstractBriefingController:global_keydown(_, event)
 end
 
 function AbstractBriefingController:scroll_up()
-	local text_el = self.document:GetElementById(self.element_names.text_el)
+	local text_el = self.Document:GetElementById(self.element_names.text_el)
 	text_el.parent_node.scroll_top = text_el.parent_node.scroll_top + 10
 end
 
 function AbstractBriefingController:scroll_down()
-	local text_el = self.document:GetElementById(self.element_names.text_el)
+	local text_el = self.Document:GetElementById(self.element_names.text_el)
 	text_el.parent_node.scroll_top = text_el.parent_node.scroll_top - 10
 end
 
@@ -141,7 +141,7 @@ function AbstractBriefingController:go_to_prev_stage()
 end
 
 function AbstractBriefingController:registerEventHandlers()
-    self.document:GetElementById(self.element_names.last_btn):AddEventListener("click", function(_, el, _)
+    self.Document:GetElementById(self.element_names.last_btn):AddEventListener("click", function(_, el, _)
         if self.current_stage >= #self.stages then
             ui.playElementSound(el, "click", "fail")
             return
@@ -155,13 +155,13 @@ function AbstractBriefingController:registerEventHandlers()
         self:go_to_stage(#self.stages)
         ui.playElementSound(el, "click", "success")
     end)
-    self.document:GetElementById(self.element_names.next_btn):AddEventListener("click", function(_, el, _)
+    self.Document:GetElementById(self.element_names.next_btn):AddEventListener("click", function(_, el, _)
         self:go_to_next_stage()
     end)
-    self.document:GetElementById(self.element_names.prev_btn):AddEventListener("click", function(_, el, _)
+    self.Document:GetElementById(self.element_names.prev_btn):AddEventListener("click", function(_, el, _)
         self:go_to_prev_stage()
     end)
-    self.document:GetElementById(self.element_names.first_btn):AddEventListener("click", function(_, el, _)
+    self.Document:GetElementById(self.element_names.first_btn):AddEventListener("click", function(_, el, _)
         if self.current_stage <= 1 then
             ui.playElementSound(el, "click", "fail")
             return
@@ -175,14 +175,14 @@ function AbstractBriefingController:registerEventHandlers()
         self:go_to_stage(1)
         ui.playElementSound(el, "click", "success")
     end)
-    self.document:GetElementById("accept_btn"):AddEventListener("click", function(_, el, _)
+    self.Document:GetElementById("accept_btn"):AddEventListener("click", function(_, el, _)
         self:acceptPressed()
         ui.playElementSound(el, "click", "commit")
     end)
-    self.document:GetElementById("options_btn"):AddEventListener("click", function(_, _, _)
+    self.Document:GetElementById("options_btn"):AddEventListener("click", function(_, _, _)
         ba.postGameEvent(ba.GameEvents["GS_EVENT_OPTIONS_MENU"])
     end)
-    self.document:GetElementById(self.element_names.pause_btn):AddEventListener("click", function(_, el)
+    self.Document:GetElementById(self.element_names.pause_btn):AddEventListener("click", function(_, el)
         local plr = ba.getCurrentPlayer()
         local val = plr.AutoAdvance
         plr.AutoAdvance = not val
@@ -195,18 +195,18 @@ function AbstractBriefingController:unload()
     if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
         self.current_voice_handle:close(false)
     end
-	if ScpuiSystem.data.memory.drawBrMap then
-		ScpuiSystem.data.memory.drawBrMap.tex:unload()
-		ScpuiSystem.data.memory.drawBrMap.tex = nil
-		ScpuiSystem.data.memory.drawBrMap = nil
+	if ScpuiSystem.data.memory.briefing_map then
+		ScpuiSystem.data.memory.briefing_map.Texture:unload()
+		ScpuiSystem.data.memory.briefing_map.Texture = nil
+		ScpuiSystem.data.memory.briefing_map = nil
 	end
 	
 	if self.briefState == "briefing" then
 		if self.Commit == true then
 			loadoutHandler:saveCurrentLoadout()
 			loadoutHandler:unloadAll(true)
-			ScpuiSystem.data.memory.drawBrMap = nil
-			ScpuiSystem.data.memory.cutscenePlayed = nil
+			ScpuiSystem.data.memory.briefing_map = nil
+			ScpuiSystem.data.memory.CutscenePlayed = nil
 		end
 		ui.Briefing.closeBriefing()
 	end
@@ -234,19 +234,19 @@ function AbstractBriefingController:startMusic()
         return
     end
 	
-	if filename ~= ScpuiSystem.data.memory.current_music_file then
+	if filename ~= ScpuiSystem.data.memory.CurrentMusicFile then
 	
-		if ScpuiSystem.data.memory.music_handle ~= nil and ScpuiSystem.data.memory.music_handle:isValid() then
-			ScpuiSystem.data.memory.music_handle:close(true)
+		if ScpuiSystem.data.memory.MusicHandle ~= nil and ScpuiSystem.data.memory.MusicHandle:isValid() then
+			ScpuiSystem.data.memory.MusicHandle:close(true)
 		end
 	
-		--ScpuiSystem.data.memory.current_music_file = filename
+		--ScpuiSystem.data.memory.CurrentMusicFile = filename
 
-		ScpuiSystem.data.memory.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+		ScpuiSystem.data.memory.MusicHandle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
 		async.run(function()
 			async.await(async_util.wait_for(2.5))
-			ScpuiSystem.data.memory.music_handle:play(ad.MasterEventMusicVolume, true)
-			ScpuiSystem.data.memory.current_music_file = filename
+			ScpuiSystem.data.memory.MusicHandle:play(ad.MasterEventMusicVolume, true)
+			ScpuiSystem.data.memory.CurrentMusicFile = filename
 		end, async.OnFrameExecutor, self.uiActiveContext)
 	end
 end
@@ -283,11 +283,11 @@ function AbstractBriefingController:initializeStage(stageIdx, briefingText, audi
 		ad.playInterfaceSound(20)
 	end
 
-    local text_el = self.document:GetElementById(self.element_names.text_el)
+    local text_el = self.Document:GetElementById(self.element_names.text_el)
 	text_el.parent_node.scroll_top = 0
     local num_stage_lines = ScpuiSystem:set_briefing_text(text_el, briefingText)
 
-    local stage_indicator_el = self.document:GetElementById(self.element_names.stage_text_el)
+    local stage_indicator_el = self.Document:GetElementById(self.element_names.stage_text_el)
     stage_indicator_el.inner_rml = string.format(ba.XSTR("Stage %d of %d", 888283), self.current_stage, #self.stages)
 
     local stage_id = self.stage_instance_id

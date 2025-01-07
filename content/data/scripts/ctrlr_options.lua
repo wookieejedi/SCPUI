@@ -311,8 +311,8 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 end
 
 function OptionsController:createTenPointRangeElement(option, parent_id, parameters, onchange_func)
-    local parent_el                                                                                                      = self.document:GetElementById(parent_id)
-    local actual_el, title_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 = templates.instantiate_template(self.document,
+    local parent_el                                                                                                      = self.Document:GetElementById(parent_id)
+    local actual_el, title_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9 = templates.instantiate_template(self.Document,
                                                                                                                                                          "tenpoint_selector_template",
                                                                                                                                                          getOptionElementId(option),
                                                                                                                                                          {
@@ -343,8 +343,8 @@ function OptionsController:createTenPointRangeElement(option, parent_id, paramet
 end
 
 function OptionsController:createFivePointRangeElement(option, parent_id, onchange_func)
-    local parent_el                                                                             = self.document:GetElementById(parent_id)
-    local actual_el, title_el, value_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4 = templates.instantiate_template(self.document,
+    local parent_el                                                                             = self.Document:GetElementById(parent_id)
+    local actual_el, title_el, value_el, btn_left, btn_right, btn_0, btn_1, btn_2, btn_3, btn_4 = templates.instantiate_template(self.Document,
                                                                                                                                 "fivepoint_selector_template",
                                                                                                                                 getOptionElementId(option),
                                                                                                                                 {
@@ -455,8 +455,8 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
 end
 
 function OptionsController:createBinaryOptionElement(option, vals, parent_id, onchange_func)
-    local parent_el                                                       = self.document:GetElementById(parent_id)
-    local actual_el, title_el, btn_left, text_left, btn_right, text_right = templates.instantiate_template(self.document,
+    local parent_el                                                       = self.Document:GetElementById(parent_id)
+    local actual_el, title_el, btn_left, text_left, btn_right, text_right = templates.instantiate_template(self.Document,
                                                                                                           "binary_selector_template",
                                                                                                           getOptionElementId(option),
                                                                                                           {
@@ -593,8 +593,8 @@ function OptionsController:init_selection_element(element, option, vals, change_
 end
 
 function OptionsController:createSelectionOptionElement(option, vals, parent_id, parameters, onchange_func)
-    local parent_el                         = self.document:GetElementById(parent_id)
-    local actual_el, text_el, dataselect_el = templates.instantiate_template(self.document, "dropdown_template",
+    local parent_el                         = self.Document:GetElementById(parent_id)
+    local actual_el, text_el, dataselect_el = templates.instantiate_template(self.Document, "dropdown_template",
                                                                             getOptionElementId(option), {
                                                                                 "dropdown_text_el",
                                                                                 "dropdown_dataselect_el"
@@ -647,15 +647,15 @@ function OptionsController:init_range_element(element, value_el, option, change_
 		element:AddEventListener("click", function(event, _, _)
 			range_el.value = customOptions[Key].currentValue
 			fontChoice = "base_font" .. ScpuiSystem:getFontPixelSize(customOptions[Key].currentValue)
-			ScpuiSystem.data.numFontSizes = 5
+			ScpuiSystem.data.NumFontSizes = 5
 			--Clear all possible font classes
-			for i = 1, ScpuiSystem.data.numFontSizes do
+			for i = 1, ScpuiSystem.data.NumFontSizes do
 				local f_class = "base_font" .. i
-				self.document:GetElementById("main_background"):SetClass(f_class, false)
+				self.Document:GetElementById("main_background"):SetClass(f_class, false)
 			end
 			
 			--Now apply the new class
-			self.document:GetElementById("main_background"):SetClass(fontChoice, true)
+			self.Document:GetElementById("main_background"):SetClass(fontChoice, true)
 		end)
 	end
 			
@@ -687,8 +687,8 @@ function OptionsController:init_range_element(element, value_el, option, change_
 end
 
 function OptionsController:createRangeOptionElement(option, parent_id, onchange_func)
-    local parent_el                               = self.document:GetElementById(parent_id)
-    local actual_el, title_el, value_el, range_el = templates.instantiate_template(self.document, "slider_template",
+    local parent_el                               = self.Document:GetElementById(parent_id)
+    local actual_el, title_el, value_el, range_el = templates.instantiate_template(self.Document, "slider_template",
                                                                                   getOptionElementId(option), {
                                                                                       "slider_title_el",
                                                                                       "slider_value_el",
@@ -704,8 +704,8 @@ function OptionsController:createRangeOptionElement(option, parent_id, onchange_
 end
 
 function OptionsController:createHeaderOptionElement(option, parent_id)
-    local parent_el                               = self.document:GetElementById(parent_id)
-    local actual_el, title_el = templates.instantiate_template(self.document, "header_template",
+    local parent_el                               = self.Document:GetElementById(parent_id)
+    local actual_el, title_el = templates.instantiate_template(self.Document, "header_template",
                                                                getOptionElementId(option), {
                                                                    "header_title_el"
                                                                })
@@ -714,14 +714,14 @@ function OptionsController:createHeaderOptionElement(option, parent_id)
     title_el.inner_rml = option.Title
 
 	---Load the desired font size from the save file
-	self.document:GetElementById(actual_el.id):SetClass("p2", true)
+	self.Document:GetElementById(actual_el.id):SetClass("p2", true)
 
     return actual_el
 end
 
 function OptionsController:create(option, parent_id, onchange_func)
-    local parent_el                               = self.document:GetElementById(parent_id)
-    local actual_el, title_el, value_el, range_el = templates.instantiate_template(self.document, "slider_template",
+    local parent_el                               = self.Document:GetElementById(parent_id)
+    local actual_el, title_el, value_el, range_el = templates.instantiate_template(self.Document, "slider_template",
                                                                                   getOptionElementId(option), {
                                                                                       "slider_title_el",
                                                                                       "slider_value_el",
@@ -779,9 +779,9 @@ function OptionsController:createCustomOptionElement(option, parent_id, onchange
 end
 
 function OptionsController:handleBrightnessOption(option, onchange_func)
-    local increase_btn = self.document:GetElementById("brightness_increase_btn")
-    local decrease_btn = self.document:GetElementById("brightness_decrease_btn")
-    local value_el     = self.document:GetElementById("brightness_value_el")
+    local increase_btn = self.Document:GetElementById("brightness_increase_btn")
+    local decrease_btn = self.Document:GetElementById("brightness_decrease_btn")
+    local value_el     = self.Document:GetElementById("brightness_value_el")
 
     local vals         = option:getValidValues()
     local current      = option.Value
@@ -956,7 +956,7 @@ function OptionsController:initialize_basic_options()
                 option:persistChanges()
             end)
 			
-			opt_el = self.document:GetElementById("gamma_option")
+			opt_el = self.Document:GetElementById("gamma_option")
         end
 		
 		if option.Description then
@@ -1050,7 +1050,7 @@ end
 
 --Here are where we parse and place mod options into the Preferences tab
 function OptionsController:initialize_custom_options()
-    for _, option in ipairs(ScpuiSystem.data.CustomOptions) do
+    for _, option in ipairs(ScpuiSystem.data.Custom_Options) do
 		option.Category = "Custom"
 		--option.Title = option.Title
 		local el = self:createCustomOptionElement(option, string.format("custom_column_%d", option.Column))
@@ -1071,7 +1071,7 @@ end
 
 function OptionsController:RemoveSelectedIP()
 	if self.selectedIP then
-		local ip_el = self.document:GetElementById("ipaddress_list")
+		local ip_el = self.Document:GetElementById("ipaddress_list")
 		for _, child in ipairs(ip_el.child_nodes) do
 			if child.id == self.selectedIP.id then
 				ip_el:RemoveChild(child)
@@ -1082,7 +1082,7 @@ function OptionsController:RemoveSelectedIP()
 end
 
 function OptionsController:IsDuplicateIP(id)
-	local ip_el = self.document:GetElementById("ipaddress_list")
+	local ip_el = self.Document:GetElementById("ipaddress_list")
 	for _, child in ipairs(ip_el.child_nodes) do
 		if child.id == id then
 			return true
@@ -1096,7 +1096,7 @@ function OptionsController:AddSelectedIP()
 	if string.len(self.submittedIP) > 0 then
 		if not self:IsDuplicateIP(self.submittedIP) then
 			if opt.verifyIPAddress(self.submittedIP) then
-				local ip_el = self.document:GetElementById("ipaddress_list")
+				local ip_el = self.Document:GetElementById("ipaddress_list")
 				ip_el:AppendChild(self:CreateIPItem(self.submittedIP))
 			else
 				local builder      = dialogs.new()
@@ -1104,7 +1104,7 @@ function OptionsController:AddSelectedIP()
 				builder:text(ba.XSTR("Ip string is invalid!", 888377))
 				builder:escape(false)
 				builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), true, string.sub(ba.XSTR("Ok", 888286), 1, 1))
-				builder:show(self.document.context):continueWith(function() end)
+				builder:show(self.Document.context):continueWith(function() end)
 			end
 		else
 			local builder      = dialogs.new()
@@ -1112,7 +1112,7 @@ function OptionsController:AddSelectedIP()
 			builder:text(ba.XSTR("IP Address already listed!", 888381))
 			builder:escape(false)
 			builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), true, string.sub(ba.XSTR("Ok", 888286), 1, 1))
-			builder:show(self.document.context):continueWith(function() end)
+			builder:show(self.Document.context):continueWith(function() end)
 		end
 	end
 	
@@ -1151,7 +1151,7 @@ end
 
 function OptionsController:CreateIPItem(entry)
 
-	local li_el = self.document:CreateElement("li")
+	local li_el = self.Document:CreateElement("li")
 
 	li_el.inner_rml = entry
 	li_el.id = entry
@@ -1182,9 +1182,9 @@ function OptionsController:initialize_multi_options()
 	--Handle the IP Address list
 	local ips = opt.readIPAddressTable()
 	self.submittedIP = ""
-	self.ip_input_el = self.document:GetElementById("add_ip_field")
+	self.ip_input_el = self.Document:GetElementById("add_ip_field")
 	
-	local ip_el = self.document:GetElementById("ipaddress_list")
+	local ip_el = self.Document:GetElementById("ipaddress_list")
 	
 	for i = 1, #ips do
 		ip_el:AppendChild(self:CreateIPItem(ips[i]))
@@ -1195,13 +1195,13 @@ function OptionsController:initialize_multi_options()
 		Description = "IP Addresses to watch or something. I dunno. Mjn Fix this."
 	}
 	
-	self:AddOptionTooltip(ip_opt, self.document:GetElementById("ipaddress_list"))
+	self:AddOptionTooltip(ip_opt, self.Document:GetElementById("ipaddress_list"))
 	
 	--Handle the login info
-	self.document:GetElementById("login_field"):SetAttribute("value", opt.MultiLogin)
-	self.document:GetElementById("squad_field"):SetAttribute("value", opt.MultiSquad)
+	self.Document:GetElementById("login_field"):SetAttribute("value", opt.MultiLogin)
+	self.Document:GetElementById("squad_field"):SetAttribute("value", opt.MultiSquad)
 	if opt.MultiPassword then
-		self.document:GetElementById("pass_field"):SetAttribute("value", "******")
+		self.Document:GetElementById("pass_field"):SetAttribute("value", "******")
 	end
 	
 	self.login_changed = false
@@ -1223,17 +1223,17 @@ function OptionsController:initialize_multi_options()
 		Description = "Your PXO multiplayer squadron name"
 	}
 	
-	self:AddOptionTooltip(login_opt, self.document:GetElementById("login_field").parent_node)
-	self:AddOptionTooltip(pass_opt, self.document:GetElementById("pass_field").parent_node)
-	self:AddOptionTooltip(squad_opt, self.document:GetElementById("squad_field").parent_node)
+	self:AddOptionTooltip(login_opt, self.Document:GetElementById("login_field").parent_node)
+	self:AddOptionTooltip(pass_opt, self.Document:GetElementById("pass_field").parent_node)
+	self:AddOptionTooltip(squad_opt, self.Document:GetElementById("squad_field").parent_node)
 	
 	--Handle the rest of the options
 	for _, option in ipairs(self.category_options.multi) do
 		local opt_el = nil
 		if option.Key == "Multi.LocalBroadcast" then
-			opt_el = self.document:GetElementById("local_btn")
+			opt_el = self.Document:GetElementById("local_btn")
 			opt_el:AddEventListener("click", function()
-				local opt_el = self.document:GetElementById("local_btn")
+				local opt_el = self.Document:GetElementById("local_btn")
 				local vals = option:getValidValues()
 				if option.Value.Display == "On" then
 					opt_el:SetPseudoClass("checked", false)
@@ -1249,9 +1249,9 @@ function OptionsController:initialize_multi_options()
 				opt_el:SetPseudoClass("checked", false)
 			end
 		elseif option.Key == "Multi.TogglePXO" then
-			opt_el = self.document:GetElementById("pxo_btn")
+			opt_el = self.Document:GetElementById("pxo_btn")
 			opt_el:AddEventListener("click", function()
-				local opt_el = self.document:GetElementById("pxo_btn")
+				local opt_el = self.Document:GetElementById("pxo_btn")
 				local vals = option:getValidValues()
 				if option.Value.Display == "On" then
 					opt_el:SetPseudoClass("checked", false)
@@ -1282,7 +1282,7 @@ function OptionsController:AddOptionTooltip(option, parent)
 		return
 	end
 
-	local tool_el = self.document:CreateElement("div")
+	local tool_el = self.Document:CreateElement("div")
 	tool_el.id = option.Key .. "_tooltip"
 	tool_el:SetClass("tooltip", true)
 	tool_el.inner_rml = "<span class=\"tooltiptext\">" .. option.Description .. "</span>"
@@ -1322,13 +1322,13 @@ end
 
 ---@param document Document
 function OptionsController:initialize(document)
-    self.document = document
+    self.Document = document
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
     -- Persist current changes since we might discard them in this screen
     opt.persistChanges()
@@ -1344,7 +1344,7 @@ function OptionsController:initialize(document)
         end
 		
 		--Creates data sources for custom dropdowns
-		for _, v_custopt in ipairs(ScpuiSystem.data.CustomOptions) do
+		for _, v_custopt in ipairs(ScpuiSystem.data.Custom_Options) do
 			v_custopt.Category = "Custom"
 			if (v_custopt.Type == "Multi") or (v_custopt.Type == "Binary") then
 				self.sources[v_custopt.Key] = createOptionSource(v_custopt)
@@ -1396,8 +1396,8 @@ function OptionsController:initialize(document)
 	
 	self:initialize_custom_options()
 	
-	if ScpuiSystem.data.tableFlags.hideMulti == true then
-		self.document:GetElementById("multi_btn"):SetClass("hidden", true)
+	if ScpuiSystem.data.table_flags.HideMulti == true then
+		self.Document:GetElementById("multi_btn"):SetClass("hidden", true)
 	end
 	
 	topics.options.initialize:send(self)
@@ -1423,7 +1423,7 @@ function OptionsController:acceptChanges(state)
     local unchanged = opt.persistChanges()
 	
 	--Save the IP table
-	local ip_el = self.document:GetElementById("ipaddress_list")
+	local ip_el = self.Document:GetElementById("ipaddress_list")
 	local ip_tbl = {}
 	for _, child in ipairs(ip_el.child_nodes) do
 		table.insert(ip_tbl, child.inner_rml)
@@ -1432,13 +1432,13 @@ function OptionsController:acceptChanges(state)
 	
 	--Save the login info
 	if self.login_changed == true then
-		opt.MultiLogin = self.document:GetElementById("login_field"):GetAttribute("value")
+		opt.MultiLogin = self.Document:GetElementById("login_field"):GetAttribute("value")
 	end
 	if self.pass_changed == true then
-		opt.MultiPassword = self.document:GetElementById("pass_field"):GetAttribute("value")
+		opt.MultiPassword = self.Document:GetElementById("pass_field"):GetAttribute("value")
 	end
 	if self.squad_changed == true then
-		opt.MultiSquad = self.document:GetElementById("squad_field"):GetAttribute("value")
+		opt.MultiSquad = self.Document:GetElementById("squad_field"):GetAttribute("value")
 	end
 	
 	ui.OptionsMenu.savePlayerData()
@@ -1468,7 +1468,7 @@ function OptionsController:acceptChanges(state)
 	builder:escape(false)
     builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", 888091), false, string.sub(ba.XSTR("Cancel", 888091), 1, 1))
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), true, string.sub(ba.XSTR("Ok", 888286), 1, 1))
-    builder:show(self.document.context):continueWith(function(val)
+    builder:show(self.Document.context):continueWith(function(val)
         if val then
 			
 			if mn.isInMission() then
@@ -1482,12 +1482,12 @@ end
 
 function OptionsController:SetGraphicsBullet(level)
 	
-	local lowbullet = self.document:GetElementById("det_low_btn")
-	local medbullet = self.document:GetElementById("det_med_btn")
-	local higbullet = self.document:GetElementById("det_hig_btn")
-	local ultbullet = self.document:GetElementById("det_ult_btn")
-	local cstbullet = self.document:GetElementById("det_cst_btn")
-	local minbullet = self.document:GetElementById("det_min_btn")
+	local lowbullet = self.Document:GetElementById("det_low_btn")
+	local medbullet = self.Document:GetElementById("det_med_btn")
+	local higbullet = self.Document:GetElementById("det_hig_btn")
+	local ultbullet = self.Document:GetElementById("det_ult_btn")
+	local cstbullet = self.Document:GetElementById("det_cst_btn")
+	local minbullet = self.Document:GetElementById("det_min_btn")
 	
 	minbullet:SetPseudoClass("checked", level == "min")
 	lowbullet:SetPseudoClass("checked", level == "low")
@@ -1504,7 +1504,7 @@ function OptionsController:GraphicsMinimum(element)
 		local option = graphicsOptions[k_gr_option]
 		for _, v_gr_preset in pairs(graphicsPresets) do
 			if option.parentID.id == v_gr_preset then
-				local parent = self.document:GetElementById(option.parentID.id)
+				local parent = self.Document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
 				if option.optType == "Multi" then
 					if option.parentID.id == "option_graphics_aamode_element" then
@@ -1545,7 +1545,7 @@ function OptionsController:GraphicsLow(element)
 		local option = graphicsOptions[k_gr_option]
 		for _, v_gr_preset in pairs(graphicsPresets) do
 			if option.parentID.id == v_gr_preset then
-				local parent = self.document:GetElementById(option.parentID.id)
+				local parent = self.Document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
 				if option.optType == "Multi" then
 					if option.parentID.id == "option_graphics_aamode_element" then
@@ -1586,7 +1586,7 @@ function OptionsController:GraphicsMedium(element)
 		local option = graphicsOptions[k_gr_option]
 		for _, v_gr_preset in pairs(graphicsPresets) do
 			if option.parentID.id == v_gr_preset then
-				local parent = self.document:GetElementById(option.parentID.id)
+				local parent = self.Document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
 				if option.optType == "Multi" then
 					if option.parentID.id == "option_graphics_aamode_element" then
@@ -1627,7 +1627,7 @@ function OptionsController:GraphicsHigh(element)
 		local option = graphicsOptions[k_gr_option]
 		for _, v_gr_preset in pairs(graphicsPresets) do
 			if option.parentID.id == v_gr_preset then
-				local parent = self.document:GetElementById(option.parentID.id)
+				local parent = self.Document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
 				if option.optType == "Multi" then
 					if option.parentID.id == "option_graphics_aamode_element" then
@@ -1668,7 +1668,7 @@ function OptionsController:GraphicsUltra(element)
 		local option = graphicsOptions[k_gr_option]
 		for _, v_gr_preset in pairs(graphicsPresets) do
 			if option.parentID.id == v_gr_preset then
-				local parent = self.document:GetElementById(option.parentID.id)
+				local parent = self.Document:GetElementById(option.parentID.id)
 				local savedValue = option.savedValue
 				if option.optType == "Multi" then
 					if option.parentID.id == "option_graphics_aamode_element" then
@@ -1710,7 +1710,7 @@ function OptionsController:GraphicsCustom(element)
 			local option = graphicsOptions[k_gr_option]
 			for _, v_gr_preset in pairs(graphicsPresets) do
 				if option.parentID.id == v_gr_preset then
-					local parent = self.document:GetElementById(option.parentID.id)
+					local parent = self.Document:GetElementById(option.parentID.id)
 					if option.optType == "Multi" then
 						option.currentValue = option.savedValue
 						option.selectID.selection = option.savedValue
@@ -1816,7 +1816,7 @@ function OptionsController:ModDefault(element)
 		local option = customOptions[k]
 		if not option.noDefault then
 			if option.optType == "Binary" and option.currentValue ~= option.defaultValue then
-				local parent = self.document:GetElementById(option.parentID.id)
+				local parent = self.Document:GetElementById(option.parentID.id)
 				customValues[option.key] = option.defaultValue
 				option.currentValue = option.defaultValue
 				local right_selected = option.defaultValue == option.validVals[2]
@@ -1825,7 +1825,7 @@ function OptionsController:ModDefault(element)
 			end
 			
 			if option.optType == "Multi" and option.currentValue ~= option.defaultValue then
-				local parent = self.document:GetElementById(option.parentID.id)
+				local parent = self.Document:GetElementById(option.parentID.id)
 				customValues[option.key] = option.defaultValue
 				option.currentValue = option.defaultValue
 				local savedValue = option.savedValue				
@@ -1834,7 +1834,7 @@ function OptionsController:ModDefault(element)
 			end
 			
 			if option.optType == "Range" and option.currentValue ~= option.defaultValue then
-				local parent = self.document:GetElementById(option.parentID.id)
+				local parent = self.Document:GetElementById(option.parentID.id)
 				customValues[option.key] = option.defaultValue
 				option.currentValue = option.defaultValue
 				local savedValue = option.savedValue
@@ -1843,8 +1843,8 @@ function OptionsController:ModDefault(element)
 			end
 			
 			if option.optType == "MultiPoint" and option.currentValue ~= option.defaultValue then
-				local parent = self.document:GetElementById(option.parentID.id)
-				--local value_el = self.document:GetElementById(option.valueID.id)
+				local parent = self.Document:GetElementById(option.parentID.id)
+				--local value_el = self.Document:GetElementById(option.valueID.id)
 				--ba.warning(option.currentValue .. " \ " .. option.defaultValue)
 				customValues[option.key] = option.defaultValue
 				option.currentValue = option.defaultValue
@@ -1874,8 +1874,8 @@ function OptionsController:ModDefault(element)
 	end
 	
 	modCustom = false
-	local custombullet = self.document:GetElementById("mod_custom_btn")
-	local modbullet = self.document:GetElementById("mod_default_btn")
+	local custombullet = self.Document:GetElementById("mod_custom_btn")
+	local modbullet = self.Document:GetElementById("mod_default_btn")
 	custombullet:SetPseudoClass("checked", false)
 	modbullet:SetPseudoClass("checked", true)
 
@@ -1888,7 +1888,7 @@ function OptionsController:ModCustom(element)
 			local option = customOptions[k]
 			if not option.noDefault then
 				if option.optType == "Binary" and option.currentValue ~= option.savedValue then
-					local parent = self.document:GetElementById(option.parentID.id)
+					local parent = self.Document:GetElementById(option.parentID.id)
 					customValues[option.key] = option.savedValue
 					option.currentValue = option.savedValue
 					local right_selected = option.savedValue == option.validVals[2]
@@ -1897,22 +1897,22 @@ function OptionsController:ModCustom(element)
 				end
 				
 				if option.optType == "Multi" and option.currentValue ~= option.savedValue then
-					local parent = self.document:GetElementById(option.parentID.id)
+					local parent = self.Document:GetElementById(option.parentID.id)
 					customValues[option.key] = option.defaultValue
 					option.currentValue = option.savedValue
 					option.selectID.selection = tblUtil.ifind(option.validVals, option.savedValue)
 				end
 				
 				if option.optType == "Range" and option.currentValue ~= option.savedValue then
-					local parent = self.document:GetElementById(option.parentID.id)
+					local parent = self.Document:GetElementById(option.parentID.id)
 					customValues[option.key] = option.defaultValue
 					option.currentValue = option.savedValue
 					option.rangeID.value = option.savedValue / option.maxValue
 				end
 				
 				if option.optType == "MultiPoint" and option.currentValue ~= option.savedValue then
-					local parent = self.document:GetElementById(option.parentID.id)
-					--local value_el = self.document:GetElementById(option.valueID.id)
+					local parent = self.Document:GetElementById(option.parentID.id)
+					--local value_el = self.Document:GetElementById(option.valueID.id)
 					customValues[option.key] = option.savedValue
 					option.currentValue = option.savedValue
 					local savedValue = option.savedValue
@@ -1941,8 +1941,8 @@ function OptionsController:ModCustom(element)
 		end
 
 		modCustom = true
-		local custombullet = self.document:GetElementById("mod_custom_btn")
-		local modbullet = self.document:GetElementById("mod_default_btn")
+		local custombullet = self.Document:GetElementById("mod_custom_btn")
+		local modbullet = self.Document:GetElementById("mod_default_btn")
 		custombullet:SetPseudoClass("checked", true)
 		modbullet:SetPseudoClass("checked", false)
 	end
@@ -1962,8 +1962,8 @@ function OptionsController:isModDefault()
 end
 
 function OptionsController:setModDefaultStatus()
-	local custombullet = self.document:GetElementById("mod_custom_btn")
-	local modbullet = self.document:GetElementById("mod_default_btn")
+	local custombullet = self.Document:GetElementById("mod_custom_btn")
+	local modbullet = self.Document:GetElementById("mod_default_btn")
 	
 	if self:isModDefault() == true then
 		custombullet:SetPseudoClass("checked", false)
@@ -2016,7 +2016,7 @@ function OptionsController:exit_game_clicked()
     builder:text(ba.XSTR("Exit Game?", 888390))
     builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", 888298), false)
     builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Yes", 888296), true)
-    builder:show(self.document.context):continueWith(function(result)
+    builder:show(self.Document.context):continueWith(function(result)
         if not result then
             return
         end

@@ -1,7 +1,7 @@
 /*
 * Font size classes.
 * If you add additional font sizes then you must also update
-* ScpuiSystem.data.numFontSizes in ui_system-sct.lua
+* ScpuiSystem.data.NumFontSizes in ui_system-sct.lua
 */
 
 .p1

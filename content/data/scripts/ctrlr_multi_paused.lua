@@ -22,23 +22,23 @@ function MultiPausedController:initialize(document)
 		screenRender = gr.screenToBlob()
 	end
 
-    self.document = document
+    self.Document = document
 	
 	if mn.isInMission() then
 		ui.MultiPauseScreen.initPause()
 	end
 	
 	self.pauser = ui.MultiPauseScreen.Pauser
-	self.document:GetElementById("pauser_name").inner_rml = self.pauser
+	self.Document:GetElementById("pauser_name").inner_rml = self.pauser
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
-	self.chat_el = self.document:GetElementById("chat_window")
-	self.input_id = self.document:GetElementById("chat_input")
+	self.chat_el = self.Document:GetElementById("chat_window")
+	self.input_id = self.Document:GetElementById("chat_input")
 	
-	local main_bg = self.document:GetElementById("screenrender")
-	local imgEl = self.document:CreateElement("img")
+	local main_bg = self.Document:GetElementById("screenrender")
+	local imgEl = self.Document:CreateElement("img")
 	main_bg:AppendChild(imgEl)
 	imgEl:RemoveAttribute("src")
 	imgEl:SetAttribute("src", screenRender)
@@ -76,7 +76,7 @@ function MultiPausedController:InputChange(event)
 		local val = self.input_id:GetAttribute("value")
 		self.submittedValue = val
 	else
-		local submit_id = self.document:GetElementById("submit_btn")
+		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
 		self:sendChat()
 	end

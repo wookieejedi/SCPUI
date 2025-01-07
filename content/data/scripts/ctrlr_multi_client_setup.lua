@@ -19,20 +19,20 @@ end
 ---@param document Document
 function ClientSetupController:initialize(document)
 	
-	self.document = document
+	self.Document = document
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
-	self.players_list_el = self.document:GetElementById("players_list_ul")
-	self.chat_el = self.document:GetElementById("chat_window")
-	self.chat_el = self.document:GetElementById("chat_window")
-	self.input_id = self.document:GetElementById("chat_input")
-	self.common_text_el = self.document:GetElementById("common_text")
-	--self.status_text_el = self.document:GetElementById("status_text")
+	self.players_list_el = self.Document:GetElementById("players_list_ul")
+	self.chat_el = self.Document:GetElementById("chat_window")
+	self.chat_el = self.Document:GetElementById("chat_window")
+	self.input_id = self.Document:GetElementById("chat_input")
+	self.common_text_el = self.Document:GetElementById("common_text")
+	--self.status_text_el = self.Document:GetElementById("status_text")
 	
 	ui.MultiClientSetup.initMultiClientSetup()
 	
@@ -89,20 +89,20 @@ function ClientSetupController:Show(text, title, input, buttons)
 			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end
 		dialog:escape("")
-		dialog:show(self.document.context)
+		dialog:show(self.Document.context)
 		:continueWith(function(response)
 			self:dialog_response(response)
     end)
 	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.document.context)
+	ui.enableInput(self.Document.context)
 end
 
 function ClientSetupController:check_squadwar()
 	--Not actually sure what this button is for!
 	if self.netgame.Type == MULTI_TYPE_SQUADWAR then
-		self.document:GetElementById("squadwar_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("squadwar_btn"):SetPseudoClass("checked", true)
 	else
-		self.document:GetElementById("squadwar_btn"):SetPseudoClass("checked", false)
+		self.Document:GetElementById("squadwar_btn"):SetPseudoClass("checked", false)
 	end
 end
 
@@ -110,8 +110,8 @@ function ClientSetupController:team_1_pressed()
 	if self.selectedPlayer then
 		local player = self:GetPlayerByKey(self.selectedPlayer.id).Entry
 		if player:isSelf() then
-			self.document:GetElementById("team_2_btn"):SetPseudoClass("checked", false)
-			self.document:GetElementById("team_1_btn"):SetPseudoClass("checked", true)
+			self.Document:GetElementById("team_2_btn"):SetPseudoClass("checked", false)
+			self.Document:GetElementById("team_1_btn"):SetPseudoClass("checked", true)
 			player.Team = 0
 		end
 	end
@@ -121,8 +121,8 @@ function ClientSetupController:team_2_pressed()
 	if self.selectedPlayer then
 		local player = self:GetPlayerByKey(self.selectedPlayer.id).Entry
 		if player:isSelf() then
-			self.document:GetElementById("team_1_btn"):SetPseudoClass("checked", false)
-			self.document:GetElementById("team_2_btn"):SetPseudoClass("checked", true)
+			self.Document:GetElementById("team_1_btn"):SetPseudoClass("checked", false)
+			self.Document:GetElementById("team_2_btn"):SetPseudoClass("checked", true)
 			player.Team = 1
 		end
 	end
@@ -247,7 +247,7 @@ function ClientSetupController:InputChange(event)
 		local val = self.input_id:GetAttribute("value")
 		self.submittedValue = val
 	else
-		local submit_id = self.document:GetElementById("submit_btn")
+		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
 		self:sendChat()
 	end
@@ -256,15 +256,15 @@ end
 
 function ClientSetupController:CreatePlayerEntry(entry)
 	
-	local li_el = self.document:CreateElement("li")
+	local li_el = self.Document:CreateElement("li")
 	
-	local name_el = self.document:CreateElement("div")
+	local name_el = self.Document:CreateElement("div")
 	name_el:SetClass("player_name", true)
 	name_el:SetClass("player_item", true)
 	name_el.inner_rml = entry.Name
 	li_el:AppendChild(name_el)
 	
-	local team_el = self.document:CreateElement("div")
+	local team_el = self.Document:CreateElement("div")
 	team_el.id = entry.InternalID .. "_team"
 	team_el:SetClass("player_team", true)
 	team_el:SetClass("player_item", true)
@@ -297,7 +297,7 @@ function ClientSetupController:SelectPlayer(player)
 	if self.selectedPlayer then
 		self.selectedPlayer:SetPseudoClass("checked", false)
 	end
-	self.selectedPlayer = self.document:GetElementById(player.key)
+	self.selectedPlayer = self.Document:GetElementById(player.key)
 	self.selectedPlayer:SetPseudoClass("checked", true)
 	self:ActivateTeamButtons(player)
 	--ui.MultiJoinGame.ActiveGames[player.Index]:setSelected()
@@ -312,17 +312,17 @@ function ClientSetupController:GetPlayerByKey(key)
 end
 
 function ClientSetupController:ActivateTeamButtons(player)
-	self.document:GetElementById("team_1_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("team_2_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("team_1_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("team_2_btn"):SetPseudoClass("checked", false)
 	if player.Team == 0 then
-		self.document:GetElementById("team_1_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("team_1_btn"):SetPseudoClass("checked", true)
 	else
-		self.document:GetElementById("team_2_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("team_2_btn"):SetPseudoClass("checked", true)
 	end
 	if player.Entry:isSelf() then
-		self.document:GetElementById("player_team_lock"):SetClass("hidden", true)
+		self.Document:GetElementById("player_team_lock"):SetClass("hidden", true)
 	else
-		self.document:GetElementById("player_team_lock"):SetClass("hidden", false)
+		self.Document:GetElementById("player_team_lock"):SetClass("hidden", false)
 	end
 end
 
@@ -334,7 +334,7 @@ end
 function ClientSetupController:removePlayer(idx)
 	local player_idx = self:getPlayerIndexByID(self.playerList[idx])
 	if player_idx > 0 then
-		local el = self.document:GetElementById(self.players[player_idx].key)
+		local el = self.Document:GetElementById(self.players[player_idx].key)
 		--Also remove the team element to prevent an error later
 		self:remove_team_element(self.playerList[idx] .. "_team")
 		self.players_list_el:RemoveChild(el)
@@ -345,7 +345,7 @@ end
 
 function ClientSetupController:updateTeam(player)
 	player.Team = player.Entry.Team
-	self.document:GetElementById(player.InternalID .. "_team").inner_rml = "Team" .. player.Team + 1
+	self.Document:GetElementById(player.InternalID .. "_team").inner_rml = "Team" .. player.Team + 1
 	self:ActivateTeamButtons(player)
 end
 
@@ -368,8 +368,8 @@ function ClientSetupController:getPlayerIndexByID(id)
 end
 
 function ClientSetupController:hideTeamButtons(toggle)
-	self.document:GetElementById("team_1_cont"):SetClass("hidden", toggle)
-	self.document:GetElementById("team_2_cont"):SetClass("hidden", toggle)
+	self.Document:GetElementById("team_1_cont"):SetClass("hidden", toggle)
+	self.Document:GetElementById("team_2_cont"):SetClass("hidden", toggle)
 	
 	for i = 1, #self.team_elements do
 		self.team_elements[i]:SetClass("hidden", toggle)
@@ -460,7 +460,7 @@ function ClientSetupController:updateLists()
 	
 	self.common_text_el.inner_rml = string.gsub(ui.MultiGeneral.InfoText,"\n","<br></br>")
 	
-	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
+	--self.Document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))

@@ -3,20 +3,20 @@ local class = require("lib_class")
 
 local MedalsController = class()
 
-ScpuiSystem.data.memory.drawMedalText = nil
+ScpuiSystem.data.memory.medal_text = nil
 
 function MedalsController:init()
-	ScpuiSystem.data.memory.drawMedalText = {
-		name = nil,
-		x = 0,
-		y = 0
+	ScpuiSystem.data.memory.medal_text = {
+		Name = nil,
+		X = 0,
+		Y = 0
 	}
 end
 
 ---@param document Document
 function MedalsController:initialize(document)
 	
-	self.document = document
+	self.Document = document
 	self.ribbonColumn = 1
 	
 	--This will reparse the medal info data in SCPUI's tables to make positioning medals
@@ -25,10 +25,10 @@ function MedalsController:initialize(document)
 	self:reparseTableData()
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	self.playerMedals = ba.getCurrentPlayer().Stats.Medals
 	self.playerRank = ba.getCurrentPlayer().Stats.Rank.Name
@@ -49,16 +49,16 @@ function MedalsController:initialize(document)
 		end
 	end
 	
-	self.document:GetElementById("medals_text").inner_rml = self.playerName
+	self.Document:GetElementById("medals_text").inner_rml = self.playerName
 	
 	ScpuiSystem:loadRibbonsFromFile()
 	
-	table.sort(ScpuiSystem.data.PlayerRibbons, function(a, b)
-        return a.name < b.name
+	table.sort(ScpuiSystem.data.Player_Ribbons, function(a, b)
+        return a.Name < b.Name
     end)
 
 	self.ribbonCounts = {}
-	for i = 1, #ScpuiSystem.data.PlayerRibbons do
+	for i = 1, #ScpuiSystem.data.Player_Ribbons do
 		self:build_ribbon_div(i)
 	end
 	
@@ -69,7 +69,7 @@ function MedalsController:initialize(document)
 end
 
 function MedalsController:reparseTableData()
-	ScpuiSystem.data.medalInfo = {}
+	ScpuiSystem.data.Medal_Info = {}
 	if cf.fileExists("scpui.tbl") then
         self:parseMedalInfo("scpui.tbl")
     end
@@ -99,13 +99,13 @@ function MedalsController:isRank(medal)
 end
 
 function MedalsController:GetMedalInfo(id)
-	local info = ScpuiSystem.data.medalInfo[id]
+	local info = ScpuiSystem.data.Medal_Info[id]
 	
 	if info == nil then
 		info = {
-			x = 0,
-			y = 0,
-			w = 10
+			X = 0,
+			Y = 0,
+			W = 10
 		}
 	end
 	
@@ -115,25 +115,25 @@ end
 function MedalsController:build_medal_div(idx)
 	local medal = ui.Medals.Medals_List[idx]
 	
-	local parent_el = self.document:GetElementById("medals_wrapper_actual")
+	local parent_el = self.Document:GetElementById("medals_wrapper_actual")
 	
 	local id = string.lower(medal.Bitmap:match("(.+)%..+$"))
 	local info = self:GetMedalInfo(medal.Name)
 	
-	local medal_el = self.document:CreateElement("div")
+	local medal_el = self.Document:CreateElement("div")
 	medal_el.id = id
 	medal_el:SetClass("medal", true)
 	medal_el.style.position = "absolute"
-	medal_el.style.width = info.w .. "%"
-	medal_el.style.top = info.y .. "%"
-	medal_el.style.left = info.x .. "%"
+	medal_el.style.width = info.W .. "%"
+	medal_el.style.top = info.Y .. "%"
+	medal_el.style.left = info.X .. "%"
 	
 	local filename = id
-	if info.altBitmap then
-		filename = info.altBitmap
+	if info.AltBitmap then
+		filename = info.AltBitmap
 	end
 	
-	local img_el = self.document:CreateElement("img")
+	local img_el = self.Document:CreateElement("img")
 	img_el:SetAttribute("src", filename .. "_00.png")
 	
 	medal_el:AppendChild(img_el)
@@ -145,15 +145,15 @@ function MedalsController:showMedal(idx)
 	local medal = ui.Medals.Medals_List[idx]
 	
 	--get the div
-	local medal_el = self.document:GetElementById(string.lower(medal.Bitmap:match("(.+)%..+$")))
+	local medal_el = self.Document:GetElementById(string.lower(medal.Bitmap:match("(.+)%..+$")))
 	local info = self:GetMedalInfo(medal.Name)
 	local filename = medal_el.id
-	if info.altBitmap then
-		filename = info.altBitmap
+	if info.AltBitmap then
+		filename = info.AltBitmap
 	end
 	
 	--create new image element based on number earned
-	local img_el = self.document:CreateElement("img")
+	local img_el = self.Document:CreateElement("img")
 	
 	local num = math.min(self.playerMedals[idx], ui.Medals.Medals_List[idx].NumMods)
 	
@@ -184,11 +184,11 @@ function MedalsController:showMedal(idx)
 	
 	--add mouseover listener
 	medal_el:AddEventListener("mouseover", function()
-		ScpuiSystem.data.memory.drawMedalText.name = display
+		ScpuiSystem.data.memory.medal_text.Name = display
 	end)
 	
 	medal_el:AddEventListener("mouseout", function()
-		ScpuiSystem.data.memory.drawMedalText.name = nil
+		ScpuiSystem.data.memory.medal_text.Name = nil
 	end)
 end
 
@@ -203,16 +203,16 @@ function MedalsController:setupCountString(num)
 end
 
 function MedalsController:build_ribbon_div(idx)
-	local ribbon = ScpuiSystem.data.PlayerRibbons[idx]
+	local ribbon = ScpuiSystem.data.Player_Ribbons[idx]
 	
-	if not self.ribbonCounts[ribbon.source] then
-		self.ribbonCounts[ribbon.source] = 1
+	if not self.ribbonCounts[ribbon.Source] then
+		self.ribbonCounts[ribbon.Source] = 1
 	else
-		self.ribbonCounts[ribbon.source] = self.ribbonCounts[ribbon.source] + 1
+		self.ribbonCounts[ribbon.Source] = self.ribbonCounts[ribbon.Source] + 1
 	end
 	
 	-- Don't display more than 5 ribbons from a single game
-	if self.ribbonCounts[ribbon.source] > 5 then return end
+	if self.ribbonCounts[ribbon.Source] > 5 then return end
 	
 	local img = ScpuiSystem:createRibbonImage(ribbon)
 	
@@ -222,26 +222,26 @@ function MedalsController:build_ribbon_div(idx)
 		self.ribbonColumn = 1
 	end
 	
-	local parent_el = self.document:GetElementById(parent_id)
+	local parent_el = self.Document:GetElementById(parent_id)
 	
-	local ribbon_el = self.document:CreateElement("div")
+	local ribbon_el = self.Document:CreateElement("div")
 	ribbon_el.id = "ribbon_" .. idx
 	ribbon_el:SetClass("ribbon", true)
 	
 	--add mouseover listener
 	ribbon_el:AddEventListener("mouseover", function()
-		ScpuiSystem.data.memory.drawMedalText.name = ribbon.description
+		ScpuiSystem.data.memory.medal_text.Name = ribbon.Description
 	end)
 	
 	ribbon_el:AddEventListener("mouseout", function()
-		ScpuiSystem.data.memory.drawMedalText.name = nil
+		ScpuiSystem.data.memory.medal_text.Name = nil
 	end)
 	
-	local img_el = self.document:CreateElement("img")
+	local img_el = self.Document:CreateElement("img")
 	img_el:SetAttribute("src", img)
 	
-	local title_el = self.document:CreateElement("p")
-	title_el.inner_rml = ribbon.name
+	local title_el = self.Document:CreateElement("p")
+	title_el.inner_rml = ribbon.Name
 	
 	ribbon_el:AppendChild(img_el)
 	ribbon_el:AppendChild(title_el)
@@ -249,14 +249,14 @@ function MedalsController:build_ribbon_div(idx)
 end
 
 function MedalsController:change_view(toggle)
-	local medal_el = self.document:GetElementById("medals_wrapper")
-	local ribbon_el = self.document:GetElementById("ribbons_wrapper")
+	local medal_el = self.Document:GetElementById("medals_wrapper")
+	local ribbon_el = self.Document:GetElementById("ribbons_wrapper")
 	
 	medal_el:SetClass("hidden", toggle)
 	ribbon_el:SetClass("hidden", not toggle)
 	
-	local medal_btn_el = self.document:GetElementById("award_btn_1")
-	local ribbon_btn_el = self.document:GetElementById("award_btn_2")
+	local medal_btn_el = self.Document:GetElementById("award_btn_1")
+	local ribbon_btn_el = self.Document:GetElementById("award_btn_2")
 	
 	medal_btn_el:SetPseudoClass("checked", not toggle)
 	ribbon_btn_el:SetPseudoClass("checked", toggle)
@@ -273,12 +273,12 @@ function MedalsController:global_keydown(_, event)
 end
 
 function MedalsController:mouse_move(element, event)
-	ScpuiSystem.data.memory.drawMedalText.x = event.parameters.mouse_x
-	ScpuiSystem.data.memory.drawMedalText.y = event.parameters.mouse_y
+	ScpuiSystem.data.memory.medal_text.X = event.parameters.mouse_x
+	ScpuiSystem.data.memory.medal_text.Y = event.parameters.mouse_y
 end
 
 function MedalsController:drawText()
-	if ScpuiSystem.data.memory.drawMedalText.name ~= nil then
+	if ScpuiSystem.data.memory.medal_text.Name ~= nil then
 		--save the current color
 		local r, g, b, a = gr.getColor()
 		
@@ -286,11 +286,11 @@ function MedalsController:drawText()
 		gr.setColor(255, 255, 255, 255)
 		
 		--get the string width
-		local w = gr.getStringWidth(ScpuiSystem.data.memory.drawMedalText.name)
+		local w = gr.getStringWidth(ScpuiSystem.data.memory.medal_text.Name)
 		
 		local draw = {}
-		draw.x = ScpuiSystem.data.memory.drawMedalText.x - w
-		draw.y = ScpuiSystem.data.memory.drawMedalText.y - 25
+		draw.x = ScpuiSystem.data.memory.medal_text.X - w
+		draw.y = ScpuiSystem.data.memory.medal_text.Y - 25
 		
 		if draw.x < 5 then
 			draw.x = 5
@@ -302,7 +302,7 @@ function MedalsController:drawText()
 		gr.setColor(0, 0, 0, 255)
 		gr.drawRectangle(draw.x, draw.y, draw.x + w + 6, draw.y + 20)
 		gr.setColor(255, 255, 255, 255)
-		gr.drawString(ScpuiSystem.data.memory.drawMedalText.name, draw.x + 3, draw.y + 3)
+		gr.drawString(ScpuiSystem.data.memory.medal_text.Name, draw.x + 3, draw.y + 3)
 		
 		--reset the color
 		gr.setColor(r, g, b, a)

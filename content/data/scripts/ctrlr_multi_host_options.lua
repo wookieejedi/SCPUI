@@ -19,22 +19,22 @@ end
 ---@param document Document
 function HostOptionsController:initialize(document)
 	
-	self.document = document
+	self.Document = document
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
-	self.chat_el = self.document:GetElementById("chat_window")
-	self.input_id = self.document:GetElementById("chat_input")
-	--self.status_text_el = self.document:GetElementById("status_text")
+	self.chat_el = self.Document:GetElementById("chat_window")
+	self.input_id = self.Document:GetElementById("chat_input")
+	--self.status_text_el = self.Document:GetElementById("status_text")
 	
-	self.time_limit_input_el = self.document:GetElementById("time_limit_input")
-	self.respawn_limit_input_el = self.document:GetElementById("respawn_limit_input")
-	self.kill_limit_input_el = self.document:GetElementById("kill_limit_input")
-	self.observers_limit_input_el = self.document:GetElementById("observers_limit_input")
+	self.time_limit_input_el = self.Document:GetElementById("time_limit_input")
+	self.respawn_limit_input_el = self.Document:GetElementById("respawn_limit_input")
+	self.kill_limit_input_el = self.Document:GetElementById("kill_limit_input")
+	self.observers_limit_input_el = self.Document:GetElementById("observers_limit_input")
 	
 	self.netgame = ui.MultiGeneral.getNetGame()
 	
@@ -48,7 +48,7 @@ function HostOptionsController:initialize(document)
 	else
 		self.hostModifies = false
 	end
-	self.document:GetElementById("host_modifies_btn"):SetPseudoClass("checked", self.hostModifies)
+	self.Document:GetElementById("host_modifies_btn"):SetPseudoClass("checked", self.hostModifies)
 	
 	if self.netgame.TimeLimit < 0 then
 		self.time_limit_input_el:SetAttribute("value", 0)
@@ -64,7 +64,7 @@ function HostOptionsController:initialize(document)
 end
 
 function HostOptionsController:buildDropdowns()
-	local ai_orders_el = Element.As.ElementFormControlDataSelect(self.document:GetElementById("ai_orders_cont").first_child)
+	local ai_orders_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("ai_orders_cont").first_child)
 	
 	ScpuiSystem:clearDropdown(ai_orders_el)
 	
@@ -83,7 +83,7 @@ function HostOptionsController:buildDropdowns()
 		ai_orders_el.selection = 1
 	end
 	
-	local end_mission_el = Element.As.ElementFormControlDataSelect(self.document:GetElementById("end_mission_cont").first_child)
+	local end_mission_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("end_mission_cont").first_child)
 	
 	ScpuiSystem:clearDropdown(end_mission_el)
 	
@@ -102,7 +102,7 @@ function HostOptionsController:buildDropdowns()
 		end_mission_el.selection = 1
 	end
 	
-	local difficulty_el = Element.As.ElementFormControlDataSelect(self.document:GetElementById("difficulty_cont").first_child)
+	local difficulty_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("difficulty_cont").first_child)
 	
 	ScpuiSystem:clearDropdown(difficulty_el)
 	
@@ -154,12 +154,12 @@ function HostOptionsController:Show(text, title, input, buttons)
 			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end
 		dialog:escape("")
-		dialog:show(self.document.context)
+		dialog:show(self.Document.context)
 		:continueWith(function(response)
 			self:dialog_response(response)
     end)
 	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.document.context)
+	ui.enableInput(self.Document.context)
 end
 
 function HostOptionsController:commit_pressed()
@@ -179,7 +179,7 @@ function HostOptionsController:host_modifies_pressed()
 		self.hostModifies = true
 	end
 	self.netgame.HostModifiesShips = self.hostModifies
-	self.document:GetElementById("host_modifies_btn"):SetPseudoClass("checked", self.netgame.HostModifiesShips)
+	self.Document:GetElementById("host_modifies_btn"):SetPseudoClass("checked", self.netgame.HostModifiesShips)
 end
 
 function HostOptionsController:global_keydown(_, event)
@@ -206,7 +206,7 @@ function HostOptionsController:InputChange(event)
 		local val = self.input_id:GetAttribute("value")
 		self.submittedValue = val
 	else
-		local submit_id = self.document:GetElementById("submit_btn")
+		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
 		self:sendChat()
 	end
@@ -268,7 +268,7 @@ function HostOptionsController:observers_limit_input_change(event)
 end
 
 function HostOptionsController:ai_orders_changed()
-	local select_el = Element.As.ElementFormControlDataSelect(self.document:GetElementById("ai_orders_cont").first_child)
+	local select_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("ai_orders_cont").first_child)
 	local val = select_el.options[select_el.selection - 1].value
 	
 	if val == "Highest Rank" then
@@ -283,7 +283,7 @@ function HostOptionsController:ai_orders_changed()
 end
 
 function HostOptionsController:end_mission_changed()
-	local select_el = Element.As.ElementFormControlDataSelect(self.document:GetElementById("end_mission_cont").first_child)
+	local select_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("end_mission_cont").first_child)
 	local val = select_el.options[select_el.selection - 1].value
 	
 	if val == "Highest Rank" then
@@ -298,7 +298,7 @@ function HostOptionsController:end_mission_changed()
 end
 
 function HostOptionsController:difficulty_changed()
-	local select_el = Element.As.ElementFormControlDataSelect(self.document:GetElementById("difficulty_cont").first_child)
+	local select_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("difficulty_cont").first_child)
 	local val = select_el.options[select_el.selection - 1].value
 	
 	if val == "Very Easy" then
@@ -331,7 +331,7 @@ function HostOptionsController:updateLists()
 	self.chat_el.inner_rml = txt
 	self.chat_el.scroll_top = self.chat_el.scroll_height
 	
-	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
+	--self.Document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	
 	async.run(function()
         async.await(async_util.wait_for(0.01))

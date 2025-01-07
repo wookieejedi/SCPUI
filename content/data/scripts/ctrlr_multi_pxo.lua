@@ -18,20 +18,20 @@ end
 ---@param document Document
 function PXOController:initialize(document)
 	
-	self.document = document
+	self.Document = document
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
-	self.players_el = self.document:GetElementById("players_list_ul")
-	self.channels_el = self.document:GetElementById("channels_list_ul")
-	self.chat_el = self.document:GetElementById("chat_window")
-	self.banner_el = self.document:GetElementById("banner_div")
+	self.players_el = self.Document:GetElementById("players_list_ul")
+	self.channels_el = self.Document:GetElementById("channels_list_ul")
+	self.chat_el = self.Document:GetElementById("chat_window")
+	self.banner_el = self.Document:GetElementById("banner_div")
 	
-	self.input_id = self.document:GetElementById("chat_input")
+	self.input_id = self.Document:GetElementById("chat_input")
 	self.motd = ""
 	
 	if not ScpuiSystem.data.memory.MultiReady then
@@ -49,10 +49,10 @@ end
 
 function PXOController:SelectChannel(channel)
 	if self.selectedChannel ~= nil then
-		self.document:GetElementById(self.selectedChannel.key):SetPseudoClass("checked", false)
+		self.Document:GetElementById(self.selectedChannel.key):SetPseudoClass("checked", false)
 	end
 	self.selectedChannel = channel
-	self.document:GetElementById(channel.key):SetPseudoClass("checked", true)
+	self.Document:GetElementById(channel.key):SetPseudoClass("checked", true)
 end
 
 function PXOController:joinChannel(entry)
@@ -90,17 +90,17 @@ end
 
 function PXOController:CreateChannelEntry(entry)
 	
-	local li_el = self.document:CreateElement("li")
+	local li_el = self.Document:CreateElement("li")
 
-	local name_el = self.document:CreateElement("div")
+	local name_el = self.Document:CreateElement("div")
 	name_el:SetClass("channel_name", true)
 	name_el.inner_rml = entry.Name
 	
-	local players_el = self.document:CreateElement("div")
+	local players_el = self.Document:CreateElement("div")
 	players_el:SetClass("channel_players", true)
 	players_el.inner_rml = entry.NumPlayers
 	
-	local games_el = self.document:CreateElement("div")
+	local games_el = self.Document:CreateElement("div")
 	games_el:SetClass("channel_games", true)
 	games_el.inner_rml = entry.NumGames
 	
@@ -137,7 +137,7 @@ end
 function PXOController:removeChannel(idx)
 	local chnl_idx = self:getChannelIndexByName(self.channelsList[idx])
 	if chnl_idx > 0 then
-		local el = self.document:GetElementById(self.channels[chnl_idx].key)
+		local el = self.Document:GetElementById(self.channels[chnl_idx].key)
 		self.channels_el:RemoveChild(el)
 		table.remove(self.channels, chnl_idx)
 	end
@@ -147,13 +147,13 @@ end
 function PXOController:updateChannel(channel)
 	local idx = self:getChannelIndexByName(channel.Name)
 	if idx > 0 then
-		local el = self.document:GetElementById(self.channels[idx].key)
+		local el = self.Document:GetElementById(self.channels[idx].key)
 		local players_el = el.first_child.next_sibling
 		local games_el = el.first_child.next_sibling.next_sibling
 		
 		if channel:isCurrent() == true then
 			if self.currentChannel ~= nil then
-				self.document:GetElementById(self.currentChannel.key):SetPseudoClass("active", false)
+				self.Document:GetElementById(self.currentChannel.key):SetPseudoClass("active", false)
 			end
 			el:SetPseudoClass("active", true)
 			self.currentChannel = self.channels[idx]
@@ -208,10 +208,10 @@ end
 
 function PXOController:SelectPlayer(player)
 	if self.selectedPlayer ~= nil then
-		self.document:GetElementById(self.selectedPlayer.key):SetPseudoClass("checked", false)
+		self.Document:GetElementById(self.selectedPlayer.key):SetPseudoClass("checked", false)
 	end
 	self.selectedPlayer = player
-	self.document:GetElementById(player.key):SetPseudoClass("checked", true)
+	self.Document:GetElementById(player.key):SetPseudoClass("checked", true)
 end
 
 function PXOController:GetPlayerChannel(player_name)
@@ -271,7 +271,7 @@ end
 
 function PXOController:CreatePlayerEntry(entry)
 	
-	local li_el = self.document:CreateElement("li")
+	local li_el = self.Document:CreateElement("li")
 
 	li_el.inner_rml = "<span>" .. entry.Name .. "</span>"
 	li_el.id = entry.Name
@@ -298,7 +298,7 @@ end
 function PXOController:removePlayer(idx)
 	local plr_idx = self:getPlayerIndexByName(self.playersList[idx])
 	if plr_idx > 0 then
-		local el = self.document:GetElementById(self.players[plr_idx].key)
+		local el = self.Document:GetElementById(self.players[plr_idx].key)
 		self.players_el:RemoveChild(el)
 		table.remove(self.players, plr_idx)
 	end
@@ -383,12 +383,12 @@ function PXOController:Show(text, title, input, buttons)
 			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end
 		dialog:escape("")
-		dialog:show(self.document.context)
+		dialog:show(self.Document.context)
 		:continueWith(function(response)
 			self:dialog_response(response)
     end)
 	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.document.context)
+	ui.enableInput(self.Document.context)
 end
 
 function PXOController:motd_pressed()
@@ -505,7 +505,7 @@ function PXOController:InputChange(event)
 		local val = self.input_id:GetAttribute("value")
 		self.submittedValue = val
 	else
-		local submit_id = self.document:GetElementById("submit_btn")
+		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
 		self:sendChat()
 	end
@@ -572,7 +572,7 @@ function PXOController:updateLists()
 	self.chat_el.inner_rml = txt
 	self.chat_el.scroll_top = self.chat_el.scroll_height
 	
-	self.document:GetElementById("status_text").inner_rml = ui.MultiPXO.StatusText
+	self.Document:GetElementById("status_text").inner_rml = ui.MultiPXO.StatusText
 	local motd = ui.MultiPXO.MotdText
 	--Replace new lines with break tags
 	self.motd = motd:gsub("\n","<br></br>")
@@ -589,7 +589,7 @@ function PXOController:updateLists()
 			
 			ScpuiSystem:ClearEntries(self.banner_el)
 			
-			local img_el = self.document:CreateElement("img")
+			local img_el = self.Document:CreateElement("img")
 			img_el:SetAttribute("src", self.bannerImg)
 			img_el:AddEventListener("click", function(_, _, _)
 				self:bannerClicked()

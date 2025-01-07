@@ -11,19 +11,19 @@ end
 
 ---@param document Document
 function TechCutscenesController:initialize(document)
-    self.document = document
+    self.Document = document
     self.elements = {}
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
-	self.document:GetElementById("tech_btn_1"):SetPseudoClass("checked", false)
-	self.document:GetElementById("tech_btn_2"):SetPseudoClass("checked", false)
-	self.document:GetElementById("tech_btn_3"):SetPseudoClass("checked", true)
-	self.document:GetElementById("tech_btn_4"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("tech_btn_1"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("tech_btn_2"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("tech_btn_3"):SetPseudoClass("checked", true)
+	self.Document:GetElementById("tech_btn_4"):SetPseudoClass("checked", false)
 	
 	topics.techroom.initialize:send(self)
 	
@@ -59,7 +59,7 @@ end
 
 function TechCutscenesController:ReloadList()
 
-	local list_items_el = self.document:GetElementById("cutscene_list_ul")
+	local list_items_el = self.Document:GetElementById("cutscene_list_ul")
 	ScpuiSystem:ClearEntries(list_items_el)
 	self.SelectedEntry = nil
 	self.visibleList = {}
@@ -73,7 +73,7 @@ function TechCutscenesController:CreateEntryItem(entry, index)
 
 	self.Counter = self.Counter + 1
 
-	local li_el = self.document:CreateElement("li")
+	local li_el = self.Document:CreateElement("li")
 
 	li_el.inner_rml = "<div class=\"cutscenelist_name\">" .. entry.Name .. "</div>"
 	li_el.id = entry.Filename
@@ -93,7 +93,7 @@ end
 
 function TechCutscenesController:CreateEntries(list)
 
-	local list_names_el = self.document:GetElementById("cutscene_list_ul")
+	local list_names_el = self.Document:GetElementById("cutscene_list_ul")
 	
 	ScpuiSystem:ClearEntries(list_names_el)
 
@@ -119,16 +119,16 @@ function TechCutscenesController:SelectEntry(entry)
 		topics.cutscenes.selectScene:send({self, entry})
 		
 		if self.SelectedEntry then
-			local oldEntry = self.document:GetElementById(self.SelectedEntry)
+			local oldEntry = self.Document:GetElementById(self.SelectedEntry)
 			if oldEntry then oldEntry:SetPseudoClass("checked", false) end
 		end
 		
-		local thisEntry = self.document:GetElementById(entry.key)
+		local thisEntry = self.Document:GetElementById(entry.key)
 		self.SelectedEntry = entry.key
 		self.SelectedIndex = entry.Index
 		thisEntry:SetPseudoClass("checked", true)
 		
-		self.document:GetElementById("cutscene_desc").inner_rml = entry.Description
+		self.Document:GetElementById("cutscene_desc").inner_rml = entry.Description
 		
 	end
 
@@ -167,9 +167,9 @@ function TechCutscenesController:global_keydown(element, event)
 	elseif event.parameters.key_identifier == rocket.key_identifier.TAB then
 		--do nothing
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.shift_key == 1 then
-		self:ScrollList(self.document:GetElementById("cutscene_list"), 0)
+		self:ScrollList(self.Document:GetElementById("cutscene_list"), 0)
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.shift_key == 1 then
-		self:ScrollList(self.document:GetElementById("cutscene_list"), 1)
+		self:ScrollList(self.Document:GetElementById("cutscene_list"), 1)
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP then
 		self:prev_pressed()
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
@@ -223,9 +223,9 @@ end
 
 function TechCutscenesController:play_pressed(element)
 	if self.SelectedEntry ~= nil then
-		ScpuiSystem.data.memory.cutscene = self.SelectedEntry
+		ScpuiSystem.data.memory.Cutscene = self.SelectedEntry
 		ScpuiSystem:beginSubstate("Cutscene")
-		self.document:Close()
+		self.Document:Close()
 	end
 end
 

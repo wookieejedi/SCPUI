@@ -12,20 +12,20 @@ end
 ---@param document Document
 function PXOHelpController:initialize(document)
 	
-	self.document = document
+	self.Document = document
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	local text = ui.MultiPXO.getHelpText()
 	local fullHelp = ""
 	for i = 1, #text do
 		fullHelp = fullHelp .. ScpuiSystem:replaceAngleBrackets(text[i]) .. "<br/>"
 	end
-	self.help_el = self.document:GetElementById("help_div")
+	self.help_el = self.Document:GetElementById("help_div")
 	self.help_el.inner_rml = fullHelp
 	
 	self:updateLists()

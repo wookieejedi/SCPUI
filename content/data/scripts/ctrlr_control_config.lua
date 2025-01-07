@@ -22,20 +22,20 @@ end
 ---@param document Document
 function ControlConfigController:initialize(document)
 
-    self.document = document
+    self.Document = document
 	self.conflict = false
 
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-	self.document:GetElementById("conflict_warning"):SetClass("h1", true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("conflict_warning"):SetClass("h1", true)
 	
 	ui.ControlConfig.initControlConfig()
 	
 	self:initPresets()
-	self.document:GetElementById("new_lock"):SetClass("hidden", false)
+	self.Document:GetElementById("new_lock"):SetClass("hidden", false)
 	
 	topics.controlconfig.initialize:send(self)
 	self:maybeShowDialogs()
@@ -44,14 +44,14 @@ function ControlConfigController:initialize(document)
 end
 
 function ControlConfigController:initPresets()
-	local parent_el = self.document:GetElementById("list_presets_ul")
+	local parent_el = self.Document:GetElementById("list_presets_ul")
 	
 	ScpuiSystem:ClearEntries(parent_el)
 	
 	for i = 1, #ui.ControlConfig.ControlPresets do
 		local entry = ui.ControlConfig.ControlPresets[i]
 		
-		local li_el = self.document:CreateElement("li")
+		local li_el = self.Document:CreateElement("li")
 		li_el.id = "preset_" .. i
 		
 		li_el:SetClass("preset_list_element", true)
@@ -73,11 +73,11 @@ function ControlConfigController:initPresets()
 			self.oldPreset = i
 			
 			--unlock clone and delete
-			self.document:GetElementById("clone_lock"):SetClass("hidden", true)
+			self.Document:GetElementById("clone_lock"):SetClass("hidden", true)
 			if entry.Name ~= "default" then
-				self.document:GetElementById("delete_lock"):SetClass("hidden", true)
+				self.Document:GetElementById("delete_lock"):SetClass("hidden", true)
 			else
-				self.document:GetElementById("delete_lock"):SetClass("hidden", false)
+				self.Document:GetElementById("delete_lock"):SetClass("hidden", false)
 			end
 		end
 	end
@@ -96,22 +96,22 @@ function ControlConfigController:SelectPreset(idx, name)
 		self.oldPreset = idx
 	else
 		local presetID = "preset_" .. self.oldPreset
-		self.document:GetElementById(presetID):SetPseudoClass("checked", false)
+		self.Document:GetElementById(presetID):SetPseudoClass("checked", false)
 			
 		self.oldPreset = idx
 	end
 	
 	local presetID = "preset_" .. self.oldPreset
-	self.document:GetElementById(presetID):SetPseudoClass("checked", true)
+	self.Document:GetElementById(presetID):SetPseudoClass("checked", true)
 	
 	ui.ControlConfig.usePreset(name)
 	
 	--unlock clone and delete
-	self.document:GetElementById("clone_lock"):SetClass("hidden", true)
+	self.Document:GetElementById("clone_lock"):SetClass("hidden", true)
 	if name ~= "default" then
-		self.document:GetElementById("delete_lock"):SetClass("hidden", true)
+		self.Document:GetElementById("delete_lock"):SetClass("hidden", true)
 	else
-		self.document:GetElementById("delete_lock"):SetClass("hidden", false)
+		self.Document:GetElementById("delete_lock"):SetClass("hidden", false)
 	end
 	
 	--reload the keys list
@@ -124,15 +124,15 @@ function ControlConfigController:UnselectPreset()
 		return
 	else
 		local presetID = "preset_" .. self.oldPreset
-		self.document:GetElementById(presetID):SetPseudoClass("checked", false)
+		self.Document:GetElementById(presetID):SetPseudoClass("checked", false)
 		
 		self.oldPreset = nil
 		self.currentPreset = nil
 	end
 	
 	--lock clone and delete
-	self.document:GetElementById("clone_lock"):SetClass("hidden", false)
-	self.document:GetElementById("delete_lock"):SetClass("hidden", false)
+	self.Document:GetElementById("clone_lock"):SetClass("hidden", false)
+	self.Document:GetElementById("delete_lock"):SetClass("hidden", false)
 end
 
 function ControlConfigController:CheckPresets()
@@ -140,7 +140,7 @@ function ControlConfigController:CheckPresets()
 	
 	if cur == nil then
 		self:UnselectPreset()
-		self.document:GetElementById("new_lock"):SetClass("hidden", true)
+		self.Document:GetElementById("new_lock"):SetClass("hidden", true)
 	end
 	
 	for i = 1, #ui.ControlConfig.ControlPresets do
@@ -148,7 +148,7 @@ function ControlConfigController:CheckPresets()
 		
 		if entry.Name == cur then
 			self:SelectPreset(i, cur)
-			self.document:GetElementById("new_lock"):SetClass("hidden", false)
+			self.Document:GetElementById("new_lock"):SetClass("hidden", false)
 			break
 		end
 	end
@@ -292,14 +292,14 @@ function ControlConfigController:deletePreset()
 end
 
 function ControlConfigController:initKeysList(tab)
-	local parent_el = self.document:GetElementById("list_items_ul")
+	local parent_el = self.Document:GetElementById("list_items_ul")
 	
 	for i = 1, #ui.ControlConfig.ControlConfigs do
 		local entry = ui.ControlConfig.ControlConfigs[i]
 		
 		if entry.Tab == tab and not entry.Disabled then
 		
-			local li_el = self.document:CreateElement("li")
+			local li_el = self.Document:CreateElement("li")
 			li_el.id = "line_" .. i
 			
 			li_el:SetClass("control_configlist_element", true)
@@ -308,7 +308,7 @@ function ControlConfigController:initKeysList(tab)
 			parent_el:AppendChild(li_el)
 			
 			--build the name div
-			local na_el = self.document:CreateElement("div")
+			local na_el = self.Document:CreateElement("div")
 			na_el.id = "name_" .. i
 			na_el:SetClass("name_display", true)
 			na_el:SetClass("button_3", true)
@@ -324,7 +324,7 @@ function ControlConfigController:initKeysList(tab)
 			local bindings = entry.Bindings
 			
 			for j = 1, #bindings do
-				local bi_el = self.document:CreateElement("div")
+				local bi_el = self.Document:CreateElement("div")
 				bi_el.id = "bind_" .. j .. "_" .. i
 				bi_el:SetClass("bind_display", true)
 				bi_el:SetClass("button_3", true)
@@ -354,15 +354,15 @@ end
 function ControlConfigController:changeSection(tab)
 	
 	--uncheck all tabs
-	self.document:GetElementById("target_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("ship_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("weapon_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("misc_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("target_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("ship_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("weapon_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("misc_btn"):SetPseudoClass("checked", false)
 	
 	--uncheck all modifiers
-	self.document:GetElementById("alt_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("shift_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("invert_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("alt_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("shift_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("invert_btn"):SetPseudoClass("checked", false)
 	
 	--set selections to nil
 	self.currentEntry = nil
@@ -373,18 +373,18 @@ function ControlConfigController:changeSection(tab)
 	self:checkLocks()
 	
 	if tab == 0 then
-		self.document:GetElementById("target_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("target_btn"):SetPseudoClass("checked", true)
 	elseif tab == 1 then
-		self.document:GetElementById("ship_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("ship_btn"):SetPseudoClass("checked", true)
 	elseif tab == 2 then
-		self.document:GetElementById("weapon_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("weapon_btn"):SetPseudoClass("checked", true)
 	else
-		self.document:GetElementById("misc_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("misc_btn"):SetPseudoClass("checked", true)
 		--just in case
 		tab = 3
 	end
 	
-	ScpuiSystem:ClearEntries(self.document:GetElementById("list_items_ul"))
+	ScpuiSystem:ClearEntries(self.Document:GetElementById("list_items_ul"))
 	self:initKeysList(tab)
 	
 	self:checkConflict()
@@ -399,23 +399,23 @@ function ControlConfigController:SelectEntry(idx)
 		self.oldEntry = idx
 	else
 		local oldName_ID = "name_" .. self.oldEntry
-		self.document:GetElementById(oldName_ID):SetPseudoClass("checked", false)
+		self.Document:GetElementById(oldName_ID):SetPseudoClass("checked", false)
 		
 		for i = 1, self.numBinds do
 			local oldBind_ID = "bind_" .. i .. "_" .. self.oldEntry
-			self.document:GetElementById(oldBind_ID):SetPseudoClass("checked", false)
-			self.document:GetElementById(oldBind_ID):SetPseudoClass("enabled", false)
+			self.Document:GetElementById(oldBind_ID):SetPseudoClass("checked", false)
+			self.Document:GetElementById(oldBind_ID):SetPseudoClass("enabled", false)
 		end
 			
 		self.oldEntry = idx
 	end
 	
 	local nameID = "name_" .. self.oldEntry
-	self.document:GetElementById(nameID):SetPseudoClass("checked", true)
+	self.Document:GetElementById(nameID):SetPseudoClass("checked", true)
 	
 	for i = 1, self.numBinds do
 		local bindID = "bind_" .. i .. "_" .. self.oldEntry
-		self.document:GetElementById(bindID):SetPseudoClass("checked", true)
+		self.Document:GetElementById(bindID):SetPseudoClass("checked", true)
 	end
 	
 	self:checkModifiers()
@@ -433,26 +433,26 @@ function ControlConfigController:SelectBind(idx, bind)
 		self.oldEntry = idx
 	else
 		local oldName_ID = "name_" .. self.oldEntry
-		self.document:GetElementById(oldName_ID):SetPseudoClass("checked", false)
+		self.Document:GetElementById(oldName_ID):SetPseudoClass("checked", false)
 		
 		for i = 1, self.numBinds do
 			local oldBind_ID = "bind_" .. i .. "_" .. self.oldEntry
-			self.document:GetElementById(oldBind_ID):SetPseudoClass("checked", false)
-			self.document:GetElementById(oldBind_ID):SetPseudoClass("enabled", false)
+			self.Document:GetElementById(oldBind_ID):SetPseudoClass("checked", false)
+			self.Document:GetElementById(oldBind_ID):SetPseudoClass("enabled", false)
 		end
 			
 		self.oldEntry = idx
 	end
 	
 	local nameID = "name_" .. self.oldEntry
-	self.document:GetElementById(nameID):SetPseudoClass("checked", true)
+	self.Document:GetElementById(nameID):SetPseudoClass("checked", true)
 	
 	for i = 1, self.numBinds do
 		local bindID = "bind_" .. i .. "_" .. self.oldEntry
 		if i == bind then
-			self.document:GetElementById(bindID):SetPseudoClass("enabled", true)
+			self.Document:GetElementById(bindID):SetPseudoClass("enabled", true)
 		else
-			self.document:GetElementById(bindID):SetPseudoClass("checked", true)
+			self.Document:GetElementById(bindID):SetPseudoClass("checked", true)
 		end
 	end
 	
@@ -474,25 +474,25 @@ function ControlConfigController:checkConflict()
 	
 	--no conflicts, bail
 	if self.conflict == false then
-		self.document:GetElementById("conflict_warning").inner_rml = ""
-		self.document:GetElementById("conflict_description").inner_rml = ""
+		self.Document:GetElementById("conflict_warning").inner_rml = ""
+		self.Document:GetElementById("conflict_description").inner_rml = ""
 		return
 	end
 	
 	--nothing selected, bail
 	if self.currentEntry == nil then
-		self.document:GetElementById("conflict_description").inner_rml = ""
+		self.Document:GetElementById("conflict_description").inner_rml = ""
 		return
 	end
 	
-	self.document:GetElementById("conflict_warning").inner_rml = "CONFLICT!"
+	self.Document:GetElementById("conflict_warning").inner_rml = "CONFLICT!"
 
 	local conflict = ui.ControlConfig.ControlConfigs[self.currentEntry].Conflicted
 	
 	if conflict ~= nil then
-		self.document:GetElementById("conflict_description").inner_rml = conflict
+		self.Document:GetElementById("conflict_description").inner_rml = conflict
 	else
-		self.document:GetElementById("conflict_description").inner_rml = ""
+		self.Document:GetElementById("conflict_description").inner_rml = ""
 	end
 end
 
@@ -520,18 +520,18 @@ function ControlConfigController:checkLocks()
 	end
 	
 	--conflict
-	self.document:GetElementById("clear_conflict_lock"):SetClass("hidden", conflictLock)
+	self.Document:GetElementById("clear_conflict_lock"):SetClass("hidden", conflictLock)
 	
 	--invert
-	self.document:GetElementById("invert_lock"):SetClass("hidden", invertLock)
+	self.Document:GetElementById("invert_lock"):SetClass("hidden", invertLock)
 	
 	--modifier
-	self.document:GetElementById("alt_lock"):SetClass("hidden", modifierLock)
-	self.document:GetElementById("shift_lock"):SetClass("hidden", modifierLock)
+	self.Document:GetElementById("alt_lock"):SetClass("hidden", modifierLock)
+	self.Document:GetElementById("shift_lock"):SetClass("hidden", modifierLock)
 	
 	--rest
-	self.document:GetElementById("clear_selected_lock"):SetClass("hidden", generalLock)
-	self.document:GetElementById("bind_lock"):SetClass("hidden", generalLock)
+	self.Document:GetElementById("clear_selected_lock"):SetClass("hidden", generalLock)
+	self.Document:GetElementById("bind_lock"):SetClass("hidden", generalLock)
 end	
 
 function ControlConfigController:checkShifts()
@@ -539,9 +539,9 @@ function ControlConfigController:checkShifts()
 	local shifted = ui.ControlConfig.ControlConfigs[self.currentEntry].Shifted
 	
 	if shifted then
-		self.document:GetElementById("shift_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("shift_btn"):SetPseudoClass("checked", true)
 	else
-		self.document:GetElementById("shift_btn"):SetPseudoClass("checked", false)
+		self.Document:GetElementById("shift_btn"):SetPseudoClass("checked", false)
 	end
 
 end
@@ -551,9 +551,9 @@ function ControlConfigController:checkAlts()
 	local alted = ui.ControlConfig.ControlConfigs[self.currentEntry].Alted
 	
 	if alted then
-		self.document:GetElementById("alt_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("alt_btn"):SetPseudoClass("checked", true)
 	else
-		self.document:GetElementById("alt_btn"):SetPseudoClass("checked", false)
+		self.Document:GetElementById("alt_btn"):SetPseudoClass("checked", false)
 	end
 
 end
@@ -566,9 +566,9 @@ function ControlConfigController:checkInverts()
 	end
 	
 	if inverted then
-		self.document:GetElementById("invert_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("invert_btn"):SetPseudoClass("checked", true)
 	else
-		self.document:GetElementById("invert_btn"):SetPseudoClass("checked", false)
+		self.Document:GetElementById("invert_btn"):SetPseudoClass("checked", false)
 	end
 
 end
@@ -829,11 +829,11 @@ function ControlConfigController:searchForBind()
 		
 			local bind = ui.ControlConfig.ControlConfigs[search]
 			
-			ui.enableInput(ScpuiSystem.data.context)
+			ui.enableInput(ScpuiSystem.data.Context)
 			self:changeSection(bind.Tab)
 			self:SelectEntry(search)
 		else
-			ui.enableInput(ScpuiSystem.data.context)
+			ui.enableInput(ScpuiSystem.data.Context)
 		end
     end, async.OnFrameExecutor)
 	
@@ -868,12 +868,12 @@ function ControlConfigController:Show(text, title, input, buttons)
 			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end
 		dialog:escape("")
-		dialog:show(self.document.context)
+		dialog:show(self.Document.context)
 		:continueWith(function(response)
 			self:dialog_response(response)
     end)
 	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.document.context)
+	ui.enableInput(self.Document.context)
 end
 
 function ControlConfigController:dialog_response(response)
@@ -915,7 +915,7 @@ function ControlConfigController:BindKey(idx, item)
 	local entry = ui.ControlConfig.ControlConfigs[idx]
 	local bindID = "bind_" .. item .. "_" .. idx
 	
-	self.document:GetElementById(bindID).inner_rml = ">>"
+	self.Document:GetElementById(bindID).inner_rml = ">>"
 	
 	async.run(function()
         ui.disableInput()
@@ -931,7 +931,7 @@ function ControlConfigController:BindKey(idx, item)
         
         --Do anything needed to unlock the UI after the binding phase
         
-		ui.enableInput(ScpuiSystem.data.context)
+		ui.enableInput(ScpuiSystem.data.Context)
 		if status < 0 then
 			local text = "That key cannot be bound! Please try again."
 			local title = ""

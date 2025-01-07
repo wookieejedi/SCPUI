@@ -17,18 +17,18 @@ local alert_bool = true
 
 ---@param document Document
 function RedAlertController:initialize(document)
-	self.document = document
+	self.Document = document
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
     local alert_info = ui.RedAlert.getRedAlert()
 	
 	if alert_info ~= nil then
-		local text_el = self.document:GetElementById("red_alert_text")
+		local text_el = self.Document:GetElementById("red_alert_text")
 		local color_text = ScpuiSystem:set_briefing_text(text_el, alert_info.Text)
 	
 		if alert_info.AudioFilename then
@@ -38,9 +38,9 @@ function RedAlertController:initialize(document)
 	end
 
 	--Whenever we start a new mission, we reset the log ui to goals
-	ScpuiSystem.data.memory.logSection = 1
+	ScpuiSystem.data.memory.LogSection = 1
 	
-	ScpuiSystem.data.memory.AlertElement = self.document:GetElementById("incoming_transmission")
+	ScpuiSystem.data.memory.AlertElement = self.Document:GetElementById("incoming_transmission")
 	RedAlertController:blink()
 	
 	topics.redalert.initialize:send(self)

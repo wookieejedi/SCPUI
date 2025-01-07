@@ -7,17 +7,17 @@ LoadoutHandler.version = 2
 --- Initialize LoadoutHandler. Must be called first.
 --- @return nil
 function LoadoutHandler:init()
-	if not ScpuiSystem.data.stateInit.select then
+	if not ScpuiSystem.data.state_init_status.Select then
 		ui.ShipWepSelect.initSelect()
 		ui.ShipWepSelect.resetSelect()
-		ScpuiSystem.data.stateInit.select = true
-		ScpuiSystem.data.loadouts = {
-			shipPool = {},
-			weaponPool = {},
-			slots = {},
-			shipInfo = {},
-			primaryInfo = {},
-			secondaryInfo = {},
+		ScpuiSystem.data.state_init_status.Select = true
+		ScpuiSystem.data.Loadout = {
+			Ship_Pool = {},
+			Weapon_Pool = {},
+			Loadout_Slots = {},
+			Ship_Info = {},
+			Primary_Info = {},
+			Secondary_Info = {},
 			emptyWingSlotIcon = {},
 			WING_SIZE = 4,
 			MAX_PRIMARIES = 3,
@@ -49,24 +49,24 @@ end
 --- @param missionCommit boolean
 --- @return nil
 function LoadoutHandler:unloadAll(missionCommit)
-	ScpuiSystem.data.loadouts = nil
-	ScpuiSystem.data.savedLoadouts = nil
-	ScpuiSystem.data.backupLoadout = nil
+	ScpuiSystem.data.Loadout = nil
+	ScpuiSystem.data.Saved_Loadouts = nil
+	ScpuiSystem.data.BackupLoadout = nil
 	
-	ScpuiSystem.data.stateInit.select = nil
+	ScpuiSystem.data.state_init_status.Select = nil
 	
 	topics.loadouts.unload:send(missionCommit)
 end
 
---- Gets the saved loadouts from disk, if any exist, and saves them to the ScpuiSystem.data.savedLoadouts table
+--- Gets the saved loadouts from disk, if any exist, and saves them to the ScpuiSystem.data.Saved_Loadouts table
 --- Will also clean out any loadout data for mission files that do not exist in the currently loaded game
 --- @return nil
 function LoadoutHandler:getSavedLoadouts()
 	
-	ScpuiSystem.data.savedLoadouts = self:loadLoadoutsFromFile()
+	ScpuiSystem.data.Saved_Loadouts = self:loadLoadoutsFromFile()
 	
-	if ScpuiSystem.data.savedLoadouts == nil then
-		ScpuiSystem.data.savedLoadouts = {}
+	if ScpuiSystem.data.Saved_Loadouts == nil then
+		ScpuiSystem.data.Saved_Loadouts = {}
 	end
 	
 	self:cleanSavedLoadouts()
@@ -80,19 +80,19 @@ function LoadoutHandler:cleanSavedLoadouts()
 
 	--- Loop through all saved loadouts.
 	--- @param k string The key (name) of the saved loadout.
-	for k, _ in pairs(ScpuiSystem.data.savedLoadouts) do
+	for k, _ in pairs(ScpuiSystem.data.Saved_Loadouts) do
 		local file = k
 		
 		--If we have a key of two characters or less then that shouldn't be there. Clear it.
 		if #file <= 2 then
-			ScpuiSystem.data.savedLoadouts[k] = nil
+			ScpuiSystem.data.Saved_Loadouts[k] = nil
 			ba.print("SCPUI deleted the saved loadout `" .. k .. "' because the mission file does not exist!\n")
 		else
 			file =  string.sub(file, 1, #file - 2)
 			
 			--If the mission file doesn't exist, then remove the save data.
 			if not cf.fileExists(file .. ".fs2", "", true) then
-				ScpuiSystem.data.savedLoadouts[k] = nil
+				ScpuiSystem.data.Saved_Loadouts[k] = nil
 				ba.print("SCPUI deleted the saved loadout `" .. k .. "' because the mission file does not exist!\n")
 			end
 		end
@@ -106,19 +106,19 @@ function LoadoutHandler:saveCurrentLoadout()
 	
 	local key = self:getMissionKey()
 	
-	ScpuiSystem.data.savedLoadouts[key] = {
-		version = self.version,
-		datetime = mn.getMissionModifiedDate(),
-		shipPool = ScpuiSystem.data.loadouts.shipPool,
-		weaponPool = ScpuiSystem.data.loadouts.weaponPool,
-		slots = ScpuiSystem.data.loadouts.slots,
-		numShipClasses = #tb.ShipClasses,
-		numWepClasses = #tb.WeaponClasses
+	ScpuiSystem.data.Saved_Loadouts[key] = {
+		Version = self.version,
+		DateTime = mn.getMissionModifiedDate(),
+		Ship_Pool = ScpuiSystem.data.Loadout.Ship_Pool,
+		Weapon_Pool = ScpuiSystem.data.Loadout.Weapon_Pool,
+		Loadout_Slots = ScpuiSystem.data.Loadout.Loadout_Slots,
+		NumShipClasses = #tb.ShipClasses,
+		NumWepClasses = #tb.WeaponClasses
 	}
 	
-	topics.loadouts.saveLoadout:send(ScpuiSystem.data.savedLoadouts[key])
+	topics.loadouts.saveLoadout:send(ScpuiSystem.data.Saved_Loadouts[key])
 	
-	self:saveLoadoutsToFile(ScpuiSystem.data.savedLoadouts)
+	self:saveLoadoutsToFile(ScpuiSystem.data.Saved_Loadouts)
 end
 
 --- Attempts to apply a saved loadout to the current mission
@@ -134,33 +134,33 @@ function LoadoutHandler:maybeApplySavedLoadout()
 	
 	local key = self:getMissionKey()
 	
-	if ScpuiSystem.data.savedLoadouts[key] ~= nil then
+	if ScpuiSystem.data.Saved_Loadouts[key] ~= nil then
 	
 		--Check the loadout handler version that was used for this save and discard if it's incorrect
-		if ScpuiSystem.data.savedLoadouts[key].version ~= self.version then
-			ScpuiSystem.data.savedLoadouts[key] = nil
+		if ScpuiSystem.data.Saved_Loadouts[key].Version ~= self.version then
+			ScpuiSystem.data.Saved_Loadouts[key] = nil
 			return
 		end
 	
 		--Check the mission datetime matches. If not, then discard the loadout
-		if mn.getMissionModifiedDate() ~= ScpuiSystem.data.savedLoadouts[key].datetime then
-			ScpuiSystem.data.savedLoadouts[key] = nil
+		if mn.getMissionModifiedDate() ~= ScpuiSystem.data.Saved_Loadouts[key].DateTime then
+			ScpuiSystem.data.Saved_Loadouts[key] = nil
 			return
 		end
 		
 		--Check here that the number of ship & weapon classes at the time of save is equal to the number that exist now
-		if ScpuiSystem.data.savedLoadouts[key].numShipClasses == #tb.ShipClasses and ScpuiSystem.data.savedLoadouts[key].numWepClasses == #tb.WeaponClasses then
+		if ScpuiSystem.data.Saved_Loadouts[key].NumShipClasses == #tb.ShipClasses and ScpuiSystem.data.Saved_Loadouts[key].NumWepClasses == #tb.WeaponClasses then
 			
-			topics.loadouts.loadLoadout:send(ScpuiSystem.data.savedLoadouts[key])
+			topics.loadouts.loadLoadout:send(ScpuiSystem.data.Saved_Loadouts[key])
 			
-			ScpuiSystem.data.loadouts.shipPool = ScpuiSystem.data.savedLoadouts[key].shipPool
-			ScpuiSystem.data.loadouts.weaponPool = ScpuiSystem.data.savedLoadouts[key].weaponPool
-			ScpuiSystem.data.loadouts.slots = ScpuiSystem.data.savedLoadouts[key].slots
+			ScpuiSystem.data.Loadout.Ship_Pool = ScpuiSystem.data.Saved_Loadouts[key].Ship_Pool
+			ScpuiSystem.data.Loadout.Weapon_Pool = ScpuiSystem.data.Saved_Loadouts[key].Weapon_Pool
+			ScpuiSystem.data.Loadout.Loadout_Slots = ScpuiSystem.data.Saved_Loadouts[key].Loadout_Slots
 			
 			ba.print("LOADOUT HANDLER: Applying saved loadout for mission " .. key .. "\n")
 		else
 			--If the class counts don't match then the saved loadout is invalid. Might as well clear it.
-			ScpuiSystem.data.savedLoadouts[key] = nil
+			ScpuiSystem.data.Saved_Loadouts[key] = nil
 		end
 	end
 	
@@ -169,9 +169,9 @@ end
 --- Loads the current loadout data from the game into loadout handler
 --- @return nil
 function LoadoutHandler:getLoadout()	
-	ScpuiSystem.data.loadouts.shipPool = self:getPool(ui.ShipWepSelect.Ship_Pool, true)
-	ScpuiSystem.data.loadouts.weaponPool = self:getPool(ui.ShipWepSelect.Weapon_Pool, false)
-	ScpuiSystem.data.loadouts.slots = self:getSlots()
+	ScpuiSystem.data.Loadout.Ship_Pool = self:getPool(ui.ShipWepSelect.Ship_Pool, true)
+	ScpuiSystem.data.Loadout.Weapon_Pool = self:getPool(ui.ShipWepSelect.Weapon_Pool, false)
+	ScpuiSystem.data.Loadout.Loadout_Slots = self:getSlots()
 end
 
 --- Iterates over the all loadout slots and takes ship classes used in them out of the ship pool
@@ -182,9 +182,9 @@ function LoadoutHandler:cleanLoadoutShips()
 	
 	--FSO must have internal code to remove ships in wings from the pool
 	--so let's do that manually here
-	for i = 1, #ScpuiSystem.data.loadouts.slots do
-		if ScpuiSystem.data.loadouts.slots[i].ShipClassIndex > 0 then
-			self:TakeShipFromPool(ScpuiSystem.data.loadouts.slots[i].ShipClassIndex)
+	for i = 1, #ScpuiSystem.data.Loadout.Loadout_Slots do
+		if ScpuiSystem.data.Loadout.Loadout_Slots[i].ShipClassIndex > 0 then
+			self:TakeShipFromPool(ScpuiSystem.data.Loadout.Loadout_Slots[i].ShipClassIndex)
 		end
 	end
 end
@@ -226,20 +226,20 @@ function LoadoutHandler:getSlots()
 
 		--- @type loadout_slot
 		local data = {
-			Weapons = self:parseWeapons(i),
-			Amounts = self:parseAmounts(i),
+			Weapons_List = self:parseWeapons(i),
+			Amounts_List = self:parseAmounts(i),
 			ShipClassIndex = ui.ShipWepSelect.Loadout_Ships[i].ShipClassIndex,
 			Name = ui.ShipWepSelect.Loadout_Wings[wing].Name .. " " .. wingSlot,
-			displayName = utils.truncateAtHash(ui.ShipWepSelect.Loadout_Wings[wing].Name) .. " " .. wingSlot,
+			DisplayName = utils.truncateAtHash(ui.ShipWepSelect.Loadout_Wings[wing].Name) .. " " .. wingSlot,
 			WingName = ui.ShipWepSelect.Loadout_Wings[wing].Name,
-			displayWingName = utils.truncateAtHash(ui.ShipWepSelect.Loadout_Wings[wing].Name),
+			DisplayWingName = utils.truncateAtHash(ui.ShipWepSelect.Loadout_Wings[wing].Name),
 			Wing = wing,
 			WingSlot = wingSlot,
-			isShipLocked = ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isShipLocked,
-			isWeaponLocked = ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isWeaponLocked,
-			isDisabled = ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isDisabled,
-			isFilled = ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isFilled,
-			isPlayer = ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isPlayer
+			IsShipLocked = ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isShipLocked,
+			IsWeaponLocked = ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isWeaponLocked,
+			IsDisabled = ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isDisabled,
+			IsFilled = ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isFilled,
+			IsPlayer = ui.ShipWepSelect.Loadout_Wings[wing][wingSlot].isPlayer
 		}
 		ba.print('LOADOUT HANDLER: Ship is ' .. tb.ShipClasses[data.ShipClassIndex].Name .. '\n')
 		
@@ -289,21 +289,21 @@ function LoadoutHandler:parseAmounts(ship)
 	return data
 end
 
---- Makes a complete copy of the current loadout in ScpuiSystem.data.backupLoadout
+--- Makes a complete copy of the current loadout in ScpuiSystem.data.BackupLoadout
 --- @return nil
 function LoadoutHandler:backupLoadout()
 	local utils = require("lib_utils")
-	ScpuiSystem.data.backupLoadout = {}
-	ScpuiSystem.data.backupLoadout = utils.copy(ScpuiSystem.data.loadouts)
+	ScpuiSystem.data.BackupLoadout = {}
+	ScpuiSystem.data.BackupLoadout = utils.copy(ScpuiSystem.data.Loadout)
 end
 
 --- If a backup loadout exists this will copy the loadout from the backup to the current loadout data
 --- @return nil
 function LoadoutHandler:resetLoadout()
-	if ScpuiSystem.data.backupLoadout ~= nil then
+	if ScpuiSystem.data.BackupLoadout ~= nil then
 		local utils = require("lib_utils")
-		ScpuiSystem.data.loadouts = {}
-		ScpuiSystem.data.loadouts = utils.copy(ScpuiSystem.data.backupLoadout)
+		ScpuiSystem.data.Loadout = {}
+		ScpuiSystem.data.Loadout = utils.copy(ScpuiSystem.data.BackupLoadout)
 	else
 		ba.warning("Backup loadout was nil! Find Mjn!")
 	end
@@ -311,7 +311,7 @@ end
 
 --- Goes through all existing ship classes in the game and checks if 1 or more is available in the loadout pool
 --- If so it will check if icon frames have been generated for the ship and if not it will generate them
---- Then it will copy all necessary data about the ship class and save it to the ScpuiSystem.data.loadouts.shipInfo table
+--- Then it will copy all necessary data about the ship class and save it to the ScpuiSystem.data.Loadout.shipInfo table
 --- Finally it sorts the table by ship index
 --- @return nil
 function LoadoutHandler:generateShipInfo()
@@ -319,7 +319,7 @@ function LoadoutHandler:generateShipInfo()
 	local i = 1
 	while (i <= #shipList) do
 		if self:GetShipPoolAmount(i) > 0 then
-			if ScpuiSystem.data.rocketUiIcons[shipList[i].Name] == nil then
+			if ScpuiSystem.data.Generated_Icons[shipList[i].Name] == nil then
 				ba.warning("No generated icon was found for " .. shipList[i].Name .. "! Generating one now.")
 				ScpuiSystem:setIconFrames(shipList[i].Name)
 			end
@@ -341,23 +341,23 @@ function LoadoutHandler:generateShipInfo()
 		end
 	end
 
-	table.sort(ScpuiSystem.data.loadouts.shipInfo, function(a,b) return a.Index < b.Index end)
+	table.sort(ScpuiSystem.data.Loadout.Ship_Info, function(a,b) return a.Index < b.Index end)
 
 end
 
---- Gets the ship class by index and copies all necessary data to the ScpuiSystem.data.loadouts.shipInfo table
+--- Gets the ship class by index and copies all necessary data to the ScpuiSystem.data.Loadout.shipInfo table
 --- and then returns that table entry
 --- @param shipIdx integer The index of the ship class to get
 --- @return ship_loadout_info data The copied ship class data
 function LoadoutHandler:AppendToShipInfo(shipIdx)
 
-	if ScpuiSystem.data.rocketUiIcons[tb.ShipClasses[shipIdx].Name] == nil then
+	if ScpuiSystem.data.Generated_Icons[tb.ShipClasses[shipIdx].Name] == nil then
 		ba.warning("No generated icon was found for " .. tb.ShipClasses[shipIdx].Name .. "! Generating one now.")
 		ScpuiSystem:setIconFrames(tb.ShipClasses[shipIdx].Name, true)
 	end
 
-	local i = #ScpuiSystem.data.loadouts.shipInfo + 1
-	ScpuiSystem.data.loadouts.shipInfo[i] = {
+	local i = #ScpuiSystem.data.Loadout.Ship_Info + 1
+	ScpuiSystem.data.Loadout.Ship_Info[i] = {
 		Index = tb.ShipClasses[shipIdx]:getShipClassIndex(),
 		Amount = self:GetShipPoolAmount(shipIdx),
 		Icon = tb.ShipClasses[shipIdx].SelectIconFilename,
@@ -374,21 +374,21 @@ function LoadoutHandler:AppendToShipInfo(shipIdx)
 		Manufacturer = tb.ShipClasses[shipIdx].ManufacturerString,
 		Hitpoints = tb.ShipClasses[shipIdx].HitpointsMax,
 		ShieldHitpoints = tb.ShipClasses[shipIdx].ShieldHitpointsMax,
-		key = tb.ShipClasses[shipIdx].Name,
-		GeneratedWidth = ScpuiSystem.data.rocketUiIcons[tb.ShipClasses[shipIdx].Name].Width,
-		GeneratedHeight = ScpuiSystem.data.rocketUiIcons[tb.ShipClasses[shipIdx].Name].Height,
-		GeneratedIcon = ScpuiSystem.data.rocketUiIcons[tb.ShipClasses[shipIdx].Name].Icon,
+		Key = tb.ShipClasses[shipIdx].Name,
+		GeneratedWidth = ScpuiSystem.data.Generated_Icons[tb.ShipClasses[shipIdx].Name].Width,
+		GeneratedHeight = ScpuiSystem.data.Generated_Icons[tb.ShipClasses[shipIdx].Name].Height,
+		GeneratedIcon = ScpuiSystem.data.Generated_Icons[tb.ShipClasses[shipIdx].Name].Icon,
 		Overhead = tb.ShipClasses[shipIdx].SelectOverheadFilename
 	}
 	
-	topics.loadouts.initShipInfo:send(ScpuiSystem.data.loadouts.shipInfo[i])
+	topics.loadouts.initShipInfo:send(ScpuiSystem.data.Loadout.Ship_Info[i])
 	
-	return ScpuiSystem.data.loadouts.shipInfo[i]
+	return ScpuiSystem.data.Loadout.Ship_Info[i]
 end
 
 --- Goes through all existing weapon classes in the game and checks if 1 or more is available in the loadout pool
 --- If so it will check if icon frames have been generated for the weapon and if not it will generate them
---- Then it will copy all necessary data about the weapon class and save it to the ScpuiSystem.data.loadouts.weaponInfo table
+--- Then it will copy all necessary data about the weapon class and save it to the ScpuiSystem.data.Loadout.weaponInfo table
 --- Finally it sorts the table by weapon index
 --- @return nil
 function LoadoutHandler:generateWeaponInfo()
@@ -396,7 +396,7 @@ function LoadoutHandler:generateWeaponInfo()
 	local i = 1
 	while (i ~= #weaponList) do
 		if self:GetWeaponPoolAmount(i) > 0 then
-			if ScpuiSystem.data.rocketUiIcons[weaponList[i].Name] == nil then
+			if ScpuiSystem.data.Generated_Icons[weaponList[i].Name] == nil then
 				ba.warning("No generated icon was found for " .. weaponList[i].Name .. "! Generating one now.")
 				ScpuiSystem:setIconFrames(weaponList[i].Name)
 			end
@@ -410,9 +410,9 @@ function LoadoutHandler:generateWeaponInfo()
 			local ship = self:GetShipLoadout(i)
 			if ship ~= nil then
 				if ship.ShipClassIndex > 0 then
-					for j = 1, #ship.Weapons do
-						local wepIdx = ship.Weapons[j]
-						if ship.Amounts[j] > 0 then
+					for j = 1, #ship.Weapons_List do
+						local wepIdx = ship.Weapons_List[j]
+						if ship.Amounts_List[j] > 0 then
 							local wep = self:GetWeaponInfo(wepIdx)
 							if wep == nil then
 								self:AppendToWeaponInfo(wepIdx)
@@ -424,18 +424,18 @@ function LoadoutHandler:generateWeaponInfo()
 		end
 	end
 	
-	table.sort(ScpuiSystem.data.loadouts.primaryInfo, function(a,b) return a.Index < b.Index end)
-	table.sort(ScpuiSystem.data.loadouts.secondaryInfo, function(a,b) return a.Index < b.Index end)
+	table.sort(ScpuiSystem.data.Loadout.Primary_Info, function(a,b) return a.Index < b.Index end)
+	table.sort(ScpuiSystem.data.Loadout.Secondary_Info, function(a,b) return a.Index < b.Index end)
 
 end
 
---- Gets the weapon class by index and copies all necessary data to the ScpuiSystem.data.loadouts.weaponInfo table
+--- Gets the weapon class by index and copies all necessary data to the ScpuiSystem.data.Loadout.weaponInfo table
 --- and then returns that table entry
 --- @param wepIdx integer The index of the weapon class to get
 --- @return weapon_loadout_info data The copied weapon class data
 function LoadoutHandler:AppendToWeaponInfo(wepIdx)
 	
-	if ScpuiSystem.data.rocketUiIcons[tb.WeaponClasses[wepIdx].Name] == nil then
+	if ScpuiSystem.data.Generated_Icons[tb.WeaponClasses[wepIdx].Name] == nil then
 		ba.warning("No generated icon was found for " .. tb.WeaponClasses[wepIdx].Name .. "! Generating one now.")
 		ScpuiSystem:setIconFrames(tb.WeaponClasses[wepIdx].Name)
 	end
@@ -457,28 +457,28 @@ function LoadoutHandler:AppendToWeaponInfo(wepIdx)
 	data.Description = string.gsub(weaponClass.Description, "Level", "<br></br>Level")
 	data.FireWait = weaponClass.FireWait
 	data.Type = type_v
-	data.key = weaponClass.Name
-	data.GeneratedWidth = ScpuiSystem.data.rocketUiIcons[weaponClass.Name].Width
-	data.GeneratedHeight = ScpuiSystem.data.rocketUiIcons[weaponClass.Name].Height
-	data.GeneratedIcon = ScpuiSystem.data.rocketUiIcons[weaponClass.Name].Icon
+	data.Key = weaponClass.Name
+	data.GeneratedWidth = ScpuiSystem.data.Generated_Icons[weaponClass.Name].Width
+	data.GeneratedHeight = ScpuiSystem.data.Generated_Icons[weaponClass.Name].Height
+	data.GeneratedIcon = ScpuiSystem.data.Generated_Icons[weaponClass.Name].Icon
 	topics.loadouts.initWeaponInfo:send(data)
 	
 	if weaponClass:isPrimary() then
-		local i = #ScpuiSystem.data.loadouts.primaryInfo + 1
-		ScpuiSystem.data.loadouts.primaryInfo[i] = data
-		return ScpuiSystem.data.loadouts.primaryInfo[i]
+		local i = #ScpuiSystem.data.Loadout.Primary_Info + 1
+		ScpuiSystem.data.Loadout.Primary_Info[i] = data
+		return ScpuiSystem.data.Loadout.Primary_Info[i]
 	else
-		local i = #ScpuiSystem.data.loadouts.secondaryInfo + 1
-		ScpuiSystem.data.loadouts.secondaryInfo[i] = data
-		return ScpuiSystem.data.loadouts.secondaryInfo[i]
+		local i = #ScpuiSystem.data.Loadout.Secondary_Info + 1
+		ScpuiSystem.data.Loadout.Secondary_Info[i] = data
+		return ScpuiSystem.data.Loadout.Secondary_Info[i]
 	end
 end
 
---- Generates an empty slot icon and saves it to the ScpuiSystem.data.loadouts.emptyWingSlotIcon table
+--- Generates an empty slot icon and saves it to the ScpuiSystem.data.Loadout.emptyWingSlotIcon table
 --- @return nil
 function LoadoutHandler:generateEmptySlotFrames()
-	if ScpuiSystem.data.loadouts.emptyWingSlotIcon == nil then
-		ScpuiSystem.data.loadouts.emptyWingSlotIcon = {}
+	if ScpuiSystem.data.Loadout.EmptySlotIcon == nil then
+		ScpuiSystem.data.Loadout.EmptySlotIcon = {}
 	end
 	
 	--Create a texture and then draw to it, save the output
@@ -503,12 +503,12 @@ function LoadoutHandler:generateEmptySlotFrames()
 			gr.drawLine(128, 64, 64, 0)
 			gr.drawLine(128, 64, 64, 128)
 		end
-		ScpuiSystem.data.loadouts.emptyWingSlotIcon[j] = gr.screenToBlob()
+		ScpuiSystem.data.Loadout.EmptySlotIcon[j] = gr.screenToBlob()
 	end
 
 	-- These may not be needed anymore?
-	--ScpuiSystem.data.loadouts.emptyWingSlotIcon.GeneratedWidth = width
-	--ScpuiSystem.data.loadouts.emptyWingSlotIcon.GeneratedHeight = height
+	--ScpuiSystem.data.Loadout.emptyWingSlotIcon.GeneratedWidth = width
+	--ScpuiSystem.data.Loadout.emptyWingSlotIcon.GeneratedHeight = height
 	
 	--clean up
 	gr.setColor(saveColor)
@@ -522,7 +522,7 @@ end
 --- Returns the empty wing slot icon data
 --- @return string[] data The empty wing slot icon data
 function LoadoutHandler:getEmptyWingSlotIcon()
-	return ScpuiSystem.data.loadouts.emptyWingSlotIcon
+	return ScpuiSystem.data.Loadout.EmptySlotIcon
 end
 
 --- Returns the data for a ship class contained by loadout handler
@@ -530,7 +530,7 @@ end
 --- @return ship_loadout_info? data The ship class data
 function LoadoutHandler:GetShipInfo(shipIndex)
 
-	for i, v in ipairs(ScpuiSystem.data.loadouts.shipInfo) do
+	for i, v in ipairs(ScpuiSystem.data.Loadout.Ship_Info) do
 		if v.Index == shipIndex then
 			return v
 		end
@@ -545,7 +545,7 @@ end
 --- @return weapon_loadout_info? data The primary weapon class data
 function LoadoutHandler:GetPrimaryInfo(wepIndex)
 
-	for i, v in ipairs(ScpuiSystem.data.loadouts.primaryInfo) do
+	for i, v in ipairs(ScpuiSystem.data.Loadout.Primary_Info) do
 		if v.Index == wepIndex then
 			return v
 		end
@@ -560,7 +560,7 @@ end
 --- @return weapon_loadout_info? data The secondary weapon class data
 function LoadoutHandler:GetSecondaryInfo(wepIndex)
 	
-	for i, v in ipairs(ScpuiSystem.data.loadouts.secondaryInfo) do
+	for i, v in ipairs(ScpuiSystem.data.Loadout.Secondary_Info) do
 		if v.Index == wepIndex then
 			return v
 		end
@@ -590,9 +590,9 @@ end
 function LoadoutHandler:ValidateInfo()
 
 	--Validate ships
-	for i = 1, #ScpuiSystem.data.loadouts.slots do
+	for i = 1, #ScpuiSystem.data.Loadout.Loadout_Slots do
 		if not self:IsSlotDisabled(i) then
-			local shipIdx = ScpuiSystem.data.loadouts.slots[i].ShipClassIndex
+			local shipIdx = ScpuiSystem.data.Loadout.Loadout_Slots[i].ShipClassIndex
 			if shipIdx > 0 then
 				if self:GetShipInfo(shipIdx) == nil then
 					self:AppendToShipInfo(shipIdx)
@@ -602,12 +602,12 @@ function LoadoutHandler:ValidateInfo()
 	end
 	
 	--Validate weapons
-	for i = 1, #ScpuiSystem.data.loadouts.slots, 1 do
+	for i = 1, #ScpuiSystem.data.Loadout.Loadout_Slots, 1 do
 		if not self:IsSlotDisabled(i) then
-			if ScpuiSystem.data.loadouts.slots[i].ShipClassIndex > 0 then
-				for j = 1, #ScpuiSystem.data.loadouts.slots[i].Weapons, 1 do
-					local wepIdx = ScpuiSystem.data.loadouts.slots[i].Weapons[j]
-					if ScpuiSystem.data.loadouts.slots[i].Amounts[j] > 0 then
+			if ScpuiSystem.data.Loadout.Loadout_Slots[i].ShipClassIndex > 0 then
+				for j = 1, #ScpuiSystem.data.Loadout.Loadout_Slots[i].Weapons_List, 1 do
+					local wepIdx = ScpuiSystem.data.Loadout.Loadout_Slots[i].Weapons_List[j]
+					if ScpuiSystem.data.Loadout.Loadout_Slots[i].Amounts_List[j] > 0 then
 						if self:GetWeaponInfo(wepIdx) == nil then
 							self:AppendToWeaponInfo(wepIdx)
 						end
@@ -618,28 +618,28 @@ function LoadoutHandler:ValidateInfo()
 	end
 	
 	--Sort the tables by index
-	table.sort(ScpuiSystem.data.loadouts.shipInfo, function(a,b) return a.Index < b.Index end)
-	table.sort(ScpuiSystem.data.loadouts.primaryInfo, function(a,b) return a.Index < b.Index end)
-	table.sort(ScpuiSystem.data.loadouts.secondaryInfo, function(a,b) return a.Index < b.Index end)
+	table.sort(ScpuiSystem.data.Loadout.Ship_Info, function(a,b) return a.Index < b.Index end)
+	table.sort(ScpuiSystem.data.Loadout.Primary_Info, function(a,b) return a.Index < b.Index end)
+	table.sort(ScpuiSystem.data.Loadout.Secondary_Info, function(a,b) return a.Index < b.Index end)
 
 end
 
 --- Gets the MAX_PRIMARIES global
 --- @return integer
 function LoadoutHandler:GetMaxPrimaries()
-	return ScpuiSystem.data.loadouts.MAX_PRIMARIES
+	return ScpuiSystem.data.Loadout.MAX_PRIMARIES
 end
 
 --- Gets the MAX_SECONDARIES global
 --- @return integer
 function LoadoutHandler:GetMaxSecondaries()
-	return ScpuiSystem.data.loadouts.MAX_SECONDARIES
+	return ScpuiSystem.data.Loadout.MAX_SECONDARIES
 end
 
 --- Gets the maximum banks a ship can have across both primaries and secondaries
 --- @return integer
 function LoadoutHandler:GetMaxBanks()
-	return ScpuiSystem.data.loadouts.MAX_PRIMARIES + ScpuiSystem.data.loadouts.MAX_SECONDARIES
+	return ScpuiSystem.data.Loadout.MAX_PRIMARIES + ScpuiSystem.data.Loadout.MAX_SECONDARIES
 end
 
 --- Gets the total number of wings in the loadout
@@ -674,7 +674,7 @@ end
 --- @param slot integer The slot index to check
 --- @return boolean
 function LoadoutHandler:IsSlotDisabled(slot)
-	return ScpuiSystem.data.loadouts.slots[slot].isDisabled
+	return ScpuiSystem.data.Loadout.Loadout_Slots[slot].IsDisabled
 end
 
 --- Checks if a weapon is allowed on a specific ship in the currently active weapon slot. True if allowed, false otherwise
@@ -704,49 +704,49 @@ end
 --- Get the entire ship info list
 --- @return ship_loadout_info[] data The ship info list
 function LoadoutHandler:GetShipList()
-	return ScpuiSystem.data.loadouts.shipInfo
+	return ScpuiSystem.data.Loadout.Ship_Info
 end
 
 --- Get the entire primary weapon info list
 --- @return weapon_loadout_info[] data The primary weapon info list
 function LoadoutHandler:GetPrimaryWeaponList()
-	return ScpuiSystem.data.loadouts.primaryInfo
+	return ScpuiSystem.data.Loadout.Primary_Info
 end
 
 --- Get the entire secondary weapon info list
 --- @return weapon_loadout_info[] data The secondary weapon info list
 function LoadoutHandler:GetSecondaryWeaponList()
-	return ScpuiSystem.data.loadouts.secondaryInfo
+	return ScpuiSystem.data.Loadout.Secondary_Info
 end
 
 --- Get the number of ships in the ship info list
 --- @return integer
 function LoadoutHandler:GetNumShips()
-	return #ScpuiSystem.data.loadouts.shipInfo
+	return #ScpuiSystem.data.Loadout.Ship_Info
 end
 
 --- Get the number of primary weapons in the primary weapon info list
 --- @return integer
 function LoadoutHandler:GetNumPrimaryWeapons()
-	return #ScpuiSystem.data.loadouts.primaryInfo
+	return #ScpuiSystem.data.Loadout.Primary_Info
 end
 
 --- Get the number of secondary weapons in the secondary weapon info list
 --- @return integer
 function LoadoutHandler:GetNumSecondaryWeapons()
-	return #ScpuiSystem.data.loadouts.secondaryInfo
+	return #ScpuiSystem.data.Loadout.Secondary_Info
 end
 
 --- Get total number slots we have in the loadout
 --- @return integer
 function LoadoutHandler:GetNumSlots()
-	return #ScpuiSystem.data.loadouts.slots
+	return #ScpuiSystem.data.Loadout.Loadout_Slots
 end
 
 --- Get the max supported wing size
 --- @return integer
 function LoadoutHandler:GetWingSize()
-	return ScpuiSystem.data.loadouts.WING_SIZE
+	return ScpuiSystem.data.Loadout.WING_SIZE
 end
 
 --- Get a ship slot
@@ -756,11 +756,11 @@ function LoadoutHandler:GetShipLoadout(slot)
 	if not slot then
 		ba.error("Attempting to get loadout slot with a nil value! Get Mjn!")
 	end
-	if slot < 0 or slot > #ScpuiSystem.data.loadouts.slots then
+	if slot < 0 or slot > #ScpuiSystem.data.Loadout.Loadout_Slots then
 		ba.error("Attempting to get invalid loadout slot '" .. slot .. "'! Get Mjn!")
 	end
 	
-	return ScpuiSystem.data.loadouts.slots[slot]
+	return ScpuiSystem.data.Loadout.Loadout_Slots[slot]
 
 end
 
@@ -772,12 +772,12 @@ function LoadoutHandler:GetWeaponPoolAmount(idx)
 		ba.warning("Checking weapon amount for a nil weapon index! Get Mjn!")
 		return 0
 	end
-	if idx < 0 or idx > #ScpuiSystem.data.loadouts.weaponPool then
+	if idx < 0 or idx > #ScpuiSystem.data.Loadout.Weapon_Pool then
 		ba.warning("Checking invalid weapon index '" .. idx .. "' for pool amount! Returning 0! Get Mjn!")
 		return 0
 	end
 
-	local val = ScpuiSystem.data.loadouts.weaponPool[idx]
+	local val = ScpuiSystem.data.Loadout.Weapon_Pool[idx]
 	if val == nil then
 		ba.error("Weapon amount for '" .. idx .. "' was nil! Get Mjn!")
 	end
@@ -793,12 +793,12 @@ function LoadoutHandler:GetShipPoolAmount(idx)
 		ba.warning("Checking ship amount for a nil ship index! Get Mjn!")
 		return 0
 	end
-	if idx < 0 or idx > #ScpuiSystem.data.loadouts.shipPool then
+	if idx < 0 or idx > #ScpuiSystem.data.Loadout.Ship_Pool then
 		ba.warning("Checking invalid ship index '" .. idx .. "' for pool amount! Returning 0! Get Mjn!")
 		return 0
 	end
 
-	local val = ScpuiSystem.data.loadouts.shipPool[idx]
+	local val = ScpuiSystem.data.Loadout.Ship_Pool[idx]
 	if val == nil then
 		ba.error("Ship amount for '" .. idx .. "' was nil! Get Mjn!")
 	end
@@ -877,18 +877,18 @@ function LoadoutHandler:ShipHasBank(ship, bank)
 	local primaryBanks = tb.ShipClasses[ship].numPrimaryBanks
 	local secondaryBanks = tb.ShipClasses[ship].numSecondaryBanks
 	
-	local MAX_BANKS = ScpuiSystem.data.loadouts.MAX_PRIMARIES + ScpuiSystem.data.loadouts.MAX_SECONDARIES
+	local MAX_BANKS = ScpuiSystem.data.Loadout.MAX_PRIMARIES + ScpuiSystem.data.Loadout.MAX_SECONDARIES
 	
 	if bank < 1 then return false end
 	if bank > MAX_BANKS then return false end
 	
 	--primary bank
-	if bank <= ScpuiSystem.data.loadouts.MAX_PRIMARIES then
+	if bank <= ScpuiSystem.data.Loadout.MAX_PRIMARIES then
 		if bank <= primaryBanks then
 			return true
 		end
 	else
-		if bank <= (secondaryBanks + ScpuiSystem.data.loadouts.MAX_PRIMARIES) then
+		if bank <= (secondaryBanks + ScpuiSystem.data.Loadout.MAX_PRIMARIES) then
 			return true
 		end
 	end
@@ -970,8 +970,8 @@ function LoadoutHandler:AddWeaponToPool(weapon, amount)
 	end
 	
 	if amount > 0 then
-		local num = ScpuiSystem.data.loadouts.weaponPool[weapon]
-		ScpuiSystem.data.loadouts.weaponPool[weapon] = num + amount
+		local num = ScpuiSystem.data.Loadout.Weapon_Pool[weapon]
+		ScpuiSystem.data.Loadout.Weapon_Pool[weapon] = num + amount
 	end
 end
 
@@ -991,8 +991,8 @@ function LoadoutHandler:SubtractWeaponFromPool(weapon, amount)
 	end
 
 	if amount > 0 then
-		local num = ScpuiSystem.data.loadouts.weaponPool[weapon]
-		ScpuiSystem.data.loadouts.weaponPool[weapon] = num - amount
+		local num = ScpuiSystem.data.Loadout.Weapon_Pool[weapon]
+		ScpuiSystem.data.Loadout.Weapon_Pool[weapon] = num - amount
 	end
 end
 
@@ -1029,8 +1029,8 @@ function LoadoutHandler:AddWeaponToBank(slot, bank, weaponIdx, amount)
 		if amount > 0 then
 			--Now add the weapon
 			self:SubtractWeaponFromPool(weaponIdx, amount)
-			ship.Weapons[bank] = weaponIdx
-			ship.Amounts[bank] = amount
+			ship.Weapons_List[bank] = weaponIdx
+			ship.Amounts_List[bank] = amount
 			return true
 		end
 	end
@@ -1051,8 +1051,8 @@ function LoadoutHandler:EmptyWeaponBank(slot, bank, onlyEmpty)
 	end
 
 	local ship = self:GetShipLoadout(slot)
-	local weapon = ship.Weapons[bank]
-	local amount = ship.Amounts[bank]
+	local weapon = ship.Weapons_List[bank]
+	local amount = ship.Amounts_List[bank]
 	
 	if amount == nil then
 		ba.print("LOADOUT HANDLER: Trying to empty weapon bank for slot " .. slot .. ", bank " .. bank .. ", but amount was nil!")
@@ -1069,8 +1069,8 @@ function LoadoutHandler:EmptyWeaponBank(slot, bank, onlyEmpty)
 			self:AddWeaponToPool(weapon, amount)
 		end
 		
-		ship.Weapons[bank] = -1
-		ship.Amounts[bank] = -1
+		ship.Weapons_List[bank] = -1
+		ship.Amounts_List[bank] = -1
 	
 	end
 end
@@ -1083,7 +1083,7 @@ function LoadoutHandler:SetFilled(slot, state)
 
 	local ship = self:GetShipLoadout(slot)
 	
-	ship.isFilled = state
+	ship.IsFilled = state
 	ship.ShipClassIndex = -1
 	
 end
@@ -1093,8 +1093,8 @@ end
 --- @return nil
 function LoadoutHandler:TakeShipFromSlot(slot)
 	
-	ScpuiSystem.data.loadouts.slots[slot].Weapons = {}
-	ScpuiSystem.data.loadouts.slots[slot].Amounts = {}
+	ScpuiSystem.data.Loadout.Loadout_Slots[slot].Weapons_List = {}
+	ScpuiSystem.data.Loadout.Loadout_Slots[slot].Amounts_List = {}
 	self:SetFilled(slot, false)
 	
 	topics.loadouts.emptyShipSlot:send(slot)
@@ -1108,7 +1108,7 @@ end
 --- @return nil
 function LoadoutHandler:AddShipToSlot(slot, shipIdx)
 
-	ScpuiSystem.data.loadouts.slots[slot].ShipClassIndex = shipIdx
+	ScpuiSystem.data.Loadout.Loadout_Slots[slot].ShipClassIndex = shipIdx
 	self:SetDefaultWeapons(slot, shipIdx)
 	
 	topics.loadouts.fillShipSlot:send(slot)
@@ -1123,7 +1123,7 @@ function LoadoutHandler:TakeShipFromPool(shipIdx)
 	local amount = self:GetShipPoolAmount(shipIdx)
 
 	if amount > 0 then
-		ScpuiSystem.data.loadouts.shipPool[shipIdx] = amount - 1
+		ScpuiSystem.data.Loadout.Ship_Pool[shipIdx] = amount - 1
 	end
 
 end
@@ -1135,13 +1135,13 @@ function LoadoutHandler:ReturnShipToPool(slot)
 
 	--Return all the weapons to the pool
 	local ship = self:GetShipLoadout(slot)
-	for i = 1, #ship.Weapons do
+	for i = 1, #ship.Weapons_List do
 		self:EmptyWeaponBank(slot, i)
 	end
 	
 	--Return the ship
 	local amount = self:GetShipPoolAmount(ship.ShipClassIndex)
-	ScpuiSystem.data.loadouts.shipPool[ship.ShipClassIndex] = amount + 1
+	ScpuiSystem.data.Loadout.Ship_Pool[ship.ShipClassIndex] = amount + 1
 	
 	topics.loadouts.returnShipSlot:send(slot)
 
@@ -1243,16 +1243,16 @@ function LoadoutHandler:CopyToWing(sourceSlot)
 			local target = self:GetShipLoadout(slots[j])
 			local targetShip = target.ShipClassIndex
 
-			if (not target.isDisabled) and target.isFilled then
-				if not target.isWeaponLocked then
-					for i = 1, #source.Weapons, 1 do
+			if (not target.IsDisabled) and target.IsFilled then
+				if not target.IsWeaponLocked then
+					for i = 1, #source.Weapons_List, 1 do
 
 						--Does the bank exist on the source ship?
 						if self:ShipHasBank(sourceShip, i) then
 							--Does the bank exist on the target ship?
 							if self:ShipHasBank(targetShip, i) then
 								--The weapon we want to copy
-								local weapon = source.Weapons[i]
+								local weapon = source.Weapons_List[i]
 								
 								--Return what's in the bank to the pool
 								self:EmptyWeaponBank(slots[j], i)
@@ -1280,7 +1280,7 @@ function LoadoutHandler:SendShipToFSO_API(ship, slot, logging)
 
 	if logging then
 		ba.print("LOADOUT HANDLER: Setting ship slot " .. slot .. "\n")
-		ba.print("LOADOUT HANDLER: Ship slot has name '" .. ScpuiSystem.data.loadouts.slots[slot].Name .. "'\n")
+		ba.print("LOADOUT HANDLER: Ship slot has name '" .. ScpuiSystem.data.Loadout.Loadout_Slots[slot].Name .. "'\n")
 	end
 
 	--Set the ship
@@ -1309,12 +1309,12 @@ function LoadoutHandler:SendShipToFSO_API(ship, slot, logging)
 			if logging then
 				ba.print("LOADOUT HANDLER: Setting ship bank " .. i .. "\n")
 			end
-			if ship.Weapons[i] > 0 then
-				ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i] = ship.Weapons[i]
-				ui.ShipWepSelect.Loadout_Ships[slot].Amounts[i] = ship.Amounts[i]
+			if ship.Weapons_List[i] > 0 then
+				ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i] = ship.Weapons_List[i]
+				ui.ShipWepSelect.Loadout_Ships[slot].Amounts[i] = ship.Amounts_List[i]
 				if logging then
-					ba.print("LOADOUT HANDLER: Setting ship bank weapon to '" .. tb.WeaponClasses[ship.Weapons[i]].Name .. "'\n")
-					ba.print("LOADOUT HANDLER: Setting ship bank amount to '" .. ship.Amounts[i] .. "'\n")
+					ba.print("LOADOUT HANDLER: Setting ship bank weapon to '" .. tb.WeaponClasses[ship.Weapons_List[i]].Name .. "'\n")
+					ba.print("LOADOUT HANDLER: Setting ship bank amount to '" .. ship.Amounts_List[i] .. "'\n")
 				end
 			else
 				ui.ShipWepSelect.Loadout_Ships[slot].Weapons[i] = -1

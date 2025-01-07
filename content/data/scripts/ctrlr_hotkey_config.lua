@@ -9,14 +9,14 @@ end
 ---@param document Document
 function HotkeyController:initialize(document)
 
-    self.document = document
+    self.Document = document
 
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-	self.document:GetElementById("current_key"):SetClass("h2", true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("current_key"):SetClass("h2", true)
 	
 	if mn.isInMission() then
 		ScpuiSystem:pauseAllAudio(true)
@@ -88,17 +88,17 @@ end
 
 function HotkeyController:createHotkeysList()
 
-	local parent_el = self.document:GetElementById("log_text_wrapper")
+	local parent_el = self.Document:GetElementById("log_text_wrapper")
 	
 	for i = 1, #self.hotkeys do
 	
-		local group_el = self.document:CreateElement("div")
+		local group_el = self.Document:CreateElement("div")
 		group_el.id = "group_" .. i
 		group_el:SetClass("hotkey_group", true)
 		parent_el:AppendChild(group_el)
 		
 		--create the header for the group
-		local header_el = self.document:CreateElement("div")
+		local header_el = self.Document:CreateElement("div")
 		header_el.id = "header_" .. i
 		header_el:SetClass("hotkey_header", true)
 		header_el:SetClass("brightblue", true)
@@ -106,12 +106,12 @@ function HotkeyController:createHotkeysList()
 		group_el:AppendChild(header_el)
 		
 		--create the entry list
-		local list_el = self.document:CreateElement("ul")
+		local list_el = self.Document:CreateElement("ul")
 		list_el.id = "hotkey_list"
 		group_el:AppendChild(list_el)
 		
 		for entry = 1, #self.hotkeys[i].ships do
-			local li_el = self.document:CreateElement("li")
+			local li_el = self.Document:CreateElement("li")
 			li_el.id = "line_" .. i .. "_" .. entry
 			local entryHTML = ""
 			
@@ -185,7 +185,7 @@ function HotkeyController:ToggleKey(idx, element, group, item, key)
 	end
 	
 	local keyID = "key_" .. self.selectedGroup .. "_" .. self.selectedElement .. "_" .. key
-	local key_el = self.document:GetElementById(keyID)
+	local key_el = self.Document:GetElementById(keyID)
 	
 	local keyText = "F" .. tostring(key + 4)
 	if key_el.inner_rml == keyText then
@@ -211,7 +211,7 @@ function HotkeyController:AddKey(key)
 	ui.MissionHotkeys.Hotkeys_List[self.currentEntry]:addHotkey(key)
 	
 	local keyID = "key_" .. self.selectedGroup .. "_" .. self.selectedElement .. "_" .. key
-	local key_el = self.document:GetElementById(keyID)
+	local key_el = self.Document:GetElementById(keyID)
 	
 	local keyText = "F" .. tostring(key + 4)
 	key_el.inner_rml = keyText
@@ -234,7 +234,7 @@ function HotkeyController:RemKey(key)
 	ui.MissionHotkeys.Hotkeys_List[self.currentEntry]:removeHotkey(key)
 	
 	local keyID = "key_" .. self.selectedGroup .. "_" .. self.selectedElement .. "_" .. key
-	local key_el = self.document:GetElementById(keyID)
+	local key_el = self.Document:GetElementById(keyID)
 	
 	local keyText = "&nbsp;"
 	key_el.inner_rml = keyText
@@ -279,7 +279,7 @@ function HotkeyController:CheckWings(key, text)
 			idx = idx + 1
 			if ui.MissionHotkeys.Hotkeys_List[i].Type == HOTKEY_LINE_SUBSHIP then
 				local keyID = "key_" .. self.selectedGroup .. "_" .. idx .. "_" .. key
-				local key_el = self.document:GetElementById(keyID)
+				local key_el = self.Document:GetElementById(keyID)
 				key_el.inner_rml = text
 			end
 		end
@@ -290,7 +290,7 @@ end
 
 function HotkeyController:ChangeKey(key)
 	self.currentKey = key
-	local key_el = self.document:GetElementById("current_key")
+	local key_el = self.Document:GetElementById("current_key")
 	local keyText = "F" .. tostring(self.currentKey + 4)
 	
 	key_el.inner_rml = keyText
@@ -321,7 +321,7 @@ function HotkeyController:ResetKeys()
     ui.playElementSound(nil, "click", "success")
 	ui.MissionHotkeys.resetHotkeys()
 	
-	local parent_el = self.document:GetElementById("log_text_wrapper")
+	local parent_el = self.Document:GetElementById("log_text_wrapper")
 	ScpuiSystem:ClearEntries(parent_el)
 	self:createHotkeysList()
 
@@ -339,7 +339,7 @@ function HotkeyController:SetDefaults()
     ui.playElementSound(nil, "click", "success")
 	ui.MissionHotkeys.resetHotkeysDefault()
 	
-	local parent_el = self.document:GetElementById("log_text_wrapper")
+	local parent_el = self.Document:GetElementById("log_text_wrapper")
 	ScpuiSystem:ClearEntries(parent_el)
 	self:createHotkeysList()
 

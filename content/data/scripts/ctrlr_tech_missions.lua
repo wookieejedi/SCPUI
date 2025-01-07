@@ -16,24 +16,24 @@ end
 
 ---@param document Document
 function TechMissionsController:initialize(document)
-    self.document = document
+    self.Document = document
     self.elements = {}
     self.section = 1
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
-	self.document:GetElementById("tech_btn_1"):SetPseudoClass("checked", false)
-	self.document:GetElementById("tech_btn_2"):SetPseudoClass("checked", true)
-	self.document:GetElementById("tech_btn_3"):SetPseudoClass("checked", false)
-	self.document:GetElementById("tech_btn_4"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("tech_btn_1"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("tech_btn_2"):SetPseudoClass("checked", true)
+	self.Document:GetElementById("tech_btn_3"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("tech_btn_4"):SetPseudoClass("checked", false)
 	
 	topics.techroom.initialize:send(self)
 	
 	topics.simulator.initialize:send(self)
 
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	self:Show("Building missions list...", "Mission Simulator")
 	
@@ -44,15 +44,15 @@ function TechMissionsController:initialize(document)
 		
 		self:GetCampaign()
 		
-		self.document:GetElementById("campaign_title").inner_rml = self.campaignName
-		self.document:GetElementById("campaign_file").inner_rml = self.campaignFilename
+		self.Document:GetElementById("campaign_title").inner_rml = self.campaignName
+		self.Document:GetElementById("campaign_file").inner_rml = self.campaignFilename
 		
 		self.SelectedEntry = nil
 		
 		--Check for last loaded section
 		local newSection = nil
-		if ScpuiSystem.data.ScpuiOptionValues.simRoomChoice ~= nil then
-			newSection = ScpuiSystem.data.ScpuiOptionValues.simRoomChoice
+		if ScpuiSystem.data.ScpuiOptionValues.Sim_Room_Choice ~= nil then
+			newSection = ScpuiSystem.data.ScpuiOptionValues.Sim_Room_Choice
 		else
 			newSection = 2
 		end
@@ -72,10 +72,10 @@ function TechMissionsController:Show(text, title)
 	local dialog = dialogs.new()
 		dialog:title(title)
 		dialog:text(text)
-		dialog:show(self.document.context)
+		dialog:show(self.Document.context)
 		:continueWith(function()end)
 	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.document.context)
+	ui.enableInput(self.Document.context)
 end
 
 function TechMissionsController:ChangeTechState(state)
@@ -98,7 +98,7 @@ end
 
 function TechMissionsController:ReloadList()
 
-	local list_items_el = self.document:GetElementById("list_item_names_ul")
+	local list_items_el = self.Document:GetElementById("list_item_names_ul")
 	ScpuiSystem:ClearEntries(list_items_el)
 	self:ClearData()
 	self.SelectedEntry = nil
@@ -129,7 +129,7 @@ function TechMissionsController:ChangeSection(section)
 	end
 	
 	--save the choice to the player file
-	ScpuiSystem.data.ScpuiOptionValues.simRoomChoice = self.sectionIndex
+	ScpuiSystem.data.ScpuiOptionValues.Sim_Room_Choice = self.sectionIndex
 	ScpuiSystem:saveOptionsToFile(ScpuiSystem.data.ScpuiOptionValues)
 	
 	self.show_all = false
@@ -141,7 +141,7 @@ function TechMissionsController:ChangeSection(section)
 		self.currentList = {}
 	
 		if section == "single" then
-			self.document:GetElementById("campaign_name_wrapper"):SetClass("hidden", true)
+			self.Document:GetElementById("campaign_name_wrapper"):SetClass("hidden", true)
 			missionList = ui.TechRoom.SingleMissions
 			local i = 0
 			local j = 1
@@ -160,7 +160,7 @@ function TechMissionsController:ChangeSection(section)
 				i = i + 1
 			end
 		elseif section == "campaign" then
-			self.document:GetElementById("campaign_name_wrapper"):SetClass("hidden", false)
+			self.Document:GetElementById("campaign_name_wrapper"):SetClass("hidden", false)
 			missionList = ui.TechRoom.CampaignMissions
 			local i = 0
 			local j = 1
@@ -185,7 +185,7 @@ function TechMissionsController:ChangeSection(section)
 		
 		--If we had an old section on, remove the active class
 		if self.SelectedSection then
-			local oldbullet = self.document:GetElementById(self.SelectedSection.."_btn")
+			local oldbullet = self.Document:GetElementById(self.SelectedSection.."_btn")
 			oldbullet:SetPseudoClass("checked", false)
 		end
 		
@@ -200,12 +200,12 @@ function TechMissionsController:ChangeSection(section)
 				self:SelectEntry(self.visibleList[1])
 			end
 		else
-			local list_names_el = self.document:GetElementById("list_item_names_ul")
+			local list_names_el = self.Document:GetElementById("list_item_names_ul")
 			ScpuiSystem:ClearEntries(list_names_el)
 			self:ClearData()
 		end
 
-		local newbullet = self.document:GetElementById(self.SelectedSection.."_btn")
+		local newbullet = self.Document:GetElementById(self.SelectedSection.."_btn")
 		newbullet:SetPseudoClass("checked", true)
 		
 	end
@@ -266,21 +266,21 @@ function TechMissionsController:CreateEntryItem(entry, index)
 
 	self.Counter = self.Counter + 1
 
-	local li_el = self.document:CreateElement("li")
+	local li_el = self.Document:CreateElement("li")
 	
-	local name_el = self.document:CreateElement("div")
+	local name_el = self.Document:CreateElement("div")
 	name_el:SetClass("missionlist_name", true)
 	name_el.inner_rml = entry.Name
 	
-	local author_el = self.document:CreateElement("div")
+	local author_el = self.Document:CreateElement("div")
 	author_el:SetClass("missionlist_author", true)
 	author_el.inner_rml = entry.Author
 	
-	local file_el = self.document:CreateElement("div")
+	local file_el = self.Document:CreateElement("div")
 	file_el:SetClass("missionlist_filename", true)
 	file_el.inner_rml = entry.Filename
 	
-	local desc_el = self.document:CreateElement("div")
+	local desc_el = self.Document:CreateElement("div")
 	desc_el:SetClass("missionlist_description", true)
 	desc_el.inner_rml = entry.Description
 	
@@ -314,7 +314,7 @@ end
 
 function TechMissionsController:CreateEntries(list)
 
-	local list_names_el = self.document:GetElementById("list_item_names_ul")
+	local list_names_el = self.Document:GetElementById("list_item_names_ul")
 
 	ScpuiSystem:ClearEntries(list_names_el)
 
@@ -329,7 +329,7 @@ end
 
 function TechMissionsController:ClearEntry()
 
-	self.document:GetElementById(self.SelectedEntry):SetPseudoClass("checked", false)
+	self.Document:GetElementById(self.SelectedEntry):SetPseudoClass("checked", false)
 	self.SelectedEntry = nil
 
 end
@@ -347,11 +347,11 @@ function TechMissionsController:SelectEntry(entry)
 		self.SelectedIndex = entry.Index
 		
 		if self.SelectedEntry then
-			local oldEntry = self.document:GetElementById(self.SelectedEntry)
+			local oldEntry = self.Document:GetElementById(self.SelectedEntry)
 			if oldEntry then oldEntry:SetPseudoClass("checked", false) end
 		end
 		
-		local thisEntry = self.document:GetElementById(entry.key)
+		local thisEntry = self.Document:GetElementById(entry.key)
 		self.SelectedEntry = entry.key
 		thisEntry:SetPseudoClass("checked", true)
 		
@@ -407,9 +407,9 @@ function TechMissionsController:global_keydown(element, event)
 		local newSection = topics.simulator.tabkey:send(self.sectionIndex)
 		self:ChangeSection(newSection)
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.shift_key == 1 then
-		self:ScrollList(self.document:GetElementById("mission_list"), 0)
+		self:ScrollList(self.Document:GetElementById("mission_list"), 0)
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.shift_key == 1 then
-		self:ScrollList(self.document:GetElementById("mission_list"), 1)
+		self:ScrollList(self.Document:GetElementById("mission_list"), 1)
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP then
 		self:select_prev()
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
@@ -466,7 +466,7 @@ end
 function TechMissionsController:help_clicked(element)
     self.help_shown  = not self.help_shown
 
-    local help_texts = self.document:GetElementsByClassName("tooltip")
+    local help_texts = self.Document:GetElementsByClassName("tooltip")
     for _, v in ipairs(help_texts) do
         v:SetPseudoClass("shown", self.help_shown)
     end

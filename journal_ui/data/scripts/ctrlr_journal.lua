@@ -11,15 +11,15 @@ end
 
 function JournalController:initialize(document)
 
-    self.document = document
+    self.Document = document
     
     self.new = {"NEW", 888548}
 
     ---Load background choice
-    self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+    self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
     
     ---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
     self:registerEventHandlers()
     
@@ -37,7 +37,7 @@ function JournalController:initialize(document)
     
     for i=1, #self.Data.Sections do
         if self.Data.Sections[i] then
-            self.document:GetElementById("label_"..i).inner_rml = "<p>" .. self.Data.Sections[i].Display .. "</p>"
+            self.Document:GetElementById("label_"..i).inner_rml = "<p>" .. self.Data.Sections[i].Display .. "</p>"
         end
     end
     
@@ -58,13 +58,13 @@ function JournalController:ChangeSection(section)
 
         --If we had an old section on, remove the active class
         if self.SelectedSection then
-            local oldbullet = self.document:GetElementById("btn_"..self.SelectedSection)
+            local oldbullet = self.Document:GetElementById("btn_"..self.SelectedSection)
             oldbullet:SetPseudoClass("checked", false)
         end
 
         self.SelectedSection = section
         self:CreateEntries(self.SelectedSection)
-        local newbullet = self.document:GetElementById("btn_"..self.SelectedSection)
+        local newbullet = self.Document:GetElementById("btn_"..self.SelectedSection)
         newbullet:SetPseudoClass("checked", true)
 
     end
@@ -73,7 +73,7 @@ end
 
 function JournalController:CreateEntryItem(entry, unread)
 
-    local li_el = self.document:CreateElement("li")
+    local li_el = self.Document:CreateElement("li")
 
     if unread then
         li_el.inner_rml = "<span id=newstatus>" .. ba.XSTR(self.new[1], self.new[2]) .. "</span>" .. entry.Display
@@ -93,7 +93,7 @@ end
 
 function JournalController:CreateEntries(section)
 
-    local list_el = self.document:GetElementById("list_items_ul")
+    local list_el = self.Document:GetElementById("list_items_ul")
 
     ScpuiSystem:ClearEntries(list_el)
     self.Data.VisibleList = {}
@@ -113,7 +113,7 @@ function JournalController:ClearEntry()
     self.Data.VisibleList[self.SelectedEntry]:SetPseudoClass("checked", false)
     self.SelectedEntry = nil
 
-    self.document:GetElementById("journaltext").inner_rml = "<p> </p>"
+    self.Document:GetElementById("journaltext").inner_rml = "<p> </p>"
 
 end
 
@@ -152,12 +152,12 @@ function JournalController:SelectEntry(key)
                 local caption = entryData.Caption
                     
                 if text then
-                    self.document:GetElementById("journaltext").inner_rml = "<p>" ..  self:journal_text_to_rml(text) .."</p>"
+                    self.Document:GetElementById("journaltext").inner_rml = "<p>" ..  self:journal_text_to_rml(text) .."</p>"
                     
                     if image and caption then
-                        self.document:GetElementById("journaltext").inner_rml = "<div id=journalpic><img src=\"" .. image .."\"></img><div class=\"s1\" id=piccaption><p>" .. caption .. "</p></div></div>" .. self.document:GetElementById("journaltext").inner_rml
+                        self.Document:GetElementById("journaltext").inner_rml = "<div id=journalpic><img src=\"" .. image .."\"></img><div class=\"s1\" id=piccaption><p>" .. caption .. "</p></div></div>" .. self.Document:GetElementById("journaltext").inner_rml
                     elseif image then
-                        self.document:GetElementById("journaltext").inner_rml = "<div id=journalpic><img src=\"" .. image .."\"></img></div>" .. self.document:GetElementById("journaltext").inner_rml
+                        self.Document:GetElementById("journaltext").inner_rml = "<div id=journalpic><img src=\"" .. image .."\"></img></div>" .. self.Document:GetElementById("journaltext").inner_rml
                     end
                     
                 else
@@ -205,8 +205,8 @@ end
 function JournalController:Exit(element)
 
     ui.playElementSound(element, "click", "success")
-    ScpuiSystem:ReturnToState(ScpuiSystem.data.lastState)
-    self.document:Close()
+    ScpuiSystem:ReturnToState(ScpuiSystem.data.LastState)
+    self.Document:Close()
 
 end
 
@@ -221,8 +221,8 @@ end
 function JournalController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
-        self.document:Close()
-        ScpuiSystem:ReturnToState(ScpuiSystem.data.lastState)
+        self.Document:Close()
+        ScpuiSystem:ReturnToState(ScpuiSystem.data.LastState)
     end
 end
 

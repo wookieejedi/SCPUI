@@ -19,36 +19,36 @@ end
 ---@param document Document
 function HostSetupController:initialize(document)
 	
-	self.document = document
+	self.Document = document
 	
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
-	self.missions_list_el = self.document:GetElementById("mission_list_ul")
-	self.players_list_el = self.document:GetElementById("players_list_ul")
-	self.chat_el = self.document:GetElementById("chat_window")
-	self.input_id = self.document:GetElementById("chat_input")
-	self.common_text_el = self.document:GetElementById("common_text")
-	--self.status_text_el = self.document:GetElementById("status_text")
+	self.missions_list_el = self.Document:GetElementById("mission_list_ul")
+	self.players_list_el = self.Document:GetElementById("players_list_ul")
+	self.chat_el = self.Document:GetElementById("chat_window")
+	self.input_id = self.Document:GetElementById("chat_input")
+	self.common_text_el = self.Document:GetElementById("common_text")
+	--self.status_text_el = self.Document:GetElementById("status_text")
 	
-	if not ScpuiSystem.data.memory.multiHost.MultiHostSetup then
+	if not ScpuiSystem.data.memory.multiplayer_host.MultiHostSetup then
 		ui.MultiHostSetup.initMultiHostSetup()
-		ScpuiSystem.data.memory.multiHost.MultiHostSetup = true
-		ScpuiSystem.data.memory.multiHost.HostFilter = nil
-		ScpuiSystem.data.memory.multiHost.HostList = "missions"
+		ScpuiSystem.data.memory.multiplayer_host.MultiHostSetup = true
+		ScpuiSystem.data.memory.multiplayer_host.HostFilter = nil
+		ScpuiSystem.data.memory.multiplayer_host.HostList = "missions"
 	end
 	
 	self.netgame = ui.MultiGeneral.getNetGame()
 	
 	self:buildFilters()
 	
-	if ScpuiSystem.data.memory.multiHost.HostList == "missions" then
-		self.document:GetElementById("missions_btn"):SetPseudoClass("checked", true)
+	if ScpuiSystem.data.memory.multiplayer_host.HostList == "missions" then
+		self.Document:GetElementById("missions_btn"):SetPseudoClass("checked", true)
 	else
-		self.document:GetElementById("campaigns_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("campaigns_btn"):SetPseudoClass("checked", true)
 	end
 	
 	self.selectedPlayer= nil
@@ -67,15 +67,15 @@ function HostSetupController:initialize(document)
 	end
 	
 	if self.closed then
-		self.document:GetElementById("close_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("close_btn"):SetPseudoClass("checked", true)
 	else
-		self.document:GetElementById("close_btn"):SetPseudoClass("checked", false)
+		self.Document:GetElementById("close_btn"):SetPseudoClass("checked", false)
 	end
 	
 	if self.squadwar then
-		self.document:GetElementById("squadwar_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("squadwar_btn"):SetPseudoClass("checked", true)
 	else
-		self.document:GetElementById("squadwar_btn"):SetPseudoClass("checked", false)
+		self.Document:GetElementById("squadwar_btn"):SetPseudoClass("checked", false)
 	end
 	
 	topics.multihostsetup.initialize:send(self)
@@ -83,7 +83,7 @@ function HostSetupController:initialize(document)
 end
 
 function HostSetupController:buildFilters()
-	local select_el = Element.As.ElementFormControlDataSelect(self.document:GetElementById("dropdown_cont").first_child)
+	local select_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("dropdown_cont").first_child)
 	
 	ScpuiSystem:clearDropdown(select_el)
 	
@@ -97,7 +97,7 @@ end
 
 function HostSetupController:exit(quit)
 	ui.MultiHostSetup.closeMultiHostSetup(quit)
-	ScpuiSystem.data.memory.multiHost.MultiHostSetup = nil
+	ScpuiSystem.data.memory.multiplayer_host.MultiHostSetup = nil
 end
 
 function HostSetupController:dialog_response(response)
@@ -134,21 +134,21 @@ function HostSetupController:Show(text, title, input, buttons)
 			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
 		end
 		dialog:escape("")
-		dialog:show(self.document.context)
+		dialog:show(self.Document.context)
 		:continueWith(function(response)
 			self:dialog_response(response)
     end)
 	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.document.context)
+	ui.enableInput(self.Document.context)
 end
 
 function HostSetupController:squadwar_pressed()
 	--Not actually sure what this button is for!
 	if self.squadwar == false then
 		self.netgame.Type = MULTI_TYPE_SQUADWAR
-		self.document:GetElementById("squadwar_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("squadwar_btn"):SetPseudoClass("checked", true)
 	else
-		self.document:GetElementById("squadwar_btn"):SetPseudoClass("checked", false)
+		self.Document:GetElementById("squadwar_btn"):SetPseudoClass("checked", false)
 	end
 end
 
@@ -158,7 +158,7 @@ end
 
 function HostSetupController:commit_pressed()
 	ui.MultiHostSetup.closeMultiHostSetup(true)
-	ScpuiSystem.data.memory.multiHost.MultiHostSetup = nil
+	ScpuiSystem.data.memory.multiplayer_host.MultiHostSetup = nil
 end
 
 function HostSetupController:host_options_pressed()
@@ -166,29 +166,29 @@ function HostSetupController:host_options_pressed()
 end
 
 function HostSetupController:missions_pressed()
-	self.document:GetElementById("campaigns_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("missions_btn"):SetPseudoClass("checked", true)
-	ScpuiSystem.data.memory.multiHost.HostList = "missions"
+	self.Document:GetElementById("campaigns_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("missions_btn"):SetPseudoClass("checked", true)
+	ScpuiSystem.data.memory.multiplayer_host.HostList = "missions"
 end
 
 function HostSetupController:campaigns_pressed()
-	self.document:GetElementById("missions_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("campaigns_btn"):SetPseudoClass("checked", true)
-	ScpuiSystem.data.memory.multiHost.HostList = "campaigns"
+	self.Document:GetElementById("missions_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("campaigns_btn"):SetPseudoClass("checked", true)
+	ScpuiSystem.data.memory.multiplayer_host.HostList = "campaigns"
 end
 
 function HostSetupController:team_1_pressed()
 	if self.selectedPlayer then
-		self.document:GetElementById("team_2_btn"):SetPseudoClass("checked", false)
-		self.document:GetElementById("team_1_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("team_2_btn"):SetPseudoClass("checked", false)
+		self.Document:GetElementById("team_1_btn"):SetPseudoClass("checked", true)
 		self:GetPlayerByKey(self.selectedPlayer.id).Entry.Team = 0
 	end
 end
 
 function HostSetupController:team_2_pressed()
 	if self.selectedPlayer then
-		self.document:GetElementById("team_1_btn"):SetPseudoClass("checked", false)
-		self.document:GetElementById("team_2_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("team_1_btn"):SetPseudoClass("checked", false)
+		self.Document:GetElementById("team_2_btn"):SetPseudoClass("checked", true)
 		self:GetPlayerByKey(self.selectedPlayer.id).Entry.Team = 1
 	end
 end
@@ -296,7 +296,7 @@ function HostSetupController:close_pressed()
 		self.netgame.Closed = true
 	end
 	self.closed = self.netgame.Closed
-	self.document:GetElementById("close_btn"):SetPseudoClass("checked", self.netgame.Closed)
+	self.Document:GetElementById("close_btn"):SetPseudoClass("checked", self.netgame.Closed)
 end
 
 function HostSetupController:submit_pressed()
@@ -337,7 +337,7 @@ function HostSetupController:InputChange(event)
 		local val = self.input_id:GetAttribute("value")
 		self.submittedValue = val
 	else
-		local submit_id = self.document:GetElementById("submit_btn")
+		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
 		self:sendChat()
 	end
@@ -345,17 +345,17 @@ function HostSetupController:InputChange(event)
 end
 
 function HostSetupController:filter_changed()
-	local select_el = Element.As.ElementFormControlDataSelect(self.document:GetElementById("dropdown_cont").first_child)
+	local select_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("dropdown_cont").first_child)
 	local val = select_el.options[select_el.selection - 1].value
 	
 	if val == "Co-op" then
-		ScpuiSystem.data.memory.multiHost.HostFilter = MULTI_TYPE_COOP
+		ScpuiSystem.data.memory.multiplayer_host.HostFilter = MULTI_TYPE_COOP
 	elseif val == "Team" then
-		ScpuiSystem.data.memory.multiHost.HostFilter = MULTI_TYPE_TEAM
+		ScpuiSystem.data.memory.multiplayer_host.HostFilter = MULTI_TYPE_TEAM
 	elseif val == "Dogfight" then
-		ScpuiSystem.data.memory.multiHost.HostFilter = MULTI_TYPE_DOGFIGHT
+		ScpuiSystem.data.memory.multiplayer_host.HostFilter = MULTI_TYPE_DOGFIGHT
 	else
-		ScpuiSystem.data.memory.multiHost.HostFilter = nil
+		ScpuiSystem.data.memory.multiplayer_host.HostFilter = nil
 	end
 	
 	self.missionList = {} -- list of mission files + ids only
@@ -366,9 +366,9 @@ end
 
 function HostSetupController:CreateMissionEntry(entry)
 	
-	local li_el = self.document:CreateElement("li")
+	local li_el = self.Document:CreateElement("li")
 	
-	local type_el = self.document:CreateElement("div")
+	local type_el = self.Document:CreateElement("div")
 	type_el:SetClass("type", true)
 	type_el:SetClass("mission_item", true)
 	if entry.Type == MULTI_TYPE_COOP then
@@ -380,7 +380,7 @@ function HostSetupController:CreateMissionEntry(entry)
 	end
 	li_el:AppendChild(type_el)
 	
-	local builtin_el = self.document:CreateElement("div")
+	local builtin_el = self.Document:CreateElement("div")
 	builtin_el:SetClass("mission_builtin", true)
 	builtin_el:SetClass("mission_item", true)
 	if entry.Builtin then
@@ -390,7 +390,7 @@ function HostSetupController:CreateMissionEntry(entry)
 	end
 	li_el:AppendChild(builtin_el)
 	
-	local validity_el = self.document:CreateElement("div")
+	local validity_el = self.Document:CreateElement("div")
 	validity_el:SetClass("mission_validity", true)
 	validity_el:SetClass("mission_item", true)
 	if entry.Builtin then
@@ -400,19 +400,19 @@ function HostSetupController:CreateMissionEntry(entry)
 	end
 	li_el:AppendChild(validity_el)
 	
-	local name_el = self.document:CreateElement("div")
+	local name_el = self.Document:CreateElement("div")
 	name_el:SetClass("mission_name", true)
 	name_el:SetClass("mission_item", true)
 	name_el.inner_rml = entry.Name
 	li_el:AppendChild(name_el)
 	
-	local players_el = self.document:CreateElement("div")
+	local players_el = self.Document:CreateElement("div")
 	players_el:SetClass("mission_players", true)
 	players_el:SetClass("mission_item", true)
 	players_el.inner_rml = entry.Players
 	li_el:AppendChild(players_el)
 	
-	local filename_el = self.document:CreateElement("div")
+	local filename_el = self.Document:CreateElement("div")
 	filename_el:SetClass("mission_filename", true)
 	filename_el:SetClass("mission_item", true)
 	filename_el.inner_rml = entry.Filename
@@ -438,7 +438,7 @@ function HostSetupController:SelectMission(mission)
 	if self.selectedMission then
 		self.selectedMission:SetPseudoClass("checked", false)
 	end
-	self.selectedMission = self.document:GetElementById(mission.key)
+	self.selectedMission = self.Document:GetElementById(mission.key)
 	self.selectedMission:SetPseudoClass("checked", true)
 	self.netgame:setMission(mission.Entry)
 end
@@ -458,7 +458,7 @@ function HostSetupController:removeMission(idx)
 		if self.selectedMission and self.selectedMission.id == self.missions[mission_idx].key then
 			self.selectedMission = nil
 		end
-		local el = self.document:GetElementById(self.missions[mission_idx].key)
+		local el = self.Document:GetElementById(self.missions[mission_idx].key)
 		self.missions_list_el:RemoveChild(el)
 		table.remove(self.missions, mission_idx)
 	end
@@ -476,15 +476,15 @@ end
 
 function HostSetupController:CreatePlayerEntry(entry)
 	
-	local li_el = self.document:CreateElement("li")
+	local li_el = self.Document:CreateElement("li")
 	
-	local name_el = self.document:CreateElement("div")
+	local name_el = self.Document:CreateElement("div")
 	name_el:SetClass("player_name", true)
 	name_el:SetClass("player_item", true)
 	name_el.inner_rml = entry.Name
 	li_el:AppendChild(name_el)
 	
-	local team_el = self.document:CreateElement("div")
+	local team_el = self.Document:CreateElement("div")
 	team_el.id = entry.InternalID .. "_team"
 	team_el:SetClass("player_team", true)
 	team_el:SetClass("player_item", true)
@@ -517,7 +517,7 @@ function HostSetupController:SelectPlayer(player)
 	if self.selectedPlayer then
 		self.selectedPlayer:SetPseudoClass("checked", false)
 	end
-	self.selectedPlayer = self.document:GetElementById(player.key)
+	self.selectedPlayer = self.Document:GetElementById(player.key)
 	self.selectedPlayer:SetPseudoClass("checked", true)
 	self:ActivateTeamButtons(player)
 	--ui.MultiJoinGame.ActiveGames[player.Index]:setSelected()
@@ -532,12 +532,12 @@ function HostSetupController:GetPlayerByKey(key)
 end
 
 function HostSetupController:ActivateTeamButtons(player)
-	self.document:GetElementById("team_1_btn"):SetPseudoClass("checked", false)
-	self.document:GetElementById("team_2_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("team_1_btn"):SetPseudoClass("checked", false)
+	self.Document:GetElementById("team_2_btn"):SetPseudoClass("checked", false)
 	if player.Team == 0 then
-		self.document:GetElementById("team_1_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("team_1_btn"):SetPseudoClass("checked", true)
 	else
-		self.document:GetElementById("team_2_btn"):SetPseudoClass("checked", true)
+		self.Document:GetElementById("team_2_btn"):SetPseudoClass("checked", true)
 	end
 end
 
@@ -549,7 +549,7 @@ end
 function HostSetupController:removePlayer(idx)
 	local player_idx = self:getPlayerIndexByID(self.playerList[idx])
 	if player_idx > 0 then
-		local el = self.document:GetElementById(self.players[player_idx].key)
+		local el = self.Document:GetElementById(self.players[player_idx].key)
 		--Also remove the team element to prevent an error later
 		self:remove_team_element(self.playerList[idx] .. "_team")
 		self.players_list_el:RemoveChild(el)
@@ -560,7 +560,7 @@ end
 
 function HostSetupController:updateTeam(player)
 	player.Team = player.Entry.Team
-	self.document:GetElementById(player.InternalID .. "_team").inner_rml = "Team" .. player.Team + 1
+	self.Document:GetElementById(player.InternalID .. "_team").inner_rml = "Team" .. player.Team + 1
 	self:ActivateTeamButtons(player)
 end
 
@@ -583,8 +583,8 @@ function HostSetupController:getPlayerIndexByID(id)
 end
 
 function HostSetupController:hideTeamButtons(toggle)
-	self.document:GetElementById("team_1_cont"):SetClass("hidden", toggle)
-	self.document:GetElementById("team_2_cont"):SetClass("hidden", toggle)
+	self.Document:GetElementById("team_1_cont"):SetClass("hidden", toggle)
+	self.Document:GetElementById("team_2_cont"):SetClass("hidden", toggle)
 	
 	for i = 1, #self.team_elements do
 		self.team_elements[i]:SetClass("hidden", toggle)
@@ -610,7 +610,7 @@ function HostSetupController:updateLists()
 	
 	local list = ui.MultiHostSetup.NetMissions
 	
-	if ScpuiSystem.data.memory.multiHost.HostList ~= "missions" then
+	if ScpuiSystem.data.memory.multiplayer_host.HostList ~= "missions" then
 		list = ui.MultiHostSetup.NetCampaigns
 	end
 	
@@ -628,8 +628,8 @@ function HostSetupController:updateLists()
 		for i = 1, #list do
 			local int_id = list[i].Filename .. "_" .. i
 			local add_entry = true
-			if ScpuiSystem.data.memory.multiHost.HostFilter then
-				if list[i].Type == ScpuiSystem.data.memory.multiHost.HostFilter then
+			if ScpuiSystem.data.memory.multiplayer_host.HostFilter then
+				if list[i].Type == ScpuiSystem.data.memory.multiplayer_host.HostFilter then
 					add_entry = true
 				else
 					add_entry = false
@@ -736,7 +736,7 @@ function HostSetupController:updateLists()
 		self:SelectMission(self.missions[1])
 	end
 	
-	--self.document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
+	--self.Document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	self.common_text_el.inner_rml = string.gsub(ui.MultiGeneral.InfoText,"\n","<br></br>")
 	
 	async.run(function()

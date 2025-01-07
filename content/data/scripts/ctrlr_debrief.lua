@@ -8,7 +8,7 @@ local class = require("lib_class")
 local DebriefingController = class()
 
 function DebriefingController:init()
-	if not ScpuiSystem.data.stateInit.debrief then
+	if not ScpuiSystem.data.state_init_status.Debrief then
 		ScpuiSystem:maybePlayCutscene(MOVIE_PRE_DEBRIEF)
 	end
     self.stages = {}
@@ -20,12 +20,12 @@ end
 
 ---@param document Document
 function DebriefingController:initialize(document)
-    self.document = document
+    self.Document = document
     self.selectedSection = 1
     self.audioPlaying = 0
 	self.audioFinished = false
     
-    if not ScpuiSystem.data.stateInit.debrief then
+    if not ScpuiSystem.data.state_init_status.Debrief then
         ui.Debriefing.initDebriefing()
         if not mn.hasDebriefing() then
 			topics.debrief.skip:send()
@@ -35,7 +35,7 @@ function DebriefingController:initialize(document)
             return
         end
         self:startMusic()
-        ScpuiSystem.data.stateInit.debrief = true
+        ScpuiSystem.data.state_init_status.Debrief = true
     end
     
     self.player = ba.getCurrentPlayer()    
@@ -45,18 +45,18 @@ function DebriefingController:initialize(document)
     end
     
     ---Load background choice
-    self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+    self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
-	self.chat_el = self.document:GetElementById("chat_window")
-	self.input_id = self.document:GetElementById("chat_input")
+	self.chat_el = self.Document:GetElementById("chat_window")
+	self.input_id = self.Document:GetElementById("chat_input")
     
     ---Load the desired font size from the save file
-    self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+    self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
     
-    self.document:GetElementById("mission_name").inner_rml = mn.getMissionTitle()
-    self.document:GetElementById("awards_wrapper"):SetClass("hidden", true)
+    self.Document:GetElementById("mission_name").inner_rml = mn.getMissionTitle()
+    self.Document:GetElementById("awards_wrapper"):SetClass("hidden", true)
     
-    local li_el = self.document:CreateElement("li")
+    local li_el = self.Document:CreateElement("li")
     
     local promoStage, promoName, promoFile = ui.Debriefing.getEarnedPromotion()
     local badgeStage, badgeName, badgeFile = ui.Debriefing.getEarnedBadge()
@@ -71,41 +71,41 @@ function DebriefingController:initialize(document)
         if promoName then
             self.numStages = self.numStages + 1
             self.stages[self.numStages] = promoStage
-            self.document:GetElementById("awards_wrapper"):SetClass("hidden", false)
-            local awards_el = self.document:GetElementById("medal_image_wrapper")
-            local imgEl = self.document:CreateElement("img")
+            self.Document:GetElementById("awards_wrapper"):SetClass("hidden", false)
+            local awards_el = self.Document:GetElementById("medal_image_wrapper")
+            local imgEl = self.Document:CreateElement("img")
             imgEl:SetAttribute("src", promoFile)
             imgEl:SetClass("medal_img", true)
             awards_el:AppendChild(imgEl)
-            self.document:GetElementById("promotion_text").inner_rml = promoName
+            self.Document:GetElementById("promotion_text").inner_rml = promoName
         end
         
         if badgeName then
             self.numStages = self.numStages + 1
             self.stages[self.numStages] = badgeStage
-            self.document:GetElementById("awards_wrapper"):SetClass("hidden", false)
-            local awards_el = self.document:GetElementById("medal_image_wrapper")
-            local imgEl = self.document:CreateElement("img")
+            self.Document:GetElementById("awards_wrapper"):SetClass("hidden", false)
+            local awards_el = self.Document:GetElementById("medal_image_wrapper")
+            local imgEl = self.Document:CreateElement("img")
             imgEl:SetAttribute("src", badgeFile)
             imgEl:SetClass("medal_img", true)
             awards_el:AppendChild(imgEl)
-            self.document:GetElementById("badge_text").inner_rml = badgeName
+            self.Document:GetElementById("badge_text").inner_rml = badgeName
         end
         
         if medalName then
 			--Check for an alt debrief bitmap
-			if ScpuiSystem.data.medalInfo[medalName] then
-				if ScpuiSystem.data.medalInfo[medalName].altDebriefBitmap then
-					medalFile = ScpuiSystem.data.medalInfo[medalName].altDebriefBitmap
+			if ScpuiSystem.data.Medal_Info[medalName] then
+				if ScpuiSystem.data.Medal_Info[medalName].AltDebriefBitmap then
+					medalFile = ScpuiSystem.data.Medal_Info[medalName].AltDebriefBitmap
 				end
 			end
-            self.document:GetElementById("awards_wrapper"):SetClass("hidden", false)
-            local awards_el = self.document:GetElementById("medal_image_wrapper")
-            local imgEl = self.document:CreateElement("img")
+            self.Document:GetElementById("awards_wrapper"):SetClass("hidden", false)
+            local awards_el = self.Document:GetElementById("medal_image_wrapper")
+            local imgEl = self.Document:CreateElement("img")
             imgEl:SetAttribute("src", medalFile)
             imgEl:SetClass("medal_img", true)
             awards_el:AppendChild(imgEl)
-            self.document:GetElementById("medal_text").inner_rml = medalName
+            self.Document:GetElementById("medal_text").inner_rml = medalName
         end
         
         local debriefing = ui.Debriefing.getDebriefing()
@@ -124,15 +124,15 @@ function DebriefingController:initialize(document)
         self.stages[1] = traitorStage
     end
 	
-	self.document:GetElementById("stage_select"):SetClass("hidden", true)
-	self.document:GetElementById("play_cont"):SetClass("hidden", true)
-	self.document:GetElementById("stop_cont"):SetClass("hidden", true)
+	self.Document:GetElementById("stage_select"):SetClass("hidden", true)
+	self.Document:GetElementById("play_cont"):SetClass("hidden", true)
+	self.Document:GetElementById("stop_cont"):SetClass("hidden", true)
     
     self:BuildText()
     
     self:start_audio()
     
-    self.document:GetElementById("debrief_btn"):SetPseudoClass("checked", true)
+    self.Document:GetElementById("debrief_btn"):SetPseudoClass("checked", true)
     
 	topics.debrief.initialize:send(self)
 
@@ -142,15 +142,15 @@ function DebriefingController:start_audio()
 	self.audioPlaying = 0
 	self.audioFinished = false
 	self:PlayVoice()
-	self.document:GetElementById("play_cont"):SetClass("hidden", true)
-	self.document:GetElementById("stop_cont"):SetClass("hidden", false)
+	self.Document:GetElementById("play_cont"):SetClass("hidden", true)
+	self.Document:GetElementById("stop_cont"):SetClass("hidden", false)
 end
 
 function DebriefingController:stop_audio()
 	self.audioPlaying = self.numStages
 	self:StopVoice()
-	self.document:GetElementById("play_cont"):SetClass("hidden", false)
-	self.document:GetElementById("stop_cont"):SetClass("hidden", true)
+	self.Document:GetElementById("play_cont"):SetClass("hidden", false)
+	self.Document:GetElementById("stop_cont"):SetClass("hidden", true)
 end
 
 function DebriefingController:PlayVoice()
@@ -160,8 +160,8 @@ function DebriefingController:PlayVoice()
 	-- If we've played all the audio then don't play any more!
 	if self.audioPlaying == self.numStages then
 		self.audioFinished = true
-		self.document:GetElementById("play_cont"):SetClass("hidden", false)
-		self.document:GetElementById("stop_cont"):SetClass("hidden", true)
+		self.Document:GetElementById("play_cont"):SetClass("hidden", false)
+		self.Document:GetElementById("stop_cont"):SetClass("hidden", true)
 		return
 	end
     async.run(function()
@@ -211,17 +211,17 @@ end
 
 function DebriefingController:BuildText()
     
-    local text_el = self.document:GetElementById("debrief_text")
+    local text_el = self.Document:GetElementById("debrief_text")
     
     self.RecIDs = {}
 
     for i = 1, #self.stages do
-        local paragraph = self.document:CreateElement("p")
+        local paragraph = self.Document:CreateElement("p")
         text_el:AppendChild(paragraph)
         paragraph:SetClass("debrief_text_actual", true)
         local color_text = ScpuiSystem:set_briefing_text(paragraph, self.stages[i].Text)
         if self.stages[i].Recommendation ~= "" then
-            local recommendation = self.document:CreateElement("p")
+            local recommendation = self.Document:CreateElement("p")
             self.RecIDs[i] = recommendation
             text_el:AppendChild(recommendation)
             recommendation.inner_rml = self.stages[i].Recommendation
@@ -232,9 +232,9 @@ function DebriefingController:BuildText()
     end
 
     if #self.RecIDs == 0 then
-        local paragraph = self.document:CreateElement("p")
+        local paragraph = self.Document:CreateElement("p")
         text_el:AppendChild(paragraph)
-        local recommendation = self.document:CreateElement("p")
+        local recommendation = self.Document:CreateElement("p")
         self.RecIDs[1] = recommendation
         text_el:AppendChild(recommendation)
         recommendation.inner_rml = ba.XSTR("We have no recommendations for you.", 888314)
@@ -265,18 +265,18 @@ function DebriefingController:BuildStats()
     if difficulty == 4 then difficulty = ba.XSTR("Hard", 472, false) end
     if difficulty == 5 then difficulty = ba.XSTR("Very Hard", 473, false) end
     
-    local text_el = self.document:GetElementById("debrief_text")
+    local text_el = self.Document:GetElementById("debrief_text")
     
     local titles = ""
     local numbers = ""
     
     --Build stats header
-    local header = self.document:CreateElement("div")
+    local header = self.Document:CreateElement("div")
     text_el:AppendChild(header)
     header:SetClass("blue", true)
     header:SetClass("stats_header", true)
-    local name_el = self.document:CreateElement("p")
-    local page_el = self.document:CreateElement("p")
+    local name_el = self.Document:CreateElement("p")
+    local page_el = self.Document:CreateElement("p")
     header:AppendChild(name_el)
     name_el:SetClass("stats_header_left", true)
     header:AppendChild(page_el)
@@ -285,11 +285,11 @@ function DebriefingController:BuildStats()
     page_el.inner_rml = self.page .. " of 4"
     
     --Build stats sub header
-    local subheader = self.document:CreateElement("div")
+    local subheader = self.Document:CreateElement("div")
     text_el:AppendChild(subheader)
     subheader:SetClass("stats_subheader", true)
-    local name_el = self.document:CreateElement("p")
-    local page_el = self.document:CreateElement("p")
+    local name_el = self.Document:CreateElement("p")
+    local page_el = self.Document:CreateElement("p")
     subheader:AppendChild(name_el)
     name_el:SetClass("stats_left", true)
     subheader:AppendChild(page_el)
@@ -369,10 +369,10 @@ function DebriefingController:BuildStats()
     end
     
     --Actually write the stats data here
-    local stats = self.document:CreateElement("div")
+    local stats = self.Document:CreateElement("div")
     text_el:AppendChild(stats)
-    local titles_el = self.document:CreateElement("p")
-    local numbers_el = self.document:CreateElement("p")
+    local titles_el = self.Document:CreateElement("p")
+    local numbers_el = self.Document:CreateElement("p")
     stats:AppendChild(titles_el)
     titles_el:SetClass("stats_left", true)
     stats:AppendChild(numbers_el)
@@ -383,16 +383,16 @@ function DebriefingController:BuildStats()
 end
 
 function DebriefingController:ClearText()
-    self.document:GetElementById("debrief_text").inner_rml = ""
+    self.Document:GetElementById("debrief_text").inner_rml = ""
 end
 
 function DebriefingController:startMusic()
     local filename = ui.Debriefing.getDebriefingMusicName()
     
-    ScpuiSystem.data.memory.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+    ScpuiSystem.data.memory.MusicHandle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
     async.run(function()
         async.await(async_util.wait_for(2.5))
-        ScpuiSystem.data.memory.music_handle:play(ad.MasterEventMusicVolume, true)
+        ScpuiSystem.data.memory.MusicHandle:play(ad.MasterEventMusicVolume, true)
     end, async.OnFrameExecutor)
 end
 
@@ -406,12 +406,12 @@ function DebriefingController:Show(text, title, buttons)
         for i = 1, #buttons do
             dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
         end
-        dialog:show(self.document.context)
+        dialog:show(self.Document.context)
         :continueWith(function(response)
         self:dialog_response(response)
     end)
     -- Route input to our context until the user dismisses the dialog box.
-    ui.enableInput(self.document.context)
+    ui.enableInput(self.Document.context)
 end
 
 function DebriefingController:dialog_response(response)
@@ -550,12 +550,12 @@ end
 function DebriefingController:debrief_pressed(element)
     if self.selectedSection ~= 1 then
         ui.playElementSound(element, "click", "success")
-        self.document:GetElementById("debrief_btn"):SetPseudoClass("checked", true)
-        self.document:GetElementById("stats_btn"):SetPseudoClass("checked", false)
+        self.Document:GetElementById("debrief_btn"):SetPseudoClass("checked", true)
+        self.Document:GetElementById("stats_btn"):SetPseudoClass("checked", false)
         self.selectedSection = 1
         
-        self.document:GetElementById("stage_select"):SetClass("hidden", true)
-		self.document:GetElementById("play_controls"):SetClass("hidden", false)
+        self.Document:GetElementById("stage_select"):SetClass("hidden", true)
+		self.Document:GetElementById("play_controls"):SetClass("hidden", false)
         
         self:ClearText()
         self:BuildText()
@@ -571,12 +571,12 @@ end
 function DebriefingController:stats_pressed(element)
     if self.selectedSection ~= 2 then
         ui.playElementSound(element, "click", "success")
-        self.document:GetElementById("debrief_btn"):SetPseudoClass("checked", false)
-        self.document:GetElementById("stats_btn"):SetPseudoClass("checked", true)
+        self.Document:GetElementById("debrief_btn"):SetPseudoClass("checked", false)
+        self.Document:GetElementById("stats_btn"):SetPseudoClass("checked", true)
         self.selectedSection = 2
         
-        self.document:GetElementById("stage_select"):SetClass("hidden", false)
-		self.document:GetElementById("play_controls"):SetClass("hidden", true)
+        self.Document:GetElementById("stage_select"):SetClass("hidden", false)
+		self.Document:GetElementById("play_controls"):SetClass("hidden", true)
         
         self:ClearText()
         self:StopVoice()
@@ -685,7 +685,7 @@ function DebriefingController:help_clicked(element)
     
     self.help_shown  = not self.help_shown
 
-    local help_texts = self.document:GetElementsByClassName("tooltip")
+    local help_texts = self.Document:GetElementsByClassName("tooltip")
     for _, v in ipairs(help_texts) do
         v:SetPseudoClass("shown", self.help_shown)
     end
@@ -742,12 +742,12 @@ function DebriefingController:global_keydown(_, event)
 end
 
 function DebriefingController:close()
-    if ScpuiSystem.data.memory.music_handle ~= nil and ScpuiSystem.data.memory.music_handle:isValid() then
-        ScpuiSystem.data.memory.music_handle:close(false)
-        ScpuiSystem.data.memory.music_handle = nil
+    if ScpuiSystem.data.memory.MusicHandle ~= nil and ScpuiSystem.data.memory.MusicHandle:isValid() then
+        ScpuiSystem.data.memory.MusicHandle:close(false)
+        ScpuiSystem.data.memory.MusicHandle = nil
     end
 	self:unload()
-    ScpuiSystem.data.stateInit.debrief = false
+    ScpuiSystem.data.state_init_status.Debrief = false
 end
 
 function DebriefingController:unload()

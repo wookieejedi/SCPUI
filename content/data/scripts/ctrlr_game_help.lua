@@ -9,13 +9,13 @@ end
 ---@param document Document
 function GamehelpController:initialize(document)
 
-    self.document = document
+    self.Document = document
 
 	---Load background choice
-	self.document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
+	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 	
 	---Load the desired font size from the save file
-	self.document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
+	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	
 	if mn.isInMission() then
 		ScpuiSystem:pauseAllAudio(true)
@@ -24,14 +24,14 @@ function GamehelpController:initialize(document)
 	ui.GameHelp.initGameHelp()
 	
 	self.numSections = #ui.GameHelp.Help_Sections
-	if ScpuiSystem.data.tableFlags.hideMulti then
+	if ScpuiSystem.data.table_flags.HideMulti then
 		self.numSections = self.numSections - 1
 	end
 	self.sections = {}
 	
 	local count = 1
 	for i = 1, #ui.GameHelp.Help_Sections do
-		if ui.GameHelp.Help_Sections[i].Title == 'Multiplayer Keys' and ScpuiSystem.data.tableFlags.hideMulti then
+		if ui.GameHelp.Help_Sections[i].Title == 'Multiplayer Keys' and ScpuiSystem.data.table_flags.HideMulti then
 			--Skip adding the multi keys
 		else
 			self.sections[count] = {
@@ -63,32 +63,32 @@ function GamehelpController:ChangeSection(section)
 
 	self.currentSection = section
 	self:CreateEntries(section)
-	self.document:GetElementById("gamehelp_title").inner_rml = self.sections[section].Title
-	self.document:GetElementById("gamehelp_subtitle").inner_rml = self.sections[section].Subtitle
-	self.document:GetElementById("gamehelp_header").inner_rml = self.sections[section].Header
+	self.Document:GetElementById("gamehelp_title").inner_rml = self.sections[section].Title
+	self.Document:GetElementById("gamehelp_subtitle").inner_rml = self.sections[section].Subtitle
+	self.Document:GetElementById("gamehelp_header").inner_rml = self.sections[section].Header
 	
 end
 
 function GamehelpController:CreateEntries(section)
 
-	local list_el = self.document:GetElementById("list_keys_ul")
+	local list_el = self.Document:GetElementById("list_keys_ul")
 
 	ScpuiSystem:ClearEntries(list_el)
 	
 	for i = 1, #self.sections[self.currentSection].Keys do
 		local line = self.sections[self.currentSection].Keys[i]
-		local li_el = self.document:CreateElement("li")
+		local li_el = self.Document:CreateElement("li")
 		li_el.inner_rml = line
 		list_el:AppendChild(li_el)
 	end
 	
-	local list_el = self.document:GetElementById("list_texts_ul")
+	local list_el = self.Document:GetElementById("list_texts_ul")
 
 	ScpuiSystem:ClearEntries(list_el)
 	
 	for i = 1, #self.sections[self.currentSection].Texts do
 		local line = self.sections[self.currentSection].Texts[i]
-		local li_el = self.document:CreateElement("li")
+		local li_el = self.Document:CreateElement("li")
 		li_el.inner_rml = line
 		list_el:AppendChild(li_el)
 	end

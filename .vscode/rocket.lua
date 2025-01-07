@@ -179,6 +179,7 @@ Element = {}
 ---@field first_child Element The first child node of the element. Read-only.
 ---@field inner_rml string The inner RML of the element.
 ---@field last_child Element The last child node of the element. Read-only.
+---@field maxlength number The maximum number of characters allowed in a text field.
 ---@field next_sibling Element The next sibling node of the element. Read-only.
 ---@field offset_height number The element's height.
 ---@field offset_left number The element's left offset.
@@ -194,6 +195,7 @@ Element = {}
 ---@field scroll_width number The element's scroll width.
 ---@field style table<string, string> An object used to access this element’s style information. Individual RCSS properties can be accessed by using the name of the property as a Python property on the object itself (ie, element.style.width = “40px”).
 ---@field tag_name string The tag name of the element.
+---@field type string The input type for a text field.
 ---@field AddEventListener addEventListener Adds an event listener to this element.
 ---@field AppendChild fun(self: self, element: Element) Appends a child to this element.
 ---@field Blur fun(self: self) Removes input focus from this element.
