@@ -36,6 +36,9 @@ which are not inside a valid HTML tag. This is supported further below.
 local COLOR = '<{@[ COLOR ]@}>'
 local TOOLTIP = '<{@[ TOOLTIP ]@}>'
 
+--- Get all the terms in a string.
+--- @param s string
+--- @return table
 local function getTerms(s)
   -- Lua patterns don't support alternation, so we need to get creative.
   -- First, we'll find pairs of sequences such that the first sequence contains
@@ -54,6 +57,11 @@ end
 -- The tree of keywords described at the top of this file.
 local keywords = {}
 
+--- Register a keyword with a color.
+--- @param keyword string The keyword to register
+--- @param color string The rcss color class to apply to the keyword
+--- @param tooltip? string The tooltip to display when hovering over the keyword
+--- @return boolean Whether the keyword was successfully registered
 local function registerKeyword(keyword, color, tooltip)
   local node = keywords
   for _, term in ipairs(getTerms(keyword)) do
@@ -76,6 +84,11 @@ local function registerKeyword(keyword, color, tooltip)
   end
 end
 
+--- Get the color of a sequence of terms.
+--- @param terms table The terms to colorize
+--- @param index number The index of the first term to colorize
+--- @param node table The node in the keyword tree to start from
+--- @return number?, string?, string?
 local function getColor(terms, index, node)
   -- This would probably perform better as an iterative function.
   -- Refactor if the recursion proves to be a performance issue.
@@ -95,6 +108,9 @@ end
 
 local tooltipRegister = {}
 
+--- Colorize a fragment of text.
+--- @param s string The fragment to colorize
+--- @return string fragment The colorized fragment with html span tags added.
 local function colorizeFragment(s)
   -- Take a fragment of literal text (i.e. text without any HTML tags in it),
   -- break it up into terms, and scan for keywords within those terms using the
@@ -144,6 +160,9 @@ local function colorizeFragment(s)
   return result
 end
 
+--- Colorize a string of text.
+--- @param s string The text to colorize
+--- @return string, table register The colorized text and a table of tooltips
 local function colorize(s)
   -- Clear the tooltip register for this run
   tooltipRegister = {}

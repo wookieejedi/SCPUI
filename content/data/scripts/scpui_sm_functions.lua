@@ -3,6 +3,12 @@
 --related to ui manipulation but also contains some other utility functions
 -----------------------------------
 
+--- Helper function to parse a table
+--- @param parserObject table The context/target object that owns the `parseFunction`.
+--- @param parseFunction function The function to call to parse the table.
+--- @param tblName string The name of the table to parse.
+--- @param tbmName string The suffix string of the tbm files to parse.
+--- @return nil
 function ScpuiSystem:parseTable(parserObject, parseFunction, tblName, tbmName)
     ba.print("Beginning parse of " .. tblName .. ".tbl...\n")
     
@@ -17,22 +23,17 @@ function ScpuiSystem:parseTable(parserObject, parseFunction, tblName, tbmName)
     end
 end
 
-function ScpuiSystem:inMultiGame()
-	local game = ui.MultiGeneral.getNetGame()
-	
-	if game:isValid() then
-		return true
-	end
-	
-	return false
-end
-
+--- Replace angle brackets in a string with their HTML entity equivalents
+--- @param inputString string The string to replace angle brackets in.
+--- @return string
 function ScpuiSystem:replaceAngleBrackets(inputString)
     local result = string.gsub(inputString, "<", "&lt;")
     result = string.gsub(result, ">", "&gt;")
     return result
 end
 
+--- Frees all model data only if a mission is not loaded
+--- @return nil
 function ScpuiSystem:freeAllModels()
 	if ScpuiSystem.data.memory.missionLoaded == false then
 		ba.print("SCPUI is freeing all models!\n")
@@ -40,6 +41,9 @@ function ScpuiSystem:freeAllModels()
 	end
 end
 
+--- Pauses or unpauses all audio channels
+--- @param toggle boolean Whether to pause or unpause the audio channels.
+--- @return nil
 function ScpuiSystem:pauseAllAudio(toggle)
 	local topics = require("ui_topics")
 	
@@ -49,6 +53,9 @@ function ScpuiSystem:pauseAllAudio(toggle)
 	topics.Scpui.pauseAudio:send(toggle)
 end
 
+--- Gets the absolute left position of an element
+--- @param element table The element to get the absolute left position of.
+--- @return number
 function ScpuiSystem:getAbsoluteLeft(element)
 	local val = element.offset_left
 	local parent = element.parent_node
@@ -60,6 +67,9 @@ function ScpuiSystem:getAbsoluteLeft(element)
 	return val
 end
 
+--- Gets the absolute top position of an element
+--- @param element table The element to get the absolute top position of.
+--- @return number
 function ScpuiSystem:getAbsoluteTop(element)
 	local val = element.offset_top
 	local parent = element.parent_node
@@ -71,6 +81,8 @@ function ScpuiSystem:getAbsoluteTop(element)
 	return val
 end
 
+--- Stops the music contained in the SCPUI music handle, if any
+--- @return nil
 function ScpuiSystem:stopMusic()
 	if ScpuiSystem.data.memory.music_handle ~= nil and ScpuiSystem.data.memory.music_handle:isValid() then
 		ScpuiSystem.data.memory.music_handle:close(true)
@@ -78,15 +90,21 @@ function ScpuiSystem:stopMusic()
 	ScpuiSystem.data.memory.music_handle = nil
 end
 
+--- Checks if a cutscene should be played for the current scene. Will pause any currently playing music, play the cutscene, and then resume the music.
+--- @param scene enumeration The scene to check if a cutscene should be played for. Should be one of MOVIE_PRE_FICTION, MOVIE_PRE_CMD_BRIEF, MOVIE_PRE_BRIEF, MOVIE_PRE_GAME, MOVIE_PRE_DEBRIEF, MOVIE_POST_DEBRIEF, MOVIE_END_CAMPAIGN
+--- @return nil
 function ScpuiSystem:maybePlayCutscene(scene)
 	local topics = require("ui_topics")
 	topics.playcutscene.start:send(self)
 	if ScpuiSystem.data.memory.music_handle ~= nil then
 		ScpuiSystem.data.memory.music_handle:pause()
 	end
+	
+	--Stop rendering SCPUI during the cutscene
+	ScpuiSystem.data.render = false
+
 	--Setting this to false so it doesn't try to restart music
 	--that SCPUI handles internally
-	ScpuiSystem.data.render = false
 	ui.maybePlayCutscene(scene, false, 0)
 	ScpuiSystem.data.render = true
 	if ScpuiSystem.data.memory.music_handle ~= nil then
@@ -95,6 +113,9 @@ function ScpuiSystem:maybePlayCutscene(scene)
 	topics.playcutscene.finish:send(self)
 end
 
+--- Sets the base pixel font size for SCPUI to use. Attempts to replicate the font size as it would appear on a 1080p screen.
+--- @param val? number The multiplier to adjust the font size by. If nil, the stored value will be used.
+--- @return string size The font size to use as a string
 function ScpuiSystem:getFontPixelSize(val)
 	local vmin = math.min(gr.getScreenWidth(), gr.getScreenHeight())
 	local size = vmin * 0.012 --Gets roughly 12px font on 1080p
@@ -109,7 +130,7 @@ function ScpuiSystem:getFontPixelSize(val)
 	end
 	
 	if not val then
-		val = convert(ScpuiOptionValues.Font_Adjustment or 0.5)
+		val = convert(ScpuiSystem.data.ScpuiOptionValues.Font_Adjustment or 0.5)
 	else
 		val = convert(val)
 	end
@@ -119,17 +140,22 @@ function ScpuiSystem:getFontPixelSize(val)
 	return tostring(finalSize)
 end
 
+--- DEPRECATED: Use getFontPixelSize instead.
+--- Gets the font size to use for SCPUI based on the font adjustment value.
+--- @param val? number The multiplier to adjust the font size by. If nil, the stored value will be used.
+--- @param default? number The default font size to use if val is nil.
+--- @return number
 function ScpuiSystem:getFontSize(val, default)
 	if default == nil then
 		default = 5
 	end
 	-- If we have don't have val, then get the stored one
 	if val == nil then
-		if ScpuiOptionValues == nil then
+		if ScpuiSystem.data.ScpuiOptionValues == nil then
 			ba.warning("Cannot get font size before SCPUI is initialized! Using default.")
 			return default
 		else
-			val = ScpuiOptionValues.Font_Multiplier
+			val = ScpuiSystem.data.ScpuiOptionValues.Font_Adjustment
 			
 			-- If value is not set then use default
 			if val == nil then
@@ -163,6 +189,8 @@ function ScpuiSystem:getFontSize(val, default)
     return math.floor(convertedValue)
 end
 
+--- Gets the background rcss class to use based on the current campaign. Returns "general_bg" if no class is found.
+--- @return string class The rcss class to use to set the background image
 function ScpuiSystem:getBackgroundClass()
 	local campaignfilename = ba.getCurrentPlayer():getCampaignFilename()
 	local bgclass = self.data.backgrounds[campaignfilename]
@@ -174,6 +202,10 @@ function ScpuiSystem:getBackgroundClass()
 	return bgclass
 end
 
+--- Gets background file to use for the briefing map. Returns "br-black.png" if no file is found.
+--- @param mission string The mission to get the background for.
+--- @param stage string The stage to get the background for.
+--- @return string file The file to use as the briefing background
 function ScpuiSystem:getBriefingBackground(mission, stage)
 
 	local file = nil
@@ -194,6 +226,9 @@ function ScpuiSystem:getBriefingBackground(mission, stage)
 	return file
 end
 
+--- Unsets all child elements of a parent class from pseudo class "checked"
+--- @param parent Element The parent element to unset children from.
+--- @return nil
 function ScpuiSystem:UncheckChildren(parent)
 	local el = parent.first_child
 	while el ~= nil do
@@ -202,42 +237,63 @@ function ScpuiSystem:UncheckChildren(parent)
 	end
 end
 
---Clears an element of all children
+--- Clears an element of all children
+--- @param parent Element The parent element to clear children from.
+--- @return nil
 function ScpuiSystem:ClearEntries(parent)
 	while parent:HasChildNodes() do
 		parent:RemoveChild(parent.first_child)
 	end
 end
 
+--- Sets the value of a specific attribute for an element
+--- @param parent Element The parent element to set the attribute for.
+--- @param attribute string The attribute to set.
+--- @param value string The value to set the attribute to.
 function ScpuiSystem:SetStyle(parent, attribute, value)
 	if parent ~= nil then
 		parent.style[attribute] = value
 	end
 end
 
+--- Scrolls an element up by 10 pixels
+--- @param element Element The element to scroll.
+--- @return nil
 function ScpuiSystem:scroll_up(element)
 	element.scroll_top = element.scroll_top - 10
 end
 
+--- Scrolls an element down by 10 pixels
+--- @param element Element The element to scroll.
+--- @return nil
 function ScpuiSystem:scroll_down(element)
 	element.scroll_top = element.scroll_top + 10
 end
 
---Clears a dropdown list
+--- Clears a dropdown list
+--- @param element ElementFormControlSelect The dropdown element to clear.
+--- @return nil
 function ScpuiSystem:clearDropdown(element)
 	while element.options[0] ~= nil do
 		element:Remove(0)
 	end
 end
 
---Add all table elements to a dropdown as selections
+--- Add all table elements to a dropdown as selections
+--- @param element ElementFormControlSelect The dropdown element to add selections to.
+--- @param list table The list of elements to add to the dropdown.
+--- @return nil
 function ScpuiSystem:buildSelectList(element, list)
 	for i, v in ipairs(list) do
 		element:Add(v, v, i)
 	end
 end
 
---Makes an element of the specified type and with the specified id
+--- Creates an element of the specified type and with the specified id
+--- @param context scpui_context The context to create the element in.
+--- @param t string The type of element to create like "div" or "p".
+--- @param id string The id to assign to the element.
+--- @return Element
 function ScpuiSystem:makeElement(context, t, id)
 	local el = context.document:CreateElement(t)
 	if id ~= nil then
@@ -246,13 +302,18 @@ function ScpuiSystem:makeElement(context, t, id)
 	return el
 end
 
+--- Creates a panel element with an image with the specified id
+--- @param context scpui_context The context to create the element in.
+--- @param id string The id to assign to the element.
+--- @param img string The image to use for the panel.
+--- @return Element
 function ScpuiSystem:makeElementPanel(context, id, img)
 	if id == nil then
 		ba.error("SCPUI: ID is required to make an element panel!")
 	end
 	
 	local el = context.document:CreateElement("div")
-	el.id = id
+	el.id = tostring(id)
 	
 	local img_el = ScpuiSystem:makeImg(context, img)
 	img_el.style.display = "block"
@@ -270,7 +331,11 @@ function ScpuiSystem:makeElementPanel(context, id, img)
 	return el
 end
 
---Makes an image element
+--- Makes an image element
+--- @param context scpui_context The context to create the element in.
+--- @param file string The file to use for the image.
+--- @param animated? boolean Whether the image is animated or not.
+--- @return Element
 function ScpuiSystem:makeImg(context, file, animated)
 	local t = "img"
 	if animated == true then
@@ -281,7 +346,15 @@ function ScpuiSystem:makeImg(context, file, animated)
 	return el
 end
 
---Makes a text-only button and returns the elements
+--- Makes a text-only button and returns the elements
+--- @param context scpui_context The context to create the element in.
+--- @param cont_id string The id to assign to the container element.
+--- @param button_id string The id to assign to the button element.
+--- @param button_classes table The classes to assign to the button element.
+--- @param text_id string The id to assign to the text element.
+--- @param text_classes table The classes to assign to the text element.
+--- @param text string The text to display on the button.
+--- @return Element, Element elements The container and button elements.
 function ScpuiSystem:makeTextButton(context, cont_id, button_id, button_classes, text_id, text_classes, text)
 	local cont_el = context.document:CreateElement("div")
 	cont_el.id = cont_id
@@ -308,7 +381,17 @@ function ScpuiSystem:makeTextButton(context, cont_id, button_id, button_classes,
 	return cont_el, button_el
 end
 
---Makes an image button and returns the elements
+--- Makes an image button and returns the elements
+--- @param context scpui_context The context to create the element in.
+--- @param cont_id string The id to assign to the container element.
+--- @param button_id string The id to assign to the button element.
+--- @param button_classes table The classes to assign to the button element.
+--- @param img_base string The base class to assign to the image element.
+--- @param img_file string The file to use for the image.
+--- @param text_id string The id to assign to the text element.
+--- @param text_classes table The classes to assign to the text element.
+--- @param text string The text to display on the button.
+--- @return Element, Element elements The container and button elements.
 function ScpuiSystem:makeButton(context, cont_id, button_id, button_classes, img_base, img_file, text_id, text_classes, text)
 	local cont_el = context.document:CreateElement("div")
 	cont_el.id = cont_id
@@ -344,8 +427,4 @@ function ScpuiSystem:makeButton(context, cont_id, button_id, button_classes, img
 	cont_el:AppendChild(button_el)
 	
 	return cont_el, button_el
-end
-
-function ScpuiSystem:makeButtonPanel(name)
-	-- unused
 end

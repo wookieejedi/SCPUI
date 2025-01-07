@@ -3,9 +3,13 @@
 --It also contains the necessary methods to add tooltips to text
 -----------------------------------
 
+--- Initialize the keywords system and send the files to the keywords parser
+--- This function is called when the SCPUI system is initialized
+--- @return nil
 function ScpuiSystem:initKeywords()
     local utils = require('utils')
-  
+
+    ---@type scpui_keywords
     local affixes = {prefixes = {''}, suffixes = {''}}
     if cf.fileExists('keywords.tbl') then
         affixes = self:parseKeywords('keywords.tbl', affixes)
@@ -15,7 +19,10 @@ function ScpuiSystem:initKeywords()
         self:parseKeywords(v, affixes)
     end
 end
-  
+
+--- Parse the affixes section of the keywords table
+--- @param source scpui_keywords
+--- @return scpui_keywords
 function ScpuiSystem:parseKeywordAffixes(source)
     local prefixes = {}
     local suffixes = {}
@@ -39,7 +46,11 @@ function ScpuiSystem:parseKeywordAffixes(source)
         end
     end
 end
-  
+
+--- Parse the keywords table
+--- @param data string The file to parse
+--- @param inheritedAffixes scpui_keywords
+--- @return scpui_keywords
 function ScpuiSystem:parseKeywords(data, inheritedAffixes)
     local keywordAlgorithm = require('keywordAlgorithm')
     parse.readFileText(data, "data/tables")
@@ -54,6 +65,7 @@ function ScpuiSystem:parseKeywords(data, inheritedAffixes)
         end
     end
 
+    ---@type scpui_keywords
     local globalAffixes = self:parseKeywordAffixes(inheritedAffixes)
     while parse.optionalString("$Style:") do
         local any = false
@@ -84,7 +96,11 @@ function ScpuiSystem:parseKeywords(data, inheritedAffixes)
     parse.stop()
     return globalAffixes
 end
-  
+
+--- Check the global timers table and show the tooltip if the timer is greater than 3
+--- @param tool_el Element The tooltip element
+--- @param id string The id of the tooltip
+--- @return nil
 function ScpuiSystem:maybeShowTooltip(tool_el, id)
     local async_util = require("async_util")
     if ScpuiSystem.data.tooltipTimers[id] == nil then
@@ -103,7 +119,11 @@ function ScpuiSystem:maybeShowTooltip(tool_el, id)
         end, async.OnFrameExecutor)
     end
 end
-  
+
+--- Add a tooltip to a document
+--- @param document Document The document to add the tooltip to
+--- @param id string The id to give the tooltip
+--- @param tooltip string The tooltip to add
 function ScpuiSystem:addTooltip(document, id, tooltip)
     if tooltip == nil or id == nil then
         return
@@ -119,7 +139,7 @@ function ScpuiSystem:addTooltip(document, id, tooltip)
     local tool_el = document:CreateElement("div")
     tool_el.id = id .. "_tooltip"
     tool_el:SetClass("tooltip", true)
-    tool_el.position = "fixed"
+    tool_el.style.position = "fixed"
 
     -- Set the width of the tooltip
     -- Calculate the width of the tooltip element
@@ -160,7 +180,10 @@ function ScpuiSystem:addTooltip(document, id, tooltip)
         tool_el:SetPseudoClass("shown", false)
     end)
 end
-  
+
+--- Apply keyword classes to the input text which is then colorized
+--- @param inputText string The text to colorize
+--- @return string, table register The colorized text and a table of tooltips
 function ScpuiSystem:applyKeywordClasses(inputText)
     local keywordAlgorithm = require('keywordAlgorithm')
     return keywordAlgorithm.colorize(inputText)

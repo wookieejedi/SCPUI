@@ -1,8 +1,14 @@
+-----------------------------------
+--This file contains all the code necessary to save and load arbitrary data to player files on disk
+-----------------------------------
+
 local datasaver = {
 	maxBackups = 10
 }
 
--- Function to hash a string using a basic ascii char codes
+--- Function to hash a string using a basic ascii char codes. Helps to make sure we have no mod name conflicts
+--- @param inputString string
+--- @return string
 function datasaver:basicStringHash(inputString)
 	local mult = 1
 	
@@ -22,8 +28,13 @@ function datasaver:basicStringHash(inputString)
     return string.sub(hash, 1, 10)
 end
 
+--- Load data from disk and return the data as a table or nil if not found
+--- @param source string The name of the data to find
+--- @param persistent? boolean Whether to load the data from the player save file or the local save file
+--- @return any data The data that was loaded. Nil if not found
 function datasaver:loadDataFromFile(source, persistent)
 
+	---@type json
 	local json = require('dkjson')
 	local location = nil
 	local filename = nil
@@ -72,8 +83,14 @@ function datasaver:loadDataFromFile(source, persistent)
 	end
 end
 
+--- Save data to disk
+--- @param source string The name of the data to save
+--- @param data any The data to save
+--- @param persistent? boolean Whether to save the data to the player save file or the local save file
+--- @return nil
 function datasaver:saveDataToFile(source, data, persistent)
 
+	---@type json
 	local json = require('dkjson')
 	local location = nil
 	local filename = nil
@@ -119,7 +136,11 @@ function datasaver:saveDataToFile(source, data, persistent)
 	file:close()
 end
 
+--- Function to backup all of the player save data. Backs up to a maximum of 10 files before it overwrites the oldest
+--- @return nil
 function datasaver:backupSaveData()
+
+	---@type json
 	local json = require('dkjson')
 	
 	local id = self:basicStringHash(ScpuiSystem:getModTitle())

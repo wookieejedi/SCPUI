@@ -167,11 +167,11 @@ function TechDatabaseController:initialize(document)
 	
 	local a_slider_el = self.document:GetElementById("angle_range_cont").first_child
 	local a_range_el = Element.As.ElementFormControlInput(a_slider_el)
-	a_range_el.value = ScpuiOptionValues.databaseModelAngle or 0.5
+	a_range_el.value = ScpuiSystem.data.ScpuiOptionValues.databaseModelAngle or 0.5
 
 	local s_slider_el = self.document:GetElementById("speed_range_cont").first_child
 	local s_range_el = Element.As.ElementFormControlInput(s_slider_el)
-	s_range_el.value = ScpuiOptionValues.databaseModelSpeed or 0.5
+	s_range_el.value = ScpuiSystem.data.ScpuiOptionValues.databaseModelSpeed or 0.5
 	
 end
 
@@ -384,21 +384,21 @@ function TechDatabaseController:SortList()
 	end
 	
 	--save the choice to the player file
-	if ScpuiOptionValues.databaseSort == nil then
-		ScpuiOptionValues.databaseSort = {}
-			ScpuiOptionValues.databaseSort["ships"] = "index_asc"
-			ScpuiOptionValues.databaseSort["weapons"] = "index_asc"
-			ScpuiOptionValues.databaseSort["intel"] = "index_asc"
+	if ScpuiSystem.data.ScpuiOptionValues.databaseSort == nil then
+		ScpuiSystem.data.ScpuiOptionValues.databaseSort = {}
+			ScpuiSystem.data.ScpuiOptionValues.databaseSort["ships"] = "index_asc"
+			ScpuiSystem.data.ScpuiOptionValues.databaseSort["weapons"] = "index_asc"
+			ScpuiSystem.data.ScpuiOptionValues.databaseSort["intel"] = "index_asc"
 	end
-	if ScpuiOptionValues.databaseCategory == nil then
-		ScpuiOptionValues.databaseCategory = {}
-			ScpuiOptionValues.databaseCategory["ships"] = "none"
-			ScpuiOptionValues.databaseCategory["weapons"] = "none"
-			ScpuiOptionValues.databaseCategory["intel"] = "none"
+	if ScpuiSystem.data.ScpuiOptionValues.databaseCategory == nil then
+		ScpuiSystem.data.ScpuiOptionValues.databaseCategory = {}
+			ScpuiSystem.data.ScpuiOptionValues.databaseCategory["ships"] = "none"
+			ScpuiSystem.data.ScpuiOptionValues.databaseCategory["weapons"] = "none"
+			ScpuiSystem.data.ScpuiOptionValues.databaseCategory["intel"] = "none"
 	end
-	ScpuiOptionValues.databaseSort[self.SelectedSection] = self.currentSort
-	ScpuiOptionValues.databaseCategory[self.SelectedSection] = self.currentSortCategory
-	ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
+	ScpuiSystem.data.ScpuiOptionValues.databaseSort[self.SelectedSection] = self.currentSort
+	ScpuiSystem.data.ScpuiOptionValues.databaseCategory[self.SelectedSection] = self.currentSortCategory
+	ScpuiSystem:saveOptionsToFile(ScpuiSystem.data.ScpuiOptionValues)
 end
 
 function TechDatabaseController:UncheckAllSortButtons()
@@ -500,14 +500,14 @@ function TechDatabaseController:ChangeSection(section)
 		ScpuiSystem.data.memory.modelDraw.section = section
 		
 		--Check for last sort type
-		if ScpuiOptionValues.databaseSort ~= nil then
-			self.currentSort = ScpuiOptionValues.databaseSort[section]
+		if ScpuiSystem.data.ScpuiOptionValues.databaseSort ~= nil then
+			self.currentSort = ScpuiSystem.data.ScpuiOptionValues.databaseSort[section]
 		else
 			self.currentSort = "index_asc"
 		end
 		
-		if ScpuiOptionValues.databaseCategory ~= nil then
-			self.currentSortCategory = ScpuiOptionValues.databaseCategory[section]
+		if ScpuiSystem.data.ScpuiOptionValues.databaseCategory ~= nil then
+			self.currentSortCategory = ScpuiSystem.data.ScpuiOptionValues.databaseCategory[section]
 		else
 			self.currentSortCategory = "none"
 		end		
@@ -790,7 +790,7 @@ end
 
 function TechDatabaseController:update_angle(element, event)
 	if self.first_run == true then
-		ScpuiOptionValues.databaseModelAngle = event.parameters.value
+		ScpuiSystem.data.ScpuiOptionValues.databaseModelAngle = event.parameters.value
 	end
 	self:update_angle_slider(event.parameters.value)
 end
@@ -802,7 +802,7 @@ end
 
 function TechDatabaseController:update_speed(element, event)
 	if self.first_run == true then
-		ScpuiOptionValues.databaseModelSpeed = event.parameters.value
+		ScpuiSystem.data.ScpuiOptionValues.databaseModelSpeed = event.parameters.value
 	end
 	self:update_speed_slider(event.parameters.value)
 end
@@ -1034,6 +1034,7 @@ end
 
 function TechDatabaseController:loadSeenDataFromFile()
 
+	---@type json
 	local json = require('dkjson')
   
 	local location = 'data/players'
@@ -1065,6 +1066,7 @@ end
 
 function TechDatabaseController:saveSeenDataToFile(data)
 
+	---@type json
 	local json = require('dkjson')
   
 	local location = 'data/players'
@@ -1098,7 +1100,7 @@ function TechDatabaseController:saveSeenDataToFile(data)
 end
 
 function TechDatabaseController:unload()
-	ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
+	ScpuiSystem:saveOptionsToFile(ScpuiSystem.data.ScpuiOptionValues)
 	self:saveSeenDataToFile(self.seenData)
     ScpuiSystem:freeAllModels()
 	

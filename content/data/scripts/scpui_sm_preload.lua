@@ -4,6 +4,8 @@
 
 local async_util = require("async_util")
 
+--- Run the preload system and interate through the preload coroutines
+--- @return nil
 function ScpuiSystem:preLoad()
 
 	ba.print("SCPUI is starting preload functions...\n")
@@ -132,6 +134,8 @@ function ScpuiSystem:preLoad()
 	io.setCursorHidden(false)
 end
 
+--- Prepare the splash screen images and text for display
+--- @return nil
 function ScpuiSystem:prepareSplash()
 
 	ScpuiSystem.data.memory.splash = {
@@ -207,6 +211,8 @@ function ScpuiSystem:prepareSplash()
 
 end
 
+--- Calculate the number of dots to append to the "Loading" text
+--- @return nil
 function ScpuiSystem:calcFrames()
 
 	if ScpuiSystem.data.stateInit.preLoad then
@@ -225,6 +231,8 @@ function ScpuiSystem:calcFrames()
     end, async.OnFrameExecutor)
 end
 
+--- Actually draw the current splash screen and text
+--- @return nil
 function ScpuiSystem:drawSplash()
 
 	io.setCursorHidden(true)
@@ -278,6 +286,8 @@ function ScpuiSystem:drawSplash()
 
 end
 
+--- Prepare the splash screens and run the preload system
+--- @return nil
 function ScpuiSystem:firstRun()
 	ScpuiSystem:prepareSplash()
 	
@@ -291,6 +301,8 @@ function ScpuiSystem:firstRun()
 
 end
 
+--- Run the preload system if SCPUI is active and preload has not yet been run
+--- @return nil
 local function runPreload()
 	if ScpuiSystem.data.active and not ScpuiSystem.data.stateInit.preLoad then
 		ScpuiSystem:firstRun()

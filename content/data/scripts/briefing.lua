@@ -332,10 +332,10 @@ function BriefingController:drawMap()
 	gr.setLineWidth(2)
 	
 	if ScpuiSystem.data.memory.drawBrMap.draw == true then
-		if ScpuiOptionValues.Brief_Render_Option == nil then
-			ScpuiOptionValues.Brief_Render_Option = "screen"
+		if ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option == nil then
+			ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option = "screen"
 		end
-		if string.lower(ScpuiOptionValues.Brief_Render_Option) == "texture" then
+		if string.lower(ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option) == "texture" then
 			gr.setTarget(ScpuiSystem.data.memory.drawBrMap.tex)
 			gr.clearScreen(0,0,0,0)
 			if not ScpuiSystem.data.memory.drawBrMap.goals then
@@ -351,7 +351,7 @@ function BriefingController:drawMap()
 				gr.drawLine(0, ScpuiSystem.data.memory.drawBrMap.y2, ScpuiSystem.data.memory.drawBrMap.x2, ScpuiSystem.data.memory.drawBrMap.y2)
 			end
 			
-		elseif string.lower(ScpuiOptionValues.Brief_Render_Option) == "screen" then
+		elseif string.lower(ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option) == "screen" then
 			gr.clearScreen(0,0,0,0)
 			if not ScpuiSystem.data.memory.drawBrMap.goals then
 				gr.drawImage(ScpuiSystem.data.memory.drawBrMap.bg, 0, 0, ScpuiSystem.data.memory.drawBrMap.x2, ScpuiSystem.data.memory.drawBrMap.y2)
@@ -515,7 +515,7 @@ function BriefingController:mouse_move(element, event)
 		local gx = grid_el.offset_left + grid_el.parent_node.offset_left + grid_el.parent_node.parent_node.offset_left
 		local gy = grid_el.offset_top + grid_el.parent_node.offset_top + grid_el.parent_node.parent_node.offset_top
 			
-		if string.lower(ScpuiOptionValues.Brief_Render_Option) == "texture" then
+		if string.lower(ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option) == "texture" then
 			
 			ScpuiSystem.data.memory.drawBrMap.mx = ScpuiSystem.data.memory.drawBrMap.mx - gx
 			ScpuiSystem.data.memory.drawBrMap.my = ScpuiSystem.data.memory.drawBrMap.my - gy

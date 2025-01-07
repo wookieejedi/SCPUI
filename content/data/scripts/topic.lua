@@ -1,3 +1,7 @@
+-----------------------------------
+--This file sets up the UI Topics system, allowing a sort of hook-like structure for scripts to interact with
+-----------------------------------
+
 local class = require('class')
 
 --- A simple message bus.
@@ -25,13 +29,13 @@ local Topic = class(function(self, initial)
 end)
 
 --- Send a message to everything subscribed to the topic.
--- This first creates a context, passing the message to the topic's initial
--- value factory to create its value. The message and context are then given to
--- each subscription in priority order. Finally, the context's value is
--- returned. If any of the listeners cancel the message, then no further
--- listeners receive the message, but the context's value is still returned.
--- @param message The message to send.
--- @return The message's context's value after all listeners have processed it.
+--- This first creates a context, passing the message to the topic's initial
+--- value factory to create its value. The message and context are then given to
+--- each subscription in priority order. Finally, the context's value is
+--- returned. If any of the listeners cancel the message, then no further
+--- listeners receive the message, but the context's value is still returned.
+--- @param message any The message to send.
+--- @return any The message's context's value after all listeners have processed it.
 Topic.send = function(self, message)
   local value = self._initial(message)
   local context = { value = value, done = false }
@@ -44,12 +48,12 @@ Topic.send = function(self, message)
 end
 
 --- Register a listener with this topic.
--- The given callback will be called with two arguments: the message and its
--- context. The listener may set the context's `value` field to pass a value
--- back to the sender, or set its `done` field to cancel further processing.
--- @param priority The listener's priority.
--- @param callback The function to invoke when the listener receives a message.
--- @return This topic.
+--- The given callback will be called with two arguments: the message and its
+--- context. The listener may set the context's `value` field to pass a value
+--- back to the sender, or set its `done` field to cancel further processing.
+--- @param priority integer The listener's priority.
+--- @param callback function The function to invoke when the listener receives a message.
+--- @return any topic This topic.
 Topic.bind = function(self, priority, callback)
   local subscriptions = self._subscriptions
   local subscription = { priority, callback, #subscriptions }

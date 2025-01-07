@@ -7,7 +7,7 @@ local class    = require("class")
 
 local async_util = require("async_util")
 
-local customValues = ScpuiOptionValues
+local customValues = ScpuiSystem.data.ScpuiOptionValues
 local customOptions = {}
 local graphicsOptions = {}
 local modCustom = true
@@ -161,10 +161,10 @@ function OptionsController:init_point_slider_element(value_el, btn_left, btn_rig
 		value = option.Value
 		range_val = option:getInterpolantFromValue(value)
 	else
-		local cur_val = (ScpuiOptionValues[Key]) or option.Value
+		local cur_val = (ScpuiSystem.data.ScpuiOptionValues[Key]) or option.Value
 		value = (cur_val / #point_buttons) or 0
 		range_val = (cur_val / #point_buttons) or 0
-		customValues[Key] = ScpuiOptionValues[Key] or option.Value
+		customValues[Key] = ScpuiSystem.data.ScpuiOptionValues[Key] or option.Value
 		default = option.Value
 	end
 	
@@ -414,8 +414,8 @@ function OptionsController:init_binary_element(left_btn, right_btn, option, vals
 	
 	if option.Category == "Custom" then
 		default = option.Value
-		option.Value = ScpuiOptionValues[Key] or option.Value
-		customValues[Key] = ScpuiOptionValues[Key] or option.Value
+		option.Value = ScpuiSystem.data.ScpuiOptionValues[Key] or option.Value
+		customValues[Key] = ScpuiSystem.data.ScpuiOptionValues[Key] or option.Value
 	end
 
     local value          = option.Value
@@ -502,8 +502,8 @@ function OptionsController:init_selection_element(element, option, vals, change_
 		end
 	
 		default = option.Value
-		option.Value = ScpuiOptionValues[Key] or option.ValidValues[count]
-		customValues[Key] = ScpuiOptionValues[Key] or option.ValidValues[count]
+		option.Value = ScpuiSystem.data.ScpuiOptionValues[Key] or option.ValidValues[count]
+		customValues[Key] = ScpuiSystem.data.ScpuiOptionValues[Key] or option.ValidValues[count]
 	end
 	
 	local value = option.Value
@@ -663,7 +663,7 @@ function OptionsController:init_range_element(element, value_el, option, change_
 	if option.Category ~= "Custom" then
 		range_el.value = option:getInterpolantFromValue(option.Value)
 	else
-		local thisValue = ScpuiOptionValues[Key] or option.Value
+		local thisValue = ScpuiSystem.data.ScpuiOptionValues[Key] or option.Value
 		default = option.Value
 		option.Value = thisValue
 		range_el.value = thisValue / option.Max
@@ -1405,16 +1405,18 @@ end
 
 function OptionsController:acceptChanges(state)
 	
-	ScpuiOptionValues = customValues
+	ScpuiSystem.data.ScpuiOptionValues = customValues
 
 	--Save mod options to file
-	ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
+	ScpuiSystem:saveOptionsToFile(ScpuiSystem.data.ScpuiOptionValues)
 	
 	--Save mod options to global file for recalling before a player is selected
 	local saveFilename = "scpui_options_global.cfg"
+
+	---@type json
 	local json = require('dkjson')
     local file = cf.openFile(saveFilename, 'w', 'data/players')
-    file:write(json.encode(ScpuiOptionValues))
+    file:write(json.encode(ScpuiSystem.data.ScpuiOptionValues))
     file:close()
 
 	--Persist base options

@@ -1356,6 +1356,7 @@ end
 --- @return saved_loadout[]?
 function LoadoutHandler:loadLoadoutsFromFile()
 
+	---@type json
 	local json = require('dkjson')
 	
 	--Loadouts are explicitly not saved across mod versions
@@ -1395,6 +1396,7 @@ end
 --- @return nil
 function LoadoutHandler:saveLoadoutsToFile(data)
 
+	---@type json
 	local json = require('dkjson')
 	
 	--Loadouts are explicitly not saved across mod versions

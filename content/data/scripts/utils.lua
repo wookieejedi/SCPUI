@@ -1,18 +1,27 @@
+-----------------------------------
+--This file contains many miscellaneous utility functions that can be used in any script
+-----------------------------------
+
 local utils = {}
 
 utils.table = {}
 
 
---round number function shared among all topics 
+--- Round a number to a specified number of decimal places
+--- @param num number The number to round
+--- @param decimalPlaces? number The number of decimal places to round to
+--- @return number The rounded number
 function utils.round(num, decimalPlaces)
     local places = decimalPlaces or 0
     local multiplier = 10^places
     return math.floor(num * multiplier + 0.5) / multiplier
 end
 
---Parses an XSTR from Custom data if it's formatted like so:
--- +Val: NAME "string", #
---and returns the string and id in a table
+--- Parses an XSTR from Custom data if it's formatted like so:
+---  +Val: NAME "string", #
+--- and returns the string and id in a table That can be sent to ba.XSTR()
+--- @param text string The XSTR to parse
+--- @return table<string, number> The parsed XSTR
 function utils.parseCustomXSTR(text)
 
 	local inputString = text
@@ -45,7 +54,19 @@ function utils.parseCustomXSTR(text)
 
 end
 
---Parses a comma separated list into a table of values
+--Translates an XSTR from Custom data if it's formatted like so:
+-- +Val: NAME "string", #
+--and returns translated string. Similar to parseCustomXSTR, but returns the translated string directly by calling ba.XSTR() internally
+---@param text string The XSTR to parse
+---@return string text The translated XSTR
+function utils.translateCustomXSTR(text)
+	local result = utils.parseCustomXSTR(text)
+	return ba.XSTR(result[1], result[2])
+end
+
+--- Parses a comma separated list into a table of values
+--- @param inputString string The comma separated list to parse
+--- @return table<string> The parsed list of values
 function utils.parseCommaSeparatedList(inputString)
     local result = {}
     -- Split the string by comma
@@ -58,15 +79,10 @@ function utils.parseCommaSeparatedList(inputString)
     return result
 end
 
---Translates an XSTR from Custom data if it's formatted like so:
--- +Val: NAME "string", #
---and returns translated string
-function utils.translateCustomXSTR(text)
-	local result = utils.parseCustomXSTR(text)
-	return ba.XSTR(result[1], result[2])
-end
-
---A wrapper for mn.runSEXP that is not fucking stupid.
+--- A wrapper for mn.runSEXP that is not fucking stupid. Will take the arguments and construct the mn.runSEXP() call for you.
+--- @param sexp string The SEXP to run
+--- @param ... any The arguments to pass to the SEXP
+--- @return boolean Whether the SEXP was run successfully
 function utils.runSEXP(sexp, ...)
 
 	local sexp = sexp
@@ -105,6 +121,9 @@ function utils.runSEXP(sexp, ...)
   
 end
 
+--- Removes data in a save table that is tied to pilots that can no longer be found
+--- @param data table The save data to clean
+--- @return table data The cleaned save data
 function utils.cleanPilotsFromSaveData(data)
 	
 	--get the pilots list
@@ -122,6 +141,9 @@ function utils.cleanPilotsFromSaveData(data)
 	return cleanData
 end
 
+--- Check if an animation file exists. Checks all valid extensions
+--- @param name string The name of the animation file to check
+--- @return boolean exists Whether the animation file exists
 function utils.animExists(name)
 	--remove extension if it's included
 	local file = name:match("(.+)%..+")
@@ -141,6 +163,10 @@ function utils.animExists(name)
 	return false
 end
 
+--- Gets the index of a value in a table
+--- @param tab table The table to search
+--- @param val any The value to search for
+--- @return number index The index of the value in the table, -1 if not found
 function utils.getTableIndex(tab, val)
 
 	for i, v in ipairs(tab) do
@@ -149,19 +175,30 @@ function utils.getTableIndex(tab, val)
 		end
 	end
 	
-	return ""
+	return -1
 
 end
 
+--- Remove an extension from a filename
+--- @param name string The filename to remove the extension from
+--- @return string name The filename without the extension
 function utils.strip_extension(name)
-    return string.gsub(name, "%..+$", "")
+    local text, count = string.gsub(name, "%..+$", "")
+    return text
 end
 
+--- Check if a file has an extension of any kind
+--- @param filename string The filename to check
+--- @return boolean hasExtension Whether the file has an extension
 function utils.hasExtension(filename)
     local lastDotIndex = filename:find("%.[^%.]*$")
     return lastDotIndex ~= nil
 end
 
+--- Check if a value is one of multiple values
+--- @param val any The value to check
+--- @param ... any The values to check against
+--- @return boolean isOneOf Whether the value is one of the specified values
 function utils.isOneOf(val, ...)
     for _,k in ipairs({...}) do 
         if val == k then
@@ -171,6 +208,10 @@ function utils.isOneOf(val, ...)
     return false
 end
 
+--- Extract part of a string up to a specified character
+--- @param inputstr string The string to extract from
+--- @param stop string The character to stop at
+--- @return string text The extracted string
 function utils.extractString(inputstr, stop)
 	local startIndex, endIndex = string.find(inputstr, stop)
     
@@ -183,6 +224,10 @@ function utils.extractString(inputstr, stop)
 	end
 end
 
+--- Split a string using a separator or space if separator is not provided
+--- @param inputstr string The string to split
+--- @param sep? string The separator to split by
+--- @return table<string> strings The split strings
 function utils.split(inputstr, sep)
     if sep == nil then
         sep = "%s"
@@ -194,10 +239,14 @@ function utils.split(inputstr, sep)
     return t
 end
 
+--- Load a config file as json and return the data in a table
+--- @param filename string The name of the config file to load
+--- @return table data The loaded config data
 function utils.loadConfig(filename)
-  -- Load the config file.
+  ---@type json
+  local json = require('dkjson')
   local file = cf.openFile(filename, 'r', 'data/config')
-  local config = require('dkjson').decode(file:read('*a'))
+  local config = json.decode(file:read('*a'))
   file:close()
   if not config then
     ba.error('Please ensure that ' .. filename .. ' exists in data/config and is valid JSON.')
@@ -205,9 +254,13 @@ function utils.loadConfig(filename)
   return config
 end
 
+--- A wrapper for ba.XSTR that can take a string or a table with a string and an id and return the translated string
+--- @param message string|table<string, number> The message to translate
+--- @param id? number The id of the message to translate
+--- @return string text The translated string
 function utils.xstr(message, id)
   if id then
-    return ba.XSTR(message, id)
+    return ba.XSTR(tostring(message), id)
   elseif type(message) == 'string' then
     ba.print('Utils.lua: Got string with missing XSTR index: ' .. message .. "\n")
     return message
@@ -216,6 +269,11 @@ function utils.xstr(message, id)
   end
 end
 
+--- Clamp a value between a minimum and maximum
+--- @param value number The value to clamp
+--- @param minimum number The minimum value
+--- @param maximum number The maximum value
+--- @return number clamped The clamped value
 function utils.clamp(value, minimum, maximum)
   if value < minimum then
     return minimum
@@ -226,7 +284,10 @@ function utils.clamp(value, minimum, maximum)
   end
 end
 
--- Call this as copy(someTable) and ignore the seen parameter. It's used internally.
+--- Call this as copy(someTable) and ignore the seen parameter. It's used internally.
+--- @param obj table The table to copy
+--- @param seen? table Ignored value, do not use
+--- @return table copy The copied table
 function utils.copy(obj, seen)
   if type(obj) ~= 'table' then return obj end
   if seen and seen[obj] then return seen[obj] end
@@ -237,6 +298,10 @@ function utils.copy(obj, seen)
   return res
 end
 
+--- Get a percentage as a string based on a fraction and a total
+--- @param fract number The fraction to calculate the percentage of
+--- @param total number The total to calculate the percentage of
+--- @return string percentage The percentage as a string
 function utils.compute_percentage(fract, total)
     if total <= 0 then
         return "0%"
@@ -245,6 +310,11 @@ function utils.compute_percentage(fract, total)
     return string.format("%.2f%%", (fract / total) * 100)
 end
 
+--- Get a random number between two values, but safely
+--- @param min number The minimum value
+--- @param max number The maximum value
+--- @param exact? boolean if true return an integer, else return a float
+--- @return number rand The random number
 function utils.safeRand(min, max, exact)
     if (min == nil and max ~= nil) then
         return max
@@ -273,25 +343,35 @@ function utils.safeRand(min, max, exact)
     end
 end
 
+--- Get the length of a table
+--- @param T table The table to get the length of
+--- @return number count The length of the table
 function utils.tableLength(T)
 	local count = 0
 	for _ in pairs(T) do count = count + 1 end
 	return count
 end
 
+--- Check if a string starts with a specified pattern
+--- @param str string The string to check
+--- @param pattern string The pattern to check for
+--- @return boolean startsWith Whether the string starts with the pattern
 function utils.stringStartsWith(str, pattern)
 	return str:sub(1, #pattern) == pattern
 end
 
+--- Remove leading and trailing whitespace from a string
+--- @param str string The string to trim
+--- @return string trimmed The trimmed string
 function utils.trim(str)
 	return str:find'^%s*$' and '' or str:match'^%s*(.*%S)'
 end
 
---- find_first
----@param str string
----@param patterns string[]
----@param startIdx number
----
+--- Find the first occurrence of any of the specified patterns in a string
+---@param str string The string to search
+---@param patterns string[] The patterns to search for
+---@param startIdx number The index to start searching from
+---@return ... The result of the search, if any
 function utils.find_first_either(str, patterns, startIdx)
     local firstResult = nil
     for i, v in ipairs(patterns) do
@@ -313,8 +393,12 @@ function utils.find_first_either(str, patterns, startIdx)
     end
 end
 
+--- Replace certain rml key characters with their direct HTML equivalents
+--- Replaces < with &lt;, > with &gt;, & with &amp;, and " with &quot;
+--- @param inputStr string The string to escape
+--- @return string text The escaped string
 function utils.rml_escape(inputStr)
-    return inputStr:gsub('[<>&"]', function(char)
+    local escaped = inputStr:gsub('[<>&"]', function(char)
         if char == "<" then
             return "&lt;"
         end
@@ -331,8 +415,13 @@ function utils.rml_escape(inputStr)
             return "&quot;"
         end
     end)
+
+    return escaped
 end
 
+--- Truncate a string at the first hash character
+--- @param inputString string The string to truncate
+--- @return string truncated The truncated string
 function utils.truncateAtHash(inputString)
     local hashPosition = inputString:find("#") -- Find the position of the first #
     if hashPosition then
@@ -342,6 +431,11 @@ function utils.truncateAtHash(inputString)
     end
 end
 
+--- Find a value in a table and return its index using ipairs
+--- @param tbl table The table to search
+--- @param val any The value to search for
+--- @param compare? fun(a:any, b:any):boolean The comparison function to use
+--- @return number index The index of the value in the table, -1 if not found
 function utils.table.ifind(tbl, val, compare)
     for i, v in ipairs(tbl) do
         if compare ~= nil then
@@ -358,6 +452,11 @@ function utils.table.ifind(tbl, val, compare)
     return -1
 end
 
+--- Find a value in a table and return its index using pairs
+--- @param tbl table The table to search
+--- @param val any The value to search for
+--- @param compare? fun(a:any, b:any):boolean The comparison function to use
+--- @return number | nil index The index of the value in the table, nil if not found
 function utils.table.find(tbl, val, compare)
     for i, v in pairs(tbl) do
         if compare ~= nil then
@@ -378,6 +477,11 @@ function utils.table.contains(tbl, val, compare)
     return utils.table.find(tbl, val, compare) ~= nil
 end
 
+--- Remove an element from a table by value
+--- @param tbl table The table to remove the value from
+--- @param val any The value to remove
+--- @param compare? fun(a:any, b:any):boolean The comparison function to use
+--- @return number index The index of the removed value in the table
 function utils.table.iremove_el(tbl, val, compare)
     local i = utils.table.ifind(tbl, val, compare)
     if i >= 1 then
@@ -389,9 +493,9 @@ end
 --- Maps an input array using a function
 --- @generic T
 --- @generic V
---- @param tbl T[]
---- @param map_fun fun(el:T):V
---- @return V[]
+--- @param tbl T[] The table to map
+--- @param map_fun fun(el:T):V The function to map with
+--- @return V[] The mapped table
 function utils.table.map(tbl, map_fun)
     local out = {}
     for i, v in ipairs(tbl) do
@@ -404,7 +508,7 @@ end
 --- @generic T
 --- @generic V
 --- @param tbl T[] The table to reduce
---- @param reduceFn fun(accumulator: V, el: T):V
+--- @param reduceFn fun(accumulator: V, el: T):V The function to reduce with
 --- @param initial V Initial value to use
 --- @return V The final value after all elements have been looked at
 function utils.table.reduce(tbl, reduceFn, initial)
@@ -416,8 +520,8 @@ function utils.table.reduce(tbl, reduceFn, initial)
 end
 
 --- Computes the sum of the specified table
---- @param tbl number[]
---- @return number
+--- @param tbl number[] The table to sum
+--- @return number sum The sum of the table
 function utils.table.sum(tbl)
     return utils.table.reduce(tbl, function(sum, el)
         return sum + el

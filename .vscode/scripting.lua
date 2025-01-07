@@ -2962,3 +2962,54 @@ COMMIT_MULTI_NO_PRIMARY = enumeration
 --- @const COMMIT_MULTI_NO_SECONDARY
 COMMIT_MULTI_NO_SECONDARY = enumeration
 
+--- dkjson is a built-in lua method for encoding and decoding values to/from json files
+--- call dkjson with <local json = require('dkjson')>
+--- @class json
+--- @field encode json_encode
+--- @field decode json_decode
+--- @field use_lpeg json_use_lpeg
+--- @field quotestring json_quote_string
+--- @field addnewline json_addnewline
+--- @field encodeexception json_encodeexception
+json = {}
+
+--- Encodes a Lua value into a JSON string.
+---- value: any The Lua value to encode (e.g., table, string, number, boolean, nil).
+---- state: table (Optional) A table to configure encoding options:
+---   - `indent`: Enables pretty-printing if set to true.
+---   - `level`: Sets the current indentation level (used internally).
+---   - `keyorder`: Specifies a custom order for object keys.
+--- @return string The JSON string representation of the Lua value.
+--- @alias json_encode fun(value: any, state?: table): string
+
+--- Decodes a JSON string into a Lua value.
+---- jsonString: string The JSON string to decode.
+---- pos: number (Optional) The position in the string to start decoding (default is 1).
+---- nullval: any (Optional) A value to represent JSON `null` (default is `nil`).
+---- ...: table (Optional) Custom metatables for objects and arrays.
+--- @return any The Lua value resulting from the decoding.
+--- @return number The position in the string where parsing ended.
+--- @return string (Optional) An error message if decoding failed.
+--- @alias json_decode fun(jsonString: string, pos?: number, nullval?: any, ...?: table): any, number, string
+
+--- Enables the use of LPeg for JSON parsing and encoding.
+--- @return table The `dkjson` library with LPeg integration enabled.
+--- @alias json_use_lpeg fun(): table
+
+--- Encodes a Lua string as a JSON string literal.
+---- value: string The Lua string to encode.
+--- @return string The JSON string literal representation of the Lua string.
+--- @alias json_quote_string fun(value: string): string
+
+--- Adds a newline and indentation to the JSON buffer.
+---- state: table The current encoding state.
+--- @alias json_addnewline fun(state: table): nil
+
+--- Handles encoding exceptions by returning a placeholder JSON string.
+---- reason: string The reason for the exception.
+---- value: any The value that caused the exception.
+---- state: table The current encoding state.
+---- defaultmessage: string The default error message.
+--- @return string A JSON string representing the exception.
+--- @alias json_encodeexception fun(reason: string, value: any, state: table, defaultmessage: string): string
+

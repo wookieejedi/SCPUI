@@ -5,6 +5,8 @@
 --Create the custom options table
 ScpuiSystem.data.CustomOptions = {}
 
+--- Init the custom options by sending the tbl and tbm files to the parser and initializing the global options cache from disk, if possible
+--- @return nil
 function ScpuiSystem:initCustomOptions()
 	
 	--Verfy that the mod has a proper title
@@ -20,29 +22,34 @@ function ScpuiSystem:initCustomOptions()
 		self:parseOptions(v)
 	end
 
+	---@type json
+	local json = require('dkjson')
+
     --Here we load the global mod options or the defaults for use before a player is selected
     local saveFilename = 'scpui_options_global.cfg'
     if cf.fileExists(saveFilename, 'data/players', true) then
         local file = cf.openFile(saveFilename, 'r', 'data/players')
-        local config = require('dkjson').decode(file:read('*a'))
+        local config = json.decode(file:read('*a'))
         file:close()
         if not config then
             config = {}
         end
         
-        ScpuiOptionValues = config
+        ScpuiSystem.data.ScpuiOptionValues = config
     else
-        ScpuiOptionValues = {}
+        ScpuiSystem.data.ScpuiOptionValues = {}
         for i, v in ipairs(ScpuiSystem.data.CustomOptions) do
-            ScpuiOptionValues[v.Key] = v.Value
+            ScpuiSystem.data.ScpuiOptionValues[v.Key] = v.Value
         end
-        local json = require('dkjson')
         local file = cf.openFile(saveFilename, 'w', 'data/players')
-        file:write(json.encode(ScpuiOptionValues))
+        file:write(json.encode(ScpuiSystem.data.ScpuiOptionValues))
         file:close()
     end
 end
 
+--- Parse the options.tbl and *-optn.tbm files to get the custom options
+--- @param data string The file to parse
+--- @return nil
 function ScpuiSystem:parseOptions(data)
 
 	parse.readFileText(data, "data/tables")
@@ -242,6 +249,9 @@ function ScpuiSystem:parseOptions(data)
 
 end
 
+--- Verify the parsed option type is valid
+--- @param val string The parsed option type
+--- @return string type The valid option type
 function ScpuiSystem:verifyParsedType(val)
 
 	if string.lower(val) == "header" then
@@ -269,11 +279,17 @@ function ScpuiSystem:verifyParsedType(val)
 	end
 	
 	parse.displayMessage("Option type " .. val .. " is not valid!", true)
+
+	--Unreachable
+	return ""
 	
 end
 
+--- Load the player's options file for the currently loaded mod
+--- @return table? options The player's options data
 function ScpuiSystem:loadOptionsFromFile()
 
+	---@type json
 	local json = require('dkjson')
   
 	local location = 'data/players'
@@ -303,8 +319,12 @@ function ScpuiSystem:loadOptionsFromFile()
 	end
 end
 
+--- Save the player's options file for the currently loaded mod
+--- @param data table The player's options data
+--- @return nil
 function ScpuiSystem:saveOptionsToFile(data)
 
+	---@type json
 	local json = require('dkjson')
   
 	local location = 'data/players'
@@ -337,21 +357,23 @@ function ScpuiSystem:saveOptionsToFile(data)
 	file:close()
 end
 
+--- Load and apply any custom options after a pilot is selected
+--- @return nil
 function ScpuiSystem:applyCustomOptions()
     if ((hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT") and (hv.NewState.Name == "GS_STATE_MAIN_MENU")) or hv.OldState.Name == "GS_STATE_BARRACKS_MENU" then
         --Here we load the mod options save data for the selected player
-        ScpuiOptionValues = {}
+        ScpuiSystem.data.ScpuiOptionValues = {}
         local utils = require('utils')
-        ScpuiOptionValues = ScpuiSystem:loadOptionsFromFile()
+        ScpuiSystem.data.ScpuiOptionValues = ScpuiSystem:loadOptionsFromFile()
     
         --load defaults if we have bad data
-        if type(ScpuiOptionValues) ~= "table" then
-            ba.print("SCPUI: Got bad ScpuiOptionValues data! Loading defaults!")
-            ScpuiOptionValues = {}
+        if type(ScpuiSystem.data.ScpuiOptionValues) ~= "table" then
+            ba.print("SCPUI: Got bad ScpuiSystem.data.ScpuiOptionValues data! Loading defaults!")
+            ScpuiSystem.data.ScpuiOptionValues = {}
             for i, v in ipairs(ScpuiSystem.data.CustomOptions) do
-                ScpuiOptionValues[v.Key] = v.Value
+                ScpuiSystem.data.ScpuiOptionValues[v.Key] = v.Value
             end
-            ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
+            ScpuiSystem:saveOptionsToFile(ScpuiSystem.data.ScpuiOptionValues)
         end
     end
 end
@@ -361,22 +383,26 @@ ScpuiSystem:initCustomOptions()
 --Here we load the global mod options or the defaults for use before a player is selected
 local saveFilename = 'scpui_options_global.cfg'
 if cf.fileExists(saveFilename, 'data/players', true) then
+
+	---@type json
+	local json = require('dkjson')
 	local file = cf.openFile(saveFilename, 'r', 'data/players')
-	local config = require('dkjson').decode(file:read('*a'))
+	local config = json.decode(file:read('*a'))
 	file:close()
 	if not config then
 		config = {}
 	end
 	
-	ScpuiOptionValues = config
+	ScpuiSystem.data.ScpuiOptionValues = config
 else
-	ScpuiOptionValues = {}
+	ScpuiSystem.data.ScpuiOptionValues = {}
 	for i, v in ipairs(ScpuiSystem.data.CustomOptions) do
-		ScpuiOptionValues[v.Key] = v.Value
+		ScpuiSystem.data.ScpuiOptionValues[v.Key] = v.Value
 	end
+	---@type json
 	local json = require('dkjson')
 	local file = cf.openFile(saveFilename, 'w', 'data/players')
-	file:write(json.encode(ScpuiOptionValues))
+	file:write(json.encode(ScpuiSystem.data.ScpuiOptionValues))
 	file:close()
 end
 

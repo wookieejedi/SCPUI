@@ -284,6 +284,16 @@
 --- @field modelDraw? model_draw_memory The current model draw memory for SCPUI
 --- @field multiHost? multi_host_memory The current multi host memory for SCPUI
 
+--- SCPUI Custom Options Data
+--- @class custom_option_data
+--- @field Brief_Render_Option? string The brief render option. "screen" to render directly to screen. "texture" to render to an intermediary texture and pass to librocket via url. Nil for default
+--- @field Font_Adjustment? number The font adjustment value. 0.5 is default, 0 is smallest, 1 is largest. Nil for default
+--- @field databaseModelAngle? number The angle of the database model. 0.5 is default. Nil for default
+--- @field databaseModelSpeed? number The speed of the database model rotation. 0.5 is default. Nil for default
+--- @field databaseSort? string[] The sort type for the database; one for each of "ships", "weapons", and "intel".
+--- @field databaseCategory? string[] The category type for the database; one for each of "ships", "weapons", and "intel".
+--- @field simRoomChoice? integer The choice for the sim room. 1 = single, 2 = campaign in base SCPUI
+
 --- SCPUI Global Documentation
 --- @class scpui_data
 --- @field context? Context? The current context for SCPUI. Do Not Modify!
@@ -314,6 +324,7 @@
 --- @field CustomOptions? table The custom options for values
 --- @field PlayerRibbons? ribbon_info[] The player ribbons for SCPUI
 --- @field rocketUiIcons? loadout_icon[] The rocket UI icons for SCPUI loadout screens
+--- @field ScpuiOptionValues custom_option_data The values for the built-in SCPUI options
 
 --- SCPUI Dialog Button
 --- @class dialog_button
@@ -344,3 +355,12 @@
 --- @field background? fun(self: self, color: string): self Sets the background_color
 --- @field show? fun(self: self, context: Context, abortTable?: dialog_abort): promise The function to show the dialog
 --- @field __index? dialog_factory The metatable for the dialog factory
+
+--- SCPUI Keywords table
+--- @class scpui_keywords
+--- @field prefixes string[] The prefixes for the keywords
+--- @field suffixes string[] The suffixes for the keywords
+
+--- SCPUI UI Context
+--- @class scpui_context
+--- @field document Document The document for the context

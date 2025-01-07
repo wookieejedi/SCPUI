@@ -5,6 +5,7 @@
 --Create the custom options table
 ScpuiSystem.data.PlayerRibbons = {}
 
+--LuaSexp to grant a ribbon permanently to the player
 mn.LuaSEXPs['grant-scpui-ribbon'].Action = function(title, desc_name, border_r, border_g, border_b, ...)	
 	local desc = "From " .. ScpuiSystem:getModTitle()
 	if mn.hasCustomStrings() then
@@ -15,27 +16,36 @@ mn.LuaSEXPs['grant-scpui-ribbon'].Action = function(title, desc_name, border_r, 
 		end
 	end
 	
-	local border_color = {}
-	border_color.r = border_r
-	border_color.g = border_g
-	border_color.b = border_b
+	---@type scpui_color
+	local border_color = {
+		r = border_r,
+		g = border_g,
+		b = border_b
+	}
 	
+	---@type scpui_ribbon_stripe[]
 	local stripe_colors = {}
 	for _, v in ipairs(arg) do
-		local stripe = {}
-		stripe.p = v[1]
-		stripe.r = v[2]
-		stripe.g = v[3]
-		stripe.b = v[4]
+
+		---@type scpui_ribbon_stripe
+		local stripe = {
+			p = v[1],
+			r = v[2],
+			g = v[3],
+			b = v[4]
+		}
+
 		table.insert(stripe_colors, stripe)
 	end
 	
 	ScpuiSystem:grantRibbon(title, desc, border_color, stripe_colors)
 end
 
--- Grants a ribbon.
--- border_color is an array of 3 values, r, g, b
--- stripe_colors is an array of stripe is an array of 4 values, p, r, g, b where p is the position
+--- Grants a ribbon. This is a permanent reward that will be displayed on the player's Ribbons UI across all mods
+--- @param title string The title of the ribbon
+--- @param description string The description of the ribbon
+--- @param border_color scpui_color The color of the border
+--- @param stripe_colors scpui_ribbon_stripe[] The colors of the stripes
 function ScpuiSystem:grantRibbon(title, description, border_color, stripe_colors)
 	local ribbon = {}
 	
@@ -75,10 +85,12 @@ function ScpuiSystem:grantRibbon(title, description, border_color, stripe_colors
 	
 	ScpuiSystem:saveRibbonsToFile()
 end
-	
 
+--- Load the current ribbons save file
+--- @return nil
 function ScpuiSystem:loadRibbonsFromFile()
 
+	---@type json
 	local json = require('dkjson')
   
 	local location = 'data/players'
@@ -103,8 +115,11 @@ function ScpuiSystem:loadRibbonsFromFile()
 	ScpuiSystem.data.PlayerRibbons = config
 end
 
+--- Save the current ribbons to the save file
+--- @return nil
 function ScpuiSystem:saveRibbonsToFile()
 
+	---@type json
 	local json = require('dkjson')
   
 	local location = 'data/players'
@@ -136,6 +151,9 @@ function ScpuiSystem:saveRibbonsToFile()
 	file:close()
 end
 
+--- Create a ribbon image from a ribbon object and return the image blob
+--- @param ribbon ribbon_info The ribbon object
+--- @return string blob The image blob
 function ScpuiSystem:createRibbonImage(ribbon)
 	local utils = require("utils")
 	

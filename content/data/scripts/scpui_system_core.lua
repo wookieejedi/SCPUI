@@ -56,9 +56,8 @@ ScpuiSystem.data = {
 	},
 	render = true,
 	tooltipTimers = {},
+	ScpuiOptionValues = {}
 }
-
-ScpuiOptionValues = {}
 
 --RUN AWAY IT'S FRED!
 if ba.inMissionEditor() then

@@ -1,7 +1,11 @@
----------------------------------------------------------------
--------- functions for OOP              --------
--------------------------------------------------------------
--- Copied from http://lua-users.org/wiki/SimpleLuaClasses
+-----------------------------------
+--This file contains the class function used to create each UI class.
+-----------------------------------
+
+--- Create a class-like table with inheritance and constructor support. Copied from http://lua-users.org/wiki/SimpleLuaClasses
+--- @param base? any The data to use as a parent, if any
+--- @param init? function The constructor to use for the class, if any
+--- @return table class The new class
 local function class(base, init)
     local c = {} -- a new class instance
     if not init and type(base) == 'function' then

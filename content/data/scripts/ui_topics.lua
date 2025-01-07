@@ -1,3 +1,7 @@
+-----------------------------------
+--This file contains all available UI Topics that can be interacted with throughou the UI.
+-----------------------------------
+
 local Topic = require("Topic")
 local utils = require("utils") --to allow use of utils.round()
 

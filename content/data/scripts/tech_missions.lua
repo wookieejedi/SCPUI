@@ -51,8 +51,8 @@ function TechMissionsController:initialize(document)
 		
 		--Check for last loaded section
 		local newSection = nil
-		if ScpuiOptionValues.simRoomChoice ~= nil then
-			newSection = ScpuiOptionValues.simRoomChoice
+		if ScpuiSystem.data.ScpuiOptionValues.simRoomChoice ~= nil then
+			newSection = ScpuiSystem.data.ScpuiOptionValues.simRoomChoice
 		else
 			newSection = 2
 		end
@@ -129,8 +129,8 @@ function TechMissionsController:ChangeSection(section)
 	end
 	
 	--save the choice to the player file
-	ScpuiOptionValues.simRoomChoice = self.sectionIndex
-	ScpuiSystem:saveOptionsToFile(ScpuiOptionValues)
+	ScpuiSystem.data.ScpuiOptionValues.simRoomChoice = self.sectionIndex
+	ScpuiSystem:saveOptionsToFile(ScpuiSystem.data.ScpuiOptionValues)
 	
 	self.show_all = false
 	self.Counter = 0

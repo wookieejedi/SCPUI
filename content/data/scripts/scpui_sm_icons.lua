@@ -6,8 +6,11 @@ ScpuiSystem.data.rocketUiIcons = {}
 
 local async_util = require("async_util")
 
+--- Open the cache file and return the contents
+--- @return table
 function ScpuiSystem:openCache()
 
+	---@type json
 	local json = require('dkjson')
 	local location = 'data/config'
 	local file = nil
@@ -34,6 +37,9 @@ function ScpuiSystem:openCache()
 
 end
 
+--- Save the icon cache to disk
+--- @param cache table
+--- @return nil
 function ScpuiSystem:saveCache(cache)
 
 	local json = require('dkjson')
@@ -43,7 +49,7 @@ function ScpuiSystem:saveCache(cache)
 	
 	if modname == "" then
 		ba.print("SCPUI could not get a valid mod name. Skipping icon caching!\n")
-		return {}
+		return
 	end
 	
 	local filename = "scpui_" .. modname:gsub(" ", "") .. ".cache"
@@ -54,6 +60,10 @@ function ScpuiSystem:saveCache(cache)
 
 end
 
+--- Set the icon frames for a ship or weapon
+--- @param item string The ship or weapon name
+--- @param is_ship? boolean True if the item is a ship, false if it is a weapon
+--- @return nil
 function ScpuiSystem:setIconFrames(item, is_ship)
 
 	--If the icon was preloaded, then skip!
@@ -252,6 +262,8 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 
 end
 
+--- Starts the generation of icons by opening the cache or creating a new one
+--- @return nil
 function ScpuiSystem:beginIconGeneration()
 	ScpuiSystem.data.rocketUiIcons = ScpuiSystem:openCache()
 	
@@ -264,6 +276,8 @@ function ScpuiSystem:beginIconGeneration()
 	ScpuiSystemReset = true
 end
 
+--- Finish the icon generation by saving the cache to disk and freeing all models
+--- @return nil
 function ScpuiSystem:finishIconGeneration()
 	ScpuiSystem:saveCache(ScpuiSystem.data.rocketUiIcons)
 
@@ -272,6 +286,8 @@ function ScpuiSystem:finishIconGeneration()
 	gr.freeAllModels()
 end
 
+--- Generate the scpui preload calls that will create the icons during the splash screens
+--- @return nil
 function ScpuiSystem:genIcons()
 
 	if not ScpuiSystem.data.active then
@@ -287,15 +303,15 @@ function ScpuiSystem:genIcons()
 
 	for i = 1, #tb.WeaponClasses do
 
-		v = tb.WeaponClasses[i]
+		local v = tb.WeaponClasses[i]
 
 		if v:isPlayerAllowed() then		
 			local safeName = v.Name:gsub("'", "\\'")
 			ScpuiSystem:addPreload(
-				"Generating icon for " .. v.Name, --log print
-				"Generating " .. v.Name .. " icon", --on screen print
-				"ScpuiSystem:setIconFrames('" .. safeName .. "', false)", --function to run
-				1 --priority level
+				"Generating icon for " .. v.Name,
+				"Generating " .. v.Name .. " icon",
+				"ScpuiSystem:setIconFrames('" .. safeName .. "', false)",
+				1
 			)
 		end
 
@@ -303,7 +319,7 @@ function ScpuiSystem:genIcons()
 
 	for i = 1, #tb.ShipClasses do
 
-		v = tb.ShipClasses[i]
+		local v = tb.ShipClasses[i]
 
 		if v:isPlayerAllowed() then
 			local safeName = v.Name:gsub("'", "\\'")
@@ -326,6 +342,8 @@ function ScpuiSystem:genIcons()
 
 end
 
+--- Forces the icon cache to be cleared and regenerated
+--- @return nil
 local function resetIconCache()
     if ScpuiSystemReset == nil then
 		ScpuiSystemReset = true
