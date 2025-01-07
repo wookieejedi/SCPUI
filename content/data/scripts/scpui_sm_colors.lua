@@ -12,11 +12,11 @@ function ScpuiSystem:initKeywords()
     ---@type scpui_keywords
     local affixes = {Prefixes = {''}, Suffixes = {''}}
     if cf.fileExists('keywords.tbl') then
-        affixes = self:parseKeywords('keywords.tbl', affixes)
+        affixes = ScpuiSystem:parseKeywords('keywords.tbl', affixes)
     end
   
     for _, v in ipairs(cf.listFiles("data/tables", "*-kwrd.tbm")) do
-        self:parseKeywords(v, affixes)
+        ScpuiSystem:parseKeywords(v, affixes)
     end
 end
 
@@ -42,7 +42,7 @@ function ScpuiSystem:parseKeywordAffixes(source)
         elseif parse.optionalString("+Immediate Suffix:") then
             table.insert(suffixes, parse.getString())
         else
-            return { prefixes = prefixes, suffixes = suffixes }
+            return { Prefixes = prefixes, Suffixes = suffixes }
         end
     end
 end
@@ -61,16 +61,16 @@ function ScpuiSystem:parseKeywords(data, inheritedAffixes)
         parse.stop()
         parse.readFileText(data, "data/tables")
         if not parse.skipToString("#Default") then
-        ba.error(data .. " is missing a valid language section!")
+            ba.error(data .. " is missing a valid language section!")
         end
     end
 
     ---@type scpui_keywords
-    local globalAffixes = self:parseKeywordAffixes(inheritedAffixes)
+    local globalAffixes = ScpuiSystem:parseKeywordAffixes(inheritedAffixes)
     while parse.optionalString("$Style:") do
         local any = false
         local style = parse.getString()
-        local affixes = self:parseKeywordAffixes(globalAffixes)
+        local affixes = ScpuiSystem:parseKeywordAffixes(globalAffixes)
         while parse.optionalString("+Text:") do
             any = true
             local text = parse.getString()
