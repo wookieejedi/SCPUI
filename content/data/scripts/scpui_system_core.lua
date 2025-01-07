@@ -80,6 +80,8 @@ end
 
 ScpuiSystem.data.context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
 
+--- Initialize ScpuiSystem and send relevant scpui.tbl files to the parser
+--- @return nil
 function ScpuiSystem:init()
 	if cf.fileExists("scpui.tbl", "", true) then
 		self:parseScpuiTable("scpui.tbl")
@@ -91,6 +93,8 @@ function ScpuiSystem:init()
 	self:loadSubmodels()
 end
 
+--- Load ScpuiSystem submodules (script files starting with `scpui_sm_`)
+--- @return nil
 function ScpuiSystem:loadSubmodels()
     local scriptDir = "data/scripts"
     local files = cf.listFiles("data/scripts", "*.lua")
@@ -117,6 +121,8 @@ function ScpuiSystem:loadSubmodels()
     end
 end
 
+--- Parse the medals section of the scpui.tbl
+--- @return nil
 function ScpuiSystem:parseMedals()
 	while parse.optionalString("$Medal:") do
 	
@@ -144,6 +150,9 @@ function ScpuiSystem:parseMedals()
 	end
 end
 
+--- Parse the scpui.tbl file
+--- @param data string The file to parse
+--- @return nil
 function ScpuiSystem:parseScpuiTable(data)
 	parse.readFileText(data, "data/tables")
 	
@@ -282,6 +291,9 @@ function ScpuiSystem:parseScpuiTable(data)
 	parse.stop()
 end
 
+--- Get the current SCPUI document definition
+--- @param state string The current state key
+--- @return ui_replacement? The current SCPUI document definition
 function ScpuiSystem:getDef(state)
 	if self.data.render == false then
 		return nil
@@ -289,6 +301,8 @@ function ScpuiSystem:getDef(state)
 	return self.data.replacements[state]
 end
 
+--- When a document is closed this function tries to make sure everything is properly cleaned up
+--- @return nil
 function ScpuiSystem:cleanSelf()
 	ba.print("SCPUI is closing document " .. ScpuiSystem.data.currentDoc.markup .. "\n")
 	while ScpuiSystem.data.currentDoc.document:HasChildNodes() do
@@ -302,6 +316,8 @@ function ScpuiSystem:cleanSelf()
 	ScpuiSystem.data.tooltipTimers = {}
 end
 
+--- On start of a new game state this function will try to load the related SCPUI document, if any exists for the state
+--- @return nil
 function ScpuiSystem:stateStart()
 
 	if ba.MultiplayerMode then
@@ -334,6 +350,8 @@ function ScpuiSystem:stateStart()
 	ui.enableInput(self.data.context)
 end
 
+--- On each frame of a game state this function will update and render the related SCPUI document, if any exists for the state
+--- @return nil
 function ScpuiSystem:stateFrame()
 	if not self:hasOverrideForCurrentState() then
 		return
@@ -348,6 +366,10 @@ function ScpuiSystem:stateFrame()
 	end)
 end
 
+--- On end of a game state this function will try to clean up the related SCPUI document, if any exists for the state
+--- It will also return control back to the FSO UI
+--- @param substate? boolean If the state to end is a substate
+--- @return nil
 function ScpuiSystem:stateEnd(substate)
 
 	--This allows for states to correctly return to the previous state even if has no rocket ui defined
@@ -377,6 +399,10 @@ function ScpuiSystem:stateEnd(substate)
 	end
 end
 
+--- Gets the name of a game state or substate in a table with indexed key 'Name'
+--- The primary purpose of this function is to handle the special case of SCPUI SCRIPTING SUBSTATE
+--- @param state gamestate The game state or substate
+--- @return gamestate state The game state or substate table
 function ScpuiSystem:getRocketUiHandle(state)
 	if state.Name == "GS_STATE_SCRIPTING" then
 		return {Name = ScpuiSystem.data.substate}
@@ -385,6 +411,9 @@ function ScpuiSystem:getRocketUiHandle(state)
 	end
 end
 
+--- This function is used to begin a new scripting substate in the GS_STATE_SCRIPTING game state
+--- @param state string The substate to begin
+--- @return nil
 function ScpuiSystem:beginSubstate(state) 
 	ScpuiSystem.data.oldSubstate = ScpuiSystem.data.substate
 	ScpuiSystem.data.substate = state
@@ -401,7 +430,10 @@ function ScpuiSystem:beginSubstate(state)
 	end
 end
 
---This allows for states to correctly return to the previous state even if has no rocket ui defined
+--- Returns to a previous game state checking if we should return to a substate as well
+--- This allows for states to correctly return to the previous state even if has no rocket ui defined
+--- @param state gamestate The game state or substate
+--- @return nil
 function ScpuiSystem:ReturnToState(state)
 
 	local event
@@ -421,14 +453,23 @@ function ScpuiSystem:ReturnToState(state)
 
 end
 
+--- Checks if a gamestate has an SCPUI document defined
+--- @param state gamestate The game state or substate
+--- @return boolean If the game state or substate has an SCPUI document defined
 function ScpuiSystem:hasOverrideForState(state)
 	return self:getDef(state.Name) ~= nil
 end
 
+--- Checks if the current gamestate has an SCPUI document defined
+--- @return boolean If the current game state or substate has an SCPUI document defined
 function ScpuiSystem:hasOverrideForCurrentState()
 	return self:hasOverrideForState(ScpuiSystem:getRocketUiHandle(ba.getCurrentGameState()))
 end
 
+--- SCPUI's override for the FSO dialog system
+--- If a dialog is to be shown, SCPUI will capture the relevant data and
+--- show it using SCPUI's own dialog system
+--- @return nil
 function ScpuiSystem:dialogStart()
 	local dialogs = require('dialogs')
 	if hv.IsDeathPopup then
@@ -472,6 +513,9 @@ function ScpuiSystem:dialogStart()
 	ui.enableInput(self.data.context)
 end
 
+--- For a dialog frame, check for any user input and handle it while also
+--- updating and rendering the dialog itself
+--- @return nil
 function ScpuiSystem:dialogFrame()
 	-- Add some tracing scopes here to see how long this stuff takes
 	updateCategory:trace(function()
@@ -503,6 +547,9 @@ function ScpuiSystem:dialogFrame()
 	end
 end
 
+--- On dialog end, SCPUI will close the dialog and return control back to the FSO UI
+--- Also handle any abort callbacks
+--- @return nil
 function ScpuiSystem:dialogEnd()
 	ui.disableInput()
 	
@@ -523,6 +570,9 @@ function ScpuiSystem:dialogEnd()
 	self:CloseDialog()
 end
 
+--- Gets the current mod title from FSO. If not defined then set it to 'SCPUI Development Mod'
+--- If the mod root name is not 'SCPUI' then warn that a mod title is required
+--- @return string title The current mod title
 function ScpuiSystem:getModTitle()
     local title = ba.getModTitle()
     
@@ -545,6 +595,12 @@ function ScpuiSystem:getModTitle()
     return title
 end
 
+--- Adds a preload coroutine to the SCPUI system that will be run during the splash screens
+--- @param message string The debug message to display
+--- @param text string The debug string to display
+--- @param run string The function to run using lua's loadstring method
+--- @param val number The priority of the preload coroutine, should be 1 or 2
+--- @return nil
 function ScpuiSystem:addPreload(message, text, run, val)
 	if self.data.preloadCoroutines == nil then
 		self.data.preloadCoroutines = {}
@@ -564,8 +620,10 @@ function ScpuiSystem:addPreload(message, text, run, val)
 		func = run,
 		priority = val
 	}
-end	
+end
 
+--- Closes the current dialog and returns control to the state that called it
+--- @return nil
 function ScpuiSystem:CloseDialog()
 	if ScpuiSystem.data.dialog ~= nil then
 		ba.print("SCPUI is closing dialog `" .. ScpuiSystem.data.dialog.title .. "`\n")
@@ -584,6 +642,8 @@ function ScpuiSystem:CloseDialog()
 	end
 end
 
+--- During the loading screen, SCPUI will show a custom loading screen if defined
+--- @return nil
 function ScpuiSystem:loadStart()
 
 	if ScpuiSystem.data.stateInit.loadScreen then
@@ -611,6 +671,9 @@ function ScpuiSystem:loadStart()
 	ScpuiSystem.data.stateInit.loadScreen = true
 end
 
+--- During the loading screen, SCPUI will update and render the custom loading screen if defined
+--- The LoadProgress variable is updated to show the progress of the loading bar
+--- @return nil
 function ScpuiSystem:loadFrame()
 	if ScpuiSystem.data.stateInit.loadScreen == nil then
 		return
@@ -627,7 +690,9 @@ function ScpuiSystem:loadFrame()
 	end)
 end
 
-function ScpuiSystem:loadEnd(substate)
+--- When a loading screen ends, clean up the relevant data
+--- @return nil
+function ScpuiSystem:loadEnd()
 
 	if ScpuiSystem.data.stateInit.loadScreen == nil then
 		return
@@ -640,6 +705,8 @@ function ScpuiSystem:loadEnd(substate)
 	ScpuiSystem.data.stateInit.loadScreen = nil
 end
 
+--- Closes the loading screen and returns control back to the state that called it, if any
+--- @return nil
 function ScpuiSystem:CloseLoadScreen()
 	if ScpuiSystem.data.loadDoc ~= nil then
 		ba.print("SCPUI is closing loading screen\n")
