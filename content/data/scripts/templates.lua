@@ -1,5 +1,16 @@
+-----------------------------------
+--This file contains a templates system to help with tab-like interfaces such as Options
+-----------------------------------
+
 local module = {}
 
+--- This function processes conditional <if> elements in a libRocket template by evaluating their condition attribute against a provided set of parameters.
+--- If the condition evaluates to true, the <if> element is replaced with its child elements.
+--- If the condition evaluates to false, the <if> element and its children are removed from the template.
+--- This allows dynamic modification of the template structure based on runtime data.
+--- @param if_el Element The <if> element to process.
+--- @param parameters table A table of parameters to use in the condition evaluation.
+--- @return nil
 local function process_template_if(if_el, parameters)
     if parameters == nil or type(parameters) ~= "table" then
         parameters = {}
@@ -46,6 +57,10 @@ local function process_template_if(if_el, parameters)
     parent:RemoveChild(if_el)
 end
 
+--- This function recursively processes a libRocket template's child elements, handling special directives (e.g., <if> elements)
+--- and modifying the structure dynamically based on runtime parameters.
+--- @param element Element The element to process.
+--- @param parameters table A table of parameters to use in the condition evaluation.
 local function process_template_directives(element, parameters)
     -- The list of child nodes may change while we iterate over it so we do the iteration until we reach the end
     local again = true
@@ -82,6 +97,13 @@ local function process_template_directives(element, parameters)
     end
 end
 
+--- Creates a clone of a template element, processes special directives (like <if> conditions) within it, and retrieves specific sub-elements by class name.
+--- @param document Document The document containing the template element.
+--- @param template_id string The ID of the template element to clone.
+--- @param element_id string The ID to assign to the cloned element.
+--- @param template_classes string[] An array of class names to retrieve specific sub-elements from the cloned element.
+--- @param parameters? table A table of parameters to use in the condition evaluation.
+--- @return Element ... The cloned element and any sub-elements retrieved by class name.
 function module.instantiate_template(document, template_id, element_id, template_classes, parameters)
     parameters      = parameters or {}
     local template  = document:GetElementById(template_id)

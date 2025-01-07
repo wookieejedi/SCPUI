@@ -2260,8 +2260,8 @@ ui.MainHall = {}
 
 --- Barracks: API for accessing values specific to the Barracks UI.
 --- @class Barracks
---- @field listPilotImages fun(): string # Lists the names of the available pilot images.
---- @field listSquadImages fun(): string # Lists the names of the available squad images.
+--- @field listPilotImages fun(): table # Lists the names of the available pilot images.
+--- @field listSquadImages fun(): table # Lists the names of the available squad images.
 --- @field acceptPilot fun(selection: player, changeState?: boolean): boolean # Accept the given player as the current player. Set second argument to false to prevent returning to the mainhall
 ui.Barracks = {}
 

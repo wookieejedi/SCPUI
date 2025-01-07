@@ -284,10 +284,10 @@ function utils.clamp(value, minimum, maximum)
   end
 end
 
---- Call this as copy(someTable) and ignore the seen parameter. It's used internally.
---- @param obj table The table to copy
+--- Call this as copy(someData) and ignore the seen parameter. It's used internally.
+--- @param obj any The data to copy
 --- @param seen? table Ignored value, do not use
---- @return table copy The copied table
+--- @return any copy The copied data
 function utils.copy(obj, seen)
   if type(obj) ~= 'table' then return obj end
   if seen and seen[obj] then return seen[obj] end

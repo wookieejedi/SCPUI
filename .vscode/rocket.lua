@@ -200,6 +200,7 @@ Element = {}
 ---@field Click fun(self: self) Fakes a click on this element.
 ---@field DispatchEvent fun(self: self, event: string, parameters: table<string, any>, interruptible: boolean) Dispatches an event to this element.
 ---@field Focus fun(self: self) Focuses this element.
+---@field Clone fun(): Element Clones the element.
 ---@field GetAttribute fun(self: self, name: string): any Gets an attribute by name.
 ---@field GetElementById fun(self: self, id: string): Element Gets an element by ID.
 ---@field GetElementsByClassName fun(self: self, class_name: string): Element[] Gets elements by class name.

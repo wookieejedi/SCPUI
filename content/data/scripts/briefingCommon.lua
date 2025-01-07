@@ -1,4 +1,3 @@
-local rocket_utils = require("rocket_util")
 local async_util = require("async_util")
 local utils = require("utils")
 local topics = require("ui_topics")
@@ -273,6 +272,10 @@ function AbstractBriefingController:leaveStage()
     end
 end
 
+--- Initialize a briefing stage, add the text and play the voice file
+--- @param stageIdx number The index of the stage to initialize
+--- @param briefingText string The briefing text to show
+--- @param audioFileName string The name of the audio file to play
 function AbstractBriefingController:initializeStage(stageIdx, briefingText, audioFileName)
     self.current_stage = stageIdx
     self.stage_instance_id = self.stage_instance_id + 1
@@ -282,7 +285,7 @@ function AbstractBriefingController:initializeStage(stageIdx, briefingText, audi
 
     local text_el = self.document:GetElementById(self.element_names.text_el)
 	text_el.parent_node.scroll_top = 0
-    local num_stage_lines = rocket_utils.set_briefing_text(text_el, briefingText)
+    local num_stage_lines = ScpuiSystem:set_briefing_text(text_el, briefingText)
 
     local stage_indicator_el = self.document:GetElementById(self.element_names.stage_text_el)
     stage_indicator_el.inner_rml = string.format(ba.XSTR("Stage %d of %d", 888283), self.current_stage, #self.stages)

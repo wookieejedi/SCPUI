@@ -1,6 +1,6 @@
 local utils = require('utils')
 local tblUtil  = utils.table
-local templates = require("rocket_templates")
+local templates = require("templates")
 local dialogs  = require("dialogs")
 local topics   = require("ui_topics")
 local class    = require("class")

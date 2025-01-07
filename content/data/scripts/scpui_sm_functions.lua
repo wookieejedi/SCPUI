@@ -428,3 +428,171 @@ function ScpuiSystem:makeButton(context, cont_id, button_id, button_classes, img
 	
 	return cont_el, button_el
 end
+
+--- Sets the briefing text of a parent element. This will remove all children of the parent element and replace them
+--- This also colors the briefing text and applies any tooltips
+--- @param parent Element The parent element to set the briefing text on
+--- @param brief_text string The briefing text to set
+--- @param recommendation? string The recommendation text to set, if any
+function ScpuiSystem:set_briefing_text(parent, brief_text, recommendation)
+	local utils = require("utils")
+    
+	--- Local function to add a text element to a parent element
+	--- @param parent Element The parent element to add the text element to
+	--- @param document Document The document to create the text element in
+	--- @param text string The text to add
+	--- @param color_tag string The color tag to use for the text
+	--- @param colorTable table The table of color tags to use
+	--- @return number | nil lines The number of lines added
+	local function add_text_element(parent, document, text, color_tag, colorTable)
+		if #text == 0 then
+			-- If no text, do not output anything
+			return
+		end
+	
+		local colorVal = colorTable[color_tag]
+		
+		if not colorVal then
+			--FSO already has a warning for malformed color tags so let's just try to keep going
+			text = ' ' .. color_tag .. text --try to preserve the original text
+		end
+	
+		local spanEl = document:CreateElement("span")
+		local textEl = document:CreateTextNode(text)
+	
+		if colorVal then
+			spanEl.style.color = ("rgba(%d, %d, %d, %d)"):format(colorVal.Red, colorVal.Green, colorVal.Blue, colorVal.Alpha)
+		end
+	
+		spanEl:AppendChild(textEl)
+	
+		parent:AppendChild(spanEl)
+	end
+
+	--- Local function to add line elements to a parent element, setting color tags or color classes as required
+	--- @param document Document The document to create the elements in
+	--- @param paragraph Element The parent element to add the line elements to
+	--- @param line string The line to add elements for
+	--- @param defaultColorTag string The default color tag to use
+	--- @param colorTags table The table of color tags to use
+	--- @return nil
+	local function add_line_elements(document, paragraph, line, defaultColorTag, colorTags)
+		local searchIndex = 1
+		local colorStack = { defaultColorTag }
+	
+		while true do
+			local startIdx, endIdx, colorChar, groupChar = line:find("%$(%a?)([{}]?)%s*", searchIndex)
+			if startIdx == nil then
+				break
+			end
+	
+			if #colorChar == 0 and groupChar ~= "}" then
+				ba.error(string.format("Color block error in line %q", line))
+			end
+	
+			-- Flush out text that was before our tag
+			local pendingText = line:sub(searchIndex, startIdx - 1)
+			add_text_element(paragraph, document, pendingText, colorStack[#colorStack], colorTags)
+	
+			searchIndex = endIdx + 1
+	
+			if #colorChar == 0 then
+				-- This must be the end of a color group. Remove the last color from the stack and continue
+				table.remove(colorStack)
+			else
+				table.insert(colorStack, colorChar)
+	
+				if groupChar == "{" then
+					-- The start of a group so there is nothing for us to do here at the moment
+				else
+					-- We need to know if our word was terminated by white space or an explicit break so we store the whitespace
+					-- in a group and check that later
+					local rangeEndStart, rangeEndEnd, whitespace = utils.find_first_either(line, { "(%s)", "%$|" }, searchIndex)
+	
+					local coloredText
+					if whitespace then
+						-- If we broke on whitespace then we still need to include those characters in the colored range
+						-- to ensure the spacing is correct. To do that, we build the substring until the end of the range
+						coloredText = line:sub(endIdx + 1, rangeEndEnd)
+					elseif rangeEndEnd == nil then
+						-- If we did not find the end then we ended the line with a color sequence
+						coloredText = line:sub(endIdx + 1)
+					else
+						coloredText = line:sub(endIdx + 1, rangeEndStart - 1)
+					end
+					add_text_element(paragraph, document, coloredText, colorStack[#colorStack], colorTags)
+	
+					table.remove(colorStack)
+	
+					if rangeEndEnd ~= nil then
+						searchIndex = rangeEndEnd + 1
+					else
+						-- Still need to update this so that the final text element will not be shown twice
+						searchIndex = #line
+					end
+				end
+			end
+		end
+		
+		local remainingText = line:sub(searchIndex)
+		add_text_element(paragraph, document, remainingText, colorStack[#colorStack], colorTags)
+	end
+	
+	-- First, clear all the children of this element
+    ScpuiSystem:ClearEntries(parent)
+
+    local document = parent.owner_document
+
+    local colorTags = ui.ColorTags
+    local defaultColorTag = ui.DefaultTextColorTag(2)
+	
+	local tooltipRegister = {}
+
+    local rml_mode = false
+    local escapeStart, escapeEnd = brief_text:find("^%s*!html%s*")
+    if escapeStart then
+        brief_text = brief_text:sub(escapeEnd + 1)
+        rml_mode = true
+    end
+
+    local lines = utils.split(brief_text, "\n\n")
+    local first = true
+    ---@param line string
+    for _, line in ipairs(lines) do
+        if not first then
+            local newLine = document:CreateElement("br")
+            parent:AppendChild(newLine)
+        else
+            first = false
+        end
+
+        local paragraph = document:CreateElement("p")
+
+        if rml_mode then
+            -- In HTML mode, we just use the text unescaped as the inner RML after running
+			-- it through the keyword system
+            paragraph.inner_rml, tooltipRegister = ScpuiSystem:applyKeywordClasses(ba.replaceVariables(line))
+        else
+            add_line_elements(document, paragraph, ba.replaceVariables(line), defaultColorTag, colorTags)
+        end
+
+        parent:AppendChild(paragraph)
+		for key, value in pairs(tooltipRegister) do
+			ScpuiSystem:addTooltip(document, key, value)
+		end
+    end
+	
+	if recommendation then
+		local paragraph = document:CreateElement("p")
+		paragraph.inner_rml = recommendation
+		parent:AppendChild(paragraph)
+	end
+
+    -- Try to estimate the amount of lines this will get. The value 130 is chosen based on the original width of the
+    -- text window in retail FS2
+    local paragraphLines = utils.table.map(lines, function(line)
+        return #line / 130
+    end)
+
+    return utils.table.sum(paragraphLines) + #lines
+end

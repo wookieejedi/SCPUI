@@ -1,5 +1,3 @@
-local templates              = require("rocket_templates")
-
 local module                = {}
 
 -- The type of a dialog

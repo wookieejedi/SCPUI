@@ -1,4 +1,3 @@
-local rocket_utils = require("rocket_util")
 local topics = require("ui_topics")
 local class = require("class")
 local async_util = require("async_util")

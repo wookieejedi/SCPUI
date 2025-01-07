@@ -261,7 +261,7 @@ function TechDatabaseController:InitSortFunctions()
 	self.sortFunctions.sortByTypeDes_Alph = sortByTypeDes_Alph
 	
 	local function sortByTypeAsc_Idx(a, b)
-		local tbl = nil
+		local tbl
 		if self.SelectedSection == "ships" then
 			tbl = self.s_types
 		elseif self.SelectedSection == "weapons" then
@@ -281,7 +281,7 @@ function TechDatabaseController:InitSortFunctions()
 	self.sortFunctions.sortByTypeAsc_Idx = sortByTypeAsc_Idx
 	
 	local function sortByTypeDes_Idx(a, b)
-		local tbl = nil
+		local tbl
 		if self.SelectedSection == "ships" then
 			tbl = self.s_types
 		elseif self.SelectedSection == "weapons" then

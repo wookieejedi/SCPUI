@@ -1,4 +1,3 @@
-local rocket_utils = require("rocket_util")
 local async_util = require("async_util")
 local dialogs = require("dialogs")
 local utils = require("utils")
@@ -220,7 +219,7 @@ function DebriefingController:BuildText()
         local paragraph = self.document:CreateElement("p")
         text_el:AppendChild(paragraph)
         paragraph:SetClass("debrief_text_actual", true)
-        local color_text = rocket_utils.set_briefing_text(paragraph, self.stages[i].Text)
+        local color_text = ScpuiSystem:set_briefing_text(paragraph, self.stages[i].Text)
         if self.stages[i].Recommendation ~= "" then
             local recommendation = self.document:CreateElement("p")
             self.RecIDs[i] = recommendation

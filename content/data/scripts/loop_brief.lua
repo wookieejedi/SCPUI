@@ -1,4 +1,3 @@
-local rocket_utils = require("rocket_util")
 local topics = require("ui_topics")
 local async_util = require("async_util")
 local dialogs = require("dialogs")
@@ -27,7 +26,7 @@ function LoopBriefController:initialize(document)
 	
 	local text_el = self.document:GetElementById("loop_text")
 	
-	local color_text = rocket_utils.set_briefing_text(text_el, loop.Text)
+	local color_text = ScpuiSystem:set_briefing_text(text_el, loop.Text)
 	
 	if loop.AudioFilename then
 		ba.print("SCPUI got loop briefing audio filename as " .. loop.AudioFilename)

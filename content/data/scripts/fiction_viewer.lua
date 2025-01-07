@@ -1,5 +1,4 @@
 local topics = require("ui_topics")
-local rocket_utils = require("rocket_util")
 local async_util = require("async_util")
 
 local class = require("class")
@@ -35,7 +34,7 @@ function FictionViewerController:initialize(document)
 	
 	local text_el = self.document:GetElementById("fiction_text")
 	
-	local color_text = rocket_utils.set_briefing_text(text_el, self.text)
+	local color_text = ScpuiSystem:set_briefing_text(text_el, self.text)
 	
 	topics.fictionviewer.initialize:send(self)
 	
