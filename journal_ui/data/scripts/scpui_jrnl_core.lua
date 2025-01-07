@@ -1,0 +1,374 @@
+if not JournalUI then
+	JournalUI = {}
+end
+
+JournalUI.sections = nil
+JournalUI.lists = {}
+
+function JournalUI:GetGroupIndex(sectionname, sections)
+	
+	sectionname = string.lower(sectionname)
+
+	for i, v in ipairs(sections) do
+		if string.lower(v.Name) == sectionname then	return i end
+	end
+	
+	ba.error("Journal: Undefined group defined! Could not find " .. sectionname .. " group! Add or check spelling!")
+	
+	return nil
+
+end
+
+function JournalUI:ParseTable(file, entriesonly)
+
+	local newdata = {}
+	newdata.Sections = {}
+	newdata.Entries = {}
+	newdata.title = ba.XSTR("Journal", 888550)
+	
+	if not parse.readFileText(file, "data/tables") then
+		return newdata
+	end
+	
+	if (not entriesonly) and parse.optionalString("#Journal Options") then
+		if parse.optionalString("$Title:") then
+			newdata.title = parse.getString()
+		end
+		parse.requiredString("#End")
+	end
+	
+	 if (not entriesonly) and parse.optionalString("#Journal Sections") then
+	 				
+		while parse.optionalString("$Name:") and (#newdata.Sections < 3) do
+				
+			local t = {}
+			
+			t.Name = parse.getString()
+			
+			if parse.requiredString("$XSTR:") then
+				t.Display = ba.XSTR(t.Name, parse.getInt())
+			end
+			
+		newdata.Sections[#newdata.Sections+1] = t
+		
+		end
+
+		parse.requiredString("#End")
+		
+	end
+	
+	if parse.optionalString("#Journal Entries") then
+				
+		while parse.optionalString("$Name:") do
+		
+			local t = {}
+			local newIndex
+			
+			t.Name = parse.getString()
+			
+			if parse.requiredString("$XSTR:") then
+				t.Display = ba.XSTR(t.Name, parse.getInt())
+			end
+			
+			if parse.requiredString("$Group:") then
+				t.Group = parse.getString()		
+				t.GroupIndex = self:GetGroupIndex(t.Group, newdata.Sections)
+			end
+			
+			if parse.optionalString("$Visible by Default:") then
+				t.InitialVis = parse.getBoolean()
+			else
+				t.InitialVis = false
+			end
+			
+			if parse.optionalString("$Short Title:") then
+				t.Key = parse.getString()
+			else
+				t.Key = newIndex
+			end
+			
+			if parse.requiredString("$File:") then
+				t.File = JournalUI:CheckLanguage(parse.getString())
+			end
+			
+			if parse.optionalString("$Image:") then
+				t.Image = parse.getString()
+			end
+			
+			if parse.optionalString("$Caption:") then
+				local caption = parse.getString()
+				if parse.requiredString("$Caption XSTR:") then
+					t.Caption = ba.XSTR(caption, parse.getInt())
+				end
+			end
+
+			if not newdata.Entries[t.GroupIndex] then newdata.Entries[t.GroupIndex] = {} end
+
+			newIndex = #newdata.Entries[t.GroupIndex] + 1
+
+			--t.Name = newIndex .. " - " .. t.GroupIndex .. " - " .. t.Name
+
+			newdata.Entries[t.GroupIndex][newIndex] = t
+
+		end
+		
+		parse.requiredString("#End")
+		
+	end
+	
+	parse.stop()
+	
+	return newdata
+	
+end
+
+function JournalUI:CheckLanguage(filename)
+
+	local language = ba.getCurrentLanguageExtension()
+	if language ~= "" then
+		local langfile = filename:gsub(".txt", "") .. "-" .. language .. ".txt"
+		if cf.fileExists(langfile, "data/fiction", true) then
+			filename = langfile
+		end
+	end
+	return filename
+
+end
+
+--These are only needed for FS2 and not FRED?
+
+function JournalUI:LoadData()
+	
+	local player = ba.getCurrentPlayer()
+	local campaignfilename = player:getCampaignFilename()
+	
+	self.Data = self:ParseTable(campaignfilename .. "-journal.tbl")
+	
+	if self.Data then
+		self.SaveData = self:LoadDataFromFile()
+	end
+
+end
+
+function JournalUI:UnloadData()
+
+	self.Data = nil
+	self.SaveData = nil
+
+end
+
+function JournalUI:DoesConfigExist()
+
+	local player = ba.getCurrentPlayer()
+	local campaignfilename = player:getCampaignFilename()
+	
+	if cf.fileExists(campaignfilename .. "-journal.tbl", "data/tables", true) then
+		return true
+	else
+		return false
+	end
+
+end
+
+function JournalUI:LoadDataFromFile()
+	
+	local saveLocation = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
+	local datasaver = require("lib_data_saver")
+	local config = datasaver:loadDataFromFile(saveLocation, true)
+	
+	if config == nil then
+		config = self:CreateSaveData()
+		self:SaveDataToFile(config)
+	end
+	
+	return config
+
+end
+
+function JournalUI:ClearNew()
+
+	local t = {}
+	
+	local saveLocation = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
+	local datasaver = require("lib_data_saver")
+	datasaver:saveDataToFile(saveLocation, t, true)	
+
+end
+
+function JournalUI:CheckNew()
+	local t = {}
+
+	local config = self:LoadDataFromFile()
+	
+	if config ~= nil then
+		t = config
+	else
+		JournalUI:LoadData()
+		if self.Data then
+			return true
+		else
+			return false
+		end
+	end
+	
+	for i = 1, #t do
+		for j, v in ipairs(t[i]) do
+			local item = t[i][j]
+			if item and item.Visible == true and item.Unread == true then
+				return true
+			end
+		end
+	end
+
+	return false
+
+end
+
+function JournalUI:CreateSaveData()
+
+	local t = {}
+	
+	if not self.Data then
+		self:LoadData()
+	end
+
+	for i, section in ipairs(self.Data.Entries) do
+
+		if not t[i] then t[i] = {} end
+		local saveSection = t[i]
+
+		for j, entry in ipairs(section) do
+
+			if not saveSection[j] then
+			
+				local t = {}
+				t.Key = string.lower(entry.Key)
+				t.Unread = true
+				t.Visible = entry.InitialVis
+
+				saveSection[j] = t
+
+			end
+
+		end
+	end
+
+	ba.print("Journal UI: Initial save data created!")
+
+	return t
+
+end
+
+function JournalUI:SaveDataToFile(t)
+
+	local saveLocation = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
+	local datasaver = require("lib_data_saver")
+	datasaver:saveDataToFile(saveLocation, t, true)
+
+end
+
+function JournalUI:LockEntry(section, ...)
+
+	--load data
+	self:LoadData()
+	--get section
+	local section = self:GetGroupIndex(section, self.Data.Sections)
+	--get key(s)
+	for _, v in ipairs(arg) do
+		for _, entry in ipairs(self.SaveData[section] or {}) do
+			if string.lower(v[1] or v) == entry.Key then
+				entry.Visible = false
+				break
+			end	
+		end
+	end
+	--save
+	self:SaveDataToFile(self.SaveData)
+	--unload
+	self:UnloadData()
+
+end
+
+function JournalUI:UnlockEntry(section, ...)
+  local unlocked = false
+	--load data
+	self:LoadData()
+	--get section
+	local section = self:GetGroupIndex(section, self.Data.Sections)
+	--get key(s)
+	for _, v in ipairs(arg) do
+		for _, entry in ipairs(self.SaveData[section] or {}) do
+			if string.lower(v[1] or v) == entry.Key then
+        unlocked = not entry.Visible
+				entry.Visible = true
+				break
+			end	
+		end
+	end
+	--save
+	self:SaveDataToFile(self.SaveData)
+	--unload
+	self:UnloadData()
+  return unlocked
+end
+
+function JournalUI:GetTitle()
+	local player = ba.getCurrentPlayer()
+	local campaignfilename = player:getCampaignFilename()
+	local data = self:ParseTable(campaignfilename .. "-journal.tbl")
+	return data.title
+end
+
+function JournalUI:ClearAll()
+	
+	local config = self:CreateSaveData()
+	self:SaveDataToFile(config)
+
+end
+
+mn.LuaSEXPs["lua-journal-unlock-article"].Action = function(section, ...)
+
+	--Remove the first part of the parent enum name so we can unlock using the actual section name
+	local function removeJournalPrefix(inputString)
+		local prefix = "Journal "
+		if string.sub(inputString, 1, #prefix) == prefix then
+			return string.sub(inputString, #prefix + 1)
+		else
+			return inputString
+		end
+	end
+
+	if mn.isInCampaign() then
+		JournalUI:UnlockEntry(removeJournalPrefix(section), ...)
+	end
+end
+
+if ba.inMissionEditor() then
+    local journal_files = cf.listFiles("data/tables", "*journal.tbl")
+
+    for _, v in pairs(journal_files) do
+        local data = JournalUI:ParseTable(v)
+        
+        if #data.Sections > 0 then
+            local name = "Journal Sections"
+            JournalUI.sections = mn.LuaEnums[name]
+            JournalUI.sections:removeEnumItem("<none>")
+        end
+        for i = 1, #data.Sections do
+            local name = "Journal " .. data.Sections[i].Display
+            mn.addLuaEnum(name)
+            JournalUI.sections:addEnumItem(name)
+            JournalUI.lists[i] = mn.LuaEnums[name]
+        end
+        
+        for i = 1, #data.Entries do
+            for _, entry in ipairs(data.Entries[i]) do
+                JournalUI.lists[i]:addEnumItem(entry.Key)
+            end
+        end
+    end
+end
+
+engine.addHook("On Campaign Begin", function()
+	JournalUI:ClearAll()
+end)

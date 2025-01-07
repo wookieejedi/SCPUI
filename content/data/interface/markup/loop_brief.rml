@@ -2,13 +2,13 @@
 	<head>
 		<title>Loop Briefing</title>
 		<link type="text/rcss" href="default.rcss"/>
-		<link type="text/rcss" href="fontsizes.rcss"/>
+		<link type="text/rcss" href="font_sizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
-		<link type="text/rcss" href="scrollbars.rcss"/>
+		<link type="text/rcss" href="scroll_bars.rcss"/>
 		<link type="text/rcss" href="loop_brief.rcss"/>
 		<link type="text/rcss" href="custom.rcss"/>
 		<script>
-			controller = require("loop_brief")()
+			controller = require("ctrlr_loop_brief")()
 		</script>
 	</head>
 	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload(); controller = nil">

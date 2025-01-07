@@ -1,7 +1,7 @@
 <rml>
 	<head>
 		<script>
-			controller = require("cutscene")()
+			controller = require("ctrlr_cutscene")()
 		</script>
 	</head>
 	<body onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller = nil">

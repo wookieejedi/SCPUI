@@ -1,0 +1,25 @@
+<rml>
+	<head>
+		<title>Load Screen</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="font_sizes.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="scroll_bars.rcss"/>
+		<link type="text/rcss" href="load_screen.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
+		<link type="text/rcss" href="load_screen_bgs.rcss"/>
+		<script>
+			controller = require("ctrlr_load_screen")()
+		</script>
+	</head>
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload()">
+		<div id=logo_wide>
+			<img src="logo-wide.png"></img>
+		</div>
+		<div id=title class="p2">
+		</div>
+		<div id=loadingbar>
+		</div>
+	</body>
+
+</rml>
