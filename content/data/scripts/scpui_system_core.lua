@@ -113,7 +113,7 @@ function ScpuiSystem:loadSubmodels()
 					require(modulePath)
                     ba.print("SCPUI loaded submodel: " .. moduleName .. "\n")
                 else
-                    ba.print("SCPUI Error loading submodel " .. modulePath .. ": " .. module .. "\n")
+                    ba.warning("SCPUI Error loading submodel " .. modulePath .. ": " .. module .. "\n")
                 end
             end
         end
