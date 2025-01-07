@@ -4,7 +4,7 @@
 
 --Clears all the current loadout if F12 is detected during mission load
 local function clearLoadoutWithKeypress()
-	local loadoutHandler = require("loadouthandler")
+	local loadoutHandler = require("lib_loadout_handler")
 	
 	local key = loadoutHandler:getMissionKey()
 	ba.print("SCPUI got command to delete loadout file '" .. key .. "'!\n")
@@ -22,7 +22,7 @@ end
 local function clearLoadoutOnCampaignStart()
 	ba.print("SCPUI got command to delete all campaign loadouts!\n")
 	
-	local loadoutHandler = require("loadouthandler")
+	local loadoutHandler = require("lib_loadout_handler")
 	local data = loadoutHandler:loadLoadoutsFromFile()
 	
 	if data == nil then return end

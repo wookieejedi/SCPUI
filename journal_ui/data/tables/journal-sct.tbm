@@ -2,10 +2,10 @@
 $On Game Init:
 [
 
-require('scpui_journal_core')
+require('scpui_jrnl_core')
 
 if not ba.inMissionEditor() then
-	require('scpui_journal_addon')
+	require('scpui_jrnl_sm_def_topics')
 end
 
 ]

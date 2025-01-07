@@ -12,7 +12,7 @@ function ScpuiSystem:initCustomOptions()
 	--Verfy that the mod has a proper title
 	ScpuiSystem:getModTitle()
 	
-	local utils = require('utils')
+	local utils = require("lib_utils")
 
 	if cf.fileExists('options.tbl', '', true) then
 		self:parseOptions('options.tbl')
@@ -21,30 +21,6 @@ function ScpuiSystem:initCustomOptions()
 	for _, v in ipairs(cf.listFiles("data/tables", "*-optn.tbm")) do
 		self:parseOptions(v)
 	end
-
-	---@type json
-	local json = require('dkjson')
-
-    --Here we load the global mod options or the defaults for use before a player is selected
-    local saveFilename = 'scpui_options_global.cfg'
-    if cf.fileExists(saveFilename, 'data/players', true) then
-        local file = cf.openFile(saveFilename, 'r', 'data/players')
-        local config = json.decode(file:read('*a'))
-        file:close()
-        if not config then
-            config = {}
-        end
-        
-        ScpuiSystem.data.ScpuiOptionValues = config
-    else
-        ScpuiSystem.data.ScpuiOptionValues = {}
-        for i, v in ipairs(ScpuiSystem.data.CustomOptions) do
-            ScpuiSystem.data.ScpuiOptionValues[v.Key] = v.Value
-        end
-        local file = cf.openFile(saveFilename, 'w', 'data/players')
-        file:write(json.encode(ScpuiSystem.data.ScpuiOptionValues))
-        file:close()
-    end
 end
 
 --- Parse the options.tbl and *-optn.tbm files to get the custom options
@@ -349,7 +325,7 @@ function ScpuiSystem:saveOptionsToFile(data)
 	
 	config[ba.getCurrentPlayer():getName()][mod] = data
 	
-	local utils = require('utils')
+	local utils = require("lib_utils")
 	config = utils.cleanPilotsFromSaveData(config)
   
 	file = cf.openFile('scpui_options.cfg', 'w', location)
@@ -363,7 +339,7 @@ function ScpuiSystem:applyCustomOptions()
     if ((hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT") and (hv.NewState.Name == "GS_STATE_MAIN_MENU")) or hv.OldState.Name == "GS_STATE_BARRACKS_MENU" then
         --Here we load the mod options save data for the selected player
         ScpuiSystem.data.ScpuiOptionValues = {}
-        local utils = require('utils')
+        local utils = require("lib_utils")
         ScpuiSystem.data.ScpuiOptionValues = ScpuiSystem:loadOptionsFromFile()
     
         --load defaults if we have bad data

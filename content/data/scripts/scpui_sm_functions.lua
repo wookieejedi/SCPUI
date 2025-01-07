@@ -45,7 +45,7 @@ end
 --- @param toggle boolean Whether to pause or unpause the audio channels.
 --- @return nil
 function ScpuiSystem:pauseAllAudio(toggle)
-	local topics = require("ui_topics")
+	local topics = require("lib_ui_topics")
 	
 	ad.pauseMusic(-1, toggle)
 	ad.pauseWeaponSounds(toggle)
@@ -94,7 +94,7 @@ end
 --- @param scene enumeration The scene to check if a cutscene should be played for. Should be one of MOVIE_PRE_FICTION, MOVIE_PRE_CMD_BRIEF, MOVIE_PRE_BRIEF, MOVIE_PRE_GAME, MOVIE_PRE_DEBRIEF, MOVIE_POST_DEBRIEF, MOVIE_END_CAMPAIGN
 --- @return nil
 function ScpuiSystem:maybePlayCutscene(scene)
-	local topics = require("ui_topics")
+	local topics = require("lib_ui_topics")
 	topics.playcutscene.start:send(self)
 	if ScpuiSystem.data.memory.music_handle ~= nil then
 		ScpuiSystem.data.memory.music_handle:pause()
@@ -435,7 +435,7 @@ end
 --- @param brief_text string The briefing text to set
 --- @param recommendation? string The recommendation text to set, if any
 function ScpuiSystem:set_briefing_text(parent, brief_text, recommendation)
-	local utils = require("utils")
+	local utils = require("lib_utils")
     
 	--- Local function to add a text element to a parent element
 	--- @param parent Element The parent element to add the text element to

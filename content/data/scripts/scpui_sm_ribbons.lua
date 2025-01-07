@@ -143,7 +143,7 @@ function ScpuiSystem:saveRibbonsToFile()
 	
 	config = ScpuiSystem.data.PlayerRibbons
 	
-	local utils = require('utils')
+	local utils = require("lib_utils")
 	--config = utils.cleanPilotsFromSaveData(config)
   
 	file = cf.openFile('scpui_ribbons.cfg', 'w', location)
@@ -155,7 +155,7 @@ end
 --- @param ribbon ribbon_info The ribbon object
 --- @return string blob The image blob
 function ScpuiSystem:createRibbonImage(ribbon)
-	local utils = require("utils")
+	local utils = require("lib_utils")
 	
 	local savedColor = gr.getColor(true)
 	local tex_h = gr.createTexture(200, 50)

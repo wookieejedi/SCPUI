@@ -2,7 +2,7 @@
 --This file runs SCPUI's preload system and shows the splash screens
 -----------------------------------
 
-local async_util = require("async_util")
+local async_util = require("lib_async")
 
 --- Run the preload system and interate through the preload coroutines
 --- @return nil

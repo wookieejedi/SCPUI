@@ -4,7 +4,7 @@
 
 ScpuiSystem.data.rocketUiIcons = {}
 
-local async_util = require("async_util")
+local async_util = require("lib_async")
 
 --- Open the cache file and return the contents
 --- @return table

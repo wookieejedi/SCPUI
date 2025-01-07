@@ -7,7 +7,7 @@
 --- This function is called when the SCPUI system is initialized
 --- @return nil
 function ScpuiSystem:initKeywords()
-    local utils = require('utils')
+    local utils = require("lib_utils")
 
     ---@type scpui_keywords
     local affixes = {prefixes = {''}, suffixes = {''}}
@@ -52,7 +52,7 @@ end
 --- @param inheritedAffixes scpui_keywords
 --- @return scpui_keywords
 function ScpuiSystem:parseKeywords(data, inheritedAffixes)
-    local keywordAlgorithm = require('keywordAlgorithm')
+    local keywordAlgorithm = require("lib_keyword_agorithm")
     parse.readFileText(data, "data/tables")
     local lang = "#" .. ba.getCurrentLanguage()
 
@@ -102,7 +102,7 @@ end
 --- @param id string The id of the tooltip
 --- @return nil
 function ScpuiSystem:maybeShowTooltip(tool_el, id)
-    local async_util = require("async_util")
+    local async_util = require("lib_async")
     if ScpuiSystem.data.tooltipTimers[id] == nil then
         return
     end
@@ -185,7 +185,7 @@ end
 --- @param inputText string The text to colorize
 --- @return string, table register The colorized text and a table of tooltips
 function ScpuiSystem:applyKeywordClasses(inputText)
-    local keywordAlgorithm = require('keywordAlgorithm')
+    local keywordAlgorithm = require("lib_keyword_agorithm")
     return keywordAlgorithm.colorize(inputText)
 end
 

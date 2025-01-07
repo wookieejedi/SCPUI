@@ -2,13 +2,13 @@
 	<head>
 		<title>Debrief</title>
 		<link type="text/rcss" href="default.rcss"/>
-		<link type="text/rcss" href="fontsizes.rcss"/>
+		<link type="text/rcss" href="font_sizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
-		<link type="text/rcss" href="scrollbars.rcss"/>
+		<link type="text/rcss" href="scroll_bars.rcss"/>
 		<link type="text/rcss" href="debrief.rcss"/>
 		<link type="text/rcss" href="custom.rcss"/>
 		<script>
-			controller = require("debrief")()
+			controller = require("ctrlr_debrief")()
 		</script>
 	</head>
 	<body id=main_background onkeydown="controller:global_keydown(element, event)" onload="controller:initialize(document)"

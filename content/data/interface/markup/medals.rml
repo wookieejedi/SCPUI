@@ -2,13 +2,13 @@
 	<head>
 		<title>Medals</title>
 		<link type="text/rcss" href="default.rcss"/>
-		<link type="text/rcss" href="fontsizes.rcss"/>
+		<link type="text/rcss" href="font_sizes.rcss"/>
 		<link type="text/rcss" href="common.rcss"/>
-		<link type="text/rcss" href="scrollbars.rcss"/>
+		<link type="text/rcss" href="scroll_bars.rcss"/>
 		<link type="text/rcss" href="medals.rcss"/>
 		<link type="text/rcss" href="custom.rcss"/>
 		<script>
-			controller = require("medals")()
+			controller = require("ctrlr_medals")()
 		</script>
 	</head>
 	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onmousemove="controller:mouse_move(element, event)" onunload="controller:unload(); controller = nil">

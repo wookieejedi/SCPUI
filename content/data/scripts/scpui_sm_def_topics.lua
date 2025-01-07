@@ -4,8 +4,8 @@
 
 (function()
 
-    local topics = require('ui_topics')
-    local utils = require('utils')
+    local topics = require("lib_ui_topics")
+    local utils = require("lib_utils")
     
     --Sets the first tech room button to the technical database game state
     topics.techroom.btn1Action:bind(9999, function(message, context)

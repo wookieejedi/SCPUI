@@ -17,16 +17,16 @@ $State: GS_STATE_OPTIONS_MENU
     +Markup: data/interface/markup/options.rml
 
 $State: GS_STATE_CONTROL_CONFIG
-    +Markup: data/interface/markup/controlconfig.rml
+    +Markup: data/interface/markup/control_config.rml
 
 $State: GS_STATE_HUD_CONFIG
-    +Markup: data/interface/markup/hudconfig.rml
+    +Markup: data/interface/markup/hud_config.rml
 
 $State: GS_STATE_CAMPAIGN_ROOM
 	+Markup: data/interface/markup/campaign.rml
 
 $State: GS_STATE_CMD_BRIEF
-	+Markup: data/interface/markup/cmd_brief.rml
+	+Markup: data/interface/markup/command_brief.rml
 
 $State: GS_STATE_BRIEFING
 	+Markup: data/interface/markup/briefing.rml
@@ -50,13 +50,13 @@ $State: GS_STATE_RED_ALERT
 	+Markup: data/interface/markup/red_alert.rml
 
 $State: GS_STATE_GAMEPLAY_HELP
-	+Markup: data/interface/markup/gamehelp.rml
+	+Markup: data/interface/markup/game_help.rml
 
 $State: GS_STATE_MISSION_LOG_SCROLLBACK
-	+Markup: data/interface/markup/missionlog.rml
+	+Markup: data/interface/markup/mission_log.rml
 
 $State: GS_STATE_HOTKEY_SCREEN
-	+Markup: data/interface/markup/hotkeyconfig.rml
+	+Markup: data/interface/markup/hotkey_config.rml
 
 $State: GS_STATE_CREDITS
 	+Markup: data/interface/markup/tech_credits.rml
@@ -105,7 +105,7 @@ $State: GS_STATE_MULTI_PAUSED
     +Markup: data/interface/markup/multi_paused.rml
 
 $State: LOAD_SCREEN
-	+Markup: data/interface/markup/loadscreen.rml
+	+Markup: data/interface/markup/load_screen.rml
 
 
 #Background Replacement

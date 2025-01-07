@@ -1,5 +1,5 @@
-local utils = require("utils")
-local topics = require("ui_topics")
+local utils = require("lib_utils")
+local topics = require("lib_ui_topics")
 
 -----------------------------------
 --This is the core SCPUI file. It handles state management and
@@ -470,7 +470,7 @@ end
 --- show it using SCPUI's own dialog system
 --- @return nil
 function ScpuiSystem:dialogStart()
-	local dialogs = require('dialogs')
+	local dialogs = require("lib_dialogs")
 	if hv.IsDeathPopup then
 		self.data.DeathDialog = { Abort = {}, Submit = nil }
 	else
