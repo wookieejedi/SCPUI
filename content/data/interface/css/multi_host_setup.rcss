@@ -48,14 +48,14 @@ div#squadwar_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #squadwar_img
 {
 	background-decorator: image;
 	background-image: round.png;
-	
+
 }
 button#squadwar_btn:hover #squadwar_img
 {
@@ -142,14 +142,14 @@ div#missions_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #missions_img
 {
 	background-decorator: image;
 	background-image: bullet-r.png;
-	
+
 }
 button#missions_btn:hover #missions_img
 {
@@ -186,14 +186,14 @@ div#campaigns_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #campaigns_img
 {
 	background-decorator: image;
 	background-image: bullet-r.png;
-	
+
 }
 button#campaigns_btn:hover #campaigns_img
 {
@@ -356,14 +356,14 @@ div#team_2_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #team_2_img
 {
 	background-decorator: image;
 	background-image: oval.png;
-	
+
 }
 button#team_2_btn:hover #team_2_img
 {
@@ -400,14 +400,14 @@ div#team_1_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #team_1_img
 {
 	background-decorator: image;
 	background-image: oval.png;
-	
+
 }
 button#team_1_btn:hover #team_1_img
 {
@@ -444,14 +444,14 @@ div#kick_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #kick_img
 {
 	background-decorator: image;
 	background-image: clear.png;
-	
+
 }
 button#kick_btn:hover #kick_img
 {
@@ -482,14 +482,14 @@ div#pilot_info_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #pilot_info_img
 {
 	background-decorator: image;
 	background-image: create-pilot.png;
-	
+
 }
 button#pilot_info_btn:hover #pilot_info_img
 {
@@ -520,14 +520,14 @@ div#close_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #close_img
 {
 	background-decorator: image;
 	background-image: exit.png;
-	
+
 }
 button#close_btn:hover #close_img
 {
@@ -623,14 +623,14 @@ div#submit_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #submit_img
 {
 	background-decorator: image;
 	background-image: select.png;
-	
+
 }
 button#submit_btn:hover #submit_img
 {

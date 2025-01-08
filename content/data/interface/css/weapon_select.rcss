@@ -928,12 +928,12 @@ div#scroll_button_wrapper
 
 #primary_icon_list scrollbarvertical sliderbar:hover
 {
-	
+
 }
 
 #primary_icon_list scrollbarvertical sliderbar:active
 {
-	
+
 }
 
 #primary_icon_list scrollbarvertical sliderarrowdec
@@ -999,12 +999,12 @@ div#scroll_button_wrapper
 
 #secondary_icon_list scrollbarvertical sliderbar:hover
 {
-	
+
 }
 
 #secondary_icon_list scrollbarvertical sliderbar:active
 {
-	
+
 }
 
 #secondary_icon_list scrollbarvertical sliderarrowdec
@@ -1146,14 +1146,14 @@ div#submit_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #submit_img
 {
 	background-decorator: image;
 	background-image: select.png;
-	
+
 }
 button#submit_btn:hover #submit_img
 {

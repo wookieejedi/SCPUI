@@ -307,12 +307,12 @@ button#award_btn_2:checked #bullet_img
 
 #ribbons_wrapper_actual scrollbarvertical sliderbar:hover
 {
-	
+
 }
 
 #ribbons_wrapper_actual scrollbarvertical sliderbar:active
 {
-	
+
 }
 
 #ribbons_wrapper_actual scrollbarvertical sliderarrowdec

@@ -135,14 +135,14 @@ div#submit_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #submit_img
 {
 	background-decorator: image;
 	background-image: select.png;
-	
+
 }
 button#submit_btn:hover #submit_img
 {

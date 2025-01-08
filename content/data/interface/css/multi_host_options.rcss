@@ -90,14 +90,14 @@ div#host_modifies_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #host_modifies_img
 {
 	background-decorator: image;
 	background-image: round.png;
-	
+
 }
 button#host_modifies_btn:hover #host_modifies_img
 {
@@ -343,14 +343,14 @@ div#submit_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #submit_img
 {
 	background-decorator: image;
 	background-image: select.png;
-	
+
 }
 button#submit_btn:hover #submit_img
 {

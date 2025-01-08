@@ -156,14 +156,14 @@ div#open_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #open_img
 {
 	background-decorator: image;
 	background-image: bullet-r.png;
-	
+
 }
 button#open_btn:hover #open_img
 {
@@ -196,7 +196,7 @@ div#password_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 .wide_text p
@@ -209,7 +209,7 @@ div#password_cont
 {
 	background-decorator: image;
 	background-image: bullet-r.png;
-	
+
 }
 button#password_btn:hover #password_img
 {
@@ -243,14 +243,14 @@ div#rank_above_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #rank_above_img
 {
 	background-decorator: image;
 	background-image: bullet-r.png;
-	
+
 }
 button#rank_above_btn:hover #rank_above_img
 {
@@ -283,14 +283,14 @@ div#rank_below_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #rank_below_img
 {
 	background-decorator: image;
 	background-image: bullet-r.png;
-	
+
 }
 button#rank_below_btn:hover #rank_below_img
 {

@@ -275,12 +275,12 @@ button#decline_btn:active #decline_img
 
 #loop_text scrollbarvertical sliderbar:hover
 {
-	
+
 }
 
 #loop_text scrollbarvertical sliderbar:active
 {
-	
+
 }
 
 #loop_text scrollbarvertical sliderarrowdec

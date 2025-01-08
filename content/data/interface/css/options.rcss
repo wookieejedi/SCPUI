@@ -763,7 +763,7 @@ div#gamma_panel_wrapper
 /*Mic Test*/
 .mic_test
 {
-	
+
 }
 
 .mic_test #oval_cont
@@ -872,12 +872,12 @@ ul#ipaddress_list
 
 #ipaddress_list scrollbarvertical sliderbar:hover
 {
-	
+
 }
 
 #ipaddress_list scrollbarvertical sliderbar:active
 {
-	
+
 }
 
 #ipaddress_list scrollbarvertical sliderarrowdec

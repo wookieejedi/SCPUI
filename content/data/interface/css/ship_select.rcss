@@ -750,12 +750,12 @@ button#options_btn:active #options_img
 
 #ship_icon_list scrollbarvertical sliderbar:hover
 {
-	
+
 }
 
 #ship_icon_list scrollbarvertical sliderbar:active
 {
-	
+
 }
 
 #ship_icon_list scrollbarvertical sliderarrowdec
@@ -821,12 +821,12 @@ button#options_btn:active #options_img
 
 #ship_stats_wrapper scrollbarvertical sliderbar:hover
 {
-	
+
 }
 
 #ship_stats_wrapper scrollbarvertical sliderbar:active
 {
-	
+
 }
 
 #ship_stats_wrapper scrollbarvertical sliderarrowdec
@@ -961,14 +961,14 @@ div#submit_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #submit_img
 {
 	background-decorator: image;
 	background-image: select.png;
-	
+
 }
 button#submit_btn:hover #submit_img
 {

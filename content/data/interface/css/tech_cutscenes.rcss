@@ -458,12 +458,12 @@ button#accept_btn:active #accept_img
 
 #cutscene_list scrollbarvertical sliderbar:hover
 {
-	
+
 }
 
 #cutscene_list scrollbarvertical sliderbar:active
 {
-	
+
 }
 
 #cutscene_list scrollbarvertical sliderarrowdec

@@ -185,7 +185,7 @@
   color: #c9e4c9;
 }
 
-#dialog_body #text_container scrollbarvertical 
+#dialog_body #text_container scrollbarvertical
 {
 	position: absolute;
 	top: 0;

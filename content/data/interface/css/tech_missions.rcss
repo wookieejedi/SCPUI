@@ -574,12 +574,12 @@ button#options_btn:active #options_img
 
 #mission_list scrollbarvertical sliderbar:hover
 {
-	
+
 }
 
 #mission_list scrollbarvertical sliderbar:active
 {
-	
+
 }
 
 #mission_list scrollbarvertical sliderarrowdec

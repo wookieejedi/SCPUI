@@ -8,7 +8,7 @@ body
 }
 
 /* Fake horizontal rules can be used by creating a div with the "hr" class */
-.hr 
+.hr
 {
 	height:1px;
 	background-color:#aaaaaa;

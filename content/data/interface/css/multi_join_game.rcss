@@ -132,14 +132,14 @@ div#refresh_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #refresh_img
 {
 	background-decorator: image;
 	background-image: replay.png;
-	
+
 }
 button#refresh_btn:hover #refresh_img
 {
@@ -200,14 +200,14 @@ div#cancel_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #cancel_img
 {
 	background-decorator: image;
 	background-image: decline.png;
-	
+
 }
 button#cancel_btn:hover #cancel_img
 {
@@ -237,14 +237,14 @@ div#create_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #create_img
 {
 	background-decorator: image;
 	background-image: star.png;
-	
+
 }
 button#create_btn:hover #create_img
 {
@@ -274,14 +274,14 @@ div#observer_cont
 	display: block;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 #observer_img
 {
 	background-decorator: image;
 	background-image: detail.png;
-	
+
 }
 button#observer_btn:hover #observer_img
 {

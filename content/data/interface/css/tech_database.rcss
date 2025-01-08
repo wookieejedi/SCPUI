@@ -1094,12 +1094,12 @@ button#options_btn:active #options_img
 
 #tech_list scrollbarvertical sliderbar:hover
 {
-	
+
 }
 
 #tech_list scrollbarvertical sliderbar:active
 {
-	
+
 }
 
 #tech_list scrollbarvertical sliderarrowdec
@@ -1168,12 +1168,12 @@ button#options_btn:active #options_img
 
 #tech_desc scrollbarvertical sliderbar:hover
 {
-	
+
 }
 
 #tech_desc scrollbarvertical sliderbar:active
 {
-	
+
 }
 
 #tech_desc scrollbarvertical sliderarrowdec
@@ -1224,7 +1224,7 @@ div#ship_select .tooltip
 {
 	width: 100%;
 	right: 0;
-	
+
 }
 
 div#tech_select .tooltip
