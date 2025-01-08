@@ -1,10 +1,16 @@
-local utils = require("lib_utils")
-local topics = require("lib_ui_topics")
-local class = require("lib_class")
+-----------------------------------
+--Controller for the Barracks UI
+-----------------------------------
+
+local Topics = require("lib_ui_topics")
+local Utils = require("lib_utils")
+
+local Class = require("lib_class")
 
 local PilotSelectController = require("ctrlr_pilot_select")
 
-local BarracksScreenController = class(PilotSelectController)
+--- Barracks Controller is merged with the Pilot Select Controller
+local BarracksScreenController = Class(PilotSelectController)
 
 --- Called by the class constructor
 --- @return nil
@@ -35,7 +41,7 @@ function BarracksScreenController:initialize(document)
     ---Load the desired font size from the save file
     self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
-    topics.barracks.initialize:send(self)
+    Topics.barracks.initialize:send(self)
 
 end
 
@@ -49,8 +55,8 @@ function BarracksScreenController:changeImage(new_img)
         return
     end
 
-    new_img     = utils.strip_extension(new_img) -- The image may have an extension
-    local index = utils.table.ifind(self.Pilot_Images, new_img)
+    new_img     = Utils.strip_extension(new_img) -- The image may have an extension
+    local index = Utils.table.ifind(self.Pilot_Images, new_img)
 
     if index <= 0 then
         local text_el     = self.Document:GetElementById("pilot_head_text_el")
@@ -75,8 +81,8 @@ function BarracksScreenController:changeImgIndex(element, diff)
         return
     end
 
-    local current_img = utils.strip_extension(self.SelectedPilotHandle.ImageFilename) -- The image may have an extension
-    local index       = utils.table.ifind(self.Pilot_Images, current_img)
+    local current_img = Utils.strip_extension(self.SelectedPilotHandle.ImageFilename) -- The image may have an extension
+    local index       = Utils.table.ifind(self.Pilot_Images, current_img)
 
     index             = index + diff
     if index > #self.Pilot_Images then
@@ -167,15 +173,15 @@ function BarracksScreenController:initializeStatsText()
     self:addValueElement(text_container, ba.XSTR("Primary weapon shots:", 51, false), stats.PrimaryShotsFired)
     self:addValueElement(text_container, ba.XSTR("Primary weapon hits:", 52, false), stats.PrimaryShotsHit)
     self:addValueElement(text_container, ba.XSTR("Primary friendly hits:", 53, false), stats.PrimaryFriendlyHit)
-    self:addValueElement(text_container, ba.XSTR("Primary hit %:", 54, false), utils.compute_percentage(stats.PrimaryShotsHit, stats.PrimaryShotsFired))
-    self:addValueElement(text_container, ba.XSTR("Primary friendly hit %:", 56, false), utils.compute_percentage(stats.PrimaryFriendlyHit, stats.PrimaryShotsFired))
+    self:addValueElement(text_container, ba.XSTR("Primary hit %:", 54, false), Utils.compute_percentage(stats.PrimaryShotsHit, stats.PrimaryShotsFired))
+    self:addValueElement(text_container, ba.XSTR("Primary friendly hit %:", 56, false), Utils.compute_percentage(stats.PrimaryFriendlyHit, stats.PrimaryShotsFired))
     self:addEmptyLine(text_container)
 
     self:addValueElement(text_container, ba.XSTR("Secondary weapon shots:", 57, false), stats.SecondaryShotsFired)
     self:addValueElement(text_container, ba.XSTR("Secondary weapon hits:", 58, false), stats.SecondaryShotsHit)
     self:addValueElement(text_container, ba.XSTR("Secondary friendly hits:", 59, false), stats.SecondaryFriendlyHit)
-    self:addValueElement(text_container, ba.XSTR("Secondary hit %:", 60, false), utils.compute_percentage(stats.SecondaryShotsHit, stats.SecondaryShotsFired))
-    self:addValueElement(text_container, ba.XSTR("Secondary friendly hit %:", 61, false), utils.compute_percentage(stats.SecondaryFriendlyHit, stats.SecondaryShotsFired))
+    self:addValueElement(text_container, ba.XSTR("Secondary hit %:", 60, false), Utils.compute_percentage(stats.SecondaryShotsHit, stats.SecondaryShotsFired))
+    self:addValueElement(text_container, ba.XSTR("Secondary friendly hit %:", 61, false), Utils.compute_percentage(stats.SecondaryFriendlyHit, stats.SecondaryShotsFired))
     self:addEmptyLine(text_container)
 
     self:addValueElement(text_container, ba.XSTR("Total kills:", 62, false), stats.TotalKills)
@@ -193,7 +199,7 @@ function BarracksScreenController:initializeStatsText()
         local kills    = stats:getShipclassKills(ship_cls)
 
         if kills > 0 then
-            local name = topics.ships.name:send(ship_cls)
+            local name = Topics.ships.name:send(ship_cls)
             score_from_kills = score_from_kills + kills * ship_cls.Score
             self:addValueElement(text_container, name .. ":", kills)
         end
@@ -315,8 +321,8 @@ function BarracksScreenController:changeSquad(new_img)
         return
     end
 
-    new_img     = utils.strip_extension(new_img) -- The image may have an extension
-    local index = utils.table.ifind(self.Squad_Images, new_img)
+    new_img     = Utils.strip_extension(new_img) -- The image may have an extension
+    local index = Utils.table.ifind(self.Squad_Images, new_img)
 
     if index <= 0 then
         -- Invalid image found. Let's try to avoid displaying a warning here
@@ -349,8 +355,8 @@ function BarracksScreenController:changeSquadIndex(element, diff)
         squad = self.SelectedPilotHandle.SingleSquadFilename
     end
 
-    local current_img = utils.strip_extension(squad) -- The image may have an extension
-    local index       = utils.table.ifind(self.Squad_Images, current_img)
+    local current_img = Utils.strip_extension(squad) -- The image may have an extension
+    local index       = Utils.table.ifind(self.Squad_Images, current_img)
 
     index             = index + diff
     if index > #self.Squad_Images then
@@ -415,7 +421,7 @@ end
 --- Called when the screen is being unloaded
 --- @return nil
 function BarracksScreenController:unload()
-    topics.barracks.unload:send(self)
+    Topics.barracks.unload:send(self)
 end
 
 return BarracksScreenController

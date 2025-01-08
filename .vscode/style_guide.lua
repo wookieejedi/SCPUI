@@ -5,12 +5,20 @@
 --- SCPUI follows the FreespaceOpen API's style for members and methods. It's somewhat non-standard to lua but
 --- matching that style will make it easier to read and understand the codebase because SCPUI code and FSO API
 --- code is often intermingled.
---- 
+---
 --- SCPUI is designed to use the Lua Language Server extension for Visual Studio Code for type-checking and intellisense.
 
-local ScpuiSystemGlobal = {} -- Represents the ScpuiSystem global table that must contain all members and methods
+ScpuiSystemGlobal = {} -- Represents the ScpuiSystem global table that must contain all members and methods. No other globals should exist.
 
---- Downstream mods may store data directly in the global table like `ScpuiSystem.SomeDataValue = 0`. Data stored outside the ScpuiSystem.data table does not need to be documented and is not type-checked
+local FirstLibrary = require("lib_first_library") -- Represents a library that is required by the ScpuiSystem global. Libraries included at the top of the file should use PascalCase
+local SecondLibrary = require("lib_second_library") -- Multiple libriaries should be listed in alphabetical order
+
+local Class = require("lib_class") -- Class is a special library that merges class-like tables together. It should always be listed separately from other libraries
+
+local AbstractBriefingController = require("ctrlr_your_ui_controller") -- If a controller extends another controller, the parent controller should be required at the top of the file after the libraries are listed
+
+--- The Ui Controller class should be created at the top of the file after all required libraries and parent controllers are listed
+local MergedUiController = Class(AbstractBriefingController)
 
 
 
@@ -26,6 +34,8 @@ ScpuiSystemGlobal.data = { -- Represents the data table that must contain all da
         SubTableMember = "value" -- Represents a member of a sub-table and follows the above styles
     }
 }
+
+--- Downstream mods may store data directly in the global table like `ScpuiSystem.SomeDataValue = 0`. Data stored outside the ScpuiSystem.data table does not need to be documented and is not type-checked
 
 
 
@@ -47,7 +57,7 @@ local class = require("lib_class") -- Always use the class library for UI contro
 local ScpuiSystemUiController = class() -- UI Controllers use PascalCase and must be a class and end with `Controller`
 
 function ScpuiSystemUiController:init() -- All UI Controllers must have an init method
-    self.Variable = nil -- Initialize all ui variables in the init method using PascalCase
+    self.Variable = nil -- Initialize all ui variables in the init method using PascalCase. For different types of variables, refer to the global member documentation above.
 end
 
 function ScpuiSystemUiController:processData() -- UI Controller methods must use camelCase for internal methods
@@ -77,12 +87,12 @@ end
 --- --- content/data/scripts/ -- For lua files
 --- --- content/data/interface/markup/ -- For RML files
 --- --- content/data/interface/css/ -- For RCSS files
---- 
+---
 --- Lua files should be named as follows:
 --- --- ctrlr_*.lua -- For UI Controllers called by RML documents
 --- --- lib_*.lua -- For libraries
 --- --- scpui_sm_*.lua -- ScpuiSystem submodules that extend the ScpuiSystem global
---- 
+---
 --- Modular UI Controllers should have their own folder in the root directory and contain a similar structure to the above
 --- Using Journal UI as an example
 --- --- journal_ui/ -- Folder for the Journal UI

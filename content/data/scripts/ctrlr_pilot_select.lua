@@ -1,9 +1,14 @@
-local utils = require("lib_utils")
-local topics = require("lib_ui_topics")
-local dialogs = require("lib_dialogs")
-local class = require("lib_class")
+-----------------------------------
+--Controller for the Pilot Select UI, Shared with the Barracks Controller
+-----------------------------------
 
-local PilotSelectController = class()
+local Dialogs = require("lib_dialogs")
+local Topics = require("lib_ui_topics")
+local Utils = require("lib_utils")
+
+local Class = require("lib_class")
+
+local PilotSelectController = Class()
 
 
 PilotSelectController.VALID_MODES = { "single", "multi" } --- @type string[] The list of valid modes for the player. Either "single" or "multi"
@@ -41,7 +46,7 @@ function PilotSelectController:initialize(document)
     local current  = self:getInitialCallsign()
     if current ~= nil then
         -- Make sure that the last pilot appears at the top of the list
-        local index = utils.table.ifind(pilots, current)
+        local index = Utils.table.ifind(pilots, current)
         if index > 0 then
             table.remove(pilots, index)
             table.insert(pilots, 1, current)
@@ -99,7 +104,7 @@ function PilotSelectController:initialize(document)
         ui.PilotSelect.unloadPilot()
     end
 
-    if topics.pilotselect.startsound:send(self) then
+    if Topics.pilotselect.startsound:send(self) then
         ui.MainHall.startAmbientSound()
     end
 
@@ -113,11 +118,11 @@ function PilotSelectController:initialize(document)
                                                           .. " or support for these problems, as they are caused by the mod's data files, not FreeSpace Open's"
                                                           .. " source code.", -1),
                                           ui.PilotSelect.WarningCount + ui.PilotSelect.ErrorCount)
-            local builder = dialogs.new()
+            local builder = Dialogs.new()
             builder:title(ba.XSTR("Warning!", 888395))
             builder:text(text)
             builder:escape(false)
-            builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
+            builder:button(Dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
             builder:show(self.Document.context)
         end
     end
@@ -129,7 +134,7 @@ function PilotSelectController:initialize(document)
             self.Document:GetElementById("playercommit_btn"):Click()
         end
 
-        topics.pilotselect.initialize:send(self)
+        Topics.pilotselect.initialize:send(self)
     end
 end
 
@@ -193,15 +198,15 @@ end
 function PilotSelectController:commit_pressed()
     local button = self.Document:GetElementById("playercommit_btn")
 
-    topics.pilotselect.commit:send(self)
+    Topics.pilotselect.commit:send(self)
 
     if self.SelectedPilotName == nil then
         ui.playElementSound(button, "click", "error")
 
-        local builder = dialogs.new()
+        local builder = Dialogs.new()
         builder:text(ba.XSTR("You must select a valid pilot first", 888397))
         builder:escape(false)
-        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
+        builder:button(Dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
         builder:show(self.Document.context)
         return
     end
@@ -220,11 +225,11 @@ end
 --- Show a dialog indicating that the selected pilot was created with a different language
 --- @return nil
 function PilotSelectController:showWrongPilotLanguageDialog()
-    local builder = dialogs.new()
+    local builder = Dialogs.new()
     builder:text(ba.XSTR("Selected pilot was created with a different language to the currently active language." ..
                                  "\n\nPlease select a different pilot or change the language", -1))
     builder:escape(false)
-    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
+    builder:button(Dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
     builder:show(self.Document.context)
 end
 
@@ -233,7 +238,7 @@ end
 --- @param mode string The mode to set. Either "single" or "multi"
 --- @return boolean
 function PilotSelectController:set_player_mode(element, mode)
-    assert(utils.table.contains(PilotSelectController.VALID_MODES, mode), "Mode " .. tostring(mode) .. " is not valid!")
+    assert(Utils.table.contains(PilotSelectController.VALID_MODES, mode), "Mode " .. tostring(mode) .. " is not valid!")
 
     if self.CurrentMode == mode then
         if element ~= nil then
@@ -288,20 +293,20 @@ end
 --- @return nil
 function PilotSelectController:global_keydown(element, event)
     if self.Controller == PilotSelectController.CONTROLLER_PLAYER_SELECT then
-        if event.parameters.key_identifier == rocket.key_identifier.ESCAPE and topics.pilotselect.escKeypress:send(self) == true then
+        if event.parameters.key_identifier == rocket.key_identifier.ESCAPE and Topics.pilotselect.escKeypress:send(self) == true then
             event:StopPropagation()
             ba.postGameEvent(ba.GameEvents["GS_EVENT_QUIT_GAME"])
-        elseif event.parameters.key_identifier == rocket.key_identifier.UP and topics.pilotselect.upKeypress:send(self) == true then
+        elseif event.parameters.key_identifier == rocket.key_identifier.UP and Topics.pilotselect.upKeypress:send(self) == true then
             self:down_button_pressed()
-        elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and topics.pilotselect.dwnKeypress:send(self) == true then
+        elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and Topics.pilotselect.dwnKeypress:send(self) == true then
             self:up_button_pressed()
-        elseif event.parameters.key_identifier == rocket.key_identifier.RETURN and topics.pilotselect.retKeypress:send(self) == true then
+        elseif event.parameters.key_identifier == rocket.key_identifier.RETURN and Topics.pilotselect.retKeypress:send(self) == true then
             self:commit_pressed()
-        elseif event.parameters.key_identifier == rocket.key_identifier.DELETE and topics.pilotselect.delKeypress:send(self) == true then
+        elseif event.parameters.key_identifier == rocket.key_identifier.DELETE and Topics.pilotselect.delKeypress:send(self) == true then
             self:delete_player()
         else
             --Catch all for customization
-            topics.pilotselect.globalKeypress:send({self, event})
+            Topics.pilotselect.globalKeypress:send({self, event})
         end
     end
 end
@@ -403,15 +408,15 @@ end
 --- @param clone_from string | nil The callsign of the pilot to clone from
 --- @return nil
 function PilotSelectController:actualPilotCreate(element, callsign, clone_from)
-    if utils.table.contains(self.pilots, callsign, function(left, right)
+    if Utils.table.contains(self.pilots, callsign, function(left, right)
         return left:lower() == right:lower()
     end) then
-        local builder = dialogs.new()
+        local builder = Dialogs.new()
         builder:title(ba.XSTR("Warning", 888284))
         builder:text(ba.XSTR("A duplicate pilot exists\nOverwrite?", 888401))
         builder:escape(false)
-        builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", 888298), false, "n")
-        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Yes", 888296), true, "y")
+        builder:button(Dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", 888298), false, "n")
+        builder:button(Dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Yes", 888296), true, "y")
         builder:show(self.Document.context):continueWith(function(result)
             if not result then
                 return
@@ -469,23 +474,23 @@ function PilotSelectController:delete_player(element)
     end
 
     if self.CurrentMode == "multi" then
-        local builder = dialogs.new()
+        local builder = Dialogs.new()
         builder:title(ba.XSTR("Disabled!", 888404))
         builder:text(ba.XSTR("Multi and single player pilots are now identical. Deleting a multi-player pilot will also delete" ..
                                      " all single-player data for that pilot.\n\nAs a safety precaution, pilots can only be deleted from the" ..
                                      " single-player menu.", -1))
         builder:escape(false)
-        builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
+        builder:button(Dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, "o")
         builder:show(self.Document.context)
         return
     end
 
-    local builder = dialogs.new()
+    local builder = Dialogs.new()
     builder:title(ba.XSTR("Warning!", 888395))
     builder:text(ba.XSTR("Are you sure you wish to delete this pilot?", 888407))
     builder:escape(false)
-    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, "No", false, "n")
-    builder:button(dialogs.BUTTON_TYPE_POSITIVE, "Yes", true, "y")
+    builder:button(Dialogs.BUTTON_TYPE_NEGATIVE, "No", false, "n")
+    builder:button(Dialogs.BUTTON_TYPE_POSITIVE, "Yes", true, "y")
     builder:show(self.Document.context):continueWith(function(result)
         if not result then
             return
@@ -500,11 +505,11 @@ function PilotSelectController:delete_player(element)
         end
 
         if not ui.PilotSelect.deletePilot(pilot) then
-            local builder = dialogs.new()
+            local builder = Dialogs.new()
             builder:title(ba.XSTR("Error", 888408))
             builder:text(ba.XSTR("Failed to delete pilot file. File may be read-only.", 888409))
             builder:escape(false)
-            builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, string.sub(ba.XSTR("Ok", 888286), 1, 1))
+            builder:button(Dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), false, string.sub(ba.XSTR("Ok", 888286), 1, 1))
             builder:show(self.Document.context)
             return
         end
@@ -514,7 +519,7 @@ function PilotSelectController:delete_player(element)
         removed_el.parent_node:RemoveChild(removed_el)
         self.Pilot_Elements[pilot] = nil
 
-        utils.table.iremove_el(self.pilots, pilot)
+        Utils.table.iremove_el(self.pilots, pilot)
 
         self:selectFirstPilot()
     end)
@@ -545,7 +550,7 @@ function PilotSelectController:up_button_pressed()
         return
     end
 
-    local idx = utils.table.ifind(self.pilots, self.SelectedPilotName)
+    local idx = Utils.table.ifind(self.pilots, self.SelectedPilotName)
     idx       = idx + 1
     if idx > #self.pilots then
         idx = 1
@@ -562,7 +567,7 @@ function PilotSelectController:down_button_pressed()
         return
     end
 
-    local idx = utils.table.ifind(self.pilots, self.SelectedPilotName)
+    local idx = Utils.table.ifind(self.pilots, self.SelectedPilotName)
     idx       = idx - 1
     if idx < 1 then
         idx = #self.pilots
@@ -574,7 +579,7 @@ end
 --- Called when the screen is being unloaded
 --- @return nil
 function PilotSelectController:unload()
-    topics.pilotselect.unload:send(self)
+    Topics.pilotselect.unload:send(self)
 end
 
 return PilotSelectController
