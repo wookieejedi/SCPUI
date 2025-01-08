@@ -374,3 +374,10 @@
 --- @field FirstBtn string | nil The name of the first button element
 --- @field TextEl string | nil The name of the text element
 --- @field StageTextEl string | nil The name of the stage text element
+
+--- SCPUI Campaign List
+--- @class scpui_campaign
+--- @field Name string The name of the campaign
+--- @field Filename string The filename of the campaign
+--- @field Description string The description of the campaign
+--- @field Element Element | nil the element for the campaign list item

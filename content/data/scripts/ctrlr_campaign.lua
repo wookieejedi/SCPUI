@@ -1,21 +1,30 @@
-local dialogs = require("lib_dialogs")
-local class = require("lib_class")
-local topics = require("lib_ui_topics")
+-----------------------------------
+--Controller for the Campaign Select UI
+-----------------------------------
 
-local CampaignController = class()
+local Dialogs = require("lib_dialogs")
+local Topics = require("lib_ui_topics")
 
+local Class = require("lib_class")
+
+local CampaignController = Class()
+
+--- Called by the class constructor
+--- @return nil
 function CampaignController:init()
+    self.Document = nil --- @type Document The RML document
+    self.Selection = nil --- @type string | nil The selected campaign
+    self.Campaigns_List = {} --- @type scpui_campaign[] The list of available campaigns
 end
 
----@param document Document
+--- Called by the RML document
+--- @param document Document
 function CampaignController:initialize(document)
     self.Document = document
-    self.elements = {}
-    self.selection = nil
 
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
-	
+
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
@@ -26,26 +35,33 @@ function CampaignController:initialize(document)
     local currentCampaignFile = ba.getCurrentPlayer():getCampaignFilename()
     local selectedCampaign = nil
 
-    self.names = names
-    self.descriptions = {}
-    self.fileNames = {}
     for i, v in ipairs(names) do
-        self.descriptions[v] = descriptions[i]
-        self.fileNames[v] = fileNames[i]
+        --- @type scpui_campaign
+        local campaign = {
+            Name = v,
+            Description = descriptions[i],
+            Filename = fileNames[i]
+        }
 
-        if fileNames[i] == currentCampaignFile then
-            selectedCampaign = v
+        self.Campaigns_List[i] = campaign
+
+        if campaign.Filename == currentCampaignFile then
+            selectedCampaign = self.Campaigns_List[i]
         end
     end
-	
-	topics.campaign.initialize:send(self)
 
-    self:init_campaign_list()
+    self:initCampaignList()
+
+    Topics.campaign.initialize:send(self)
 
     -- Initialize selection
     self:selectCampaign(selectedCampaign)
 end
 
+--- Global keydown function handles all keypresses
+--- @param element Element The main document element
+--- @param event Event The event that was triggered
+--- @return nil
 function CampaignController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
@@ -54,35 +70,51 @@ function CampaignController:global_keydown(element, event)
     end
 end
 
+--- Select a campaign by name
+--- @param campaign scpui_campaign | nil The campaign name
+--- @return nil
 function CampaignController:selectCampaign(campaign)
-    if self.selection == campaign then
+    if campaign ~= nil and self.Selection == campaign.Name then
         -- No changes
         return
     end
 
-    if self.selection ~= nil and self.elements[self.selection] ~= nil then
-        self.elements[self.selection]:SetPseudoClass("checked", false)
+    --- Uncheck the previous campaign
+    if self.Selection ~= nil then
+        local element = self:getCampaignByName(self.Selection).Element
+        if element ~= nil then
+            element:SetPseudoClass("checked", false)
+        end
     end
 
-    self.selection = campaign
+    local description = ""
 
-    local desc_el = self.Document:GetElementById("desc_text")
-    if self.selection ~= nil then
-        desc_el.inner_rml = self.descriptions[campaign]
+    if campaign == nil then
+        self.Selection = nil
     else
-        desc_el.inner_rml = ""
+        self.Selection = campaign.Name
+        description = campaign.Description
     end
 
-    if self.selection ~= nil and self.elements[self.selection] ~= nil then
-        self.elements[self.selection]:SetPseudoClass("checked", true)
-        self.elements[self.selection]:ScrollIntoView()
+    self.Document:GetElementById("desc_text").inner_rml = description
+
+    --- Check the new campaign and bring it into view
+    if self.Selection ~= nil then
+        local element = self:getCampaignByName(self.Selection).Element
+        if element ~= nil then
+            element:SetPseudoClass("checked", true)
+            element:ScrollIntoView()
+        end
     end
 end
 
-function CampaignController:create_campaign_li(campaign)
+--- Create a list item for a campaign
+--- @param campaign scpui_campaign The campaign name
+--- @return Element The list item element
+function CampaignController:createCampaignListItem(campaign)
     local li_el = self.Document:CreateElement("li")
-	
-	local display = topics.campaign.listCampaign:send({campaign, self.fileNames[campaign]})
+
+	local display = Topics.campaign.listCampaign:send({campaign.Name, campaign.Filename})
 
     li_el.inner_rml = display
     li_el:SetClass("campaignlist_element", true)
@@ -90,60 +122,87 @@ function CampaignController:create_campaign_li(campaign)
         self:selectCampaign(campaign)
     end)
 
-    self.elements[campaign] = li_el
+    campaign.Element = li_el
 
     return li_el
 end
 
-function CampaignController:init_campaign_list()
+--- Initialize the campaign list
+--- @return nil
+function CampaignController:initCampaignList()
     local campaign_list_el = self.Document:GetElementById("campaignlist_ul")
-    for _, v in ipairs(self.names) do
+    for _, v in ipairs(self.Campaigns_List) do
         -- Add all the elements
-        campaign_list_el:AppendChild(self:create_campaign_li(v))
+        campaign_list_el:AppendChild(self:createCampaignListItem(v))
     end
 end
 
+--- Get a campaign by name
+--- @param name string The campaign name
+--- @return scpui_campaign | nil The campaign
+function CampaignController:getCampaignByName(name)
+    for _, v in ipairs(self.Campaigns_List) do
+        if v.Name == name then
+            return v
+        end
+    end
+
+    return nil
+end
+
+--- The commit button was clicked, so load the selected campaign
+--- @param element Element The element that was clicked
+--- @return nil
 function CampaignController:commit_pressed(element)
-    if self.selection == nil then
+    if self.Selection == nil then
         ui.playElementSound(element, "click", "error")
         return
     end
-    assert(self.fileNames[self.selection] ~= nil)
 
-    ui.CampaignMenu.selectCampaign(self.fileNames[self.selection])
+    local campaign = self:getCampaignByName(self.Selection)
+    assert(campaign ~= nil)
+
+    ui.CampaignMenu.selectCampaign(campaign.Filename)
 
     ui.playElementSound(element, "click", "success")
     ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 end
 
+--- The restart button was clicked, so reset the campaign
+--- @param element Element The element that was clicked
+--- @return nil
 function CampaignController:restart_pressed(element)
-    if self.selection == nil then
+    if self.Selection == nil then
         ui.playElementSound(element, "click", "error")
         return
     end
-    assert(self.fileNames[self.selection] ~= nil)
 
-    local builder = dialogs.new()
+    local campaign = self:getCampaignByName(self.Selection)
+    assert(campaign ~= nil)
+
+    local builder = Dialogs.new()
     builder:title(ba.XSTR("Warning", 888284));
     builder:text(ba.XSTR("This will cause all progress in your\nCurrent campaign to be lost", 888285))
 	builder:escape(false)
-    builder:button(dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), true, string.sub(ba.XSTR("Ok", 888286), 1, 1))
-    builder:button(dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", 888091), false, string.sub(ba.XSTR("Cancel", 888091), 1, 1))
+    builder:button(Dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), true, string.sub(ba.XSTR("Ok", 888286), 1, 1))
+    builder:button(Dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", 888091), false, string.sub(ba.XSTR("Cancel", 888091), 1, 1))
     builder:show(self.Document.context):continueWith(function(accepted)
         if not accepted then
             ui.playElementSound(element, "click", "error")
             return
         end
 
-        ui.CampaignMenu.resetCampaign(self.fileNames[self.selection])
+        ui.CampaignMenu.resetCampaign(campaign.Filename)
 
         ba.savePlayer(ba.getCurrentPlayer())
         ui.playElementSound(element, "click", "success")
     end)
 end
 
+--- Called when the screen is being unloaded
+--- @return nil
 function CampaignController:unload()
-	topics.campaign.unload:send(self)
+	Topics.campaign.unload:send(self)
 end
 
 return CampaignController
