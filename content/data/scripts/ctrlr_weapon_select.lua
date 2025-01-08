@@ -46,17 +46,17 @@ function WeaponSelectController:initialize(document)
 		self.Document:GetElementById("secondary_amount_three"),
 		self.Document:GetElementById("secondary_amount_four")
 	}
-	
+
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
-	
+
 	self.chat_el = self.Document:GetElementById("chat_window")
 	self.input_id = self.Document:GetElementById("chat_input")
-	
+
 	self.weapon3d, self.weaponEffect, self.icon3d = ui.ShipWepSelect.get3dWeaponChoices()
-	
+
 	self.overhead3d, self.overheadEffect = ui.ShipWepSelect.get3dOverheadChoices()
-	
+
 	--Get all the required weapons
 	local j = 1
 	while (j < #tb.WeaponClasses) do
@@ -65,31 +65,31 @@ function WeaponSelectController:initialize(document)
 		end
 		j = j + 1
 	end
-	
+
 	--Create the anim here so that it can be restarted with each new selection
 	local aniWrapper = self.Document:GetElementById("ship_view")
 	aniWrapper:AppendChild(self.aniEl)
 
 	local aniWrapper = self.Document:GetElementById("weapon_view")
 	aniWrapper:ReplaceChild(self.aniWepEl, aniWrapper.first_child)
-	
+
 
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-	
+
 	self.Document:GetElementById("brief_btn"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("s_select_btn"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("w_select_btn"):SetPseudoClass("checked", true)
-	
+
 	self.SelectedEntry = nil
 	self.SelectedShip = nil
-	
+
 	self.enabled = self:BuildWings()
-	
+
 	for i = 1, loadoutHandler:GetNumSlots() do
 		table.insert(self.ships, 0)
 	end
-	
+
 	if ScpuiSystem:inMultiGame() then
 		self.Document:GetElementById("chat_wrapper"):SetClass("hidden", false)
 		self.Document:GetElementById("c_panel_wrapper_multi"):SetClass("hidden", false)
@@ -98,9 +98,9 @@ function WeaponSelectController:initialize(document)
 		self:updateLists()
 		ui.MultiGeneral.setPlayerState()
 	end
-	
+
 	topics.weaponselect.initialize:send(self)
-	
+
 	--Only create entries if there are any to create
 	if loadoutHandler:GetNumPrimaryWeapons() > 0 and self.enabled == true then
 		self:CreateEntries(loadoutHandler:GetPrimaryWeaponList())
@@ -108,11 +108,11 @@ function WeaponSelectController:initialize(document)
 	if loadoutHandler:GetNumSecondaryWeapons() > 0 and self.enabled == true then
 		self:CreateEntries(loadoutHandler:GetSecondaryWeaponList())
 	end
-	
+
 	if self.enabled == true then
 		self:SelectInitialItems()
 	end
-	
+
 	self:startMusic()
 
 end
@@ -122,7 +122,7 @@ function WeaponSelectController:BuildWings()
 	local slotNum = 1
 	local wrapperEl = self.Document:GetElementById("wings_wrapper")
 	ScpuiSystem:clearEntries(wrapperEl)
-	
+
 	--Check that we actually have wing slots
 	if loadoutHandler:GetNumWings() <= 0 then
 		ba.warning("Mission has no loadout wings! Check the loadout in FRED!")
@@ -134,41 +134,41 @@ function WeaponSelectController:BuildWings()
 		local wingEl = self.Document:CreateElement("div")
 		wingEl:SetClass("wing", true)
 		wrapperEl:AppendChild(wingEl)
-		
+
 		--Add the wrapper for the slots
 		local slotsEl = self.Document:CreateElement("div")
 		slotsEl:SetClass("slot_wrapper", true)
 		wingEl:ReplaceChild(slotsEl, wingEl.first_child)
-		
+
 		--Add the wing name
 		local nameEl = self.Document:CreateElement("div")
 		nameEl:SetClass("wing_name", true)
 		nameEl.inner_rml = loadoutHandler:GetWingDisplayName(i)
 		wingEl:AppendChild(nameEl)
-		
+
 		--Check that the wing actually has valid ship slots
 		if loadoutHandler:GetNumWingSlots(i) <= 0 then
 			ba.warning("Loadout wing '" .. loadoutHandler:GetWingName(i) .. "' has no valid ship slots! Check the loadout in FRED!")
 			return false
 		end
-		
+
 		--Now we add the actual wing slots
 		for j = 1, loadoutHandler:GetNumWingSlots(i), 1 do
 			local slotInfo = loadoutHandler:GetShipLoadout(slotNum)
-			
+
 			--This is really only used for multi to limit how often icons are changed
 			self.ships[slotNum] = slotInfo.ShipClassIndex
-			
+
 			local slotEl = self.Document:CreateElement("div")
 			slotEl:SetClass("wing_slot", true)
 			slotsEl:AppendChild(slotEl)
-			
+
 			--default to empty slot image for now, but don't show disabled slots
 			local slotIcon = loadoutHandler:getEmptyWingSlotIcon()[2]
 			if slotInfo.IsDisabled then
 				slotIcon = loadoutHandler:getEmptyWingSlotIcon()[1]
 			end
-			
+
 			if slotInfo.WingSlot == 1 then
 				slotEl:SetClass("wing_one", true)
 			elseif slotInfo.WingSlot == 2 then
@@ -205,50 +205,50 @@ function WeaponSelectController:BuildWings()
 					ba.error("Failed to generate data for " .. tb.ShipClasses[shipIndex].Name .. " in the loadout!")
 				end
 			end
-			
+
 			local slotImg = self.Document:CreateElement("img")
 			slotImg:SetAttribute("src", slotIcon)
 			slotEl:AppendChild(slotImg)
-			
+
 			local slotName = self.Document:CreateElement("div")
 			slotName.inner_rml = slotInfo.DisplayName
 			slotName.id = "callsign_" .. slotNum
 			slotName:SetClass("slot_name", true)
 			slotEl:AppendChild(slotName)
-			
+
 			--This is here so that the event listeners use the correct slot index!
 			local index = slotNum
-			
+
 			slotEl.id = "slot_" .. slotNum
 
 			self:ActivateSlot(index)
-			
+
 			slotNum = slotNum + 1
 		end
 	end
-	
+
 	return true
 
 end
 
 function WeaponSelectController:ActivateSlot(slot)
 	local slotInfo = loadoutHandler:GetShipLoadout(slot)
-	
+
 	--Don't activate disabled slots
 	if slotInfo.IsDisabled == true then
 		return
 	end
-	
+
 	--Don't activate already active slots
 	local utils = require("lib_utils")
 	if utils.table.contains(self.activeSlots, slot) then
 		return
 	end
-	
+
 	table.insert(self.activeSlots, slot)
-	
+
 	local element = self.Document:GetElementById("slot_" .. slot)
-	
+
 	--Abort if the slot was never created
 	if not element then
 		return
@@ -256,7 +256,7 @@ function WeaponSelectController:ActivateSlot(slot)
 
 	if slotInfo.ShipClassIndex > 0 then
 		if not slotInfo.IsShipLocked then
-			
+
 			if self.icon3d then
 				element:SetClass("available", true)
 			end
@@ -265,7 +265,7 @@ function WeaponSelectController:ActivateSlot(slot)
 				element:SetClass("locked", true)
 			end
 		end
-		
+
 		--Add click detection
 		element:SetClass("button_3", true)
 		element:AddEventListener("click", function(_, _, _)
@@ -283,21 +283,21 @@ function WeaponSelectController:SelectInitialItems()
 			break
 		end
 	end
-	
+
 	if selectSlot > 0 then
 		local ship = loadoutHandler:GetShipLoadout(selectSlot)
 
 		self:SelectShip(ship.ShipClassIndex, ship.Name, selectSlot)
-		
+
 		if loadoutHandler:GetNumPrimaryWeapons() > 0 then
 			self:SelectEntry(loadoutHandler:GetPrimaryWeaponList()[1])
 		end
-		
+
 		if loadoutHandler:GetNumSecondaryWeapons() > 0 then
 			self:SelectEntry(loadoutHandler:GetSecondaryWeaponList()[1])
 		end
 	end
-	
+
 end
 
 function WeaponSelectController:ReloadList()
@@ -341,7 +341,7 @@ function WeaponSelectController:ChangeIconAvailability(shipIndex)
 			iconEl:SetAttribute("src", v.GeneratedIcon[6])
 		end
 	end
-	
+
 	for i, v in pairs(loadoutHandler:GetSecondaryWeaponList()) do
 		local iconEl = self.Document:GetElementById(v.Key).first_child.first_child.next_sibling
 		if tb.ShipClasses[shipIndex]:isWeaponAllowedOnShip(v.Index) then
@@ -369,16 +369,16 @@ function WeaponSelectController:CreateEntryItem(entry, idx)
 	local iconWrapper = self.Document:CreateElement("div")
 	iconWrapper.id = entry.Name
 	iconWrapper:SetClass("select_item", true)
-	
+
 	li_el:AppendChild(iconWrapper)
-	
+
 	local countEl = self.Document:CreateElement("div")
 	countEl.inner_rml = tostring(loadoutHandler:GetWeaponPoolAmount(entry.Index))
 	countEl:SetClass("amount", true)
 	countEl.id = entry.Name .. "_count"
-	
+
 	iconWrapper:AppendChild(countEl)
-	
+
 	--local aniWrapper = self.Document:GetElementById(entry.Icon)
 	local iconEl = self.Document:CreateElement("img")
 	iconEl:SetAttribute("src", entry.GeneratedIcon[1])
@@ -414,7 +414,7 @@ function WeaponSelectController:CreateEntries(list)
 	elseif tb.WeaponClasses[list[1].Index]:isSecondary() then
 		list_names_el = self.Document:GetElementById("secondary_icon_list_ul")
 	end
-	
+
 	if list_names_el ~= nil then
 		ScpuiSystem:clearEntries(list_names_el)
 
@@ -441,26 +441,26 @@ function WeaponSelectController:SelectEntry(entry, slot)
 	if entry ~= nil then
 		ScpuiSystem.data.memory.model_rendering.Hover = slot
 		if entry.key ~= self.SelectedEntry then
-			
+
 			self.SelectedEntry = entry.key
 			self.selectedWeapon = entry.Name
-			
+
 			self:HighlightWeapon()
-			
+
 			self:BuildInfo(entry)
-			
+
 			if self.weapon3d or entry.Anim == nil then
 				ScpuiSystem.data.memory.model_rendering.Class = entry.Index
 				ScpuiSystem.data.memory.model_rendering.Element = self.Document:GetElementById("weapon_view_window")
 				ScpuiSystem.data.memory.model_rendering.Start = true
-				
+
 				self:refreshOverheadSlot()
 			else
 				--the anim is already created so we only need to remove and reset the src
 				self.aniWepEl:RemoveAttribute("src")
 				self.aniWepEl:SetAttribute("src", entry.Anim)
 			end
-			
+
 		end
 	end
 end
@@ -469,15 +469,15 @@ function WeaponSelectController:SelectAssignedEntry(element, slot)
 
 	local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
 	local weapon = ship.Weapons_List[slot]
-	
+
 	local selectedEntry = nil
-	
+
 	if slot < 4 then
 		selectedEntry = loadoutHandler:GetPrimaryInfo(weapon)
 	else
 		selectedEntry = loadoutHandler:GetSecondaryInfo(weapon)
 	end
-	
+
 	self:SelectEntry(selectedEntry, slot)
 
 end
@@ -501,7 +501,7 @@ function WeaponSelectController:HighlightWeapon()
 			end
 		end
 	end
-	
+
 	for i, v in pairs(loadoutHandler:GetSecondaryWeaponList()) do
 		local iconEl = self.Document:GetElementById(v.Key).first_child.first_child.next_sibling
 		if tb.ShipClasses[ship.ShipClassIndex]:isWeaponAllowedOnShip(v.Index) then
@@ -518,7 +518,7 @@ function WeaponSelectController:HighlightWeapon()
 			end
 		end
 	end
-	
+
 	for i, v in pairs(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List) do
 		local index = string.sub(i, -1)
 
@@ -542,9 +542,9 @@ function WeaponSelectController:HighlightWeapon()
 end
 
 function WeaponSelectController:HighlightShip(slot)
-	
+
 	for i = 1, loadoutHandler:GetNumSlots(), 1 do
-		local slotEl = self.Document:GetElementById("slot_" .. i)		
+		local slotEl = self.Document:GetElementById("slot_" .. i)
 		local ship = loadoutHandler:GetShipLoadout(i)
 		local shipIdx = ship.ShipClassIndex
 		local thisEntry = loadoutHandler:GetShipInfo(shipIdx)
@@ -567,31 +567,31 @@ function WeaponSelectController:HighlightShip(slot)
 					icon = thisEntry.GeneratedIcon[1]
 				end
 			end
-			
+
 			slotEl.first_child:SetAttribute("src", icon)
-			
+
 		end
 	end
-	
+
 	return true
-				
+
 end
 
 function WeaponSelectController:ClickOnSlot(slot)
 	local shipInfo = loadoutHandler:GetShipLoadout(slot)
-	
+
 	self:SelectShip(shipInfo.ShipClassIndex, shipInfo.Name, slot)
 end
 
 function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 
 	if callsign ~= self.SelectedShip then
-		
+
 		self.SelectedShip = callsign
 		self.currentShipSlot = slot
-		
+
 		self.Document:GetElementById("ship_name").inner_rml = callsign
-		
+
 		local thisEntry = loadoutHandler:GetShipInfo(shipIndex)
 
 		--This really shouldn't be possible but just in case
@@ -603,30 +603,30 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 		if self:HighlightShip(slot) == false then
 			return
 		end
-		
+
 		local overhead = thisEntry.Overhead
 
 		self:BuildWeaponSlots(shipIndex)
 		self.currentShipIndex = shipIndex
-		
+
 		self:ChangeIconAvailability(shipIndex)
-		
+
 		self:HighlightWeapon()
-		
+
 		topics.weaponselect.selectShip:send({self, shipIndex})
-		
+
 		if self.overhead3d then
 			ScpuiSystem.data.memory.model_rendering.OverheadClass = shipIndex
 			ScpuiSystem.data.memory.model_rendering.OverheadElement = self.Document:GetElementById("ship_view_wrapper")
 			ScpuiSystem.data.memory.model_rendering.overheadEffect = self.overheadEffect
-			
+
 			self:refreshOverheadSlot()
 		else
 			--the anim is already created so we only need to remove and reset the src
 			self.aniEl:RemoveAttribute("src")
 			self.aniEl:SetAttribute("src", overhead)
 		end
-		
+
 	end
 
 end
@@ -639,19 +639,19 @@ function WeaponSelectController:ClearWeaponSlots()
 	ScpuiSystem:clearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank5)
 	ScpuiSystem:clearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank6)
 	ScpuiSystem:clearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank7)
-	
+
 	self.banks = {}
-	
+
 	for i = 1, loadoutHandler:GetMaxBanks() do
 		table.insert(self.banks, 0)
 	end
-	
+
 	for i, v in pairs(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List) do
 		v:SetClass("slot_3d", false)
 		v:SetClass("button_3", false)
 		v:SetClass("weapon_locked", false)
 	end
-	
+
 	for i, v in pairs(self.secondaryAmountEls) do
 		v.inner_rml = ""
 	end
@@ -673,42 +673,42 @@ function WeaponSelectController:BuildWeaponSlots(ship)
 			ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank1:SetClass("slot_3d", true)
 		end
 	end
-	
+
 	if tb.ShipClasses[ship].numPrimaryBanks > 1 then
 		self:BuildSlot(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank2, 2)
 		if self.overhead3d then
 			ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank2:SetClass("slot_3d", true)
 		end
 	end
-	
+
 	if tb.ShipClasses[ship].numPrimaryBanks > 2 then
 		self:BuildSlot(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank3, 3)
 		if self.overhead3d then
 			ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank3:SetClass("slot_3d", true)
 		end
 	end
-	
+
 	if tb.ShipClasses[ship].numSecondaryBanks > 0 then
 		self:BuildSlot(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank4, 4)
 		if self.overhead3d then
 			ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank4:SetClass("slot_3d", true)
 		end
 	end
-	
+
 	if tb.ShipClasses[ship].numSecondaryBanks > 1 then
 		self:BuildSlot(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank5, 5)
 		if self.overhead3d then
 			ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank5:SetClass("slot_3d", true)
 		end
 	end
-	
+
 	if tb.ShipClasses[ship].numSecondaryBanks > 2 then
 		self:BuildSlot(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank6, 6)
 		if self.overhead3d then
 			ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank6:SetClass("slot_3d", true)
 		end
 	end
-	
+
 	if tb.ShipClasses[ship].numSecondaryBanks > 3 then
 		self:BuildSlot(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank7, 7)
 		if self.overhead3d then
@@ -720,14 +720,14 @@ end
 
 function WeaponSelectController:BuildSlot(parentEl, bank)
 	local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
-	
+
 	--Maybe show slot as locked
 	if ship.IsWeaponLocked == true then
 		parentEl:SetClass("weapon_locked", true)
 	else
 		parentEl:SetClass("weapon_locked", false)
 	end
-	
+
 	--Get the weapon currently loaded in the slot
 	local weapon = ship.Weapons_List[bank] or 0
 	---@type integer | string
@@ -736,17 +736,17 @@ function WeaponSelectController:BuildSlot(parentEl, bank)
 	if bank > 3 then
 		self.secondaryAmountEls[bank - 3].inner_rml = amount
 	end
-	
+
 	if self.banks[bank] == weapon then
 		return
 	end
-	
+
 	self.banks[bank] = weapon
-	
+
 	ScpuiSystem:clearEntries(parentEl)
-	
+
 	local slotImg = self.Document:CreateElement("img")
-	
+
 	local slotIcon = nil
 	if weapon > 0 then
 		if ship.IsWeaponLocked == false then
@@ -765,25 +765,25 @@ end
 function WeaponSelectController:BuildInfo(entry)
 
 	self.Document:GetElementById("weapon_name").inner_rml = entry.Title
-	
+
 	local infoEl = self.Document:GetElementById("weapon_stats")
-	
+
 	ScpuiSystem:clearEntries(infoEl)
-	
+
 	local power = entry.Power
 	local rof = entry.RoF
 	local velocity = utils.round(entry.Velocity)
 	local range = utils.round(entry.Range)
 	local cargoSize = utils.round(entry.CargoSize, 2)
-	
+
 	local desc_el = self.Document:CreateElement("p")
 	desc_el.inner_rml = entry.Description
 	desc_el:SetClass("white", true)
-	
+
 	local stats1_el = self.Document:CreateElement("p")
 	stats1_el.inner_rml = ba.XSTR("Velocity", 888430) .. ": " .. velocity .. "m/s, " .. ba.XSTR("Range", 888431) .. ": " .. range .. "m"
 	stats1_el:SetClass("green", true)
-	
+
 	local stats2_el = self.Document:CreateElement("p")
 	stats2_el:SetClass("info", true)
 
@@ -802,7 +802,7 @@ function WeaponSelectController:BuildInfo(entry)
 		stats2_el.inner_rml = ba.XSTR("Damage per second", 888437) .. ": " .. hull .. " " .. ba.XSTR("Hull", 888434) .. ", " .. shield .. " " .. ba.XSTR("Shield", 888435) .. ", " .. subsystem .. " " .. ba.XSTR("Subsystem", 888436)
 	end
 	stats2_el:SetClass("red", true)
-	
+
 	local stats3_el = self.Document:CreateElement("p")
 	stats3_el:SetClass("info", true)
 	if entry.Type == "secondary" then
@@ -811,17 +811,17 @@ function WeaponSelectController:BuildInfo(entry)
 		stats3_el.inner_rml = ba.XSTR("Power Use", 888441) .. ": " .. power .. ba.XSTR("W", 888442) .. ", " .. ba.XSTR("Rate of Fire", 888443) .. ": " .. rof .. "/s"
 	end
 	stats3_el:SetClass("blue", true)
-	
+
 	infoEl:AppendChild(desc_el)
 	infoEl:AppendChild(stats1_el)
 	infoEl:AppendChild(stats2_el)
 	infoEl:AppendChild(stats3_el)
-	
+
 	topics.weaponselect.entryInfo:send({entry, infoEl})
 
 end
 
-function WeaponSelectController:ChangeBriefState(state)
+function WeaponSelectController:change_brief_state(state)
 	if state == 1 then
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
 	elseif state == 2 then
@@ -845,13 +845,13 @@ end
 function WeaponSelectController:DragOver(element, slot)
 	local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
 	local amount = ship.Weapons_List[slot]
-	
+
 	if not loadoutHandler:ShipHasBank(ship.ShipClassIndex, slot) then
 		return
 	end
-	
+
 	local allowed = false
-	
+
 	if self.drag and not ship.IsWeaponLocked then
 		if loadoutHandler:IsWeaponAllowedInBank(ship.ShipClassIndex, self.heldWeapon, slot) then
 			allowed = true
@@ -909,29 +909,29 @@ end
 
 function WeaponSelectController:UpdateShipSlot(slot)
 	local slotInfo = loadoutHandler:GetShipLoadout(slot)
-	
+
 	local replace_el = self.Document:GetElementById("slot_" .. slot)
-	
+
 	--If the slot doesn't exist then bail
 	if not replace_el then
 		return
 	end
-	
+
 	self:ActivateSlot(slot)
-	
+
 	replace_el.first_child.next_sibling.inner_rml = slotInfo.Name
-	
+
 	if self.ships[slot] == slotInfo.ShipClassIndex then
 		return
 	end
-	
+
 	self.ships[slot] = slotInfo.ShipClassIndex
-	
+
 	local slotIcon = loadoutHandler:getEmptyWingSlotIcon()[2]
 	if slotInfo.IsDisabled then
 		slotIcon = loadoutHandler:getEmptyWingSlotIcon()[1]
 	end
-	
+
 	--Get the current ship in this slot
 	local shipIndex = slotInfo.ShipClassIndex
 	if shipIndex > 0 then
@@ -946,7 +946,7 @@ function WeaponSelectController:UpdateShipSlot(slot)
 			end
 		end
 	end
-	
+
 	self:UpdateSlotImage(replace_el, slotIcon)
 end
 
@@ -978,7 +978,7 @@ end
 
 function WeaponSelectController:UpdatePoolCount(data)
 	local countEl = self.Document:GetElementById(data.key .. "_count")
-	
+
 	if countEl == nil then return end
 
 	countEl.inner_rml = tostring(loadoutHandler:GetWeaponPoolAmount(data.Index))
@@ -997,7 +997,7 @@ end
 function WeaponSelectController:UpdateAllSecondaryCounts()
 	for i = 1, #self.secondaryAmountEls do
 		local bank = i + loadoutHandler:GetMaxPrimaries()
-		
+
 		self:UpdateSecondaryCount(bank)
 	end
 end
@@ -1006,37 +1006,37 @@ function WeaponSelectController:UpdateSecondaryCount(bank)
 	local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
 	---@type integer | string
 	local amount = ship.Amounts_List[bank]
-	
+
 	if amount == nil or amount < 1 then
 		amount = ""
 	end
-	
+
 	local element = self.secondaryAmountEls[bank - 3]
 	element.inner_rml = amount
 end
 
 function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 	self.heldWeapon = nil
-	
+
 	--No changes if wing positions are not locked!
 	if ScpuiSystem:inMultiGame() and ui.MultiGeneral.getNetGame().Locked == false then
 		return
 	end
-	
+
 	if (self.replace ~= nil) and (self.activeSlot > 0) then
-		
+
 		--Get the slot information: ship, weapon, and amount
 		local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
-		local shipIdx = ship.ShipClassIndex 
+		local shipIdx = ship.ShipClassIndex
 		local slotWeapon = ship.Weapons_List[self.activeSlot]
 		local slotAmount = ship.Amounts_List[self.activeSlot]
-		
+
 		if ScpuiSystem:inMultiGame() then
 			ui.ShipWepSelect.sendWeaponRequestPacket(0, self.activeSlot, weaponIndex, 0, self.currentShipSlot)
 			self.replace = nil
 			return
 		end
-	
+
 		--Get the amount of the weapon we're dragging
 		local count = loadoutHandler:GetWeaponPoolAmount(weaponIndex)
 
@@ -1045,13 +1045,13 @@ function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 			self.replace = nil
 			return
 		end
-		
+
 		--If the ship is weapon locked then abort!
 		if ship.IsWeaponLocked then
 			self.replace = nil
 			return
 		end
-		
+
 		--If the slot can't accept the weapon then abort!
 		if not loadoutHandler:IsWeaponAllowedInBank(shipIdx, weaponIndex, self.activeSlot) then
 			self.replace = nil
@@ -1064,58 +1064,58 @@ function WeaponSelectController:DragPoolEnd(element, entry, weaponIndex)
 				b_value = "",
 				b_keypress = string.sub(ba.XSTR("Ok", 888286), 1, 1)
 			}
-			
+
 			self:Show(text, title, buttons)
 			return
 		end
-		
+
 		--If the slot already has that weapon then abort!
 		if weaponIndex == slotWeapon then
 			self.replace = nil
 			return
 		end
-		
+
 		--If slot doesn't exist on current ship then abort!
 		if not loadoutHandler:ShipHasBank(shipIdx, self.activeSlot) then
 			self.replace = nil
 			return
 		end
-		
+
 		if count > 0 then
-		
+
 			--return weapons to pool if appropriate
 			loadoutHandler:EmptyWeaponBank(self.currentShipSlot, self.activeSlot)
-			
+
 			--Apply to the actual loadout
 			loadoutHandler:AddWeaponToBank(self.currentShipSlot, self.activeSlot, weaponIndex)
-		
+
 			self:ApplyWeaponToSlot(self.replace, self.currentShipSlot, self.activeSlot, weaponIndex)
-			
+
 			self.replace = nil
 		end
-		
+
 		self:UpdateUiElements()
 	end
 end
 
 function WeaponSelectController:DragSlotEnd(element, slot)
 	self.heldWeapon = nil
-	
+
 	--No changes if wing positions are not locked!
 	if ScpuiSystem:inMultiGame() and ui.MultiGeneral.getNetGame().Locked == false then
 		return
 	end
-	
+
 	if (self.replace ~= nil) and (self.activeSlot > -1) then
-	
+
 		local dropSlot = self.activeSlot
-		
+
 		--Get the slot information of what's being dragged: ship, weapon, and amount
 		local ship = loadoutHandler:GetShipLoadout(self.currentShipSlot)
-		local shipIdx = ship.ShipClassIndex 
+		local shipIdx = ship.ShipClassIndex
 		local slotWeapon = ship.Weapons_List[slot]
 		local slotAmount = ship.Amounts_List[slot]
-		
+
 		if ScpuiSystem:inMultiGame() then
 			local wepIdx = slotWeapon
 			if dropSlot > 0 then
@@ -1125,13 +1125,13 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 			self.replace = nil
 			return
 		end
-		
+
 		--If the ship is weapon locked then abort!
 		if ship.IsWeaponLocked then
 			self.replace = nil
 			return
 		end
-		
+
 		--Get the slot information of what's being dropped onto: weapon, and amount
 		local activeWeapon
 		local activeAmount
@@ -1142,12 +1142,12 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 			--If we're just returning something to the pool then empty the slot and abort!
 			loadoutHandler:EmptyWeaponBank(self.currentShipSlot, slot)
 			self:EmptySlot(element, slot)
-			
+
 			self.replace = nil
 			self:UpdateUiElements()
 			return
 		end
-		
+
 		--If the slot can't accept the weapon then abort!
 		if not loadoutHandler:IsWeaponAllowedInBank(shipIdx, slotWeapon, dropSlot) then
 			self.replace = nil
@@ -1160,11 +1160,11 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 				b_value = "",
 				b_keypress = string.sub(ba.XSTR("Ok", 888286), 1, 1)
 			}
-			
+
 			self:Show(text, title, buttons)
 			return
 		end
-		
+
 		--If the slot already has that weapon then abort!
 		if activeWeapon == slotWeapon then
 			self.replace = nil
@@ -1176,25 +1176,25 @@ function WeaponSelectController:DragSlotEnd(element, slot)
 			self.replace = nil
 			return
 		end
-		
+
 		--If what is being dragged has an amount greater than 0
 		if slotAmount > 0 then
-		
+
 			--return weapons to pool if appropriate
 			loadoutHandler:EmptyWeaponBank(self.currentShipSlot, dropSlot)
 			loadoutHandler:EmptyWeaponBank(self.currentShipSlot, slot)
-			
+
 			--Apply to the actual loadout
 			loadoutHandler:AddWeaponToBank(self.currentShipSlot, dropSlot, slotWeapon, slotAmount)
-			
+
 			self:EmptySlot(element, slot)
 			self:ApplyWeaponToSlot(self.replace, self.currentShipSlot, dropSlot, slotWeapon)
-			
+
 			self.replace = nil
 		end
-		
+
 		self:UpdateUiElements()
-	end		
+	end
 end
 
 function WeaponSelectController:CopyToWing()
@@ -1210,7 +1210,7 @@ function WeaponSelectController:Show(text, title, buttons)
 	ScpuiSystem.data.memory.model_rendering.Class = nil
 	ScpuiSystem.data.memory.model_rendering.OverheadSave = ScpuiSystem.data.memory.model_rendering.OverheadClass
 	ScpuiSystem.data.memory.model_rendering.OverheadClass = nil
-	
+
 	local dialog = dialogs.new()
 		dialog:title(title)
 		dialog:text(text)
@@ -1246,9 +1246,9 @@ function WeaponSelectController:accept_pressed()
 
 	--Apply the loadout
 	loadoutHandler:SendAllToFSO_API()
-    
+
 	local errorValue = ui.Briefing.commitToMission()
-	
+
 	if errorValue == COMMIT_SUCCESS then
 		--Save to the player file
 		self.Commit = true
@@ -1270,7 +1270,7 @@ end
 
 function WeaponSelectController:help_clicked(element)
     ui.playElementSound(element, "click", "success")
-    
+
 	self.help_shown  = not self.help_shown
 
     local help_texts = self.Document:GetElementsByClassName("tooltip")
@@ -1288,19 +1288,19 @@ function WeaponSelectController:global_keydown(element, event)
 end
 
 function WeaponSelectController:unload()
-	
+
 	loadoutHandler:saveCurrentLoadout()
 	ScpuiSystem.data.memory.model_rendering.Class = nil
-	
+
 	if self.Commit == true then
 		ScpuiSystem.data.memory.briefing_map = nil
 		ScpuiSystem.data.memory.CutscenePlayed = nil
 		loadoutHandler:unloadAll(true)
 		ScpuiSystem:stopMusic()
 	end
-	
+
 	topics.weaponselect.unload:send(self)
-	
+
 end
 
 function WeaponSelectController:startMusic()
@@ -1309,9 +1309,9 @@ function WeaponSelectController:startMusic()
     if #filename <= 0 then
         return
     end
-	
+
 	if filename ~= ScpuiSystem.data.memory.CurrentMusicFile then
-	
+
 		if ScpuiSystem.data.memory.MusicHandle ~= nil and ScpuiSystem.data.memory.MusicHandle:isValid() then
 			ScpuiSystem.data.memory.MusicHandle:close(true)
 		end
@@ -1325,7 +1325,7 @@ end
 function WeaponSelectController:drawSelectModel()
 
 	if ScpuiSystem.data.memory.model_rendering.Class and (ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT") and (ScpuiSystem.data.memory.model_rendering.Element ~= nil) then  --Haaaaaaacks
-		
+
 		--local thisItem = tb.ShipClasses(modelDraw.Class)
 		local modelView = ScpuiSystem.data.memory.model_rendering.Element
 
@@ -1338,24 +1338,24 @@ function WeaponSelectController:drawSelectModel()
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + modelView.offset_top
 		local modelWidth = modelView.offset_width
 		local modelHeight = modelView.offset_height
-		
+
 		--This is just a multiplier to make the rendered model a little bigger
 		--renderSelectModel() has forced centering, so we need to calculate
 		--the screen size so we can move it slightly left and up while it
 		--multiple it's size
 		local val = -0.3
 		local ratio = (gr.getScreenWidth() / gr.getScreenHeight()) * 2
-		
+
 		--Increase by percentage and move slightly left and up.
 		modelLeft = modelLeft * (1 - (val/ratio))
 		modelTop = modelTop * (1 - val)
 		modelWidth = modelWidth * (1 + val)
 		modelHeight = modelHeight * (1 + val)
-		
+
 		tb.WeaponClasses[ScpuiSystem.data.memory.model_rendering.Class]:renderSelectModel(ScpuiSystem.data.memory.model_rendering.Start, modelLeft, modelTop, modelWidth, modelHeight, -1, 1.3)
-		
+
 		ScpuiSystem.data.memory.model_rendering.Start = false
-		
+
 	end
 
 end
@@ -1370,10 +1370,10 @@ end
 function WeaponSelectController:drawOverheadModel()
 
 	if ScpuiSystem.data.memory.model_rendering.OverheadClass and ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT" then  --Haaaaaaacks
-	
+
 		if ScpuiSystem.data.memory.model_rendering.Class == nil then ScpuiSystem.data.memory.model_rendering.Class = -1 end
 		if ScpuiSystem.data.memory.model_rendering.Hover == nil then ScpuiSystem.data.memory.model_rendering.Hover = -1 end
-		
+
 		--local thisItem = tb.ShipClasses(modelDraw.Class)
 		local modelView = ScpuiSystem.data.memory.model_rendering.OverheadElement
 
@@ -1386,50 +1386,50 @@ function WeaponSelectController:drawOverheadModel()
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + modelView.offset_top
 		local modelWidth = modelView.offset_width
 		local modelHeight = modelView.offset_height
-		
+
 		--Get bank coords. This is all super messy but it's the best we can do
 		--without absolute coords available in the librocket Lua API
 		local primary_offset = 15
 		local secondary_offset = -15
-		
+
 		local bank1_x = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank1.offset_left + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank1.parent_node.offset_left + modelLeft + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank1.offset_width + primary_offset
 		local bank1_y = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank1.offset_top + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank1.parent_node.offset_top + modelTop + (ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank1.offset_height / 2)
-		
+
 		local bank2_x = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank2.offset_left + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank2.parent_node.offset_left + modelLeft + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank2.offset_width + primary_offset
 		local bank2_y = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank2.offset_top + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank2.parent_node.offset_top + modelTop + (ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank2.offset_height / 2)
-		
+
 		local bank3_x = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank3.offset_left + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank3.parent_node.offset_left + modelLeft + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank3.offset_width + primary_offset
 		local bank3_y = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank3.offset_top + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank3.parent_node.offset_top + modelTop + (ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank3.offset_height / 2)
-		
+
 		local bank4_x = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank4.offset_left + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank4.parent_node.offset_left + modelLeft + secondary_offset
 		local bank4_y = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank4.offset_top + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank4.parent_node.offset_top + modelTop + (ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank4.offset_height / 2)
-		
+
 		local bank5_x = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank4.offset_left + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank5.parent_node.offset_left + modelLeft + secondary_offset
 		local bank5_y = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank5.offset_top + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank5.parent_node.offset_top + modelTop + (ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank5.offset_height / 2)
-		
+
 		local bank6_x = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank4.offset_left + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank6.parent_node.offset_left + modelLeft + secondary_offset
 		local bank6_y = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank6.offset_top + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank6.parent_node.offset_top + modelTop + (ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank6.offset_height / 2)
-		
+
 		local bank7_x = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank4.offset_left + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank7.parent_node.offset_left + modelLeft + secondary_offset
 		local bank7_y = ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank7.offset_top + ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank7.parent_node.offset_top + modelTop + (ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank7.offset_height / 2)
-		
+
 		--This is just a multiplier to make the rendered model a little bigger
 		--renderSelectModel() has forced centering, so we need to calculate
 		--the screen size so we can move it slightly left and up while it
 		--multiple it's size
 		local val = 0.0
 		local ratio = (gr.getScreenWidth() / gr.getScreenHeight()) * 2
-		
+
 		--Increase by percentage and move slightly left and up.
 		modelLeft = modelLeft * (1 - (val/ratio))
 		modelTop = modelTop * (1 - val)
 		modelWidth = modelWidth * (1 + val)
 		modelHeight = modelHeight * (1 + val)
-		
+
 		local test = tb.ShipClasses[ScpuiSystem.data.memory.model_rendering.OverheadClass]:renderOverheadModel(modelLeft, modelTop, modelWidth, modelHeight, ScpuiSystem.data.memory.model_rendering.Weapons_List, ScpuiSystem.data.memory.model_rendering.Class, ScpuiSystem.data.memory.model_rendering.Hover, bank1_x, bank1_y, bank2_x, bank2_y, bank3_x, bank3_y, bank4_x, bank4_y, bank5_x, bank5_y, bank6_x, bank6_y, bank7_x, bank7_y, ScpuiSystem.data.memory.model_rendering.overheadEffect)
-		
+
 		ScpuiSystem.data.memory.model_rendering.Start = false
-		
+
 	end
 
 end
@@ -1469,7 +1469,7 @@ end
 
 function WeaponSelectController:updateLists()
 	local chat = ui.MultiGeneral.getChat()
-	
+
 	local txt = ""
 	for i = 1, #chat do
 		local line = ""
@@ -1482,17 +1482,17 @@ function WeaponSelectController:updateLists()
 	end
 	self.chat_el.inner_rml = txt
 	self.chat_el.scroll_top = self.chat_el.scroll_height
-	
+
 	if ui.MultiGeneral.getNetGame().Locked == true then
 		self.Document:GetElementById("lock_btn"):SetPseudoClass("checked", true)
 	else
 		self.Document:GetElementById("lock_btn"):SetPseudoClass("checked", false)
 	end
-	
+
 	loadoutHandler:update()
 	self:UpdateShipSlots()
 	self:UpdateUiElements()
-	
+
 	async.run(function()
         async.await(async_util.wait_for(0.01))
         self:updateLists()

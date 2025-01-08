@@ -119,13 +119,13 @@ div#accept_cont
 	background-decorator: image;
 	background-image: select.png;
 }
-button#fv_accept_btn:hover #accept_img
+button#accept_btn:hover #accept_img
 {
 	background-decorator: image;
 	background-image: select-neg-h.png;
 }
 
-button#fv_accept_btn:active #accept_img
+button#accept_btn:active #accept_img
 {
 	background-decorator: image;
 	background-image: select-neg-o.png;
@@ -145,7 +145,7 @@ button#fv_accept_btn:active #accept_img
 
 #fiction_text scrollbarvertical slidertrack
 {
-	
+
 }
 
 #fiction_text scrollbarvertical sliderbar
@@ -155,12 +155,12 @@ button#fv_accept_btn:active #accept_img
 
 #fiction_text scrollbarvertical sliderbar:hover
 {
-	
+
 }
 
 #fiction_text scrollbarvertical sliderbar:active
 {
-	
+
 }
 
 #fiction_text scrollbarvertical sliderarrowdec

@@ -1,107 +1,76 @@
-local class = require("lib_class")
-local utils = require("lib_utils")
-local topics = require("lib_ui_topics")
+-----------------------------------
+--Controller for the Command Briefing UI
+-----------------------------------
 
-local AbstractBriefingController = require("ctrlr_briefing_ommon")
+local Topics = require("lib_ui_topics")
 
-local CommandBriefingController = class(AbstractBriefingController)
+local Class = require("lib_class")
 
+local AbstractBriefingController = require("ctrlr_briefing_common")
+
+--- Briefing controller is merged with the Briefing Common Controller
+local CommandBriefingController = Class(AbstractBriefingController)
+
+--- Called by the class constructor
+--- @return nil
 function CommandBriefingController:init()
+
+    --- Check if we should play a cutscene before the command briefing
 	if not ScpuiSystem.data.memory.CutscenePlayed then
 		ScpuiSystem:maybePlayCutscene(MOVIE_PRE_CMD_BRIEF)
 	end
-	
 	ScpuiSystem.data.memory.CutscenePlayed = true
-    --- @type cmd_briefing_stage[]
-    self.stages = {}
 
-    self.element_names = {
-        pause_btn = "cmdpause_btn",
-        last_btn = "cmdlast_btn",
-        next_btn = "cmdnext_btn",
-        prev_btn = "cmdprev_btn",
-        first_btn = "cmdfirst_btn",
-        text_el = "cmd_text_el",
-        stage_text_el = "cmd_stage_text_el",
+    --- Now initialize all our variables
+    self.Stages_List = {} --- @type cmd_briefing_stage[] The stages of the command briefing
+    self.HelpShown = false --- @type boolean Whether the help text is shown or not
+    self.Document = nil --- @type Document The RML document
+
+    --- @type scpui_brief_element_list List of ui element names for player control of the stages
+    self.Element_Names = {
+        PauseBtn = "cmdpause_btn",
+        LastBtn = "cmdlast_btn",
+        NextBtn = "cmdnext_btn",
+        PrevBtn = "cmdprev_btn",
+        FirstBtn = "cmdfirst_btn",
+        TextEl = "cmd_text_el",
+        StageTextEl = "cmd_stage_text_el",
     }
-	self.help_shown = false
+
 end
 
----@param document Document
+--- Called by the RML document
+--- @param document Document
 function CommandBriefingController:initialize(document)
-
-    ---@type Document
-    self.Document = nil
-
     AbstractBriefingController.initialize(self, document)
 
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
-	
+
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
     local briefing = ui.CommandBriefing.getCmdBriefing()
-	
+
     for i = 1, #briefing do
 		local stage = briefing[i]
 
-		self.stages[i] = topics.cmdbriefing.stage:send({stage, i})
-    end
-	
-	topics.cmdbriefing.initialize:send(self)
-
-    self:go_to_stage(1)
-end
-
-function CommandBriefingController:acceptPressed()
-	ScpuiSystem.data.memory.CutscenePlayed = nil
-    if mn.isRedAlertMission() then
-        ba.postGameEvent(ba.GameEvents["GS_EVENT_RED_ALERT"])
-    else
-        ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
-    end
-end
-
-function CommandBriefingController:go_to_stage(stage_idx)
-    local old_stage = self.current_stage or 0
-    self:leaveStage()
-
-    local stage = self.stages[stage_idx]
-
-    self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
-
-    local aniWrapper = self.Document:GetElementById("cmd_anim")
-    if #stage.AniFilename > 0 then
-        local aniEl = self.Document:CreateElement("ani")
-		
-		local filename = stage.AniFilename
-		-- For legacy.. we need to try to load default
-		if string.lower(filename) == "<default>" then
-			filename = "cb_default"
-			if utils.animExists("2_cb_default") then
-				filename = "2_cb_default"
-			end
-		end
-
-		if utils.animExists(filename) then
-			aniEl:SetAttribute("src", filename)
-		end
-
-        aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
-    else
-        aniWrapper:RemoveChild(aniWrapper.first_child)
+		self.Stages_List[i] = Topics.cmdbriefing.stage:send({stage, i})
     end
 
-    --ui.Briefing.runBriefingStageHook(old_stage, stage_idx)
+	Topics.cmdbriefing.initialize:send(self)
+
+    self:goToStage(1)
 end
 
+--- The help button was clicked
+--- @return nil
 function CommandBriefingController:help_clicked()
-    self.help_shown  = not self.help_shown
+    self.HelpShown  = not self.HelpShown
 
     local help_texts = self.Document:GetElementsByClassName("tooltip")
     for _, v in ipairs(help_texts) do
-        v:SetPseudoClass("shown", self.help_shown)
+        v:SetPseudoClass("shown", self.HelpShown)
     end
 end
 

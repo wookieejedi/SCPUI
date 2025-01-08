@@ -364,3 +364,13 @@
 --- SCPUI UI Context
 --- @class scpui_context
 --- @field Document Document The document for the context
+
+--- SCPUI Briefing Element List
+--- @class scpui_brief_element_list
+--- @field PauseBtn string | nil The name of the pause button element
+--- @field LastBtn string | nil The name of the last button element
+--- @field NextBtn string | nil The name of the next button element
+--- @field PrevBtn string | nil The name of the previous button element
+--- @field FirstBtn string | nil The name of the first button element
+--- @field TextEl string | nil The name of the text element
+--- @field StageTextEl string | nil The name of the stage text element

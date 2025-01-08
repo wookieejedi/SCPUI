@@ -1,73 +1,83 @@
-local dialogs = require("lib_dialogs")
-local class = require("lib_class")
-local topics = require("lib_ui_topics")
-local async_util = require("lib_async")
-local loadoutHandler = require("lib_loadout_handler")
+-----------------------------------
+--Controller for the Briefing UI
+-----------------------------------
+
+local AsyncUtil = require("lib_async")
+local LoadoutHandler = require("lib_loadout_handler")
+local Topics = require("lib_ui_topics")
+
+local Class = require("lib_class")
 
 local AbstractBriefingController = require("ctrlr_briefing_common")
 
-local BriefingController = class(AbstractBriefingController)
+--- Briefing controller is merged with the Briefing Common Controller
+local BriefingController = Class(AbstractBriefingController)
 
+--- Make sure the briefing map is uninitialized
 ScpuiSystem.data.memory.briefing_map = nil
 
+--- Called by the class constructor
+--- @return nil
 function BriefingController:init()
+
+	--- Check if we should play a cutscene before the briefing
 	if not ScpuiSystem.data.memory.CutscenePlayed then
 		ScpuiSystem:maybePlayCutscene(MOVIE_PRE_BRIEF)
 	end
-	
 	ScpuiSystem.data.memory.CutscenePlayed = true
-    --- @type briefing_stage[]
-    self.stages = {}
-	
-    self.element_names = {
-        pause_btn = "cmdpause_btn",
-        last_btn = "cmdlast_btn",
-        next_btn = "cmdnext_btn",
-        prev_btn = "cmdprev_btn",
-        first_btn = "cmdfirst_btn",
-        text_el = "brief_text_el",
-        stage_text_el = "brief_stage_text_el",
+
+	--- Now initialize all our variables
+    self.Stages_List = {} --- @type briefing_stage[] The stages of the briefing
+	self.HelpShown = false --- @type boolean Whether the help text is shown or not
+	self.Commit = false --- @type boolean Whether the player has committed to the mission
+	self.Required_Weapons = {} --- @type string[] List of required weapons for the mission
+	self.ChatElement = nil --- @type Element The chat window element
+	self.ChatInputElement = nil --- @type Element The chat input window element
+	self.SubmittedChatString = "" --- @type string The value of the chat input
+	self.Document = nil --- @type Document The RML document
+
+	--- @type scpui_brief_element_list List of ui element names for player control of the stages
+    self.Element_Names = {
+        PauseBtn = "cmdpause_btn",
+        LastBtn = "cmdlast_btn",
+        NextBtn = "cmdnext_btn",
+        PrevBtn = "cmdprev_btn",
+        FirstBtn = "cmdfirst_btn",
+        TextEl = "brief_text_el",
+        StageTextEl = "brief_stage_text_el",
     }
-	
-	loadoutHandler:init()
-	
+
+	LoadoutHandler:init()
+
 	--Whenever we start a new mission, we reset the log ui to goals
 	ScpuiSystem.data.memory.LogSection = 1
-	
-	self.help_shown = false
-	
+
 end
 
----@param document Document
+--- Called by the RML document
+--- @param document Document
 function BriefingController:initialize(document)
-
-	---@type Document
-	self.Document = nil
-
     AbstractBriefingController.initialize(self, document)
-	
-	self.Commit = false
-	self.requiredWeps = {}
-	
+
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
-	
+
 	ui.Briefing.initBriefing()
-	
+
 	if mn.hasNoBriefing() then
 		self.Commit = true
 		ScpuiSystem:stopMusic()
 		ScpuiSystem.data.memory.CurrentMusicFile = nil
 		ui.Briefing.commitToMission()
 	end
-	
+
 	if mn.isScramble() or mn.isTraining() then
 		local ss_btn = self.Document:GetElementById("s_select_btn")
 		local ws_btn = self.Document:GetElementById("w_select_btn")
-		
+
 		ss_btn:SetClass("hidden", true)
 		ws_btn:SetClass("hidden", true)
-		
+
 		local text_el = self.Document:CreateElement("div")
 		text_el.style.width = "10%"
 		text_el.style.position = "absolute"
@@ -77,52 +87,51 @@ function BriefingController:initialize(document)
 		text_el.inner_rml = ba.XSTR("Loadout selection not available", 888279)
 		self.Document:GetElementById("main_background"):AppendChild(text_el)
 	end
-		
+
 
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-	
-	self.chat_el = self.Document:GetElementById("chat_window")
-	self.input_id = self.Document:GetElementById("chat_input")
-	
+
+	self.ChatElement = self.Document:GetElementById("chat_window")
+	self.ChatInputElement = self.Document:GetElementById("chat_input")
+
 	--Get all the required weapons
 	local j = 1
 	while (j < #tb.WeaponClasses) do
 		if tb.WeaponClasses[j]:isWeaponRequired() then
-			self.requiredWeps[#self.requiredWeps + 1] = tb.WeaponClasses[j].Name
+			self.Required_Weapons[#self.Required_Weapons + 1] = tb.WeaponClasses[j].Name
 		end
 		j = j + 1
 	end
-	
+
 	self.Document:GetElementById("mission_title").inner_rml = mn.getMissionTitle()
 
     local briefing = ui.Briefing.getBriefing()
-	
-	local numStages = 0
-	
+
+	local num_stages = 0
+
     for i = 1, #briefing do
-        --- @type briefing_stage
         local stage = briefing[i]
 		if stage then
-			self.stages[i] = stage
-			numStages = numStages + 1
+			self.Stages_List[i] = stage
+			num_stages = num_stages + 1
 			--This is where we should replace variables and containers probably!
 		end
     end
 	if mn.hasGoalsStage() then
-		local g = numStages + 1
-		self.stages[g] = {
+		local g = num_stages + 1
+		self.Stages_List[g] = {
 			Text = ba.XSTR( "Please review your objectives for this mission.", 395),
 			hasBackwardCut = true,
 			hasForwardCut = true,
 			AudioFilename = ""
 		}
-		numStages = numStages + 1
+		num_stages = num_stages + 1
 	end
-	if #self.stages > 0 then
-		self:go_to_stage(1)
+	if #self.Stages_List > 0 then
+		self:goToStage(1)
 	end
-	
+
 	if mn.isInCampaign() then
 		if mn.isTraining() then
 			self.Document:GetElementById("skip_m_text").inner_rml = ba.XSTR("Skip Training", 888280)
@@ -139,108 +148,111 @@ function BriefingController:initialize(document)
 	else
 		self.Document:GetElementById("top_panel_a"):SetClass("hidden", true)
 	end
-	
+
 	if ba.inDebug() then
-		local missionFile = mn.getMissionFilename() .. ".fs2"
-		local missionDate = mn.getMissionModifiedDate()
-		self.Document:GetElementById("mission_debug_info").inner_rml = missionFile .. " mod " .. missionDate
+		local mission_file = mn.getMissionFilename() .. ".fs2"
+		local mission_date = mn.getMissionModifiedDate()
+		self.Document:GetElementById("mission_debug_info").inner_rml = mission_file .. " mod " .. mission_date
 	end
-	
+
 	self.Document:GetElementById("brief_btn"):SetPseudoClass("checked", true)
-	
+
 	--Default width is 888, default height is 371
-	
-	local briefView = self.Document:GetElementById("briefing_grid")
-	
+
+	local brief_view_element = self.Document:GetElementById("briefing_grid")
+
 	--The grid needs to be a very specific aspect ratio, so we'll calculate
 	--the percent change here and use that to calculate the height below.
-	local percentChange = ((briefView.offset_width - 888) / 888) * 100
-	
-	ScpuiSystem.data.memory.briefing_map.X1 = ScpuiSystem:getAbsoluteLeft(briefView)
-	ScpuiSystem.data.memory.briefing_map.Y1 = ScpuiSystem:getAbsoluteTop(briefView)
-	ScpuiSystem.data.memory.briefing_map.X2 = briefView.offset_width
-	ScpuiSystem.data.memory.briefing_map.Y2 = self:calcPercent(371, (100 + percentChange))
-	
-	self:buildGoals()
-	
+	local percent_change = ((brief_view_element.offset_width - 888) / 888) * 100
+
+	ScpuiSystem.data.memory.briefing_map.X1 = ScpuiSystem:getAbsoluteLeft(brief_view_element)
+	ScpuiSystem.data.memory.briefing_map.Y1 = ScpuiSystem:getAbsoluteTop(brief_view_element)
+	ScpuiSystem.data.memory.briefing_map.X2 = brief_view_element.offset_width
+	ScpuiSystem.data.memory.briefing_map.Y2 = 371 * ((100 + percent_change)/100)
+
+	self:buildGoalsList()
+
 	ScpuiSystem.data.memory.briefing_map.Texture = gr.createTexture(ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
 	ScpuiSystem.data.memory.briefing_map.Url = ui.linkTexture(ScpuiSystem.data.memory.briefing_map.Texture)
 	ScpuiSystem.data.memory.briefing_map.Draw = true
 	local aniEl = self.Document:CreateElement("img")
     aniEl:SetAttribute("src", ScpuiSystem.data.memory.briefing_map.Url)
-	briefView:ReplaceChild(aniEl, briefView.first_child)
-	
+	brief_view_element:ReplaceChild(aniEl, brief_view_element.first_child)
+
 	if ScpuiSystem:inMultiGame() then
 		ui.MainHall.stopMusic(true) -- In multi we're coming from the Multi Sync UI so we need to stop these manually
 		ui.MainHall.stopAmbientSound()
 		self.Document:GetElementById("chat_wrapper"):SetClass("hidden", false)
 		--self.Document:GetElementById("c_panel_wrapper_multi"):SetClass("hidden", false)
 		self.Document:GetElementById("bottom_panel_c"):SetClass("hidden", false)
-		self:updateLists()
+		self:updateMultiplayerData()
 		ui.MultiGeneral.setPlayerState()
 	end
-	
-	topics.briefing.initialize:send(self)
+
+	Topics.briefing.initialize:send(self)
 
 end
 
-function BriefingController:calcPercent(value, percent)
-    if value == nil or percent == nil then  
-		return false;
-	end
-    return value * (percent/100)
-end
-
-function BriefingController:makeBullet()
+--- Creates a bullet for the goals list and returns the element
+--- @return Element
+function BriefingController:makeGoalBullet()
 	local bullet_el = self.Document:CreateElement("div")
 	bullet_el.id = "goalsdot_img"
 	bullet_el:SetClass("goalsdot", true)
 	bullet_el:SetClass("brightblue", true)
-	
+
 	local bullet_img = self.Document:CreateElement("img")
 	bullet_img:SetClass("psuedo_img", true)
 	bullet_img:SetAttribute("src", "scroll-button.png")
 	bullet_el:AppendChild(bullet_img)
-	
+
 	return bullet_el
 end
 
-function BriefingController:createGoalItem(title)
+--- Creates a goal list item for the goals list and returns the element
+--- @param goal_text string The goal text
+--- @return Element
+function BriefingController:createGoalListItem(goal_text)
 	local goal_el = self.Document:CreateElement("li")
 	goal_el:SetClass("goal", true)
-	goal_el:AppendChild(self:makeBullet())
-	
-	local goal_text = self.Document:CreateElement("div")
-	goal_text.inner_rml = title .. "<br></br>"
-	goal_el:AppendChild(goal_text)
-	
+	goal_el:AppendChild(self:makeGoalBullet())
+
+	local goal_inner_el = self.Document:CreateElement("div")
+	goal_inner_el.inner_rml = goal_text .. "<br></br>"
+	goal_el:AppendChild(goal_inner_el)
+
 	return goal_el
 end
 
-function BriefingController:buildGoals()
+--- Builds the goals bullet list
+--- @return nil
+function BriefingController:buildGoalsList()
     if mn.hasGoalsStage() then
 		local goals = ui.Briefing.Objectives
-		local primaryList = self.Document:GetElementById("primary_goal_list")
-		local secondaryList = self.Document:GetElementById("secondary_goal_list")
-		local bonusList = self.Document:GetElementById("bonus_goal_list")
+		local primary_list_el = self.Document:GetElementById("primary_goal_list")
+		local secondary_list_el = self.Document:GetElementById("secondary_goal_list")
+		local bonus_list_el = self.Document:GetElementById("bonus_goal_list")
 		for i = 1, #goals do
 			local goal = goals[i]
 			if goal.isGoalValid and goal.Message ~= "" then
 				if goal.Type == "primary" then
-					primaryList:AppendChild(self:createGoalItem(goal.Message))
+					primary_list_el:AppendChild(self:createGoalListItem(goal.Message))
 				end
 				if goal.Type == "secondary" then
-					secondaryList:AppendChild(self:createGoalItem(goal.Message))
+					secondary_list_el:AppendChild(self:createGoalListItem(goal.Message))
 				end
 				if goal.Type == "bonus" then
-					bonusList:AppendChild(self:createGoalItem(goal.Message))
+					bonus_list_el:AppendChild(self:createGoalListItem(goal.Message))
 				end
 			end
 		end
 	end
 end
 
-function BriefingController:ChangeBriefState(state)
+--- A brief state button was clicked by the player, so try to change to that game state
+--- @param state number The state to change to
+--- @return nil
+function BriefingController:change_brief_state(state)
 	if state == 1 then
 		--Do nothing because we're this is the current state!
 		--ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
@@ -259,63 +271,14 @@ function BriefingController:ChangeBriefState(state)
 	end
 end
 
-function BriefingController:go_to_stage(stage_idx)
-	local old_stage = self.current_stage or 0
-    self:leaveStage()
-	
-	if ScpuiSystem.data.memory.briefing_map == nil then
-		ScpuiSystem.data.memory.briefing_map = {
-			Texture = nil,
-			RotationSpeed = 40
-		}
-	end
-
-    local stage = self.stages[stage_idx]
-	
-	ScpuiSystem.data.memory.briefing_map.Bg = ScpuiSystem:getBriefingBackground(mn.getMissionFilename(), tostring(stage_idx))
-
-	local brief_img = topics.briefing.brief_bg:send((mn.hasGoalsStage() and stage_idx == #self.stages))
-
-	if mn.hasGoalsStage() and stage_idx == #self.stages then
-		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
-		self.Document:GetElementById("briefing_goals"):SetClass("hidden", false)
-		ScpuiSystem.data.memory.briefing_map.Goals = true
-	else
-		self:initializeStage(stage_idx, stage.Text, stage.AudioFilename)
-		self.Document:GetElementById("briefing_goals"):SetClass("hidden", true)
-		ScpuiSystem.data.memory.briefing_map.Goals = false
-	end
-	
-	local brief_bg_src = self.Document:CreateElement("img")
-	brief_bg_src:SetAttribute("src", brief_img)
-	local brief_bg_el = self.Document:GetElementById("brief_grid_window")
-	brief_bg_el:ReplaceChild(brief_bg_src, brief_bg_el.last_child)
-	
-	ui.Briefing.runBriefingStageHook(old_stage, stage_idx)
-end
-
-function BriefingController:CutToStage()
-	ad.playInterfaceSound(42)
-	ScpuiSystem.data.memory.briefing_map.Draw = false
-	self.aniWrapper = self.Document:GetElementById("brief_grid_cut")
-	ad.playInterfaceSound(42)
-    local aniEl = self.Document:CreateElement("ani")
-    aniEl:SetAttribute("src", "static.png")
-	self.aniWrapper:ReplaceChild(aniEl, self.aniWrapper.first_child)
-	
-	async.run(function()
-        async.await(async_util.wait_for(0.7))
-        ScpuiSystem.data.memory.briefing_map.Draw = true
-		self.aniWrapper:RemoveChild(self.aniWrapper.first_child)
-    end, async.OnFrameExecutor, self.uiActiveContext)
-end
-
-function BriefingController:drawMap()
+--- Draws a frame of briefing map using the data stored in ScpuiSystem.data.memory.briefing_map
+--- @return nil
+function BriefingController:drawBriefingMap()
 
 	if ScpuiSystem.data.memory.briefing_map == nil then
 		return
 	end
-	
+
 	--Testing icon ship rendering stuff
 	ScpuiSystem.data.memory.briefing_map.RotationSpeed = ScpuiSystem.data.memory.briefing_map.RotationSpeed + (7 * ba.getRealFrametime())
 
@@ -324,13 +287,13 @@ function BriefingController:drawMap()
 	end
 
 	gr.setTarget(ScpuiSystem.data.memory.briefing_map.Texture)
-	
+
 	local r = 160
 	local g = 144
 	local b = 160
 	local a = 255
 	gr.setLineWidth(2)
-	
+
 	if ScpuiSystem.data.memory.briefing_map.Draw == true then
 		if ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option == nil then
 			ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option = "screen"
@@ -342,7 +305,7 @@ function BriefingController:drawMap()
 				gr.drawImage(ScpuiSystem.data.memory.briefing_map.Bg, 0, 0, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
 			end
 			ui.Briefing.drawBriefingMap(0, 0, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
-			
+
 			if not ScpuiSystem.data.memory.briefing_map.Goals then
 				gr.setColor(r, g, b, a)
 				gr.drawLine(0, 0, 0, ScpuiSystem.data.memory.briefing_map.Y2)
@@ -350,12 +313,12 @@ function BriefingController:drawMap()
 				gr.drawLine(ScpuiSystem.data.memory.briefing_map.X2, 0, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
 				gr.drawLine(0, ScpuiSystem.data.memory.briefing_map.Y2, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
 			end
-			
+
 		elseif string.lower(ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option) == "screen" then
 			gr.clearScreen(0,0,0,0)
 			if not ScpuiSystem.data.memory.briefing_map.Goals then
 				gr.drawImage(ScpuiSystem.data.memory.briefing_map.Bg, 0, 0, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
-				
+
 				gr.setColor(r, g, b, a)
 				gr.drawLine(0, 0, 0, ScpuiSystem.data.memory.briefing_map.Y2)
 				gr.drawLine(0, 0, ScpuiSystem.data.memory.briefing_map.X2, 0)
@@ -364,23 +327,23 @@ function BriefingController:drawMap()
 			end
 			gr.setTarget()
 			ui.Briefing.drawBriefingMap(ScpuiSystem.data.memory.briefing_map.X1, ScpuiSystem.data.memory.briefing_map.Y1, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
-			
+
 		end
-		
+
 	else
 		gr.clearScreen(0,0,0,0)
-		
+
 		gr.setColor(r, g, b, a)
 		gr.drawLine(0, 0, 0, ScpuiSystem.data.memory.briefing_map.Y2)
 		gr.drawLine(0, 0, ScpuiSystem.data.memory.briefing_map.X2, 0)
 		gr.drawLine(ScpuiSystem.data.memory.briefing_map.X2, 0, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
 		gr.drawLine(0, ScpuiSystem.data.memory.briefing_map.Y2, ScpuiSystem.data.memory.briefing_map.X2, ScpuiSystem.data.memory.briefing_map.Y2)
 	end
-	
+
 	gr.setTarget()
-	
+
 	if ScpuiSystem.data.memory.briefing_map.Pof ~= nil then
-		
+
 		--get the current color and save it
 		local prev_c = {
 			r = 0,
@@ -388,9 +351,9 @@ function BriefingController:drawMap()
 			b = 0,
 			a = 0
 		}
-		
+
 		prev_c.r, prev_c.g, prev_c.b, prev_c.a = gr.getColor()
-		
+
 		--set the box coords and size
 		local bx_size = math.floor(0.20 * gr.getScreenHeight()) --size of the box is 15% of screen height
 		local bx_dist = 5 --this is the distance the box is drawn from the mouse in pixels
@@ -398,20 +361,20 @@ function BriefingController:drawMap()
 		local by1 = ScpuiSystem.data.memory.briefing_map.By - bx_size - bx_dist
 		local bx2 = ScpuiSystem.data.memory.briefing_map.Bx - bx_dist
 		local by2 = ScpuiSystem.data.memory.briefing_map.By - bx_dist
-		
+
 		--set the current color to black
 		gr.setColor(0, 0, 0, 255)
-		
+
 		--draw a box at the mouse coords
 		gr.drawRectangle(bx1, by1, bx2, by2)
-		
+
 		--set the current color to grey
 		gr.setColor(50, 50, 50, 255)
 		gr.drawLine(bx1, by1, bx1, by2)
 		gr.drawLine(bx1, by1, bx2, by1)
 		gr.drawLine(bx2, by2, bx1, by2)
 		gr.drawLine(bx2, by2, bx2, by1)
-		
+
 		local ship = tb.ShipClasses[ScpuiSystem.data.memory.briefing_map.Pof]
 		if ship.Name == "" then
 			local jumpnode = false
@@ -422,12 +385,12 @@ function BriefingController:drawMap()
 		else
 			ship:renderTechModel(bx1+1, by1+1, bx2-1, by2-1, ScpuiSystem.data.memory.briefing_map.RotationSpeed, -15, 0, 1.1)
 		end
-		
+
 		--set the current color to light grey
 		gr.setColor(150, 150, 150, 255)
-		
+
 		gr.drawString(ScpuiSystem.data.memory.briefing_map.Label, bx1+1, by1+1, bx2-1, by2-1)
-		
+
 		--reset the color
 		gr.setColor(prev_c.r, prev_c.g, prev_c.b, prev_c.a)
 		gr.setLineWidth(1)
@@ -435,61 +398,15 @@ function BriefingController:drawMap()
 
 end
 
-function BriefingController:Show(text, title, buttons)
-	--Create a simple dialog box with the text and title
-
-	ScpuiSystem.data.memory.briefing_map.Draw = false
-	
-	local dialog = dialogs.new()
-		dialog:title(title)
-		dialog:text(text)
-		for i = 1, #buttons do
-			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
-		end
-		dialog:escape("")
-		dialog:show(self.Document.context)
-		:continueWith(function(response)
-			ScpuiSystem.data.memory.briefing_map.Draw = true
-    end)
-	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.Document.context)
-end
-
-function BriefingController:acceptPressed()
-
-	if not topics.mission.commit:send(self) then
-		return
-	end
-
-	--Apply the loadout
-	loadoutHandler:SendAllToFSO_API()
-    
-	local errorValue = ui.Briefing.commitToMission()
-	
-	if errorValue == COMMIT_SUCCESS then
-		--Save to the player file
-		self.Commit = true
-		loadoutHandler:SaveInFSO_API()
-		--Cleanup
-		if ScpuiSystem.data.memory.briefing_map then
-			ScpuiSystem.data.memory.briefing_map.Texture:unload()
-			ScpuiSystem.data.memory.briefing_map.Texture = nil
-			ScpuiSystem.data.memory.briefing_map = nil
-		end
-		ScpuiSystem:stopMusic()
-		ScpuiSystem.data.memory.CurrentMusicFile = nil
-		ScpuiSystem.data.memory.CutscenePlayed = nil
-	end
-
-end
-
+--- The skip button was pressed so skip the mission, if possible
+--- @return nil
 function BriefingController:skip_pressed()
 
 	ScpuiSystem:stopMusic()
-	
-	loadoutHandler:unloadAll(false)
+
+	LoadoutHandler:unloadAll(false)
 	ScpuiSystem.data.memory.CutscenePlayed = nil
-    
+
 	if mn.isTraining() then
 		ui.Briefing.skipMission()
 	elseif mn.isInCampaignLoop() then
@@ -500,44 +417,48 @@ function BriefingController:skip_pressed()
 
 end
 
+--- The mouse was moved over the briefing map so update the briefing map data
+--- @param element Element The element the mouse is over
+--- @param event Event The mouse move event
+--- @return nil
 function BriefingController:mouse_move(element, event)
 
 	if ScpuiSystem.data.memory.briefing_map ~= nil then
 		ScpuiSystem.data.memory.briefing_map.Mx = event.parameters.mouse_x
 		ScpuiSystem.data.memory.briefing_map.My = event.parameters.mouse_y
-		
+
 		--for the ship box preview coords regardless of briefing render type
 		ScpuiSystem.data.memory.briefing_map.Bx = event.parameters.mouse_x
 		ScpuiSystem.data.memory.briefing_map.By = event.parameters.mouse_y
-		
+
 		--Get the grid coords
 		local grid_el = self.Document:GetElementById("briefing_grid")
 		local gx = grid_el.offset_left + grid_el.parent_node.offset_left + grid_el.parent_node.parent_node.offset_left
 		local gy = grid_el.offset_top + grid_el.parent_node.offset_top + grid_el.parent_node.parent_node.offset_top
-			
+
 		if string.lower(ScpuiSystem.data.ScpuiOptionValues.Brief_Render_Option) == "texture" then
-			
+
 			ScpuiSystem.data.memory.briefing_map.Mx = ScpuiSystem.data.memory.briefing_map.Mx - gx
 			ScpuiSystem.data.memory.briefing_map.My = ScpuiSystem.data.memory.briefing_map.My - gy
 
 		end
-		
+
 		if ((ScpuiSystem.data.memory.briefing_map.Mx ~= nil) and (ScpuiSystem.data.memory.briefing_map.My ~= nil)) then
 			ScpuiSystem.data.memory.briefing_map.Pof, ScpuiSystem.data.memory.briefing_map.CloseupZoom, ScpuiSystem.data.memory.briefing_map.CloseupPos, ScpuiSystem.data.memory.briefing_map.Label, ScpuiSystem.data.memory.briefing_map.IconIdentifier = ui.Briefing.checkStageIcons(ScpuiSystem.data.memory.briefing_map.Mx, ScpuiSystem.data.memory.briefing_map.My)
 		end
-		
+
 		--double check we're still inside the map X coords
 		if event.parameters.mouse_x < gx or event.parameters.mouse_x > (ScpuiSystem.data.memory.briefing_map.X2 + gx) then
 			ScpuiSystem.data.memory.briefing_map.Pof = nil
 			return
 		end
-	
+
 		--double check we're still inside the map Y coords
 		if event.parameters.mouse_y < gy or event.parameters.mouse_y > (ScpuiSystem.data.memory.briefing_map.Y2 + gy) then
 			ScpuiSystem.data.memory.briefing_map.Pof = nil
 			return
 		end
-		
+
 		if ScpuiSystem.data.memory.briefing_map.Pof == nil then
 			ScpuiSystem.data.memory.briefing_map.RotationSpeed = 40
 		end
@@ -545,41 +466,54 @@ function BriefingController:mouse_move(element, event)
 
 end
 
+--- The help button was clicked
+--- @return nil
 function BriefingController:help_clicked()
-    self.help_shown  = not self.help_shown
+    self.HelpShown  = not self.HelpShown
 
     local help_texts = self.Document:GetElementsByClassName("tooltip")
     for _, v in ipairs(help_texts) do
-        v:SetPseudoClass("shown", self.help_shown)
+        v:SetPseudoClass("shown", self.HelpShown)
     end
 end
 
+--- The multiplayer lock button was pressed
+--- @return nil
 function BriefingController:lock_pressed()
 	ui.MultiGeneral.getNetGame().Locked = true
 end
 
+--- The multiplayer chat submit button was pressed
+--- @return nil
 function BriefingController:submit_pressed()
-	if self.submittedValue then
+	if self.SubmittedChatString then
 		self:sendChat()
 	end
 end
 
+--- Send the chat message to the server
+--- @return nil
 function BriefingController:sendChat()
-	if string.len(self.submittedValue) > 0 then
-		ui.MultiGeneral.sendChat(self.submittedValue)
-		self.input_id:SetAttribute("value", "")
-		self.submittedValue = ""
+	if string.len(self.SubmittedChatString) > 0 then
+		ui.MultiGeneral.sendChat(self.SubmittedChatString)
+		self.ChatInputElement:SetAttribute("value", "")
+		self.SubmittedChatString = ""
 	end
 end
 
-function BriefingController:InputFocusLost()
+--- For when the chat input loses focus. Currently does nothing
+--- @return nil
+function BriefingController:input_focus_lost()
 	--do nothing
 end
 
-function BriefingController:InputChange(event)
+--- When the player types in the chat input box, get the value and save it. Also check for the return key to submit
+--- @param event Event The input event
+--- @return nil
+function BriefingController:input_change(event)
 	if event.parameters.linebreak ~= 1 then
-		local val = self.input_id:GetAttribute("value")
-		self.submittedValue = val
+		local val = self.ChatInputElement:GetAttribute("value")
+		self.SubmittedChatString = val
 	else
 		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
@@ -587,9 +521,11 @@ function BriefingController:InputChange(event)
 	end
 end
 
-function BriefingController:updateLists()
+--- Multiplayer function that updates every millisecond, checking for new messages and other multiplayer data
+--- @return nil
+function BriefingController:updateMultiplayerData()
 	local chat = ui.MultiGeneral.getChat()
-	
+
 	local txt = ""
 	for i = 1, #chat do
 		local line = ""
@@ -600,31 +536,31 @@ function BriefingController:updateLists()
 		end
 		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
 	end
-	self.chat_el.inner_rml = txt
-	self.chat_el.scroll_top = self.chat_el.scroll_height
-	
+	self.ChatElement.inner_rml = txt
+	self.ChatElement.scroll_top = self.ChatElement.scroll_height
+
 	if ui.MultiGeneral.getNetGame().Locked == true then
 		self.Document:GetElementById("lock_btn"):SetPseudoClass("checked", true)
 	else
 		self.Document:GetElementById("lock_btn"):SetPseudoClass("checked", false)
 	end
-	
+
 	async.run(function()
-        async.await(async_util.wait_for(0.01))
-        self:updateLists()
+        async.await(AsyncUtil.wait_for(0.01))
+        self:updateMultiplayerData()
     end, async.OnFrameExecutor)
 end
 
+--- During the briefing game state if SCPUI is rendering then try to draw the briefing map
 engine.addHook("On Frame", function()
 	if (ba.getCurrentGameState().Name == "GS_STATE_BRIEFING") and (ScpuiSystem.data.Render == true) then
-		BriefingController:drawMap()
+		BriefingController:drawBriefingMap()
 	end
 end, {}, function()
     return false
 end)
 
---Prevent the briefing UI from being drawn if we're just going
---to skip it in a frame or two
+--- Prevent the briefing UI from being drawn if we're just going to skip it in a frame or two
 engine.addHook("On Frame", function()
 	if ba.getCurrentGameState().Name == "GS_STATE_BRIEFING" and mn.hasNoBriefing() and not ui.isCutscenePlaying() then
 		gr.clearScreen()
