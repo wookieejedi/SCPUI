@@ -421,7 +421,7 @@ end
 function TechDatabaseController:ReloadList()
 
 	local list_items_el = self.Document:GetElementById("list_items_ul")
-	ScpuiSystem:ClearEntries(list_items_el)
+	ScpuiSystem:clearEntries(list_items_el)
 	self:ClearData()
 	self.SelectedEntry = nil
 	self.visibleList = {}
@@ -523,7 +523,7 @@ function TechDatabaseController:ChangeSection(section)
 			self:SelectEntry(self.visibleList[self:getFirstIndex()])
 		else
 			local list_items_el = self.Document:GetElementById("list_items_ul")
-			ScpuiSystem:ClearEntries(list_items_el)
+			ScpuiSystem:clearEntries(list_items_el)
 			self:ClearData()
 		end
 
@@ -590,7 +590,7 @@ function TechDatabaseController:CreateEntries(list)
 
 	local list_names_el = self.Document:GetElementById("list_items_ul")
 
-	ScpuiSystem:ClearEntries(list_names_el)
+	ScpuiSystem:clearEntries(list_names_el)
 	
 	self.cur_category = nil
 

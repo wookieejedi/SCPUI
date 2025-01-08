@@ -322,7 +322,7 @@ function MissionlogController:CleanupMissionLog()
 
 	local parent_el = self.Document:GetElementById("log_text_wrapper")
 	
-	ScpuiSystem:ClearEntries(parent_el)
+	ScpuiSystem:clearEntries(parent_el)
 	
 end
 
@@ -330,7 +330,7 @@ function MissionlogController:CleanupMessageLog()
 
 	local parent_el = self.Document:GetElementById("log_text_wrapper")
 	
-	ScpuiSystem:ClearEntries(parent_el)
+	ScpuiSystem:clearEntries(parent_el)
 
 end
 

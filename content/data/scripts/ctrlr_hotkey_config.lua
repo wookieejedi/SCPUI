@@ -322,7 +322,7 @@ function HotkeyController:ResetKeys()
 	ui.MissionHotkeys.resetHotkeys()
 	
 	local parent_el = self.Document:GetElementById("log_text_wrapper")
-	ScpuiSystem:ClearEntries(parent_el)
+	ScpuiSystem:clearEntries(parent_el)
 	self:createHotkeysList()
 
 end
@@ -340,7 +340,7 @@ function HotkeyController:SetDefaults()
 	ui.MissionHotkeys.resetHotkeysDefault()
 	
 	local parent_el = self.Document:GetElementById("log_text_wrapper")
-	ScpuiSystem:ClearEntries(parent_el)
+	ScpuiSystem:clearEntries(parent_el)
 	self:createHotkeysList()
 
 end

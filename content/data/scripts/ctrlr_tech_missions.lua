@@ -60,7 +60,7 @@ function TechMissionsController:initialize(document)
 		self.SelectedSection = nil
 		self:ChangeSection(newSection)
 		
-		ScpuiSystem:CloseDialog()
+		ScpuiSystem:closeDialog()
 	
 	end, async.OnFrameExecutor)
 	
@@ -99,7 +99,7 @@ end
 function TechMissionsController:ReloadList()
 
 	local list_items_el = self.Document:GetElementById("list_item_names_ul")
-	ScpuiSystem:ClearEntries(list_items_el)
+	ScpuiSystem:clearEntries(list_items_el)
 	self:ClearData()
 	self.SelectedEntry = nil
 	self.visibleList = {}
@@ -201,7 +201,7 @@ function TechMissionsController:ChangeSection(section)
 			end
 		else
 			local list_names_el = self.Document:GetElementById("list_item_names_ul")
-			ScpuiSystem:ClearEntries(list_names_el)
+			ScpuiSystem:clearEntries(list_names_el)
 			self:ClearData()
 		end
 
@@ -316,7 +316,7 @@ function TechMissionsController:CreateEntries(list)
 
 	local list_names_el = self.Document:GetElementById("list_item_names_ul")
 
-	ScpuiSystem:ClearEntries(list_names_el)
+	ScpuiSystem:clearEntries(list_names_el)
 
 	for i, v in pairs(list) do
 		if self.show_all and topics.simulator.allowall:send(self) then

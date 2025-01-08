@@ -229,7 +229,7 @@ end
 --- Unsets all child elements of a parent class from pseudo class "checked"
 --- @param parent Element The parent element to unset children from.
 --- @return nil
-function ScpuiSystem:UncheckChildren(parent)
+function ScpuiSystem:uncheckChildren(parent)
 	local el = parent.first_child
 	while el ~= nil do
 		el:SetPseudoClass("checked", false)
@@ -240,7 +240,7 @@ end
 --- Clears an element of all children
 --- @param parent Element The parent element to clear children from.
 --- @return nil
-function ScpuiSystem:ClearEntries(parent)
+function ScpuiSystem:clearEntries(parent)
 	while parent:HasChildNodes() do
 		parent:RemoveChild(parent.first_child)
 	end
@@ -250,7 +250,7 @@ end
 --- @param parent Element The parent element to set the attribute for.
 --- @param attribute string The attribute to set.
 --- @param value string The value to set the attribute to.
-function ScpuiSystem:SetStyle(parent, attribute, value)
+function ScpuiSystem:setStyle(parent, attribute, value)
 	if parent ~= nil then
 		parent.style[attribute] = value
 	end
@@ -259,14 +259,14 @@ end
 --- Scrolls an element up by 10 pixels
 --- @param element Element The element to scroll.
 --- @return nil
-function ScpuiSystem:scroll_up(element)
+function ScpuiSystem:scrollUp(element)
 	element.scroll_top = element.scroll_top - 10
 end
 
 --- Scrolls an element down by 10 pixels
 --- @param element Element The element to scroll.
 --- @return nil
-function ScpuiSystem:scroll_down(element)
+function ScpuiSystem:scrollDown(element)
 	element.scroll_top = element.scroll_top + 10
 end
 
@@ -434,7 +434,7 @@ end
 --- @param parent Element The parent element to set the briefing text on
 --- @param brief_text string The briefing text to set
 --- @param recommendation? string The recommendation text to set, if any
-function ScpuiSystem:set_briefing_text(parent, brief_text, recommendation)
+function ScpuiSystem:setBriefingText(parent, brief_text, recommendation)
 	local utils = require("lib_utils")
     
 	--- Local function to add a text element to a parent element
@@ -539,7 +539,7 @@ function ScpuiSystem:set_briefing_text(parent, brief_text, recommendation)
 	end
 	
 	-- First, clear all the children of this element
-    ScpuiSystem:ClearEntries(parent)
+    ScpuiSystem:clearEntries(parent)
 
     local document = parent.owner_document
 

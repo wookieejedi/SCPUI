@@ -26,7 +26,7 @@ function LoopBriefController:initialize(document)
 	
 	local text_el = self.Document:GetElementById("loop_text")
 	
-	local color_text = ScpuiSystem:set_briefing_text(text_el, loop.Text)
+	local color_text = ScpuiSystem:setBriefingText(text_el, loop.Text)
 	
 	if loop.AudioFilename then
 		ba.print("SCPUI got loop briefing audio filename as " .. loop.AudioFilename)

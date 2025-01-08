@@ -90,7 +90,7 @@ function ShipSelectController:BuildWings()
 
 	local slotNum = 1
 	local wrapperEl = self.Document:GetElementById("wings_wrapper")
-	ScpuiSystem:ClearEntries(wrapperEl)
+	ScpuiSystem:clearEntries(wrapperEl)
 	
 	--Check that we actually have wing slots
 	if loadoutHandler:GetNumWings() <= 0 then
@@ -307,7 +307,7 @@ function ShipSelectController:ReloadList()
 
 	ScpuiSystem.data.memory.model_rendering.Class = nil
 	local list_items_el = self.Document:GetElementById("ship_icon_list_ul")
-	ScpuiSystem:ClearEntries(list_items_el)
+	ScpuiSystem:clearEntries(list_items_el)
 	self.SelectedEntry = nil
 	self:CreateEntries(loadoutHandler:GetShipList())
 	self:BuildWings()
@@ -366,7 +366,7 @@ function ShipSelectController:CreateEntries(list)
 
 	local list_names_el = self.Document:GetElementById("ship_icon_list_ul")
 	
-	ScpuiSystem:ClearEntries(list_names_el)
+	ScpuiSystem:clearEntries(list_names_el)
 
 	for i, v in pairs(list) do
 		list_names_el:AppendChild(self:CreateEntryItem(v, i))
@@ -467,7 +467,7 @@ function ShipSelectController:BuildInfo(entry)
 	
 	self.Document:GetElementById("ship_stats_wrapper").scroll_top = 0
 	
-	ScpuiSystem:ClearEntries(infoEl)
+	ScpuiSystem:clearEntries(infoEl)
 	
 	local midString = "</p><p class=\"info\">"
 	

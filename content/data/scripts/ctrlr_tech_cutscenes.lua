@@ -60,7 +60,7 @@ end
 function TechCutscenesController:ReloadList()
 
 	local list_items_el = self.Document:GetElementById("cutscene_list_ul")
-	ScpuiSystem:ClearEntries(list_items_el)
+	ScpuiSystem:clearEntries(list_items_el)
 	self.SelectedEntry = nil
 	self.visibleList = {}
 	self.Counter = 0
@@ -95,7 +95,7 @@ function TechCutscenesController:CreateEntries(list)
 
 	local list_names_el = self.Document:GetElementById("cutscene_list_ul")
 	
-	ScpuiSystem:ClearEntries(list_names_el)
+	ScpuiSystem:clearEntries(list_names_el)
 
 	for i, v in pairs(list) do
 	

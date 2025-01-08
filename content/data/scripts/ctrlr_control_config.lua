@@ -46,7 +46,7 @@ end
 function ControlConfigController:initPresets()
 	local parent_el = self.Document:GetElementById("list_presets_ul")
 	
-	ScpuiSystem:ClearEntries(parent_el)
+	ScpuiSystem:clearEntries(parent_el)
 	
 	for i = 1, #ui.ControlConfig.ControlPresets do
 		local entry = ui.ControlConfig.ControlPresets[i]
@@ -384,7 +384,7 @@ function ControlConfigController:changeSection(tab)
 		tab = 3
 	end
 	
-	ScpuiSystem:ClearEntries(self.Document:GetElementById("list_items_ul"))
+	ScpuiSystem:clearEntries(self.Document:GetElementById("list_items_ul"))
 	self:initKeysList(tab)
 	
 	self:checkConflict()

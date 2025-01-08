@@ -95,7 +95,7 @@ function JournalController:CreateEntries(section)
 
     local list_el = self.Document:GetElementById("list_items_ul")
 
-    ScpuiSystem:ClearEntries(list_el)
+    ScpuiSystem:clearEntries(list_el)
     self.Data.VisibleList = {}
 
     for i, v in ipairs(self.Data.Entries[section]) do
@@ -205,7 +205,7 @@ end
 function JournalController:Exit(element)
 
     ui.playElementSound(element, "click", "success")
-    ScpuiSystem:ReturnToState(ScpuiSystem.data.LastState)
+    ScpuiSystem:returnToState(ScpuiSystem.data.LastState)
     self.Document:Close()
 
 end
@@ -222,7 +222,7 @@ function JournalController:global_keydown(_, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
         self.Document:Close()
-        ScpuiSystem:ReturnToState(ScpuiSystem.data.LastState)
+        ScpuiSystem:returnToState(ScpuiSystem.data.LastState)
     end
 end
 

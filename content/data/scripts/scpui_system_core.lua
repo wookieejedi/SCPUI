@@ -433,7 +433,7 @@ end
 --- This allows for states to correctly return to the previous state even if has no rocket ui defined
 --- @param state gamestate The game state or substate
 --- @return nil
-function ScpuiSystem:ReturnToState(state)
+function ScpuiSystem:returnToState(state)
 
 	local event
 
@@ -566,7 +566,7 @@ function ScpuiSystem:dialogEnd()
 		end
 	end
 	
-	self:CloseDialog()
+	self:closeDialog()
 end
 
 --- Gets the current mod title from FSO. If not defined then set it to 'SCPUI Development Mod'
@@ -623,7 +623,7 @@ end
 
 --- Closes the current dialog and returns control to the state that called it
 --- @return nil
-function ScpuiSystem:CloseDialog()
+function ScpuiSystem:closeDialog()
 	if ScpuiSystem.data.DialogDoc ~= nil then
 		ba.print("SCPUI is closing dialog `" .. ScpuiSystem.data.DialogDoc.title .. "`\n")
 		ScpuiSystem.data.DialogDoc:Close()
@@ -697,7 +697,7 @@ function ScpuiSystem:loadEnd()
 		return
 	end
 
-	self:CloseLoadScreen()
+	self:closeLoadScreen()
 
 	--ui.disableInput()
 	ScpuiSystem.data.memory.loading_bar.LoadProgress = nil
@@ -706,7 +706,7 @@ end
 
 --- Closes the loading screen and returns control back to the state that called it, if any
 --- @return nil
-function ScpuiSystem:CloseLoadScreen()
+function ScpuiSystem:closeLoadScreen()
 	if ScpuiSystem.data.LoadDoc ~= nil then
 		ba.print("SCPUI is closing loading screen\n")
 		ScpuiSystem.data.LoadDoc.Document:Close()

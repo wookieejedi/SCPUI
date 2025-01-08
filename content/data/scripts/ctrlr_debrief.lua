@@ -219,7 +219,7 @@ function DebriefingController:BuildText()
         local paragraph = self.Document:CreateElement("p")
         text_el:AppendChild(paragraph)
         paragraph:SetClass("debrief_text_actual", true)
-        local color_text = ScpuiSystem:set_briefing_text(paragraph, self.stages[i].Text)
+        local color_text = ScpuiSystem:setBriefingText(paragraph, self.stages[i].Text)
         if self.stages[i].Recommendation ~= "" then
             local recommendation = self.Document:CreateElement("p")
             self.RecIDs[i] = recommendation

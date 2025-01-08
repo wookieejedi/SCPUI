@@ -67,7 +67,7 @@ local function initialize_buttons(document, properties, finish_func)
             end
             if finish_func then finish_func(val) end
             --document:Close()
-            ScpuiSystem:CloseDialog()
+            ScpuiSystem:closeDialog()
         end)
 
         local button_text_id = button_id .. '_text'
@@ -120,7 +120,7 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
         input_el:AddEventListener("change", function(event, _, _)
             if event.parameters.linebreak == 1 then
                 finish_func(event.parameters.value)
-                ScpuiSystem:CloseDialog()
+                ScpuiSystem:closeDialog()
             end
         end)
     end
@@ -153,7 +153,7 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
         if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
             if properties.EscapeValue ~= nil then
                 finish_func(properties.EscapeValue)
-                ScpuiSystem:CloseDialog()
+                ScpuiSystem:closeDialog()
             end
         end
         for i = 1, #properties.Buttons_List, 1 do
@@ -165,7 +165,7 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
                         val = dialog_doc:GetElementById("dialog_input"):GetAttribute("value")
                     end
                     finish_func(val)
-                    ScpuiSystem:CloseDialog()
+                    ScpuiSystem:closeDialog()
                 end
             end
         end
@@ -176,13 +176,13 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
 
         bg_el:AddEventListener("click", function(event, _, _)
             finish_func(properties.EscapeValue)
-            ScpuiSystem:CloseDialog()
+            ScpuiSystem:closeDialog()
         end)
     end
 
     if abortCBTable ~= nil then
         abortCBTable.Abort = function()
-            ScpuiSystem:CloseDialog()
+            ScpuiSystem:closeDialog()
             reject()
         end
     end
@@ -191,7 +191,7 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
 
     if ScpuiSystem.data.DialogDoc ~= nil then
         ba.print("SCPUI got command to close a dialog while creating a dialog! This is unusual!\n")
-        ScpuiSystem:CloseDialog()
+        ScpuiSystem:closeDialog()
     end
 
     ScpuiSystem.data.DialogDoc = dialog_doc

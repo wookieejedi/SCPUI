@@ -86,9 +86,9 @@ function AbstractBriefingController:global_keydown(_, event)
 		mn.unloadMission(true)
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP then
-		self:scroll_down()
-	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
 		self:scroll_up()
+	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
+		self:scroll_down()
 	elseif event.parameters.key_identifier == rocket.key_identifier.LEFT then
 		self:go_to_prev_stage()
 	elseif event.parameters.key_identifier == rocket.key_identifier.RIGHT then
@@ -97,13 +97,11 @@ function AbstractBriefingController:global_keydown(_, event)
 end
 
 function AbstractBriefingController:scroll_up()
-	local text_el = self.Document:GetElementById(self.element_names.text_el)
-	text_el.parent_node.scroll_top = text_el.parent_node.scroll_top + 10
+	ScpuiSystem:scrollUp(self.Document:GetElementById(self.element_names.text_el))
 end
 
 function AbstractBriefingController:scroll_down()
-	local text_el = self.Document:GetElementById(self.element_names.text_el)
-	text_el.parent_node.scroll_top = text_el.parent_node.scroll_top - 10
+	ScpuiSystem:scrollDown(self.Document:GetElementById(self.element_names.text_el))
 end
 
 function AbstractBriefingController:go_to_next_stage()
@@ -285,7 +283,7 @@ function AbstractBriefingController:initializeStage(stageIdx, briefingText, audi
 
     local text_el = self.Document:GetElementById(self.element_names.text_el)
 	text_el.parent_node.scroll_top = 0
-    local num_stage_lines = ScpuiSystem:set_briefing_text(text_el, briefingText)
+    local num_stage_lines = ScpuiSystem:ssetBriefingText(text_el, briefingText)
 
     local stage_indicator_el = self.Document:GetElementById(self.element_names.stage_text_el)
     stage_indicator_el.inner_rml = string.format(ba.XSTR("Stage %d of %d", 888283), self.current_stage, #self.stages)

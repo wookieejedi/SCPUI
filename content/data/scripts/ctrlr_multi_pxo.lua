@@ -587,7 +587,7 @@ function PXOController:updateLists()
 			self.banner_el.style.width = self.bannerWidth .. "px"
 			self.banner_el.style.height = self.bannerHeight .. "px"
 			
-			ScpuiSystem:ClearEntries(self.banner_el)
+			ScpuiSystem:clearEntries(self.banner_el)
 			
 			local img_el = self.Document:CreateElement("img")
 			img_el:SetAttribute("src", self.bannerImg)

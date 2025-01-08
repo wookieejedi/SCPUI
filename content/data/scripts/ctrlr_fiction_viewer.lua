@@ -34,7 +34,7 @@ function FictionViewerController:initialize(document)
 	
 	local text_el = self.Document:GetElementById("fiction_text")
 	
-	local color_text = ScpuiSystem:set_briefing_text(text_el, self.text)
+	local color_text = ScpuiSystem:setBriefingText(text_el, self.text)
 	
 	topics.fictionviewer.initialize:send(self)
 	
@@ -44,13 +44,11 @@ function FictionViewerController:initialize(document)
 end
 
 function FictionViewerController:scroll_up()
-	local text_el = self.Document:GetElementById("fiction_text")
-	text_el.scroll_top = text_el.scroll_top + 10
+	ScpuiSystem:ScrollUp(self.Document:GetElementById("fiction_text"))
 end
 
 function FictionViewerController:scroll_down()
-	local text_el = self.Document:GetElementById("fiction_text")
-	text_el.scroll_top = text_el.scroll_top - 10
+	ScpuiSystem:ScrollDown(self.Document:GetElementById("fiction_text"))
 end
 
 function FictionViewerController:go_to_next()
@@ -83,9 +81,9 @@ function FictionViewerController:global_keydown(_, event)
 		mn.unloadMission(true)
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP then
-		self:scroll_down()
-	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
 		self:scroll_up()
+	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
+		self:scroll_down()
 	elseif event.parameters.key_identifier == rocket.key_identifier.RETURN then
 		self:accept_pressed()
     end

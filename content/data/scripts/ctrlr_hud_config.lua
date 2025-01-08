@@ -95,7 +95,7 @@ end
 function HudConfigController:initPresets()
 	local parent_el = self.Document:GetElementById("list_presets_ul")
 	
-	ScpuiSystem:ClearEntries(parent_el)
+	ScpuiSystem:clearEntries(parent_el)
 	
 	self.oldPreset = nil
 	

@@ -73,7 +73,7 @@ function GamehelpController:CreateEntries(section)
 
 	local list_el = self.Document:GetElementById("list_keys_ul")
 
-	ScpuiSystem:ClearEntries(list_el)
+	ScpuiSystem:clearEntries(list_el)
 	
 	for i = 1, #self.sections[self.currentSection].Keys do
 		local line = self.sections[self.currentSection].Keys[i]
@@ -84,7 +84,7 @@ function GamehelpController:CreateEntries(section)
 	
 	local list_el = self.Document:GetElementById("list_texts_ul")
 
-	ScpuiSystem:ClearEntries(list_el)
+	ScpuiSystem:clearEntries(list_el)
 	
 	for i = 1, #self.sections[self.currentSection].Texts do
 		local line = self.sections[self.currentSection].Texts[i]

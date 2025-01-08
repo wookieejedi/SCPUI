@@ -26,7 +26,7 @@ function JoinGameController:initialize(document)
 	self.common_text_el = self.Document:GetElementById("common_text")
 	self.status_text_el = self.Document:GetElementById("status_text")
 	
-	ScpuiSystem:ClearEntries(self.games_list_el)
+	ScpuiSystem:clearEntries(self.games_list_el)
 	
 	if not ScpuiSystem.data.memory.MultiJoinReady then
 		ui.MultiJoinGame.initMultiJoin()
@@ -239,12 +239,12 @@ function JoinGameController:updateLists()
 	ui.MultiJoinGame.runNetwork()
 
 	if #ui.MultiJoinGame.ActiveGames == 0 then
-		ScpuiSystem:ClearEntries(self.games_list_el)
+		ScpuiSystem:clearEntries(self.games_list_el)
 		self.games_list_el.inner_rml = "[No game servers found]"
 		self.cleared = true
 	else
 		if self.cleared then
-			ScpuiSystem:ClearEntries(self.games_list_el)
+			ScpuiSystem:clearEntries(self.games_list_el)
 			self.cleared = nil
 		end
 		-- check for new games

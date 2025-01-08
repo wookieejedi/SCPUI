@@ -29,7 +29,7 @@ function RedAlertController:initialize(document)
 	
 	if alert_info ~= nil then
 		local text_el = self.Document:GetElementById("red_alert_text")
-		local color_text = ScpuiSystem:set_briefing_text(text_el, alert_info.Text)
+		local color_text = ScpuiSystem:setBriefingText(text_el, alert_info.Text)
 	
 		if alert_info.AudioFilename then
 			self.current_voice_handle = ad.openAudioStream(alert_info.AudioFilename, AUDIOSTREAM_VOICE)

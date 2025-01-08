@@ -304,12 +304,12 @@ function MultiSyncController:updateLists()
 	self.chat_el.scroll_top = self.chat_el.scroll_height
 	
 	if #ui.MultiGeneral.NetPlayers == 0 then
-		ScpuiSystem:ClearEntries(self.players_list_el)
+		ScpuiSystem:clearEntries(self.players_list_el)
 		self.players_list_el.inner_rml = "Loading Players..."
 		self.cleared = true
 	else
 		if self.cleared then
-			ScpuiSystem:ClearEntries(self.players_list_el)
+			ScpuiSystem:clearEntries(self.players_list_el)
 			self.cleared = nil
 		end
 		-- check for new players

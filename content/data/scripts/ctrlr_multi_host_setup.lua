@@ -360,7 +360,7 @@ function HostSetupController:filter_changed()
 	
 	self.missionList = {} -- list of mission files + ids only
 	self.missions = {} -- list of actual missions
-	ScpuiSystem:ClearEntries(self.missions_list_el)
+	ScpuiSystem:clearEntries(self.missions_list_el)
 	self.selectedMission = nil
 end
 
@@ -615,12 +615,12 @@ function HostSetupController:updateLists()
 	end
 	
 	if #list == 0 then
-		ScpuiSystem:ClearEntries(self.missions_list_el)
+		ScpuiSystem:clearEntries(self.missions_list_el)
 		self.missions_list_el.inner_rml = "Loading Mission List..."
 		self.cleared = true
 	else
 		if self.cleared then
-			ScpuiSystem:ClearEntries(self.missions_list_el)
+			ScpuiSystem:clearEntries(self.missions_list_el)
 			self.missions_list_el.inner_rml = ""
 			self.cleared = nil
 		end
@@ -669,12 +669,12 @@ function HostSetupController:updateLists()
 	end
 	
 	if #ui.MultiGeneral.NetPlayers == 0 then
-		ScpuiSystem:ClearEntries(self.players_list_el)
+		ScpuiSystem:clearEntries(self.players_list_el)
 		self.players_list_el.inner_rml = "Loading Players..."
 		self.cleared = true
 	else
 		if self.cleared then
-			ScpuiSystem:ClearEntries(self.players_list_el)
+			ScpuiSystem:clearEntries(self.players_list_el)
 			self.cleared = nil
 		end
 		-- check for new players

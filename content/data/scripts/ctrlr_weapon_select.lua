@@ -121,7 +121,7 @@ function WeaponSelectController:BuildWings()
 
 	local slotNum = 1
 	local wrapperEl = self.Document:GetElementById("wings_wrapper")
-	ScpuiSystem:ClearEntries(wrapperEl)
+	ScpuiSystem:clearEntries(wrapperEl)
 	
 	--Check that we actually have wing slots
 	if loadoutHandler:GetNumWings() <= 0 then
@@ -305,9 +305,9 @@ function WeaponSelectController:ReloadList()
 	ScpuiSystem.data.memory.model_rendering.Class = nil
 	ScpuiSystem.data.memory.model_rendering.OverheadClass = nil
 	local list_items_el = self.Document:GetElementById("primary_icon_list_ul")
-	ScpuiSystem:ClearEntries(list_items_el)
+	ScpuiSystem:clearEntries(list_items_el)
 	local list_items_el = self.Document:GetElementById("secondary_icon_list_ul")
-	ScpuiSystem:ClearEntries(list_items_el)
+	ScpuiSystem:clearEntries(list_items_el)
 	self.SelectedEntry = nil
 	self.SelectedShip = nil
 	if loadoutHandler:GetNumPrimaryWeapons() > 0 then
@@ -416,7 +416,7 @@ function WeaponSelectController:CreateEntries(list)
 	end
 	
 	if list_names_el ~= nil then
-		ScpuiSystem:ClearEntries(list_names_el)
+		ScpuiSystem:clearEntries(list_names_el)
 
 		for i, v in pairs(list) do
 			list_names_el:AppendChild(self:CreateEntryItem(v, i))
@@ -632,13 +632,13 @@ function WeaponSelectController:SelectShip(shipIndex, callsign, slot)
 end
 
 function WeaponSelectController:ClearWeaponSlots()
-	ScpuiSystem:ClearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank1)
-	ScpuiSystem:ClearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank2)
-	ScpuiSystem:ClearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank3)
-	ScpuiSystem:ClearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank4)
-	ScpuiSystem:ClearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank5)
-	ScpuiSystem:ClearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank6)
-	ScpuiSystem:ClearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank7)
+	ScpuiSystem:clearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank1)
+	ScpuiSystem:clearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank2)
+	ScpuiSystem:clearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank3)
+	ScpuiSystem:clearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank4)
+	ScpuiSystem:clearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank5)
+	ScpuiSystem:clearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank6)
+	ScpuiSystem:clearEntries(ScpuiSystem.data.memory.model_rendering.Bank_Elements_List.bank7)
 	
 	self.banks = {}
 	
@@ -743,7 +743,7 @@ function WeaponSelectController:BuildSlot(parentEl, bank)
 	
 	self.banks[bank] = weapon
 	
-	ScpuiSystem:ClearEntries(parentEl)
+	ScpuiSystem:clearEntries(parentEl)
 	
 	local slotImg = self.Document:CreateElement("img")
 	
@@ -768,7 +768,7 @@ function WeaponSelectController:BuildInfo(entry)
 	
 	local infoEl = self.Document:GetElementById("weapon_stats")
 	
-	ScpuiSystem:ClearEntries(infoEl)
+	ScpuiSystem:clearEntries(infoEl)
 	
 	local power = entry.Power
 	local rof = entry.RoF

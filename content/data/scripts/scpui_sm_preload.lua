@@ -2,8 +2,6 @@
 --This file runs SCPUI's preload system and shows the splash screens
 -----------------------------------
 
-local async_util = require("lib_async")
-
 --- Run the preload system and interate through the preload coroutines
 --- @return nil
 function ScpuiSystem:preLoad()
@@ -224,6 +222,8 @@ function ScpuiSystem:calcFrames()
 	else
 		ScpuiSystem.data.memory.splash_screen.F = 1
 	end
+
+	local async_util = require("lib_async")
 	
 	async.run(function()
         async.await(async_util.wait_for(0.1))
