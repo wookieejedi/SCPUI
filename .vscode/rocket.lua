@@ -214,7 +214,7 @@ Element = {}
 ---@field RemoveAttribute fun(self: self, name: string) Removes an attribute by name.
 ---@field RemoveChild fun(self: self, element: Element) Removes a child from this element.
 ---@field ReplaceChild fun(self: self, new_element: Element, old_element: Element) Replaces a child with a new element.
----@field ScrollIntoView fun(self: self, align_top: boolean) Scrolls the element into view.
+---@field ScrollIntoView fun(self: self, align_top?: boolean) Scrolls the element into view.
 ---@field SetAttribute fun(self: self, name: string, value: any) Sets an attribute by name.
 ---@field SetClass fun(self: self, class_name: string, set: boolean) Sets a class on the element.
 ---@field SetPseudoClass fun(self: self, psuedo_class: string, set: boolean) Sets a psuedo class on the element.
@@ -320,8 +320,26 @@ Event = {}
 ---@field type string The string name of the event. Read-only.
 ---@field current_element Element The element that is currently handling the event. Read-only.
 ---@field target_element Element The element the event was originally targeted at. Read-only.
----@field parameters table<string, any> A dictionary like object containing all the parameters in the event.
+---@field parameters event_parameters A dictionary like object containing all the parameters in the event.
 ---@field StopPropagation fun(self: self) Stops propagation of the event.
+
+--- Event Parameters Class
+Event.parameters = {}
+---@class event_parameters
+---@field key_identifier RocketKey The key that was pressed, if any
+---@field linebreak number If a linebreak was pressed, this will be 1
+---@field value any The value of the event, often a string
+---@field mouse_x number The x position of the mouse
+---@field mouse_y number The y position of the mouse
+---@field button number The mouse button that was pressed. 0 for left, 1 for middle, 2 for right -- UNCONFIRMED
+---@field wheel_delta number The amount the mouse wheel was moved. Positive for up, negative for down -- UNCONFIRMED
+---@field character number The character code of the key that was pressed -- UNCONFIRMED
+---@field element Element The element that the event was triggered on -- UNCONFIRMED
+---@field ctrl_key boolean If the control key was pressed -- UNCONFIRMED
+---@field shift_key boolean If the shift key was pressed -- UNCONFIRMED
+---@field alt_key boolean If the alt key was pressed -- UNCONFIRMED
+---@field meta_key boolean If the meta key was pressed -- UNCONFIRMED
+---@field delta_time number The time since the last event of the same type in milliseconds -- UNCONFIRMED
 
 --- ElementFormControl Classes
 ElementFormControl = {}

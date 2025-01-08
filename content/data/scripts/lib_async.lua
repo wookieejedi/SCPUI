@@ -1,7 +1,7 @@
 -----------------------------------
 --This file contains utility functions for working with async operations
 -----------------------------------
----
+
 local M = {}
 
 --- Waits for the specified number of seconds before resolving the promise.
