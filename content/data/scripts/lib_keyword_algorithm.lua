@@ -1,3 +1,7 @@
+-----------------------------------
+--This contains the keyword algorithm for colorizing text in the game based on the keywords.tbl
+-----------------------------------
+
 --[[
 A "term" is either a non-empty sequence characters such that each character the
 sequence is a word character or ' character, or no character in the sequence is

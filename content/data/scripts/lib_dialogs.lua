@@ -1,3 +1,7 @@
+-----------------------------------
+--This file contains all the code necessary to display a popup dialog box within SCPUI.
+-----------------------------------
+
 local module                = {}
 
 -- The type of a dialog

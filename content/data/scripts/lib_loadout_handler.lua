@@ -1,3 +1,7 @@
+-----------------------------------
+--Loadout Handler manages all loadout data and operations within SCPUI and only sends the updated loadout to FSO on commit
+-----------------------------------
+
 local LoadoutHandler = {}
 
 local topics = require("lib_ui_topics")

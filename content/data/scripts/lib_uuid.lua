@@ -1,3 +1,7 @@
+-----------------------------------
+--This file contains code to generate a UUID
+-----------------------------------
+
 ---------------------------------------------------------------------------------------
 -- Copyright 2012 Rackspace (original), 2013-2021 Thijs Schreijer (modifications)
 --
