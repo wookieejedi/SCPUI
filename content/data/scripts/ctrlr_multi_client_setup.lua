@@ -82,7 +82,7 @@ end
 --- Handle the response from a dialog box. Currently doesn't do anything but more is planned
 --- @param response string The response from the dialog box
 --- @return nil
-function ClientSetupController:dialog_response(response)
+function ClientSetupController:dialogResponse(response)
 	local path = self.PromptControl
 	self.PromptControl = nil
 
@@ -129,7 +129,7 @@ function ClientSetupController:showDialog(text, title, input, buttons)
 		dialog:escape("")
 		dialog:show(self.Document.context)
 		:continueWith(function(response)
-			self:dialog_response(response)
+			self:dialogResponse(response)
     end)
 	-- Route input to our context until the user dismisses the dialog box.
 	ui.enableInput(self.Document.context)

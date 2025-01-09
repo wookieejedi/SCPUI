@@ -73,7 +73,7 @@
 						</div>
 						<div id=input_cont>
 							<div id=user_input_wrapper>
-								<input id=time_limit_input class="user_input" type="text" maxlength="30" onblur="controller:InputFocusLost()" onchange="controller:time_limit_input_change(event)" onkeyup="controller:time_limit_keyup(element, event)"></input>
+								<input id=time_limit_input class="user_input" type="text" maxlength="30" onblur="controller:input_focus_lost()" onchange="controller:time_limit_input_change(event)" onkeyup="controller:time_limit_keyup(element, event)"></input>
 							</div>
 						</div>
 						<img src="ops-panel-horz.png"></img>
@@ -84,7 +84,7 @@
 						</div>
 						<div id=input_cont>
 							<div id=user_input_wrapper>
-								<input id=respawn_limit_input class="user_input" type="text" maxlength="30" onblur="controller:InputFocusLost()" onchange="controller:respawn_limit_input_change(event)" onkeyup="controller:respawn_limit_keyup(element, event)"></input>
+								<input id=respawn_limit_input class="user_input" type="text" maxlength="30" onblur="controller:input_focus_lost()" onchange="controller:respawn_limit_input_change(event)" onkeyup="controller:respawn_limit_keyup(element, event)"></input>
 							</div>
 						</div>
 						<img src="ops-panel-horz.png"></img>
@@ -95,7 +95,7 @@
 						</div>
 						<div id=input_cont>
 							<div id=user_input_wrapper>
-								<input id=kill_limit_input class="user_input" type="text" maxlength="30" onblur="controller:InputFocusLost()" onchange="controller:kill_limit_input_change(event)" onkeyup="controller:kill_limit_keyup(element, event)"></input>
+								<input id=kill_limit_input class="user_input" type="text" maxlength="30" onblur="controller:input_focus_lost()" onchange="controller:kill_limit_input_change(event)" onkeyup="controller:kill_limit_keyup(element, event)"></input>
 							</div>
 						</div>
 						<img src="ops-panel-horz.png"></img>
@@ -106,7 +106,7 @@
 						</div>
 						<div id=input_cont>
 							<div id=user_input_wrapper>
-								<input id=observers_limit_input class="user_input" type="text" maxlength="30" onblur="controller:InputFocusLost()" onchange="controller:observers_limit_input_change(event)" onkeyup="controller:observers_limit_keyup(element, event)"></input>
+								<input id=observers_limit_input class="user_input" type="text" maxlength="30" onblur="controller:input_focus_lost()" onchange="controller:observers_limit_input_change(event)" onkeyup="controller:observers_limit_keyup(element, event)"></input>
 							</div>
 						</div>
 						<img src="ops-panel-horz.png"></img>
@@ -120,8 +120,8 @@
 		<div id=chat_wrapper>
 			<div id=chat_window>
 			</div>
-			<input id=chat_input type="text" maxlength="512" onblur="controller:InputFocusLost()"
-				onchange="controller:InputChange(event)"></input>
+			<input id=chat_input type="text" maxlength="512" onblur="controller:input_focus_lost()"
+				onchange="controller:input_change(event)"></input>
 			<div id=submit_btn_wrapper>
 				<div id=submit_cont>
 					<button id="submit_btn" class="submit button_1" onclick="controller:submit_pressed()">

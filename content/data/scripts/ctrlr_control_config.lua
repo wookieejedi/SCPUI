@@ -1139,7 +1139,7 @@ end
 --- Handle the response from the dialog prompts
 --- @param response any The response from the dialog
 --- @return nil
-function ControlConfigController:dialog_response(response)
+function ControlConfigController:dialogResponse(response)
 	local path = self.PromptControl
 	self.PromptControl = ControlConfigController.PROMPT_TYPE_NONE
 
@@ -1262,7 +1262,7 @@ engine.addHook("On Frame", function()
 		if ScpuiSystem.data.memory.control_config.NextDialog ~= nil then
 			ScpuiSystem.data.memory.control_config.Context:maybeShowDialogs()
 		elseif ScpuiSystem.data.memory.control_config.DialogResponse ~= nil then
-			ScpuiSystem.data.memory.control_config.Context:dialog_response(ScpuiSystem.data.memory.control_config.DialogResponse)
+			ScpuiSystem.data.memory.control_config.Context:dialogResponse(ScpuiSystem.data.memory.control_config.DialogResponse)
 		end
 	end
 end, {}, function()

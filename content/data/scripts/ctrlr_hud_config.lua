@@ -649,7 +649,7 @@ function HudConfigController:showDialog(text, title, input, buttons)
 		dialog:escape("")
 		dialog:show(self.Document.context)
 		:continueWith(function(response)
-			self:dialog_response(response)
+			self:dialogResponse(response)
     end)
 	-- Route input to our context until the user dismisses the dialog box.
 	ui.enableInput(self.Document.context)
@@ -678,7 +678,7 @@ end
 --- Handle dialog responses
 --- @param response string The dialog response
 --- @return nil
-function HudConfigController:dialog_response(response)
+function HudConfigController:dialogResponse(response)
 	local path = self.PromptControl
 	self.PromptControl = nil
 	ScpuiSystem.data.memory.hud_config.Draw = true

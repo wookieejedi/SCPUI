@@ -9,46 +9,46 @@ local MultiSyncController = class()
 function MultiSyncController:init()
 	self.playerList = {} -- list of players + ids only
 	self.players = {} -- list of actual players
-	
+
 	self.team_elements = {}
 	self.state_elements = {}
-	
+
 	self.host = nil
 	self.countdown = nil
 end
 
 ---@param document Document
 function MultiSyncController:initialize(document)
-	
+
 	self.Document = document
-	
+
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
-	
+
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-	
+
 	--Hide these until we know if we're the host or not
 	self.Document:GetElementById("bottom_panel_a"):SetClass("hidden", true)
 	self.Document:GetElementById("bottom_panel_c"):SetClass("hidden", true)
-	
+
 	self.players_list_el = self.Document:GetElementById("players_list_ul")
 	self.chat_el = self.Document:GetElementById("chat_window")
 	self.input_id = self.Document:GetElementById("chat_input")
 	self.common_text_el = self.Document:GetElementById("common_text")
 	--self.status_text_el = self.Document:GetElementById("status_text")
-	
+
 	ui.MultiSync.initMultiSync()
-	
+
 	self.netgame = ui.MultiGeneral.getNetGame()
-	
+
 	self.selectedPlayer= nil
-	
+
 	self.submittedValue = ""
-	
+
 	self:updateLists()
 	ui.MultiGeneral.setPlayerState()
-	
+
 	topics.multisync.initialize:send(self)
 
 end
@@ -59,7 +59,7 @@ function MultiSyncController:exit(quit)
 	end
 end
 
-function MultiSyncController:dialog_response(response)
+function MultiSyncController:dialogResponse(response)
 	local path = self.promptControl
 	self.promptControl = nil
 	if path == 1 then --MOTD
@@ -95,7 +95,7 @@ function MultiSyncController:Show(text, title, input, buttons)
 		dialog:escape("")
 		dialog:show(self.Document.context)
 		:continueWith(function(response)
-			self:dialog_response(response)
+			self:dialogResponse(response)
     end)
 	-- Route input to our context until the user dismisses the dialog box.
 	ui.enableInput(self.Document.context)
@@ -157,29 +157,29 @@ function MultiSyncController:InputChange(event)
 end
 
 function MultiSyncController:CreatePlayerEntry(entry)
-	
+
 	local li_el = self.Document:CreateElement("li")
-	
+
 	local name_el = self.Document:CreateElement("div")
 	name_el:SetClass("player_name", true)
 	name_el:SetClass("player_item", true)
 	name_el.inner_rml = entry.Name
 	li_el:AppendChild(name_el)
-	
+
 	local team_el = self.Document:CreateElement("div")
 	team_el.id = entry.InternalID .. "_team"
 	team_el:SetClass("player_team", true)
 	team_el:SetClass("player_item", true)
 	team_el.inner_rml = "Team" .. entry.Team + 1
 	li_el:AppendChild(team_el)
-	
+
 	local state_el = self.Document:CreateElement("div")
 	state_el.id = entry.InternalID .. "_state"
 	state_el:SetClass("player_state", true)
 	state_el:SetClass("player_item", true)
 	state_el.inner_rml = entry.State
 	li_el:AppendChild(state_el)
-	
+
 	--These will eventually just change color or something I dunno
 	local host = entry.Host
 	local observer = entry.Observer
@@ -195,7 +195,7 @@ function MultiSyncController:CreatePlayerEntry(entry)
 		self:SelectPlayer(entry)
 	end)
 	entry.key = li_el.id
-	
+
 	table.insert(self.players, entry)
 	table.insert(self.team_elements, team_el)
 	table.insert(self.state_elements, state_el)
@@ -277,7 +277,7 @@ function MultiSyncController:countdownBegins()
 	if self.countdownStarted then
 		return
 	end
-	
+
 	local aniEl = self.Document:CreateElement("ani")
     aniEl:SetAttribute("src", "countdown.png")
 	self.Document:GetElementById("countdown"):AppendChild(aniEl)
@@ -287,9 +287,9 @@ end
 
 function MultiSyncController:updateLists()
 	ui.MultiSync.runNetwork()
-	
+
 	local chat = ui.MultiGeneral.getChat()
-	
+
 	local txt = ""
 	for i = 1, #chat do
 		local line = ""
@@ -302,7 +302,7 @@ function MultiSyncController:updateLists()
 	end
 	self.chat_el.inner_rml = txt
 	self.chat_el.scroll_top = self.chat_el.scroll_height
-	
+
 	if #ui.MultiGeneral.NetPlayers == 0 then
 		ScpuiSystem:clearEntries(self.players_list_el)
 		self.players_list_el.inner_rml = "Loading Players..."
@@ -323,7 +323,7 @@ function MultiSyncController:updateLists()
 						self.Document:GetElementById("bottom_panel_c"):SetClass("hidden", false)
 					end
 				end
-				
+
 				--Now do the rest of the player stuff
 				local int_id = ui.MultiGeneral.NetPlayers[i].Name .. "_" .. i
 				if not utils.table.contains(self.playerList, int_id) then
@@ -342,20 +342,20 @@ function MultiSyncController:updateLists()
 				end
 			end
 		end
-		
+
 		-- if self.host is still nil then we are not the host
 		if self.host == nil then
 			self.host = false
 		end
-		
+
 		-- now check for players that expired
 		local players = {}
-		
+
 		-- create a simple table to use for comparing
 		for i = 1, #ui.MultiGeneral.NetPlayers do
 			table.insert(players, ui.MultiGeneral.NetPlayers[i].Name .. "_" .. i)
 		end
-		
+
 		for i = 1, #self.playerList do
 			--remove it if it no longer exists on the server
 			if not utils.table.contains(players, self.playerList[i]) then
@@ -363,41 +363,41 @@ function MultiSyncController:updateLists()
 			end
 		end
 	end
-	
+
 	--Update the player teams
 	for i = 1, #self.players do
 		if self.players[i].Team ~= self.players[i].Entry.Team then
 			self:updateTeam(self.players[i])
 		end
 	end
-	
+
 	--Update the player states
 	for i = 1, #self.players do
 		if self.players[i].State ~= self.players[i].Entry.State then
 			self:updateState(self.players[i])
 		end
 	end
-	
+
 	--Select the first player
 	if self.selectedPlayer == nil and #self.players > 0 then
 		self:SelectPlayer(self.players[1])
 	end
-	
+
 	--get the current countdown, if any
 	self.countdown = ui.MultiSync:getCountdownTime()
-	
+
 	--self.Document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 	self.common_text_el.inner_rml = string.gsub(ui.MultiGeneral.InfoText,"\n","<br></br>")
-	
+
 	if self.countdown and self.countdown > 0 then
 		self:countdownBegins()
 	end
-	
+
 	async.run(function()
         async.await(async_util.wait_for(0.01))
         self:updateLists()
     end, async.OnFrameExecutor)
-	
+
 end
 
 function MultiSyncController:unload()

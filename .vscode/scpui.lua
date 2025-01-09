@@ -436,3 +436,32 @@
 --- @field Index number The index of the player in the NetPlayers list
 --- @field Entry net_player The net player entry for the player
 --- @field Key? string The player element id
+
+--- SCPUI Multi Setup Player
+--- @class scpui_multi_setup_mission
+--- @field Name string The name of the player
+--- @field Filename string The filename of the mission
+--- @field Players number The max number of players in the mission
+--- @field Respawn number The respawn count limit
+--- @field Tracker boolean The mission handle validity tracker
+--- @field Type enumeration The mission type. One of the MULTI_TYPE enumerations
+--- @field Builtin boolean True if the mission is a built-in Volition mission
+--- @field InternalId string The internal ID of the mission for the UI
+--- @field Index number The index of the mission in the network mission list
+--- @field Entry net_campaign | net_mission The netgame info entry for the mission or campaign
+--- @field Key? string The player element id
+
+--- SCPUI Multi Active Game
+--- @class scpui_multi_active_game
+--- @field Status string The status of the game
+--- @field Type string The type of the game
+--- @field Speed string The speed of the game
+--- @field Standalone boolean True if the game is standalone, false otherwise
+--- @field Campaign boolean True if the game is a campaign, false otherwise
+--- @field Server string The server of the game
+--- @field Mission string The mission of the game
+--- @field Ping number The ping of the game
+--- @field Players number The number of players in the game
+--- @field InternalId string The internal ID of the game for the UI
+--- @field Index number The index of the game in the active games list
+--- @field Key? string The game element id

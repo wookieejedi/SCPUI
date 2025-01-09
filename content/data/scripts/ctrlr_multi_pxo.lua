@@ -11,38 +11,38 @@ function PXOController:init()
 	self.playersList = {} -- list of player names only
 	self.channels = {} -- actual channel entry
 	self.channelsList = {} -- list of channel names only
-	
+
 	self.submittedValue = "" -- the player's text input
 end
 
 ---@param document Document
 function PXOController:initialize(document)
-	
+
 	self.Document = document
-	
+
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
-	
+
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-	
+
 	self.players_el = self.Document:GetElementById("players_list_ul")
 	self.channels_el = self.Document:GetElementById("channels_list_ul")
 	self.chat_el = self.Document:GetElementById("chat_window")
 	self.banner_el = self.Document:GetElementById("banner_div")
-	
+
 	self.input_id = self.Document:GetElementById("chat_input")
 	self.motd = ""
-	
+
 	if not ScpuiSystem.data.memory.MultiReady then
 		ui.MultiPXO.initPXO()
 	end
-	
+
 	ScpuiSystem.data.memory.MultiReady = true
-	
+
 	self:updateLists()
 	ui.MultiGeneral.setPlayerState()
-	
+
 	topics.multipxo.initialize:send(self)
 
 end
@@ -84,30 +84,30 @@ function PXOController:joinPrivatePressed()
 		b_value = "",
 		b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 	}
-	
+
 	self:Show(text, title, true, buttons)
 end
 
 function PXOController:CreateChannelEntry(entry)
-	
+
 	local li_el = self.Document:CreateElement("li")
 
 	local name_el = self.Document:CreateElement("div")
 	name_el:SetClass("channel_name", true)
 	name_el.inner_rml = entry.Name
-	
+
 	local players_el = self.Document:CreateElement("div")
 	players_el:SetClass("channel_players", true)
 	players_el.inner_rml = entry.NumPlayers
-	
+
 	local games_el = self.Document:CreateElement("div")
 	games_el:SetClass("channel_games", true)
 	games_el.inner_rml = entry.NumGames
-	
+
 	li_el:AppendChild(name_el)
 	li_el:AppendChild(players_el)
 	li_el:AppendChild(games_el)
-	
+
 	li_el.id = entry.Name
 	li_el:SetClass("list_element", true)
 	li_el:SetClass("button_1", true)
@@ -117,13 +117,13 @@ function PXOController:CreateChannelEntry(entry)
 	li_el:AddEventListener("dblclick", function(_, _, _)
 		self:joinChannel(entry)
 	end)
-	
+
 	if entry.isCurrent == true then
 		li_el:SetPseudoClass("active", true)
 		self.currentChannel = entry
 	end
 	entry.key = li_el.id
-	
+
 	table.insert(self.channels, entry)
 
 	return li_el
@@ -150,7 +150,7 @@ function PXOController:updateChannel(channel)
 		local el = self.Document:GetElementById(self.channels[idx].key)
 		local players_el = el.first_child.next_sibling
 		local games_el = el.first_child.next_sibling.next_sibling
-		
+
 		if channel:isCurrent() == true then
 			if self.currentChannel ~= nil then
 				self.Document:GetElementById(self.currentChannel.key):SetPseudoClass("active", false)
@@ -160,11 +160,11 @@ function PXOController:updateChannel(channel)
 		else
 			el:SetPseudoClass("active", false)
 		end
-		
+
 		if players_el.inner_rml ~= channel.NumPlayers then
 			players_el.inner_rml = channel.NumPlayers
 		end
-		
+
 		if games_el.inner_rml ~= channel.NumGames then
 			games_el.inner_rml = channel.NumGames
 		end
@@ -202,7 +202,7 @@ function PXOController:FindPilotPressed()
 		b_value = "",
 		b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 	}
-	
+
 	self:Show(text, title, true, buttons)
 end
 
@@ -216,13 +216,13 @@ end
 
 function PXOController:GetPlayerChannel(player_name)
 	local response, channel = ui.MultiPXO.getPlayerChannel(player_name)
-	
+
 	self.promptControl = 5
 
 	local text = response
 	local title = "Search for player"
 	local buttons = {}
-	
+
 	--If we have a channel then offer the option to join
 	if channel ~= "" then
 		self.foundChannel = channel
@@ -247,13 +247,13 @@ function PXOController:GetPlayerChannel(player_name)
 			b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 		}
 	end
-	
+
 	self:Show(text, title, false, buttons)
 end
 
 function PXOController:GetPlayerStats(player_name)
 	local stats = ui.MultiPXO.getPlayerStats(player_name)
-	
+
 	self.promptControl = 3
 
 	local text = self:initialize_stats_text(stats)
@@ -265,12 +265,12 @@ function PXOController:GetPlayerStats(player_name)
 		b_value = "",
 		b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 	}
-	
+
 	self:Show(text, title, false, buttons)
 end
 
 function PXOController:CreatePlayerEntry(entry)
-	
+
 	local li_el = self.Document:CreateElement("li")
 
 	li_el.inner_rml = "<span>" .. entry.Name .. "</span>"
@@ -284,7 +284,7 @@ function PXOController:CreatePlayerEntry(entry)
 		self:GetPlayerStats(entry.Name)
 	end)
 	entry.key = li_el.id
-	
+
 	table.insert(self.players, entry)
 
 	return li_el
@@ -331,7 +331,7 @@ function PXOController:convertBanner()
 	gr.clearScreen(0,0,0,0)
 	gr.drawImage(imag_h, 0, 0, self.bannerWidth, self.bannerHeight, 0, 1, 1, 0, 1)
 	self.bannerImg = gr.screenToBlob()
-	
+
 	--clean up
 	gr.setTarget()
 	tex_h:destroyRenderTarget()
@@ -349,7 +349,7 @@ function PXOController:exit()
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 end
 
-function PXOController:dialog_response(response)
+function PXOController:dialogResponse(response)
 	local path = self.promptControl
 	self.promptControl = nil
 	if path == 1 then --MOTD
@@ -385,7 +385,7 @@ function PXOController:Show(text, title, input, buttons)
 		dialog:escape("")
 		dialog:show(self.Document.context)
 		:continueWith(function(response)
-			self:dialog_response(response)
+			self:dialogResponse(response)
     end)
 	-- Route input to our context until the user dismisses the dialog box.
 	ui.enableInput(self.Document.context)
@@ -404,7 +404,7 @@ function PXOController:motd_pressed()
 		b_value = "",
 		b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 	}
-	
+
 	self:Show(text, title, false, buttons)
 
 end
@@ -465,7 +465,7 @@ function PXOController:initialize_stats_text(stats)
         end
     end
     self:add_value_element("Score from kills only:", score_from_kills)
-	
+
 	return self.playerStats
 end
 
@@ -515,9 +515,9 @@ end
 function PXOController:updateLists()
 	ui.MultiPXO.runNetwork()
 	local chat = ui.MultiPXO.getChat()
-	
+
 	local players = ui.MultiPXO.getPlayers()
-	
+
 	-- check for new players
 	for i = 1, #players do
 		if not utils.table.contains(self.playersList, players[i]) then
@@ -527,14 +527,14 @@ function PXOController:updateLists()
 			self:addPlayer(entry)
 		end
 	end
-		
+
 	-- now check for players that left
 	for i = 1, #self.playersList do
 		if not utils.table.contains(players, self.playersList[i]) then
 			self:removePlayer(i)
 		end
-	end	
-	
+	end
+
 	-- check for new channels
 	for i = 1, #ui.MultiPXO.Channels do
 		if not utils.table.contains(self.channelsList, ui.MultiPXO.Channels[i].Name) then
@@ -549,21 +549,21 @@ function PXOController:updateLists()
 			self:updateChannel(ui.MultiPXO.Channels[i])
 		end
 	end
-		
+
 	-- now check for channels that were removed
 	local channels = {}
-	
+
 	-- create a simple table to use for comparing
 	for i = 1, #ui.MultiPXO.Channels do
 		table.insert(channels, ui.MultiPXO.Channels[i].Name)
 	end
-	
+
 	for i = 1, #self.channelsList do
 		if not utils.table.contains(channels, self.channelsList[i]) then
 			self:removeChannel(i)
 		end
-	end	
-	
+	end
+
 	local txt = ""
 	for i = 1, #chat do
 		local line = chat[i].Callsign .. ": " .. chat[i].Message
@@ -571,24 +571,24 @@ function PXOController:updateLists()
 	end
 	self.chat_el.inner_rml = txt
 	self.chat_el.scroll_top = self.chat_el.scroll_height
-	
+
 	self.Document:GetElementById("status_text").inner_rml = ui.MultiPXO.StatusText
 	local motd = ui.MultiPXO.MotdText
 	--Replace new lines with break tags
 	self.motd = motd:gsub("\n","<br></br>")
-	
+
 	if self.banner ~= ui.MultiPXO.bannerFilename then
 		self.banner = ui.MultiPXO.bannerFilename
 		self.bannerURL = ui.MultiPXO.bannerURL
-		
+
 		if string.len(self.banner) > 0 then
 			self:convertBanner()
-			
+
 			self.banner_el.style.width = self.bannerWidth .. "px"
 			self.banner_el.style.height = self.bannerHeight .. "px"
-			
+
 			ScpuiSystem:clearEntries(self.banner_el)
-			
+
 			local img_el = self.Document:CreateElement("img")
 			img_el:SetAttribute("src", self.bannerImg)
 			img_el:AddEventListener("click", function(_, _, _)
@@ -597,12 +597,12 @@ function PXOController:updateLists()
 			self.banner_el:AppendChild(img_el)
 		end
 	end
-	
+
 	async.run(function()
         async.await(async_util.wait_for(0.01))
         self:updateLists()
     end, async.OnFrameExecutor)
-	
+
 end
 
 function PXOController:unload()

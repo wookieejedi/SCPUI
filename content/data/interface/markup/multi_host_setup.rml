@@ -133,8 +133,8 @@
 		<div id=chat_wrapper>
 			<div id=chat_window>
 			</div>
-			<input id=chat_input type="text" maxlength="124" onblur="controller:InputFocusLost()"
-				onchange="controller:InputChange(event)"></input>
+			<input id=chat_input type="text" maxlength="124" onblur="controller:input_focus_lost()"
+				onchange="controller:input_change(event)"></input>
 			<div id=submit_btn_wrapper>
 				<div id=submit_cont>
 					<button id="submit_btn" class="submit button_1" onclick="controller:submit_pressed()">

@@ -1,210 +1,202 @@
-local topics = require("lib_ui_topics")
-local class = require("lib_class")
-local async_util = require("lib_async")
-local utils = require("lib_utils")
-local dialogs = require("lib_dialogs")
+-----------------------------------
+--Controller for the Multi Host Options UI
+-----------------------------------
 
-local HostOptionsController = class()
+local AsyncUtil = require("lib_async")
+local Dialogs = require("lib_dialogs")
+local Topics = require("lib_ui_topics")
 
+local Class = require("lib_class")
+
+local HostOptionsController = Class()
+
+--- Called by the class constructor
+--- @return nil
 function HostOptionsController:init()
-	self.missionList = {} -- list of mission files + ids only
-	self.missions = {} -- list of actual missions
-	
-	self.playerList = {} -- list of players + ids only
-	self.players = {} -- list of actual players
-	
-	self.team_elements = {}
+	self.Document = nil ---@type Document The RML document
+	self.ChatEl = nil ---@type Element The chat window element
+	self.ChatInputEl = nil ---@type Element The chat input element
+	self.TimeLimitInputEl = nil ---@type Element The time limit input element
+	self.RespawnLimitInputEl = nil ---@type Element The respawn limit input element
+	self.KillLimitInputEl = nil ---@type Element The kill limit input element
+	self.ObserversLimitInputEl = nil ---@type Element The observers limit input element
+	self.Netgame = nil ---@type netgame The current netgame
+	self.HostModifies = false ---@type boolean Whether the host modifies ships
+	self.TimeLimit = 0 ---@type number The time limit
+	self.RespawnLimit = 0 ---@type number The respawn limit
+	self.KillLimit = 0 ---@type number The kill limit
+	self.ObserversLimit = 0 ---@type number The observers limit
+	self.SubmittedChatValue = "" ---@type string The submitted chat value
 end
 
----@param document Document
+--- Called by the RML document
+--- @param document Document
 function HostOptionsController:initialize(document)
-	
+
 	self.Document = document
-	
+
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
-	
+
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-	
-	self.chat_el = self.Document:GetElementById("chat_window")
-	self.input_id = self.Document:GetElementById("chat_input")
+
+	self.ChatEl = self.Document:GetElementById("chat_window")
+	self.ChatInputEl = self.Document:GetElementById("chat_input")
 	--self.status_text_el = self.Document:GetElementById("status_text")
-	
-	self.time_limit_input_el = self.Document:GetElementById("time_limit_input")
-	self.respawn_limit_input_el = self.Document:GetElementById("respawn_limit_input")
-	self.kill_limit_input_el = self.Document:GetElementById("kill_limit_input")
-	self.observers_limit_input_el = self.Document:GetElementById("observers_limit_input")
-	
-	self.netgame = ui.MultiGeneral.getNetGame()
-	
+
+	self.TimeLimitInputEl = self.Document:GetElementById("time_limit_input")
+	self.RespawnLimitInputEl = self.Document:GetElementById("respawn_limit_input")
+	self.KillLimitInputEl = self.Document:GetElementById("kill_limit_input")
+	self.ObserversLimitInputEl = self.Document:GetElementById("observers_limit_input")
+
+	self.Netgame = ui.MultiGeneral.getNetGame()
+
 	self:buildDropdowns()
-	
+
 	self:updateLists()
 	ui.MultiGeneral.setPlayerState()
-	
-	if self.netgame.HostModifiesShips then
-		self.hostModifies = true
+
+	if self.Netgame.HostModifiesShips then
+		self.HostModifies = true
 	else
-		self.hostModifies = false
+		self.HostModifies = false
 	end
-	self.Document:GetElementById("host_modifies_btn"):SetPseudoClass("checked", self.hostModifies)
-	
-	if self.netgame.TimeLimit < 0 then
-		self.time_limit_input_el:SetAttribute("value", 0)
+	self.Document:GetElementById("host_modifies_btn"):SetPseudoClass("checked", self.HostModifies)
+
+	if self.Netgame.TimeLimit < 0 then
+		self.TimeLimitInputEl:SetAttribute("value", 0)
 	else
-		self.time_limit_input_el:SetAttribute("value", self.netgame.TimeLimit)
+		self.TimeLimitInputEl:SetAttribute("value", self.Netgame.TimeLimit)
 	end
-	self.kill_limit_input_el:SetAttribute("value", self.netgame.RespawnLimit)
-	self.respawn_limit_input_el:SetAttribute("value", self.netgame.KillLimit)
-	self.observers_limit_input_el:SetAttribute("value", self.netgame.ObserverLimit)
-	
-	topics.multihostoptions.initialize:send(self)
+	self.KillLimitInputEl:SetAttribute("value", self.Netgame.RespawnLimit)
+	self.RespawnLimitInputEl:SetAttribute("value", self.Netgame.KillLimit)
+	self.ObserversLimitInputEl:SetAttribute("value", self.Netgame.ObserverLimit)
+
+	Topics.multihostoptions.initialize:send(self)
 
 end
 
+--- Build all the dropdown lists in the UI
+--- @return nil
 function HostOptionsController:buildDropdowns()
 	local ai_orders_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("ai_orders_cont").first_child)
-	
+
 	ScpuiSystem:clearDropdown(ai_orders_el)
-	
+
 	ai_orders_el:Add("Highest Rank", "Highest Rank", 1)
 	ai_orders_el:Add("Team/Wing-Leader", "Team/Wing-Leader", 2)
 	ai_orders_el:Add("Any", "Any", 3)
 	ai_orders_el:Add("Host", "Host", 4)
-	
-	if self.netgame.Orders == MULTI_OPTION_RANK then
+
+	if self.Netgame.Orders == MULTI_OPTION_RANK then
 		ai_orders_el.selection = 1
-	elseif self.netgame.Orders == MULTI_OPTION_HOST then
+	elseif self.Netgame.Orders == MULTI_OPTION_HOST then
 		ai_orders_el.selection = 4
-	elseif self.netgame.Orders == MULTI_OPTION_LEAD then
+	elseif self.Netgame.Orders == MULTI_OPTION_LEAD then
 		ai_orders_el.selection = 2
 	else
 		ai_orders_el.selection = 1
 	end
-	
+
 	local end_mission_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("end_mission_cont").first_child)
-	
+
 	ScpuiSystem:clearDropdown(end_mission_el)
-	
+
 	end_mission_el:Add("Highest Rank", "Highest Rank", 1)
 	end_mission_el:Add("Team/Wing-Leader", "Team/Wing-Leader", 2)
 	end_mission_el:Add("Any", "Any", 3)
 	end_mission_el:Add("Host", "Host", 4)
-	
-	if self.netgame.EndMission == MULTI_OPTION_RANK then
+
+	if self.Netgame.EndMission == MULTI_OPTION_RANK then
 		end_mission_el.selection = 1
-	elseif self.netgame.EndMission == MULTI_OPTION_HOST then
+	elseif self.Netgame.EndMission == MULTI_OPTION_HOST then
 		end_mission_el.selection = 4
-	elseif self.netgame.EndMission == MULTI_OPTION_LEAD then
+	elseif self.Netgame.EndMission == MULTI_OPTION_LEAD then
 		end_mission_el.selection = 2
 	else
 		end_mission_el.selection = 1
 	end
-	
+
 	local difficulty_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("difficulty_cont").first_child)
-	
+
 	ScpuiSystem:clearDropdown(difficulty_el)
-	
-	difficulty_el:Add("Very Easy", "Very Easy", 1)
-	difficulty_el:Add("Easy", "Easy", 2)
-	difficulty_el:Add("Normal", "Normal", 3)
-	difficulty_el:Add("Hard", "Hard", 4)
-	difficulty_el:Add("Very Hard", "Very Hard", 5)
-	
-	difficulty_el.selection = self.netgame.SkillLevel + 1
+
+	difficulty_el:Add(ba.XSTR("Very Easy", 469), "Very Easy", 1)
+	difficulty_el:Add(ba.XSTR("Easy", 470), "Easy", 2)
+	difficulty_el:Add(ba.XSTR("Normal", 471), "Normal", 3)
+	difficulty_el:Add(ba.XSTR("Hard", 472), "Hard", 4)
+	difficulty_el:Add(ba.XSTR("Insane", 473), "Insane", 5)
+
+	difficulty_el.selection = self.Netgame.SkillLevel + 1
 end
 
+--- Called by the RML to exit the Multi Host Options UI
+--- @return nil
 function HostOptionsController:exit()
-	self.netgame:acceptOptions()
+	self.Netgame:acceptOptions()
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_MULTI_HOST_SETUP"])
 end
 
-function HostOptionsController:dialog_response(response)
-	local path = self.promptControl
-	self.promptControl = nil
-	if path == 1 then --MOTD
-		--Do nothing!
-	elseif path == 2 then --Join Private Channel
-		if response and response ~= "" then
-			ui.MultiPXO.joinPrivateChannel(response)
-		end
-	elseif path == 3 then --Show Player Stats
-		--Do nothing!
-	elseif path == 4 then --Find player
-		if response and response ~= "" then
-			self:GetPlayerChannel(response)
-		end
-	elseif path == 5 then --Find player response
-		if response == true then
-			self:joinChannel(self.foundChannel)
-		end
-		self.foundChannel = nil
-	end
-end
-
-function HostOptionsController:Show(text, title, input, buttons)
-	--Create a simple dialog box with the text and title
-
-	local dialog = dialogs.new()
-		dialog:title(title)
-		dialog:text(text)
-		dialog:input(input)
-		for i = 1, #buttons do
-			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
-		end
-		dialog:escape("")
-		dialog:show(self.Document.context)
-		:continueWith(function(response)
-			self:dialog_response(response)
-    end)
-	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.Document.context)
-end
-
+--- Called by the RML to commit the changes made in the UI
+--- @return nil
 function HostOptionsController:commit_pressed()
 	self:exit()
 end
 
+--- Called by the RML to submit the chat message
+--- @return nil
 function HostOptionsController:submit_pressed()
-	if self.submittedValue then
+	if self.SubmittedChatValue then
 		self:sendChat()
 	end
 end
 
+--- Called by the RML to toggle the host modifies ships option
+--- @return nil
 function HostOptionsController:host_modifies_pressed()
-	if self.netgame.HostModifiesShips then
-		self.hostModifies = false
+	if self.Netgame.HostModifiesShips then
+		self.HostModifies = false
 	else
-		self.hostModifies = true
+		self.HostModifies = true
 	end
-	self.netgame.HostModifiesShips = self.hostModifies
-	self.Document:GetElementById("host_modifies_btn"):SetPseudoClass("checked", self.netgame.HostModifiesShips)
+	self.Netgame.HostModifiesShips = self.HostModifies
+	self.Document:GetElementById("host_modifies_btn"):SetPseudoClass("checked", self.Netgame.HostModifiesShips)
 end
 
-function HostOptionsController:global_keydown(_, event)
+--- Global keydown function handles all keypresses
+--- @param element Element The main document element
+--- @param event Event The event that was triggered
+--- @return nil
+function HostOptionsController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
        self:exit()
 	end
 end
 
+--- Send the chat message to the server
+--- @return nil
 function HostOptionsController:sendChat()
-	if string.len(self.submittedValue) > 0 then
-		ui.MultiGeneral.sendChat(self.submittedValue)
-		self.input_id:SetAttribute("value", "")
-		self.submittedValue = ""
+	if string.len(self.SubmittedChatValue) > 0 then
+		ui.MultiGeneral.sendChat(self.SubmittedChatValue)
+		self.ChatInputEl:SetAttribute("value", "")
+		self.SubmittedChatValue = ""
 	end
 end
 
-function HostOptionsController:InputFocusLost()
+--- When the element loses focus
+function HostOptionsController:input_focus_lost()
 	--do nothing
 end
 
-function HostOptionsController:InputChange(event)
+--- Called by the RML when the chat input accepts a keypress
+--- @param event Event The event that was triggered
+--- @return nil
+function HostOptionsController:input_change(event)
 
 	if event.parameters.linebreak ~= 1 then
-		local val = self.input_id:GetAttribute("value")
-		self.submittedValue = val
+		local val = self.ChatInputEl:GetAttribute("value")
+		self.SubmittedChatValue = val
 	else
 		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
@@ -213,111 +205,163 @@ function HostOptionsController:InputChange(event)
 
 end
 
-function HostOptionsController:TrimInput(val)
-	local stringValue = val:gsub("^%s*(.-)%s*$", "%1")
-	stringValue = stringValue:gsub("[^%d]", "")
-	return stringValue
+--- Trim the input value to remove any non-numeric characters and leading/trailing whitespace
+--- @param val string The input value
+--- @return string stringValue The trimmed input value
+function HostOptionsController:trimInput(val)
+	local string_value = val:gsub("^%s*(.-)%s*$", "%1")
+	string_value = string_value:gsub("[^%d]", "")
+	return string_value
 end
 
+--- Called by the RML on keyup in the time limit input
+--- @param element Element The time limit input element
+--- @param event Event The event that was triggered
+--- @return nil
 function HostOptionsController:time_limit_keyup(element, event)
     if event.parameters.key_identifier ~= rocket.key_identifier.ESCAPE then
         return
     end
 end
 
+--- Called by the RML on input change in the time limit input
+--- @param event Event The event that was triggered
+--- @return nil
 function HostOptionsController:time_limit_input_change(event)
-	local stringValue = self:TrimInput(event.parameters.value)
-	self.time_limit_input_el:SetAttribute("value", stringValue)
-	self.time_limit = stringValue
+	local string_value = self:trimInput(event.parameters.value)
+	self.TimeLimitInputEl:SetAttribute("value", string_value)
+	local numeric_value = tonumber(string_value)
+	if numeric_value ~= nil then
+		self.TimeLimit = numeric_value
+	end
 end
 
+--- Called by the RML on keyup in the respawn limit input
+--- @param element Element The respawn limit input element
+--- @param event Event The event that was triggered
+--- @return nil
 function HostOptionsController:respawn_limit_keyup(element, event)
     if event.parameters.key_identifier ~= rocket.key_identifier.ESCAPE then
         return
     end
 end
 
+--- Called by the RML on input change in the respawn limit input
+--- @param event Event The event that was triggered
+--- @return nil
 function HostOptionsController:respawn_limit_input_change(event)
-	local stringValue = self:TrimInput(event.parameters.value)
-	self.respawn_limit_input_el:SetAttribute("value", stringValue)
-	self.respawn_limit = stringValue
+	local string_value = self:trimInput(event.parameters.value)
+	self.RespawnLimitInputEl:SetAttribute("value", string_value)
+	local numeric_value = tonumber(string_value)
+	if numeric_value ~= nil then
+		self.RespawnLimit = numeric_value
+	end
 end
 
+--- Called by the RML on keyup in the kill limit input
+--- @param element Element The kill limit input element
+--- @param event Event The event that was triggered
+--- @return nil
 function HostOptionsController:kill_limit_keyup(element, event)
     if event.parameters.key_identifier ~= rocket.key_identifier.ESCAPE then
         return
     end
 end
 
+--- Called by the RML on input change in the kill limit input
+--- @param event Event The event that was triggered
+--- @return nil
 function HostOptionsController:kill_limit_input_change(event)
-	local stringValue = self:TrimInput(event.parameters.value)
-	self.kill_limit_input_el:SetAttribute("value", stringValue)
-	self.kill_limit = stringValue
+	local string_value = self:trimInput(event.parameters.value)
+	self.KillLimitInputEl:SetAttribute("value", string_value)
+	local numeric_value = tonumber(string_value)
+	if numeric_value ~= nil then
+		self.KillLimit = numeric_value
+	end
 end
 
+--- Called by the RML on keyup in the observers limit input
+--- @param element Element The observers limit input element
+--- @param event Event The event that was triggered
+--- @return nil
 function HostOptionsController:observers_limit_keyup(element, event)
     if event.parameters.key_identifier ~= rocket.key_identifier.ESCAPE then
         return
     end
 end
 
+--- Called by the RML on input change in the observers limit input
+--- @param event Event The event that was triggered
+--- @return nil
 function HostOptionsController:observers_limit_input_change(event)
-	local stringValue = self:TrimInput(event.parameters.value)
-	self.observers_limit_input_el:SetAttribute("value", stringValue)
-	self.observers_limit = stringValue
+	local string_value = self:trimInput(event.parameters.value)
+	self.ObserversLimitInputEl:SetAttribute("value", string_value)
+	local numeric_value = tonumber(string_value)
+	if numeric_value ~= nil then
+		self.ObserversLimit = numeric_value
+	end
 end
 
+--- Called by the RML when the AI orders dropdown changes
+--- @return nil
 function HostOptionsController:ai_orders_changed()
 	local select_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("ai_orders_cont").first_child)
 	local val = select_el.options[select_el.selection - 1].value
-	
+
 	if val == "Highest Rank" then
-		self.netgame.Orders = MULTI_OPTION_RANK
+		self.Netgame.Orders = MULTI_OPTION_RANK
 	elseif val == "Team/Wing-Leader" then
-		self.netgame.Orders = MULTI_OPTION_LEAD
+		self.Netgame.Orders = MULTI_OPTION_LEAD
 	elseif val == "Host" then
-		self.netgame.Orders = MULTI_OPTION_HOST
+		self.Netgame.Orders = MULTI_OPTION_HOST
 	else
-		self.netgame.Orders = MULTI_OPTION_ANY
+		self.Netgame.Orders = MULTI_OPTION_ANY
 	end
 end
 
+--- Called by the RML when the end mission dropdown changes
+--- @return nil
 function HostOptionsController:end_mission_changed()
 	local select_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("end_mission_cont").first_child)
 	local val = select_el.options[select_el.selection - 1].value
-	
+
 	if val == "Highest Rank" then
-		self.netgame.EndMission  = MULTI_OPTION_RANK
+		self.Netgame.EndMission  = MULTI_OPTION_RANK
 	elseif val == "Team/Wing-Leader" then
-		self.netgame.EndMission  = MULTI_OPTION_LEAD
+		self.Netgame.EndMission  = MULTI_OPTION_LEAD
 	elseif val == "Host" then
-		self.netgame.EndMission  = MULTI_OPTION_HOST
+		self.Netgame.EndMission  = MULTI_OPTION_HOST
 	else
-		self.netgame.EndMission  = MULTI_OPTION_ANY
+		self.Netgame.EndMission  = MULTI_OPTION_ANY
 	end
 end
 
+--- Called by the RML when the difficulty dropdown changes
+--- @return nil
 function HostOptionsController:difficulty_changed()
 	local select_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("difficulty_cont").first_child)
 	local val = select_el.options[select_el.selection - 1].value
-	
+
 	if val == "Very Easy" then
-		self.netgame.SkillLevel  = 0
+		self.Netgame.SkillLevel  = 0
 	elseif val == "Easy" then
-		self.netgame.SkillLevel  = 1
+		self.Netgame.SkillLevel  = 1
 	elseif val == "Hard" then
-		self.netgame.SkillLevel  = 3
-	elseif val == "Very Hard" then
-		self.netgame.SkillLevel  = 4
+		self.Netgame.SkillLevel  = 3
+	elseif val == "Insane" then
+		self.Netgame.SkillLevel  = 4
 	else
-		self.netgame.SkillLevel = 2
+		self.Netgame.SkillLevel = 2 -- Normal
 	end
 end
 
+--- Runs the network and updates the chat window
+--- Runs on a loop every 0.01 seconds
+--- @return nil
 function HostOptionsController:updateLists()
 	ui.MultiHostSetup.runNetwork()
 	local chat = ui.MultiGeneral.getChat()
-	
+
 	local txt = ""
 	for i = 1, #chat do
 		local line = ""
@@ -328,20 +372,22 @@ function HostOptionsController:updateLists()
 		end
 		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
 	end
-	self.chat_el.inner_rml = txt
-	self.chat_el.scroll_top = self.chat_el.scroll_height
-	
+	self.ChatEl.inner_rml = txt
+	self.ChatEl.scroll_top = self.ChatEl.scroll_height
+
 	--self.Document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
-	
+
 	async.run(function()
-        async.await(async_util.wait_for(0.01))
+        async.await(AsyncUtil.wait_for(0.01))
         self:updateLists()
     end, async.OnFrameExecutor)
-	
+
 end
 
+--- Called when the screen is being unloaded
+--- @return nil
 function HostOptionsController:unload()
-	topics.multihostoptions.unload:send(self)
+	Topics.multihostoptions.unload:send(self)
 end
 
 return HostOptionsController
