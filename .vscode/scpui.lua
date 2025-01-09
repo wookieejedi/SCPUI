@@ -217,6 +217,12 @@
 --- @field HostFilter enumeration The mission list filter type. One of the MUTLI_TYPE enumerations
 --- @field HostList string The mission list type
 
+--- SCPUI Control Config Memory
+--- @class control_config_memory
+--- @field Context? scpui_context The context for the control config
+--- @field NextDialog? dialog_setup The next dialog to show
+--- @field DialogResponse? number The response from the dialog
+
 --- SCPUI Splash Screen Image
 --- @class splash_image
 --- @field A number The alpha value of the image
@@ -283,6 +289,7 @@
 --- @field splash_screen? splash_screen_memory The current splash screen memory for SCPUI
 --- @field model_rendering? model_draw_memory The current model draw memory for SCPUI
 --- @field multiplayer_host? multi_host_memory The current multi host memory for SCPUI
+--- @field control_config? control_config_memory The current control config memory for SCPUI
 
 --- SCPUI Custom Options Data
 --- @class custom_option_data
@@ -340,10 +347,10 @@
 --- @field TitleString string The title of the dialog
 --- @field TextString string The text of the dialog
 --- @field InputChoice boolean True if the dialog should have an input choice, false otherwise
---- @field EscapeValue any True if the dialog should have an escape value, false otherwise
+--- @field EscapeValue boolean? True if the dialog should have an escape value, false otherwise
 --- @field ClickEscape boolean? True if the dialog should have a click escape, false otherwise
 --- @field StyleValue? integer 1 for regular dialog, 2 for death dialog
---- @field BackgrounColor? string The background color of the dialog
+--- @field BackgroundColor? string The background color of the dialog
 --- @field type? fun(self: self, type: integer): self Sets the TypeVal
 --- @field title? fun(self: self, title: string): self Sets the TitleString
 --- @field text? fun(self: self, text: string): self Sets the TextString
@@ -352,9 +359,21 @@
 --- @field escape? fun(self: self, escape: any): self Sets the EscapeValue
 --- @field clickescape? fun(self: self, clickEscape: boolean): self Sets the ClickEscape
 --- @field style? fun(self: self, style: integer): self Sets the StyleValue
---- @field background? fun(self: self, color: string): self Sets the BackgrounColor
+--- @field background? fun(self: self, color: string): self Sets the BackgroundColor
 --- @field show? fun(self: self, context: Context, abortTable?: dialog_abort): promise The function to show the dialog
 --- @field __index? dialog_factory The metatable for the dialog factory
+
+--- SCPUI Dialog Setup
+--- @class dialog_setup
+--- @field Type? integer The type of dialog to create. Always 1
+--- @field Buttons_List dialog_button[] The buttons to display on the dialog
+--- @field Title string The title of the dialog
+--- @field Text string The text of the dialog
+--- @field Input boolean True if the dialog should have an input box, false otherwise
+--- @field EscapeValue boolean? True if the dialog should have an escape value, false otherwise
+--- @field ClickEscape boolean? True if the dialog should have a click escape, false otherwise
+--- @field Style? integer 1 for regular dialog, 2 for death dialog
+--- @field BackgroundColor? string The background color of the dialog
 
 --- SCPUI Keywords table
 --- @class scpui_keywords

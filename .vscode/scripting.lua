@@ -1000,7 +1000,7 @@ player = {}
 preset = {}
 --- @class preset
 --- @field Name string # The name,  The name of the preset
---- @field clonePreset fun(self: self, Name: string): boolean # Clones the preset into a new preset with the specified name. Sets it as the active preset
+--- @field clonePreset fun(self: self, Name: string, overwrite?: boolean): boolean # Clones the preset into a new preset with the specified name. Sets it as the active preset
 --- @field deletePreset fun(self: self): boolean # Deletes the preset file entirely. Cannot delete a currently active preset.
 
 -- promise: A promise that represents an operation that will return a value at some point in the future
@@ -2412,7 +2412,7 @@ ui.MissionLog = {}
 --- @field clearAll fun(): boolean # Clears all control bindings.
 --- @field resetToPreset fun(): boolean # Resets all control bindings to the current preset defaults.
 --- @field usePreset fun(PresetName: string): boolean # Uses a defined preset if it can be found.
---- @field createPreset fun(Name: string): boolean # Creates a new preset with the given name. Returns true if successful, false otherwise.
+--- @field createPreset fun(Name: string, overwrite?: boolean): boolean # Creates a new preset with the given name. Returns true if successful, false otherwise.
 --- @field undoLastChange fun(): nil # Reverts the last change to the control bindings
 --- @field searchBinds fun(): number # Waits for a keypress to search for. Returns index into Control Configs if the key matches a bind. Should run On Frame.
 --- @field acceptBinding fun(): boolean # Accepts changes to the keybindings. Returns true if successful, false if there are key conflicts or the preset needs to be saved.

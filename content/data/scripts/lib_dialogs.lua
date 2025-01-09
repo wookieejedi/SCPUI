@@ -99,8 +99,8 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
         dialog_doc = context:LoadDocument("data/interface/markup/dialog.rml")
     end
 
-    if properties.BackgrounColor then
-        dialog_doc:GetElementById("main_background").style["background-color"] = properties.BackgrounColor
+    if properties.BackgroundColor then
+        dialog_doc:GetElementById("main_background").style["background-color"] = properties.BackgroundColor
     end
 
     if string.len(properties.TitleString) > 0 then
@@ -263,7 +263,7 @@ function factory_mt:style(style)
 end
 
 function factory_mt:background(color)
-    self.BackgrounColor = color
+    self.BackgroundColor = color
     return self
 end
 
@@ -286,7 +286,7 @@ function module.new()
         EscapeValue = nil,
         ClickEscape = nil,
         StyleValue = 1,
-        BackgrounColor = nil
+        BackgroundColor = nil
     }
     setmetatable(factory, factory_mt)
     return factory

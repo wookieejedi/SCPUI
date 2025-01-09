@@ -1,77 +1,101 @@
-local utils = require("lib_utils")
-local dialogs = require("lib_dialogs")
-local class = require("lib_class")
-local topics = require("lib_ui_topics")
-local async_util = require("lib_async")
+-----------------------------------
+--Controller for the Control Config UI
+-----------------------------------
 
-local ControlConfigController = class()
+local AsyncUtil = require("lib_async")
+local Dialogs = require("lib_dialogs")
+local Topics = require("lib_ui_topics")
+local Utils = require("lib_utils")
 
+local Class = require("lib_class")
+
+local ControlConfigController = Class()
+
+ControlConfigController.PROMPT_TYPE_NONE = 0 --- @type number Enumeration for no prompt dialog
+ControlConfigController.PROMPT_TYPE_NEW_PRESET = 1 --- @type number Enumeration for the new preset dialog
+ControlConfigController.PROMPT_TYPE_CLONE_PRESET = 2 --- @type number Enumeration for the clone preset dialog
+ControlConfigController.PROMPT_TYPE_CLEAR_ALL_BINDS = 3 --- @type number Enumeration for the clear all binds dialog
+ControlConfigController.PROMPT_TYPE_GET_PRESET_NAME = 4 --- @type number Enumeration for the get preset name dialog
+ControlConfigController.PROMPT_TYPE_DELETE_PRESET = 5 --- @type number Enumeration for the delete preset dialog
+ControlConfigController.PROMPT_TYPE_OVERWRITE_NEW_PRESET = 6 --- @type number Enumeration for the overwrite preset dialog
+ControlConfigController.PROMPT_TYPE_OVERWRITE_CLONE_PRESET = 7 --- @type number Enumeration for the overwrite clone preset dialog
+
+ControlConfigController.TAB_TYPE_TARGET = 0 --- @type number Enumeration for the target tab
+ControlConfigController.TAB_TYPE_SHIP = 1 --- @type number Enumeration for the ship tab
+ControlConfigController.TAB_TYPE_WEAPON = 2 --- @type number Enumeration for the weapon tab
+ControlConfigController.TAB_TYPE_MISC = 3 --- @type number Enumeration for the misc tab
+
+--- Called by the class constructor
+--- @return nil
 function ControlConfigController:init()
-
-	self.uiActiveContext = async.context.combineContexts(async.context.captureGameState(),
-        async.context.createLuaState(function()
-            if not self.loaded then
-                return CONTEXT_INVALID
-            end
-
-            return CONTEXT_VALID
-        end))
-
+	self.Document = nil --- @type Document The RML document
+	self.Conflict = false --- @type boolean Whether there is a conflict in the current control configuration
+	self.PreviousPreset = nil --- @type number The index of the previous preset
+	self.CurrentPreset = nil --- @type number The index of the current preset
+	self.CurrentTab = 0 --- @type number The current controls list tab index
+	self.PreviousControl = nil --- @type number | nil The index of the previous control entry
+	self.CurrentControl = nil --- @type number | nil The currently selected ui list item, if any
+	self.CurrentBind = nil --- @type number The currentky selected bind ID
+	self.NumBinds = nil --- @type number The total number of binds
+	self.PromptControl = ControlConfigController.PROMPT_TYPE_NONE --- @type number Controls which dialog prompt to show the player. Should be one of the PROMPT_TYPE enumerations
+	ScpuiSystem.data.memory.control_config.NextDialog = nil --- @type dialog_setup The next dialog to show
 end
 
----@param document Document
+--- Called by the RML document
+--- @param document Document
 function ControlConfigController:initialize(document)
 
     self.Document = document
-	self.conflict = false
+	ScpuiSystem.data.memory.control_config.Context = self
 
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
-	
+
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 	self.Document:GetElementById("conflict_warning"):SetClass("h1", true)
-	
+
 	ui.ControlConfig.initControlConfig()
-	
+
 	self:initPresets()
 	self.Document:GetElementById("new_lock"):SetClass("hidden", false)
-	
-	topics.controlconfig.initialize:send(self)
-	self:maybeShowDialogs()
-	
-	self:changeSection(0)
+
+	Topics.controlconfig.initialize:send(self)
+
+	self:changeSection(self.TAB_TYPE_TARGET)
 end
 
+--- Initialize the presets list and create all the elements
+--- @return nil
 function ControlConfigController:initPresets()
 	local parent_el = self.Document:GetElementById("list_presets_ul")
-	
+
 	ScpuiSystem:clearEntries(parent_el)
-	
+
 	for i = 1, #ui.ControlConfig.ControlPresets do
 		local entry = ui.ControlConfig.ControlPresets[i]
-		
+
 		local li_el = self.Document:CreateElement("li")
 		li_el.id = "preset_" .. i
-		
+
 		li_el:SetClass("preset_list_element", true)
 		li_el:SetClass("button_3", true)
-		
+
 		li_el.inner_rml = entry.Name
-		
+
 		li_el:AddEventListener("click", function(_, _, _)
-				self:SelectPreset(i, entry.Name)
+				self:selectPreset(i, entry.Name)
 			end)
-		
+
 		parent_el:AppendChild(li_el)
-		
-		local curPreset = ui.ControlConfig:getCurrentPreset()
-		
-		if entry.Name == curPreset then
+
+		local current_preset = ui.ControlConfig:getCurrentPreset()
+
+		if entry.Name == current_preset then
 			li_el:SetPseudoClass("checked", true)
-			self.currentPreset = i
-			self.oldPreset = i
-			
+			self.CurrentPreset = i
+			self.PreviousPreset = i
+
 			--unlock clone and delete
 			self.Document:GetElementById("clone_lock"):SetClass("hidden", true)
 			if entry.Name ~= "default" then
@@ -81,31 +105,34 @@ function ControlConfigController:initPresets()
 			end
 		end
 	end
-	
+
 end
 
-function ControlConfigController:SelectPreset(idx, name)
+--- Selects a preset to apply to the control config
+--- @param idx number The index of the preset list item
+--- @param name string The name of the preset to send to FSO to apply
+function ControlConfigController:selectPreset(idx, name)
 
-	if self.currentPreset == idx then
+	if self.CurrentPreset == idx then
 		return
 	end
 
-	self.currentPreset = idx
-	
-	if self.oldPreset == nil then
-		self.oldPreset = idx
+	self.CurrentPreset = idx
+
+	if self.PreviousPreset == nil then
+		self.PreviousPreset = idx
 	else
-		local presetID = "preset_" .. self.oldPreset
-		self.Document:GetElementById(presetID):SetPseudoClass("checked", false)
-			
-		self.oldPreset = idx
+		local previous_preset_id = "preset_" .. self.PreviousPreset
+		self.Document:GetElementById(previous_preset_id):SetPseudoClass("checked", false)
+
+		self.PreviousPreset = idx
 	end
-	
-	local presetID = "preset_" .. self.oldPreset
-	self.Document:GetElementById(presetID):SetPseudoClass("checked", true)
-	
+
+	local preset_id = "preset_" .. self.PreviousPreset
+	self.Document:GetElementById(preset_id):SetPseudoClass("checked", true)
+
 	ui.ControlConfig.usePreset(name)
-	
+
 	--unlock clone and delete
 	self.Document:GetElementById("clone_lock"):SetClass("hidden", true)
 	if name ~= "default" then
@@ -113,108 +140,200 @@ function ControlConfigController:SelectPreset(idx, name)
 	else
 		self.Document:GetElementById("delete_lock"):SetClass("hidden", false)
 	end
-	
+
 	--reload the keys list
-	self:changeSection(self.currentTab)
+	self:changeSection(self.CurrentTab)
 
 end
 
-function ControlConfigController:UnselectPreset()
-	if self.oldPreset == nil then
+--- Deselects the currently selected preset list item. Used when the controls are changed and the preset is no longer a match
+--- @return nil
+function ControlConfigController:unselectPreset()
+	if self.PreviousPreset == nil then
 		return
 	else
-		local presetID = "preset_" .. self.oldPreset
-		self.Document:GetElementById(presetID):SetPseudoClass("checked", false)
-		
-		self.oldPreset = nil
-		self.currentPreset = nil
+		local preset_id = "preset_" .. self.PreviousPreset
+		self.Document:GetElementById(preset_id):SetPseudoClass("checked", false)
+
+		self.PreviousPreset = nil
+		self.CurrentPreset = nil
 	end
-	
+
 	--lock clone and delete
 	self.Document:GetElementById("clone_lock"):SetClass("hidden", false)
 	self.Document:GetElementById("delete_lock"):SetClass("hidden", false)
 end
 
-function ControlConfigController:CheckPresets()
+--- Tries to select the preset in the UI that is currently active in FSO
+--- @return nil
+function ControlConfigController:checkPresets()
 	local cur = ui.ControlConfig.getCurrentPreset()
-	
+
 	if cur == nil then
-		self:UnselectPreset()
+		self:unselectPreset()
 		self.Document:GetElementById("new_lock"):SetClass("hidden", true)
 	end
-	
+
 	for i = 1, #ui.ControlConfig.ControlPresets do
 		local entry = ui.ControlConfig.ControlPresets[i]
-		
+
 		if entry.Name == cur then
-			self:SelectPreset(i, cur)
+			self:selectPreset(i, entry.Name)
 			self.Document:GetElementById("new_lock"):SetClass("hidden", false)
 			break
 		end
 	end
 end
 
-function ControlConfigController:getPresetInput(presetType)
-	
-	self.promptControl = presetType
+--- Builds a dialog box to prompt the player for a new preset name
+--- @param preset_type number The type of preset to create. PROMPT_TYPE_NEW_PRESET or PROMPT_TYPE_CLONE_PRESET
+--- @return nil
+function ControlConfigController:getPresetInput(preset_type)
+
+	assert(preset_type == ControlConfigController.PROMPT_TYPE_NEW_PRESET or preset_type == ControlConfigController.PROMPT_TYPE_CLONE_PRESET, "Invalid preset type! Got .. '" .. preset_type .. "'")
+
+	self.PromptControl = preset_type
 
 	local text = "Please enter a name for the preset: "
 	local title = ""
+	---@type dialog_button[]
 	local buttons = {}
 	buttons[1] = {
-		b_type = dialogs.BUTTON_TYPE_POSITIVE,
-		b_text = ba.XSTR("Okay", 888290),
-		b_value = "",
-		b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
+		Type = Dialogs.BUTTON_TYPE_POSITIVE,
+		Text = ba.XSTR("Okay", 888290),
+		Value = "",
+		Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 	}
-	
-	self.nextDialog = {}
-	self.nextDialog.text = text
-	self.nextDialog.title = title
-	self.nextDialog.input = true
-	self.nextDialog.buttons = buttons
-	
-	--self:Show(text, title, true, buttons)
+
+	ScpuiSystem.data.memory.control_config.NextDialog = {
+		Text = text,
+		Title = title,
+		Input = true,
+		Buttons_List = buttons
+	}
 end
 
-function ControlConfigController:newPreset(name)
+--- Wrapper function to prompt for user input. Called by the RML
+--- @param preset_type number The type of preset to create. PROMPT_TYPE_NEW_PRESET or PROMPT_TYPE_CLONE_PRESET
+--- @return nil
+function ControlConfigController:get_preset_input(preset_type)
+	self:getPresetInput(preset_type)
+end
+
+--- Creates a new controls preset in FSO if the name is unique
+--- @param name string The name of the new preset
+--- @param overwrite? boolean Whether to overwrite the existing preset
+--- @return nil
+function ControlConfigController:newPreset(name, overwrite)
+
+	if not overwrite then
+		overwrite = false
+	end
 
 	if not name then
 		return
 	else
 		--Make sure preset names have no spaces and aren't longer than 28 characters
-		local name = name:gsub("%s+", "")
+		name = name:gsub("%s+", "")
 		if #name > 28 then
 			name = name:sub(1, 28)
 		end
-		
-		if ui.ControlConfig.createPreset(name) then
-			self:initPresets()
-			self:changeSection(self.currentTab)
+
+		local can_overwrite = true
+		if not ba.isEngineVersionAtLeast(25, 0, 0) then
+			can_overwrite = false
+		end
+
+		local result = false
+		if can_overwrite then
+			result = ui.ControlConfig.createPreset(name, overwrite)
 		else
-			local text = "An identical preset already exists!"
-			local title = ""
-			local buttons = {}
-			buttons[1] = {
-				b_type = dialogs.BUTTON_TYPE_POSITIVE,
-				b_text = ba.XSTR("Okay", 888290),
-				b_value = "",
-				b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
-			}
-			
-			self.nextDialog = {}
-			self.nextDialog.text = text
-			self.nextDialog.title = title
-			self.nextDialog.input = false
-			self.nextDialog.buttons = buttons
-			
-			--self:Show(text, title, false, buttons)
+			result = ui.ControlConfig.createPreset(name)
+		end
+
+		if result then
+			self:initPresets()
+			self:changeSection(self.CurrentTab)
+		else
+			if name:lower() == "default" then
+				local text = "Cannot overwrite the default preset!"
+				local title = ""
+				---@type dialog_button[]
+				local buttons = {}
+				buttons[1] = {
+					Type = Dialogs.BUTTON_TYPE_POSITIVE,
+					Text = ba.XSTR("Okay", 888290),
+					Value = "",
+					Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
+				}
+
+				ScpuiSystem.data.memory.control_config.NextDialog = {
+					Text = text,
+					Title = title,
+					Input = false,
+					Buttons_List = buttons
+				}
+			elseif not can_overwrite or overwrite then
+				self.PromptControl = ControlConfigController.PROMPT_TYPE_NEW_PRESET
+
+				local text = "An error occurred. Please enter a new name for the preset: "
+				local title = ""
+				---@type dialog_button[]
+				local buttons = {}
+				buttons[1] = {
+					Type = Dialogs.BUTTON_TYPE_POSITIVE,
+					Text = ba.XSTR("Okay", 888290),
+					Value = "",
+					Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
+				}
+
+				ScpuiSystem.data.memory.control_config.NextDialog = {
+					Text = text,
+					Title = title,
+					Input = true,
+					Buttons_List = buttons
+				}
+			else
+				self.PromptControl = ControlConfigController.PROMPT_TYPE_OVERWRITE_NEW_PRESET
+
+				local text = "An identical preset already exists! Overwrite?"
+				local title = ""
+				---@type dialog_button[]
+				local buttons = {}
+				buttons[1] = {
+					Type = Dialogs.BUTTON_TYPE_POSITIVE,
+					Text = ba.XSTR("Yes", 888296),
+					Value = name,
+					Keypress = string.sub(ba.XSTR("Yes", 888296), 1, 1)
+				}
+				buttons[2] = {
+					Type = Dialogs.BUTTON_TYPE_NEGATIVE,
+					Text = ba.XSTR("No", 888298),
+					Value = false,
+					Keypress = string.sub(ba.XSTR("No", 888298), 1, 1)
+				}
+
+				ScpuiSystem.data.memory.control_config.NextDialog = {
+					Text = text,
+					Title = title,
+					Input = false,
+					Buttons_List = buttons
+				}
+			end
 		end
 	end
-	
+
 end
 
-function ControlConfigController:clonePreset(name)
+--- Clones an existing preset if the name is unique
+--- @param name string The name of the new preset
+--- @param overwrite? boolean Whether to overwrite the existing preset
+--- @return nil
+function ControlConfigController:clonePreset(name, overwrite)
+
+	if not overwrite then
+		overwrite = false
+	end
 
 	--Make sure preset names have no spaces and aren't longer than 28 characters
 	local name = name:gsub("%s+", "")
@@ -222,156 +341,242 @@ function ControlConfigController:clonePreset(name)
 		name = name:sub(1, 28)
 	end
 
-	local preset = ui.ControlConfig.ControlPresets[self.currentPreset]
-	
-	if preset:clonePreset(name) then
-		self:initPresets()
-		self:changeSection(self.currentTab)
-	else
-		local text = "A preset with that name already exists! Please try again."
-		local title = ""
-		local buttons = {}
-		buttons[1] = {
-			b_type = dialogs.BUTTON_TYPE_POSITIVE,
-			b_text = ba.XSTR("Okay", 888290),
-			b_value = "",
-			b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
-		}
-		
-		self.nextDialog = {}
-		self.nextDialog.text = text
-		self.nextDialog.title = title
-		self.nextDialog.input = false
-		self.nextDialog.buttons = buttons
-		
-		--self:Show(text, title, false, buttons)
+	local preset = ui.ControlConfig.ControlPresets[self.CurrentPreset]
+
+	--If the player tries to clone a preset and overwrite it with the same name then just do nothing
+	if preset.Name == name then
+		return
 	end
-	
+
+	local can_overwrite = true
+	if not ba.isEngineVersionAtLeast(25, 0, 0) then
+		can_overwrite = false
+	end
+
+	local result = false
+	if can_overwrite then
+		result = preset:clonePreset(name, overwrite)
+	else
+		result = preset:clonePreset(name)
+	end
+
+	if result then
+		self:initPresets()
+		self:changeSection(self.CurrentTab)
+	else
+		if name:lower() == "default" then
+			local text = "Cannot overwrite the default preset!"
+			local title = ""
+			---@type dialog_button[]
+			local buttons = {}
+			buttons[1] = {
+				Type = Dialogs.BUTTON_TYPE_POSITIVE,
+				Text = ba.XSTR("Okay", 888290),
+				Value = "",
+				Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
+			}
+
+			ScpuiSystem.data.memory.control_config.NextDialog = {
+				Text = text,
+				Title = title,
+				Input = false,
+				Buttons_List = buttons
+			}
+		elseif not can_overwrite or overwrite then
+			self.PromptControl = ControlConfigController.PROMPT_TYPE_CLONE_PRESET
+
+			local text = "An error occurred. Please enter a new name for the preset: "
+			local title = ""
+			---@type dialog_button[]
+			local buttons = {}
+			buttons[1] = {
+				Type = Dialogs.BUTTON_TYPE_POSITIVE,
+				Text = ba.XSTR("Okay", 888290),
+				Value = "",
+				Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
+			}
+
+			ScpuiSystem.data.memory.control_config.NextDialog = {
+				Text = text,
+				Title = title,
+				Input = true,
+				Buttons_List = buttons
+			}
+		else
+			self.PromptControl = ControlConfigController.PROMPT_TYPE_OVERWRITE_CLONE_PRESET
+
+			local text = "An identical preset already exists! Overwrite?"
+			local title = ""
+			---@type dialog_button[]
+			local buttons = {}
+			buttons[1] = {
+				Type = Dialogs.BUTTON_TYPE_POSITIVE,
+				Text = ba.XSTR("Yes", 888296),
+				Value = name,
+				Keypress = string.sub(ba.XSTR("Yes", 888296), 1, 1)
+			}
+			buttons[2] = {
+				Type = Dialogs.BUTTON_TYPE_NEGATIVE,
+				Text = ba.XSTR("No", 888298),
+				Value = false,
+				Keypress = string.sub(ba.XSTR("No", 888298), 1, 1)
+			}
+
+			ScpuiSystem.data.memory.control_config.NextDialog = {
+				Text = text,
+				Title = title,
+				Input = false,
+				Buttons_List = buttons
+			}
+		end
+	end
+
 end
 
-function ControlConfigController:verifyDelete()
-	
-	self.promptControl = 5
+--- Creates a dialog box to confirm the deletion of a preset
+--- @return nil
+function ControlConfigController:verify_delete()
+
+	self.PromptControl = ControlConfigController.PROMPT_TYPE_DELETE_PRESET
 
 	local text = "Are you sure you want to delete the preset?"
 	local title = ""
+	---@type dialog_button[]
 	local buttons = {}
 	buttons[1] = {
-		b_type = dialogs.BUTTON_TYPE_POSITIVE,
-		b_text = ba.XSTR("Yes", 888296),
-		b_value = true,
-		b_keypress = string.sub(ba.XSTR("Yes", 888296), 1, 1)
+		Type = Dialogs.BUTTON_TYPE_POSITIVE,
+		Text = ba.XSTR("Yes", 888296),
+		Value = true,
+		Keypress = string.sub(ba.XSTR("Yes", 888296), 1, 1)
 	}
 	buttons[2] = {
-		b_type = dialogs.BUTTON_TYPE_NEGATIVE,
-		b_text = ba.XSTR("No", 888298),
-		b_value = false,
-		b_keypress = string.sub(ba.XSTR("No", 888298), 1, 1)
+		Type = Dialogs.BUTTON_TYPE_NEGATIVE,
+		Text = ba.XSTR("No", 888298),
+		Value = false,
+		Keypress = string.sub(ba.XSTR("No", 888298), 1, 1)
 	}
-	
-	self.nextDialog = {}
-	self.nextDialog.text = text
-	self.nextDialog.title = title
-	self.nextDialog.input = false
-	self.nextDialog.buttons = buttons
-	
-	--self:Show(text, title, false, buttons)
+
+	ScpuiSystem.data.memory.control_config.NextDialog = {
+		Text = text,
+		Title = title,
+		Input = false,
+		Buttons_List = buttons
+	}
 end
 
+--- Deletes the currently selected preset from FSO and updates the UI
+--- @return nil
 function ControlConfigController:deletePreset()
 
-	local preset = ui.ControlConfig.ControlPresets[self.currentPreset] -- the default preset
-	
+	local preset = ui.ControlConfig.ControlPresets[self.CurrentPreset]
+
 	ui.ControlConfig.usePreset("default")
-	
+
 	preset:deletePreset()
-	
+
 	self:initPresets()
-	self:changeSection(self.currentTab)
-	
+	self:changeSection(self.CurrentTab)
+
 end
 
+--- Creates the list of control configurations for the selected tab
+--- @param tab number The index of the tab to display. Should be one of the TAB_TYPE enumerations
+--- @return nil
 function ControlConfigController:initKeysList(tab)
+
 	local parent_el = self.Document:GetElementById("list_items_ul")
-	
+
 	for i = 1, #ui.ControlConfig.ControlConfigs do
 		local entry = ui.ControlConfig.ControlConfigs[i]
-		
+
 		if entry.Tab == tab and not entry.Disabled then
-		
+
 			local li_el = self.Document:CreateElement("li")
 			li_el.id = "line_" .. i
-			
+
 			li_el:SetClass("control_configlist_element", true)
 			li_el:SetClass("button_3", true)
-			
+
 			parent_el:AppendChild(li_el)
-			
+
 			--build the name div
 			local na_el = self.Document:CreateElement("div")
 			na_el.id = "name_" .. i
 			na_el:SetClass("name_display", true)
 			na_el:SetClass("button_3", true)
 			na_el.inner_rml = entry.Name
-			
+
 			na_el:AddEventListener("click", function(_, _, _)
-				self:SelectEntry(i)
+				self:selectControl(i)
 			end)
-			
+
 			li_el:AppendChild(na_el)
-			
+
 			--build the binds divs
 			local bindings = entry.Bindings
-			
+
 			for j = 1, #bindings do
 				local bi_el = self.Document:CreateElement("div")
 				bi_el.id = "bind_" .. j .. "_" .. i
 				bi_el:SetClass("bind_display", true)
 				bi_el:SetClass("button_3", true)
 				bi_el.inner_rml = bindings[j]
-				
+
 				bi_el:AddEventListener("click", function(_, _, _)
-					self:SelectBind(i, j)
+					self:selectBind(i, j)
 				end)
-				
+
 				bi_el:AddEventListener("dblclick", function(_, _, _)
-					self:BindKey(i, j)
+					self:bindKey(i, j)
 				end)
-			
+
 				li_el:AppendChild(bi_el)
 			end
-			
+
 			--on first run save total number of bindings
-			if self.numBinds == nil then
-				self.numBinds = #bindings
+			if self.NumBinds == nil then
+				self.NumBinds = #bindings
 			end
-			
+
 		end
 	end
-	
+
 end
 
+--- Changes the currently displayed tab and updates the UI
+--- @param tab number The index of the tab to display. Should be one of the TAB_TYPE enumerations
+--- @return nil
 function ControlConfigController:changeSection(tab)
-	
+
+	local validPromptTypes = {
+		[ControlConfigController.TAB_TYPE_TARGET] = true,
+		[ControlConfigController.TAB_TYPE_SHIP] = true,
+		[ControlConfigController.TAB_TYPE_WEAPON] = true,
+		[ControlConfigController.TAB_TYPE_MISC] = true,
+	}
+
+	-- Check if the path is valid
+	assert(validPromptTypes[tab], "Invalid tab type! Got '" .. tab .. "'")
+
 	--uncheck all tabs
 	self.Document:GetElementById("target_btn"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("ship_btn"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("weapon_btn"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("misc_btn"):SetPseudoClass("checked", false)
-	
+
 	--uncheck all modifiers
 	self.Document:GetElementById("alt_btn"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("shift_btn"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("invert_btn"):SetPseudoClass("checked", false)
-	
+
 	--set selections to nil
-	self.currentEntry = nil
-	self.currentBind = nil
-	self.oldEntry = nil
-	self.currentTab = tab
-	
+	self.CurrentControl = nil
+	self.CurrentBind = nil
+	self.PreviousControl = nil
+	self.CurrentTab = tab
+
 	self:checkLocks()
-	
+
 	if tab == 0 then
 		self.Document:GetElementById("target_btn"):SetPseudoClass("checked", true)
 	elseif tab == 1 then
@@ -383,112 +588,128 @@ function ControlConfigController:changeSection(tab)
 		--just in case
 		tab = 3
 	end
-	
+
 	ScpuiSystem:clearEntries(self.Document:GetElementById("list_items_ul"))
 	self:initKeysList(tab)
-	
+
 	self:checkConflict()
 end
 
-function ControlConfigController:SelectEntry(idx)
+--- Changes the currently displayed tab and updates the UI. Called by the RML
+--- @param tab number The index of the tab to display. Should be one of the TAB_TYPE enumerations
+--- @return nil
+function ControlConfigController:change_section(tab)
+	self:changeSection(tab)
+end
 
-	self.currentEntry = idx
-	self.currentBind = nil
-	
-	if self.oldEntry == nil then
-		self.oldEntry = idx
+--- Select a control from the list and update the UI
+--- @param idx number | nil The index of the control to select
+--- @return nil
+function ControlConfigController:selectControl(idx)
+
+	self.CurrentControl = idx
+	self.CurrentBind = nil
+
+	if self.PreviousControl == nil then
+		self.PreviousControl = idx
 	else
-		local oldName_ID = "name_" .. self.oldEntry
-		self.Document:GetElementById(oldName_ID):SetPseudoClass("checked", false)
-		
-		for i = 1, self.numBinds do
-			local oldBind_ID = "bind_" .. i .. "_" .. self.oldEntry
-			self.Document:GetElementById(oldBind_ID):SetPseudoClass("checked", false)
-			self.Document:GetElementById(oldBind_ID):SetPseudoClass("enabled", false)
+		local previous_control_id = "name_" .. self.PreviousControl
+		self.Document:GetElementById(previous_control_id):SetPseudoClass("checked", false)
+
+		for i = 1, self.NumBinds do
+			local previous_bind_id = "bind_" .. i .. "_" .. self.PreviousControl
+			self.Document:GetElementById(previous_bind_id):SetPseudoClass("checked", false)
+			self.Document:GetElementById(previous_bind_id):SetPseudoClass("enabled", false)
 		end
-			
-		self.oldEntry = idx
+
+		self.PreviousControl = idx
 	end
-	
-	local nameID = "name_" .. self.oldEntry
-	self.Document:GetElementById(nameID):SetPseudoClass("checked", true)
-	
-	for i = 1, self.numBinds do
-		local bindID = "bind_" .. i .. "_" .. self.oldEntry
-		self.Document:GetElementById(bindID):SetPseudoClass("checked", true)
+
+	local control_id = "name_" .. self.PreviousControl
+	self.Document:GetElementById(control_id):SetPseudoClass("checked", true)
+
+	for i = 1, self.NumBinds do
+		local bind_id = "bind_" .. i .. "_" .. self.PreviousControl
+		self.Document:GetElementById(bind_id):SetPseudoClass("checked", true)
 	end
-	
+
 	self:checkModifiers()
 	self:checkConflict()
 	self:checkLocks()
-	self:CheckPresets()
+	self:checkPresets()
 end
 
-function ControlConfigController:SelectBind(idx, bind)
+--- Select a specific bind from the list and update the UI
+--- @param idx number | nil The index of the control to select
+--- @param bind number The index of the bind to select
+--- @return nil
+function ControlConfigController:selectBind(idx, bind)
 
-	self.currentEntry = idx
-	self.currentBind = bind
-	
-	if self.oldEntry == nil then
-		self.oldEntry = idx
+	self.CurrentControl = idx
+	self.CurrentBind = bind
+
+	if self.PreviousControl == nil then
+		self.PreviousControl = idx
 	else
-		local oldName_ID = "name_" .. self.oldEntry
-		self.Document:GetElementById(oldName_ID):SetPseudoClass("checked", false)
-		
-		for i = 1, self.numBinds do
-			local oldBind_ID = "bind_" .. i .. "_" .. self.oldEntry
-			self.Document:GetElementById(oldBind_ID):SetPseudoClass("checked", false)
-			self.Document:GetElementById(oldBind_ID):SetPseudoClass("enabled", false)
+		local previous_control_id = "name_" .. self.PreviousControl
+		self.Document:GetElementById(previous_control_id):SetPseudoClass("checked", false)
+
+		for i = 1, self.NumBinds do
+			local previous_bind_id = "bind_" .. i .. "_" .. self.PreviousControl
+			self.Document:GetElementById(previous_bind_id):SetPseudoClass("checked", false)
+			self.Document:GetElementById(previous_bind_id):SetPseudoClass("enabled", false)
 		end
-			
-		self.oldEntry = idx
+
+		self.PreviousControl = idx
 	end
-	
-	local nameID = "name_" .. self.oldEntry
-	self.Document:GetElementById(nameID):SetPseudoClass("checked", true)
-	
-	for i = 1, self.numBinds do
-		local bindID = "bind_" .. i .. "_" .. self.oldEntry
+
+	local control_id = "name_" .. self.PreviousControl
+	self.Document:GetElementById(control_id):SetPseudoClass("checked", true)
+
+	for i = 1, self.NumBinds do
+		local bind_id = "bind_" .. i .. "_" .. self.PreviousControl
 		if i == bind then
-			self.Document:GetElementById(bindID):SetPseudoClass("enabled", true)
+			self.Document:GetElementById(bind_id):SetPseudoClass("enabled", true)
 		else
-			self.Document:GetElementById(bindID):SetPseudoClass("checked", true)
+			self.Document:GetElementById(bind_id):SetPseudoClass("checked", true)
 		end
 	end
-	
+
 	self:checkModifiers()
 	self:checkConflict()
 	self:checkLocks()
-	self:CheckPresets()
+	self:checkPresets()
 end
 
+--- Iterate over all control binds and check for conflicts. If a conflict is found, display it on the UI
+--- @return nil
 function ControlConfigController:checkConflict()
-	
-	self.conflict = false
+
+	self.Conflict = false
 	for i = 1, #ui.ControlConfig.ControlConfigs do
 		local entry = ui.ControlConfig.ControlConfigs[i]
 		if entry.Conflicted ~= nil then
-			self.conflict = true
+			self.Conflict = true
 		end
 	end
-	
+
 	--no conflicts, bail
-	if self.conflict == false then
+	if self.Conflict == false then
 		self.Document:GetElementById("conflict_warning").inner_rml = ""
 		self.Document:GetElementById("conflict_description").inner_rml = ""
 		return
 	end
-	
+
 	--nothing selected, bail
-	if self.currentEntry == nil then
+	if self.CurrentControl == nil then
 		self.Document:GetElementById("conflict_description").inner_rml = ""
 		return
 	end
-	
+
 	self.Document:GetElementById("conflict_warning").inner_rml = "CONFLICT!"
 
-	local conflict = ui.ControlConfig.ControlConfigs[self.currentEntry].Conflicted
-	
+	local conflict = ui.ControlConfig.ControlConfigs[self.CurrentControl].Conflicted
+
 	if conflict ~= nil then
 		self.Document:GetElementById("conflict_description").inner_rml = conflict
 	else
@@ -496,48 +717,54 @@ function ControlConfigController:checkConflict()
 	end
 end
 
+--- Check all control modifiers. Shift, Alt, and Invert
+--- @return nil
 function ControlConfigController:checkModifiers()
 	self:checkShifts()
 	self:checkAlts()
 	self:checkInverts()
 end
 
+--- Locked or unlock UI controls based on the current selection
+--- @return nil
 function ControlConfigController:checkLocks()
-	local generalLock = false
-	local invertLock = false
-	local conflictLock = false
-	local modifierLock = false
-	if self.currentEntry ~= nil then
-		generalLock = true
-		if ui.ControlConfig.ControlConfigs[self.currentEntry].Conflicted ~= nil then
-			conflictLock = true
+	local general_lock = false
+	local invert_lock = false
+	local conflict_lock = false
+	local modifier_lock = false
+	if self.CurrentControl ~= nil then
+		general_lock = true
+		if ui.ControlConfig.ControlConfigs[self.CurrentControl].Conflicted ~= nil then
+			conflict_lock = true
 		end
-		if ui.ControlConfig.ControlConfigs[self.currentEntry].IsAxis == true then
-			invertLock = true
+		if ui.ControlConfig.ControlConfigs[self.CurrentControl].IsAxis == true then
+			invert_lock = true
 		else
-			modifierLock = true
+			modifier_lock = true
 		end
 	end
-	
-	--conflict
-	self.Document:GetElementById("clear_conflict_lock"):SetClass("hidden", conflictLock)
-	
-	--invert
-	self.Document:GetElementById("invert_lock"):SetClass("hidden", invertLock)
-	
-	--modifier
-	self.Document:GetElementById("alt_lock"):SetClass("hidden", modifierLock)
-	self.Document:GetElementById("shift_lock"):SetClass("hidden", modifierLock)
-	
-	--rest
-	self.Document:GetElementById("clear_selected_lock"):SetClass("hidden", generalLock)
-	self.Document:GetElementById("bind_lock"):SetClass("hidden", generalLock)
-end	
 
+	--conflict
+	self.Document:GetElementById("clear_conflict_lock"):SetClass("hidden", conflict_lock)
+
+	--invert
+	self.Document:GetElementById("invert_lock"):SetClass("hidden", invert_lock)
+
+	--modifier
+	self.Document:GetElementById("alt_lock"):SetClass("hidden", modifier_lock)
+	self.Document:GetElementById("shift_lock"):SetClass("hidden", modifier_lock)
+
+	--rest
+	self.Document:GetElementById("clear_selected_lock"):SetClass("hidden", general_lock)
+	self.Document:GetElementById("bind_lock"):SetClass("hidden", general_lock)
+end
+
+--- Update the Shift button on the UI based on the current selection
+--- @return nil
 function ControlConfigController:checkShifts()
 
-	local shifted = ui.ControlConfig.ControlConfigs[self.currentEntry].Shifted
-	
+	local shifted = ui.ControlConfig.ControlConfigs[self.CurrentControl].Shifted
+
 	if shifted then
 		self.Document:GetElementById("shift_btn"):SetPseudoClass("checked", true)
 	else
@@ -546,10 +773,12 @@ function ControlConfigController:checkShifts()
 
 end
 
+--- Update the Alt button on the UI based on the current selection
+--- @return nil
 function ControlConfigController:checkAlts()
 
-	local alted = ui.ControlConfig.ControlConfigs[self.currentEntry].Alted
-	
+	local alted = ui.ControlConfig.ControlConfigs[self.CurrentControl].Alted
+
 	if alted then
 		self.Document:GetElementById("alt_btn"):SetPseudoClass("checked", true)
 	else
@@ -558,13 +787,15 @@ function ControlConfigController:checkAlts()
 
 end
 
+--- Update the Invert button on the UI based on the current selection
+--- @return nil
 function ControlConfigController:checkInverts()
 
 	local inverted = false
-	if self.currentBind ~= nil then
-		inverted = ui.ControlConfig.ControlConfigs[self.currentEntry]:isBindInverted(self.currentBind)
+	if self.CurrentBind ~= nil then
+		inverted = ui.ControlConfig.ControlConfigs[self.CurrentControl]:isBindInverted(self.CurrentBind)
 	end
-	
+
 	if inverted then
 		self.Document:GetElementById("invert_btn"):SetPseudoClass("checked", true)
 	else
@@ -573,203 +804,222 @@ function ControlConfigController:checkInverts()
 
 end
 
-function ControlConfigController:toggleAlt()
+--- Toggle the Alt modifier for the current bind in FSO and update the UI
+--- @return nil
+function ControlConfigController:toggle_alt()
 
-	if self.currentEntry == nil then
+	if self.CurrentControl == nil then
 		return
 	else --maybe also check that alt is allowed
-		ui.ControlConfig.ControlConfigs[self.currentEntry]:toggleAlted()
-		local idx = self.currentEntry
-		self:changeSection(self.currentTab)
-		self:SelectEntry(idx)
+		ui.ControlConfig.ControlConfigs[self.CurrentControl]:toggleAlted()
+		local idx = self.CurrentControl
+		self:changeSection(self.CurrentTab)
+		self:selectControl(idx)
 	end
 
 end
 
-function ControlConfigController:toggleShift()
+--- Toggle the Shift modifier for the current bind in FSO and update the UI
+--- @return nil
+function ControlConfigController:toggle_shift()
 
-	if self.currentEntry == nil then
+	if self.CurrentControl == nil then
 		return
 	else --maybe also check that shift is allowed
-		ui.ControlConfig.ControlConfigs[self.currentEntry]:toggleShifted()
-		local idx = self.currentEntry
-		self:changeSection(self.currentTab)
-		self:SelectEntry(idx)
+		ui.ControlConfig.ControlConfigs[self.CurrentControl]:toggleShifted()
+		local idx = self.CurrentControl
+		self:changeSection(self.CurrentTab)
+		self:selectControl(idx)
 	end
 
 end
 
-function ControlConfigController:toggleInvert()
+--- Toggle the Invert modifier for the current bind in FSO and update the UI
+--- @return nil
+function ControlConfigController:toggle_invert()
 
-	if self.currentEntry == nil then
+	if self.CurrentControl == nil then
 		return
 	else --maybe also check that invert is allowed
-		if self.currentBind == nil then
+		if self.CurrentBind == nil then
 			return
 		else
-			ui.ControlConfig.ControlConfigs[self.currentEntry]:toggleInverted(self.currentBind)
-			local idx = self.currentEntry
-			local item = self.currentBind
-			self:changeSection(self.currentTab)
-			self:SelectBind(idx, item)
+			ui.ControlConfig.ControlConfigs[self.CurrentControl]:toggleInverted(self.CurrentBind)
+			local idx = self.CurrentControl
+			local item = self.CurrentBind
+			self:changeSection(self.CurrentTab)
+			self:selectBind(idx, item)
 		end
 	end
 
 end
 
-function ControlConfigController:clearConflict()
+--- Clear all binds that conflict with the current selection in FSO and update the UI
+--- @return nil
+function ControlConfigController:clear_conflict()
 
-	if self.currentEntry == nil then
+	if self.CurrentControl == nil then
 		return
 	else --maybe also check that shift is allowed
-		ui.ControlConfig.ControlConfigs[self.currentEntry]:clearConflicts()
-		local idx = self.currentEntry
-		self:changeSection(self.currentTab)
-		self:SelectEntry(idx)
+		ui.ControlConfig.ControlConfigs[self.CurrentControl]:clearConflicts()
+		local idx = self.CurrentControl
+		self:changeSection(self.CurrentTab)
+		self:selectControl(idx)
 	end
 
 end
 
-function ControlConfigController:clearSelected()
+--- Clear the currently selected bind in FSO and update the UI
+--- @return nil
+function ControlConfigController:clear_selected()
 
-	if self.currentEntry == nil then
+	if self.CurrentControl == nil then
 		return
 	else --maybe also check that shift is allowed
-		local idx = self.currentEntry
-		local bind = self.currentBind
+		local idx = self.CurrentControl
+		local bind = self.CurrentBind
 		if bind == nil then
 			bind = 1
 		else
 			bind = bind + 1 --convert 1/2 to 2/3
 		end
-			
-		ui.ControlConfig.ControlConfigs[self.currentEntry]:clearBind(bind)
-		self:changeSection(self.currentTab)
+
+		ui.ControlConfig.ControlConfigs[self.CurrentControl]:clearBind(bind)
+		self:changeSection(self.CurrentTab)
 		if bind == 3 then
-			self:SelectEntry(idx)
+			self:selectControl(idx)
 		else
-			self:SelectBind(idx, bind)
+			self:selectBind(idx, bind)
 		end
 	end
 
 end
 
-function ControlConfigController:clearAll()
+--- Build a show a prompt box confirming the player wants to clear all binds
+--- @return nil
+function ControlConfigController:clear_all()
 
-	self.promptControl = 3
+	self.PromptControl = ControlConfigController.PROMPT_TYPE_CLEAR_ALL_BINDS
 
 	local text = "Are you sure you want to clear all binds?"
 	local title = ""
+	---@type dialog_button[]
 	local buttons = {}
 	buttons[1] = {
-		b_type = dialogs.BUTTON_TYPE_POSITIVE,
-		b_text = ba.XSTR("Yes", 888296),
-		b_value = true,
-		b_keypress = string.sub(ba.XSTR("Yes", 888296), 1, 1)
+		Type = Dialogs.BUTTON_TYPE_POSITIVE,
+		Text = ba.XSTR("Yes", 888296),
+		Value = true,
+		Keypress = string.sub(ba.XSTR("Yes", 888296), 1, 1)
 	}
 	buttons[2] = {
-		b_type = dialogs.BUTTON_TYPE_NEGATIVE,
-		b_text = ba.XSTR("No", 888298),
-		b_value = false,
-		b_keypress = string.sub(ba.XSTR("No", 888298), 1, 1)
+		Type = Dialogs.BUTTON_TYPE_NEGATIVE,
+		Text = ba.XSTR("No", 888298),
+		Value = false,
+		Keypress = string.sub(ba.XSTR("No", 888298), 1, 1)
 	}
-	
-	self.nextDialog = {}
-	self.nextDialog.text = text
-	self.nextDialog.title = title
-	self.nextDialog.input = false
-	self.nextDialog.buttons = buttons
-	
-	--self:Show(text, title, false, buttons)
+
+	ScpuiSystem.data.memory.control_config.NextDialog = {
+		Text = text,
+		Title = title,
+		Input = false,
+		Buttons_List = buttons
+	}
 
 end
 
+--- Clear all binds in FSO and update the UI
+--- @return nil
 function ControlConfigController:clearAllActual()
-	
+
 	ui.ControlConfig.clearAll()
-	
-	local idx = self.currentEntry
-	
-	self:changeSection(self.currentTab)
-	
+
+	local idx = self.CurrentControl
+
+	self:changeSection(self.CurrentTab)
+
 	if idx ~= nil then
-		self:SelectEntry(idx)
+		self:selectControl(idx)
 	end
 end
 
-function ControlConfigController:undoChange()
-	
+--- Undo the last control change and update the UI
+--- @return nil
+function ControlConfigController:undo_change()
+
 	ui.ControlConfig.undoLastChange()
-	
-	local idx = self.currentEntry
-	local bind = self.currentBind
-	
-	self:changeSection(self.currentTab)
-	
+
+	local idx = self.CurrentControl
+	local bind = self.CurrentBind
+
+	self:changeSection(self.CurrentTab)
+
 	if idx ~= nil then
-		self:SelectEntry(idx)
+		self:selectControl(idx)
 	else
 		if bind ~= nil then
-			self:SelectBind(idx, bind)
+			self:selectBind(idx, bind)
 		end
 	end
 
 end
 
-function ControlConfigController:Exit(element)
+--- When Exit is pressed, check for conflicts and unsaved changes. Prompt the user if needed, else accept the bindings and return to the previous game state
+--- @param element Element The element that was clicked
+--- @return nil
+function ControlConfigController:exit_pressed(element)
 
 	local continue = true
 
-	if self.conflict then
+	if self.Conflict then
 		continue = false
 
 		local text = "You must resolve conflicts first!"
 		local title = ""
+		---@type dialog_button[]
 		local buttons = {}
 		buttons[1] = {
-			b_type = dialogs.BUTTON_TYPE_POSITIVE,
-			b_text = ba.XSTR("Okay", 888290),
-			b_value = true,
-			b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
+			Type = Dialogs.BUTTON_TYPE_POSITIVE,
+			Text = ba.XSTR("Okay", 888290),
+			Value = true,
+			Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 		}
-		
-		self.nextDialog = {}
-		self.nextDialog.text = text
-		self.nextDialog.title = title
-		self.nextDialog.input = false
-		self.nextDialog.buttons = buttons
-		
-		--self:Show(text, title, false, buttons)
+
+		ScpuiSystem.data.memory.control_config.NextDialog = {
+			Text = text,
+			Title = title,
+			Input = false,
+			Buttons_List = buttons
+		}
 	end
 	if ui.ControlConfig.getCurrentPreset() == nil then
-		self.promptControl = 4
+		self.PromptControl = ControlConfigController.PROMPT_TYPE_GET_PRESET_NAME
 		continue = false
 
 		local text = "You must save your controls as a preset. Do so now?"
 		local title = ""
+		---@type dialog_button[]
 		local buttons = {}
 		buttons[1] = {
-			b_type = dialogs.BUTTON_TYPE_POSITIVE,
-			b_text = ba.XSTR("Yes", 888296),
-			b_value = true,
-			b_keypress = string.sub(ba.XSTR("Yes", 888296), 1, 1)
+			Type = Dialogs.BUTTON_TYPE_POSITIVE,
+			Text = ba.XSTR("Yes", 888296),
+			Value = true,
+			Keypress = string.sub(ba.XSTR("Yes", 888296), 1, 1)
 		}
 		buttons[2] = {
-			b_type = dialogs.BUTTON_TYPE_NEGATIVE,
-			b_text = ba.XSTR("No", 888298),
-			b_value = false,
-			b_keypress = string.sub(ba.XSTR("No", 888298), 1, 1)
+			Type = Dialogs.BUTTON_TYPE_NEGATIVE,
+			Text = ba.XSTR("No", 888298),
+			Value = false,
+			Keypress = string.sub(ba.XSTR("No", 888298), 1, 1)
 		}
-		
-		self.nextDialog = {}
-		self.nextDialog.text = text
-		self.nextDialog.title = title
-		self.nextDialog.input = false
-		self.nextDialog.buttons = buttons
-		
-		--self:Show(text, title, false, buttons)
+
+		ScpuiSystem.data.memory.control_config.NextDialog = {
+			Text = text,
+			Title = title,
+			Input = false,
+			Buttons_List = buttons
+		}
 	end
-	
+
 	if continue then
 		if ui.ControlConfig.acceptBinding() then
 			ui.playElementSound(element, "click", "success")
@@ -778,186 +1028,245 @@ function ControlConfigController:Exit(element)
 		else
 			local text = "Something went wrong, please try again!"
 			local title = ""
+			---@type dialog_button[]
 			local buttons = {}
 			buttons[1] = {
-				b_type = dialogs.BUTTON_TYPE_POSITIVE,
-				b_text = ba.XSTR("Okay", 888290),
-				b_value = true,
-				b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
+				Type = Dialogs.BUTTON_TYPE_POSITIVE,
+				Text = ba.XSTR("Okay", 888290),
+				Value = true,
+				Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 			}
-			
-			self.nextDialog = {}
-			self.nextDialog.text = text
-			self.nextDialog.title = title
-			self.nextDialog.input = false
-			self.nextDialog.buttons = buttons
-			
-			--self:Show(text, title, false, buttons)
+
+			ScpuiSystem.data.memory.control_config.NextDialog = {
+				Text = text,
+				Title = title,
+				Input = false,
+				Buttons_List = buttons
+			}
 		end
 	end
 
-end	
+end
 
-function ControlConfigController:global_keydown(_, event)
+--- Global keydown function handles all keypresses
+--- @param element Element The main document element
+--- @param event Event The event that was triggered
+--- @return nil
+function ControlConfigController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
 		ui.ControlConfig.cancelBinding()
 		ui.ControlConfig.closeControlConfig()
 	elseif event.parameters.key_identifier == rocket.key_identifier.Z and event.parameters.ctrl_key == 1 then
-		self:undoChange()
+		self:undo_change()
 	end
 end
 
-function ControlConfigController:searchForBind()
-	
+--- Start a search for a bind. Disables the UI until a keypress is detected. If a bind matches the key, then switch to that tab and highlight that control
+--- @return nil
+function ControlConfigController:search_for_bind()
+
 	async.run(function()
         ui.disableInput()
-        
+
         --Do anything needed to lock the UI during the binding phase
-		
+
 		local search = 0
-    
-        while (search == 0) do 
+
+        while (search == 0) do
 			search = ui.ControlConfig.searchBinds()
 			async.await(async.yield())
 		end
-        
+
         --Do anything needed to unlock the UI after the binding phase
-		
+
 		if search > 0 then
-		
+
 			local bind = ui.ControlConfig.ControlConfigs[search]
-			
+
 			ui.enableInput(ScpuiSystem.data.Context)
 			self:changeSection(bind.Tab)
-			self:SelectEntry(search)
+			self:selectControl(search)
 		else
 			ui.enableInput(ScpuiSystem.data.Context)
 		end
     end, async.OnFrameExecutor)
-	
+
 end
 
+--- If we have a dialog to display then show it and wait for user input
+--- @return nil
 function ControlConfigController:maybeShowDialogs()
-	async.run(function()
-        async.await(async_util.wait_for(0.01))
-		if self.nextDialog ~= nil then
-			-- Use utils.copy to create copies of the dialog data
-            local dialogText = utils.copy(self.nextDialog.text)
-            local dialogTitle = utils.copy(self.nextDialog.title)
-            local dialogInput = utils.copy(self.nextDialog.input)
-            local dialogButtons = utils.copy(self.nextDialog.buttons)
-            
-            self:Show(dialogText, dialogTitle, dialogInput, dialogButtons)
-			
-			self.nextDialog = nil
-		end
-        self:maybeShowDialogs()
-    end, async.OnFrameExecutor)
+	if ScpuiSystem.data.memory.control_config.NextDialog ~= nil then
+		-- Use utils.copy to create copies of the dialog data
+		local dialogText = Utils.copy(ScpuiSystem.data.memory.control_config.NextDialog.Text) --- @type string
+		local dialogTitle = Utils.copy(ScpuiSystem.data.memory.control_config.NextDialog.Title) --- @type string
+		local dialogInput = Utils.copy(ScpuiSystem.data.memory.control_config.NextDialog.Input) --- @type boolean
+		local dialogButtons = Utils.copy(ScpuiSystem.data.memory.control_config.NextDialog.Buttons_List) --- @type dialog_button[]
+
+		self:showDialog(dialogText, dialogTitle, dialogInput, dialogButtons)
+
+		ScpuiSystem.data.memory.control_config.NextDialog = nil
+	end
 end
 
-function ControlConfigController:Show(text, title, input, buttons)
+--- Setup a dialog prompt to show to the player
+--- @param text string The text to display in the dialog
+--- @param title string The title of the dialog
+--- @param input boolean Whether the dialog should have an input field
+--- @param buttons dialog_button[] The buttons to display in the dialog
+--- @return nil
+function ControlConfigController:showDialog(text, title, input, buttons)
 	--Create a simple dialog box with the text and title
 
-	local dialog = dialogs.new()
+	local dialog = Dialogs.new()
 		dialog:title(title)
 		dialog:text(text)
 		dialog:input(input)
 		for i = 1, #buttons do
-			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
+			dialog:button(buttons[i].Type, buttons[i].Text, buttons[i].Value, buttons[i].Keypress)
 		end
 		dialog:escape("")
 		dialog:show(self.Document.context)
 		:continueWith(function(response)
-			self:dialog_response(response)
+			ScpuiSystem.data.memory.control_config.DialogResponse = response
     end)
 	-- Route input to our context until the user dismisses the dialog box.
 	ui.enableInput(self.Document.context)
 end
 
+--- Handle the response from the dialog prompts
+--- @param response any The response from the dialog
+--- @return nil
 function ControlConfigController:dialog_response(response)
-	local path = self.promptControl
-	self.promptControl = nil
-	if path == 1 then
+	local path = self.PromptControl
+	self.PromptControl = ControlConfigController.PROMPT_TYPE_NONE
+
+	ScpuiSystem.data.memory.control_config.DialogResponse = nil
+
+	local validPromptTypes = {
+		[ControlConfigController.PROMPT_TYPE_NONE] = true,
+		[ControlConfigController.PROMPT_TYPE_NEW_PRESET] = true,
+		[ControlConfigController.PROMPT_TYPE_CLONE_PRESET] = true,
+		[ControlConfigController.PROMPT_TYPE_CLEAR_ALL_BINDS] = true,
+		[ControlConfigController.PROMPT_TYPE_GET_PRESET_NAME] = true,
+		[ControlConfigController.PROMPT_TYPE_DELETE_PRESET] = true,
+		[ControlConfigController.PROMPT_TYPE_OVERWRITE_NEW_PRESET] = true,
+		[ControlConfigController.PROMPT_TYPE_OVERWRITE_CLONE_PRESET] = true,
+	}
+
+	-- Check if the path is valid
+	assert(validPromptTypes[path], "Invalid prompt type! Got '" .. path .. "'")
+
+	if path == ControlConfigController.PROMPT_TYPE_NEW_PRESET then
 		self:newPreset(response)
-	elseif path == 2 then
+	elseif path == ControlConfigController.PROMPT_TYPE_CLONE_PRESET then
 		self:clonePreset(response)
-	elseif path == 3 then
+	elseif path == ControlConfigController.PROMPT_TYPE_CLEAR_ALL_BINDS then
 		if response == true then
 			self:clearAllActual()
 		end
-	elseif path == 4 then
+	elseif path == ControlConfigController.PROMPT_TYPE_GET_PRESET_NAME then
 		if response == true then
-			self:getPresetInput(1)
+			self:getPresetInput(ControlConfigController.PROMPT_TYPE_NEW_PRESET)
 		end
-	elseif path == 5 then
+	elseif path == ControlConfigController.PROMPT_TYPE_DELETE_PRESET then
 		if response == true then
 			self:deletePreset()
 		end
+	elseif path == ControlConfigController.PROMPT_TYPE_OVERWRITE_NEW_PRESET then
+		if response ~= false then
+			self:newPreset(response, true)
+		end
+	elseif path == ControlConfigController.PROMPT_TYPE_OVERWRITE_CLONE_PRESET then
+		if response ~= false then
+			self:clonePreset(response, true)
+		end
 	end
 end
 
-function ControlConfigController:beginBind()
-	if self.currentEntry == nil then
+--- Prepare to bind a key. Clear the current bind and start the binding process
+--- @return nil
+function ControlConfigController:begin_bind()
+	if self.CurrentControl == nil then
 		return
 	end
-	
-	if self.currentBind == nil then
-		self.currentBind = 1
+
+	if self.CurrentBind == nil then
+		self.CurrentBind = 1
 	end
-	
-	self:BindKey(self.currentEntry, self.currentBind)
+
+	self:bindKey(self.CurrentControl, self.CurrentBind)
 end
 
-function ControlConfigController:BindKey(idx, item)
+--- Begin the process of binding a key. Disables the UI until a keypress is detected. If a key is detected, then bind it to the current control
+--- @param idx number The index of the control to bind
+--- @param item number The index of the bind to bind to the control
+--- @return nil
+function ControlConfigController:bindKey(idx, item)
 
 	local entry = ui.ControlConfig.ControlConfigs[idx]
-	local bindID = "bind_" .. item .. "_" .. idx
-	
-	self.Document:GetElementById(bindID).inner_rml = ">>"
-	
+	local bind_id = "bind_" .. item .. "_" .. idx
+
+	self.Document:GetElementById(bind_id).inner_rml = ">>"
+
 	async.run(function()
         ui.disableInput()
-        
+
         --Do anything needed to lock the UI during the binding phase
-		
+
 		local status = 0
-    
-        while (status == 0) do 
+
+        while (status == 0) do
 			status = ui.ControlConfig.ControlConfigs[idx]:detectKeypress(item + 1)
 			async.await(async.yield())
 		end
-        
+
         --Do anything needed to unlock the UI after the binding phase
-        
+
 		ui.enableInput(ScpuiSystem.data.Context)
 		if status < 0 then
 			local text = "That key cannot be bound! Please try again."
 			local title = ""
+			---@type dialog_button[]
 			local buttons = {}
 			buttons[1] = {
-				b_type = dialogs.BUTTON_TYPE_POSITIVE,
-				b_text = ba.XSTR("Okay", 888290),
-				b_value = "",
-				b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
+				Type = Dialogs.BUTTON_TYPE_POSITIVE,
+				Text = ba.XSTR("Okay", 888290),
+				Value = "",
+				Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 			}
-			
-			self.nextDialog = {}
-			self.nextDialog.text = text
-			self.nextDialog.title = title
-			self.nextDialog.input = false
-			self.nextDialog.buttons = buttons
-			--self:Show(text, title, false, buttons)
+
+			ScpuiSystem.data.memory.control_config.NextDialog = {
+				Text = text,
+				Title = title,
+				Input = false,
+				Buttons_List = buttons
+			}
 		end
-		self:changeSection(self.currentTab)
-		self:SelectBind(idx, item)
+		self:changeSection(self.CurrentTab)
+		self:selectBind(idx, item)
     end, async.OnFrameExecutor)
-	
+
 end
 
+--- Called when the screen is being unloaded
+--- @return nil
 function ControlConfigController:unload()
-	topics.controlconfig.unload:send(self)
+	Topics.controlconfig.unload:send(self)
 end
+
+engine.addHook("On Frame", function()
+	if ba.getCurrentGameState().Name == "GS_STATE_CONTROL_CONFIG" then
+		if ScpuiSystem.data.memory.control_config.NextDialog ~= nil then
+			ScpuiSystem.data.memory.control_config.Context:maybeShowDialogs()
+		elseif ScpuiSystem.data.memory.control_config.DialogResponse ~= nil then
+			ScpuiSystem.data.memory.control_config.Context:dialog_response(ScpuiSystem.data.memory.control_config.DialogResponse)
+		end
+	end
+end, {}, function()
+    return false
+end)
 
 return ControlConfigController

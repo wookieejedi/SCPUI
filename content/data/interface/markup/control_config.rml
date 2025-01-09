@@ -26,7 +26,7 @@
 				</div>
 				<div id=tab_buttons_wrapper>
 					<div id=target_cont>
-						<button id="target_btn" class="target button_1" onclick="controller:changeSection(0)">
+						<button id="target_btn" class="target button_1" onclick="controller:change_section(controller.TAB_TYPE_TARGET)">
 							<span id="target_img" class="target button_img">
 								<img src="target.png" class="psuedo_img"></img>
 							</span>
@@ -36,7 +36,7 @@
 						</button>
 					</div>
 					<div id=ship_cont>
-						<button id="ship_btn" class="ship button_1" onclick="controller:changeSection(1)">
+						<button id="ship_btn" class="ship button_1" onclick="controller:change_section(controller.TAB_TYPE_SHIP)">
 							<span id="ship_img" class="ship button_img">
 								<img src="ship.png" class="psuedo_img"></img>
 							</span>
@@ -46,7 +46,7 @@
 						</button>
 					</div>
 					<div id=weapon_cont>
-						<button id="weapon_btn" class="weapon button_1" onclick="controller:changeSection(2)">
+						<button id="weapon_btn" class="weapon button_1" onclick="controller:change_section(controller.TAB_TYPE_WEAPON)">
 							<span id="weapon_img" class="weapon button_img">
 								<img src="gun.png" class="psuedo_img"></img>
 							</span>
@@ -56,7 +56,7 @@
 						</button>
 					</div>
 					<div id=misc_cont>
-						<button id="misc_btn" class="misc button_1" onclick="controller:changeSection(3)">
+						<button id="misc_btn" class="misc button_1" onclick="controller:change_section(controller.TAB_TYPE_MISC)">
 							<span id="misc_img" class="misc button_img">
 								<img src="star.png" class="psuedo_img"></img>
 							</span>
@@ -70,7 +70,7 @@
 					<div id=clear_conflict_cont>
 						<div id=clear_conflict_lock>
 						</div>
-						<button id="clear_conflict_btn" class="clear_conflict button_1" onclick="controller:clearConflict()">
+						<button id="clear_conflict_btn" class="clear_conflict button_1" onclick="controller:clear_conflict()">
 							<span id="clear_conflict_img" class="clear_conflict button_img">
 								<img src="cancel.png" class="psuedo_img"></img>
 							</span>
@@ -80,7 +80,7 @@
 						</button>
 					</div>
 					<div id=clear_all_cont>
-						<button id="clear_all_btn" class="clear_all button_1" onclick="controller:clearAll()">
+						<button id="clear_all_btn" class="clear_all button_1" onclick="controller:clear_all()">
 							<span id="clear_all_img" class="clear_all button_img">
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>
@@ -92,7 +92,7 @@
 					<div id=clear_selected_cont>
 						<div id=clear_selected_lock>
 						</div>
-						<button id="clear_selected_btn" class="clear_selected button_1" onclick="controller:clearSelected()">
+						<button id="clear_selected_btn" class="clear_selected button_1" onclick="controller:clear_selected()">
 							<span id="clear_selected_img" class="clear_selected button_img">
 								<img src="clear.png" class="psuedo_img"></img>
 							</span>
@@ -102,7 +102,7 @@
 						</button>
 					</div>
 					<div id=undo_cont>
-						<button id="undo_btn" class="undo button_1" onclick="controller:undoChange()">
+						<button id="undo_btn" class="undo button_1" onclick="controller:undo_change()">
 							<span id="undo_img" class="undo button_img">
 								<img src="undo.png" class="psuedo_img"></img>
 							</span>
@@ -114,7 +114,7 @@
 				</div>
 				<div id=search_button_wrapper>
 					<div id=search_cont>
-						<button id="search_btn" class="search button_1" onclick="controller:searchForBind()">
+						<button id="search_btn" class="search button_1" onclick="controller:search_for_bind()">
 							<span id="search_img" class="search button_img">
 								<img src="detail.png" class="psuedo_img"></img>
 							</span>
@@ -126,7 +126,7 @@
 					<div id=bind_cont>
 						<div id=bind_lock>
 						</div>
-						<button id="bind_btn" class="bind button_1" onclick="controller:beginBind()">
+						<button id="bind_btn" class="bind button_1" onclick="controller:begin_bind()">
 							<span id="bind_img" class="bind button_img">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
@@ -145,7 +145,7 @@
 					<div id=alt_cont>
 						<div id=alt_lock>
 						</div>
-						<button id="alt_btn" class="alt button_1" onclick="controller:toggleAlt()">
+						<button id="alt_btn" class="alt button_1" onclick="controller:toggle_alt()">
 							<span id="alt_img" class="alt button_img">
 								<img src="bullet-u.png" class="psuedo_img"></img>
 							</span>
@@ -157,7 +157,7 @@
 					<div id=shift_cont>
 						<div id=shift_lock>
 						</div>
-						<button id="shift_btn" class="shift button_1" onclick="controller:toggleShift()">
+						<button id="shift_btn" class="shift button_1" onclick="controller:toggle_shift()">
 							<span id="shift_img" class="shift button_img">
 								<img src="bullet-u.png" class="psuedo_img"></img>
 							</span>
@@ -169,7 +169,7 @@
 					<div id=invert_cont>
 						<div id=invert_lock>
 						</div>
-						<button id="invert_btn" class="invert button_1" onclick="controller:toggleInvert()">
+						<button id="invert_btn" class="invert button_1" onclick="controller:toggle_invert()">
 							<span id="invert_img" class="invert button_img">
 								<img src="bullet-u.png" class="psuedo_img"></img>
 							</span>
@@ -192,7 +192,7 @@
 					<div id=new_cont>
 						<div id=new_lock>
 						</div>
-						<button id="new_btn" class="new button_1" onclick="controller:getPresetInput(1)">
+						<button id="new_btn" class="new button_1" onclick="controller:get_preset_input(controller.PROMPT_TYPE_NEW_PRESET)">
 							<span id="new_img" class="new button_img">
 								<img src="star.png" class="psuedo_img"></img>
 							</span>
@@ -204,7 +204,7 @@
 					<div id=clone_cont>
 						<div id=clone_lock>
 						</div>
-						<button id="clone_btn" class="clone button_1" onclick="controller:getPresetInput(2)">
+						<button id="clone_btn" class="clone button_1" onclick="controller:get_preset_input(controller.PROMPT_TYPE_CLONE_PRESET)">
 							<span id="clone_img" class="clone button_img">
 								<img src="diamonds.png" class="psuedo_img"></img>
 							</span>
@@ -216,7 +216,7 @@
 					<div id=delete_cont>
 						<div id=delete_lock>
 						</div>
-						<button id="delete_btn" class="delete button_1" onclick="controller:verifyDelete()">
+						<button id="delete_btn" class="delete button_1" onclick="controller:verify_delete()">
 							<span id="delete_img" class="delete button_img">
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>
@@ -233,7 +233,7 @@
 			<div id=bottom_panel_b>
 				<div id=b_panel_wrapper>
 					<div id=accept_cont>
-						<button id="accept_btn" class="accept button_1" onclick="controller:Exit(element)">
+						<button id="accept_btn" class="accept button_1" onclick="controller:exit_pressed(element)">
 							<span id="accept_img" class="accept button_img">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>
