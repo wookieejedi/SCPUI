@@ -1,225 +1,261 @@
-local dialogs = require("lib_dialogs")
-local topics = require("lib_ui_topics")
+-----------------------------------
+--Controller for the HUD Config UI
+-----------------------------------
+
+local Dialogs = require("lib_dialogs")
+local Topics = require("lib_ui_topics")
+
 local class = require("lib_class")
-local async_util = require("lib_async")
 
 local HudConfigController = class()
 
-ScpuiSystem.data.memory.hud_config = nil
+HudConfigController.SLIDER_RED = 1 --- @type number Red slider id
+HudConfigController.SLIDER_GREEN = 2 --- @type number Green slider id
+HudConfigController.SLIDER_BLUE = 3 --- @type number Blue slider id
+HudConfigController.SLIDER_ALPHA = 4 --- @type number Alpha slider id
 
+HudConfigController.GAUGE_FLAG_ON = 1 --- @type number Show gauge flag
+HudConfigController.GAUGE_FLAG_OFF = 2 --- @type number Hide gauge flag
+HudConfigController.GAUGE_FLAG_POPUP = 3 --- @type number Popup gauge flag
+
+HudConfigController.PROMPT_GET_PRESET_NAME = 1 --- @type number Get preset name prompt
+
+--- Called by the class constructor
+--- @return nil
 function HudConfigController:init()
+	self.Document = nil --- @type Document RML document
+	self.DefaultConfigFile = "hud_3.hcf" --- @type string Default config file
+	self.PresetColors = {} --- @type scpui_hud_config_color[] Preset colors
+	self.RedValue = 0 --- @type number Red color value
+	self.GreenValue = 0 --- @type number Green color value
+	self.BlueValue = 0 --- @type number Blue color value
+	self.AlphaValue = 0 --- @type number Alpha color value
+	self.Mutex = true --- @type boolean	Prevents circular updates
+	self.SelectAll = false --- @type boolean Select all gauges
+	self.PreviousPreset = nil --- @type number The previous preset index
+	self.CurrentPreset = nil --- @type number The current preset index
+	self.CurrentPresetName = nil --- @type string The current preset name
+	self.SelectedGaugeName = nil --- @type string The selected gauge name
+	self.SelectedGauge = nil --- @type gauge_config The selected gauge
+	self.Click = false --- @type boolean Mouse click flag
+	self.PreviousAlphaValue = 0 --- @type number Previous alpha value
+	self.PromptControl = nil --- @type number Used to control the prompt dialog
 
-	ScpuiSystem.data.memory.hud_config = {}
-	
-	self.default = "hud_3.hcf"
-	
-	self.presetColors = {}
-	
+	--- Setup our built-in presets
 	--green
-	self.presetColors[1] = {
+	self.PresetColors[1] = {
 		Name = "green",
-		r = 0,
-		g = 255,
-		b = 0,
-		a = 255
+		R = 0,
+		G = 255,
+		B = 0,
+		A = 255
 	}
 	--amber
-	self.presetColors[2] = {
+	self.PresetColors[2] = {
 		Name = "amber",
-		r = 255,
-		g = 297,
-		b = 0,
-		a = 255
+		R = 255,
+		G = 297,
+		B = 0,
+		A = 255
 	}
 	--blue
-	self.presetColors[3] = {
+	self.PresetColors[3] = {
 		Name = "blue",
-		r = 67,
-		g = 123,
-		b = 203,
-		a = 255
+		R = 67,
+		G = 123,
+		B = 203,
+		A = 255
 	}
 
+	--- Make sure to clear the memory data
+	ScpuiSystem.data.memory.hud_config = {}
 end
 
+--- Called by the RML document
+--- @param document Document
 function HudConfigController:initialize(document)
 
     self.Document = document
 
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
-	
+
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-	
+
 	local hud_el = self.Document:GetElementById("hud_drawn_content")
-	
+
 	--get coords to draw at
 	local hx = hud_el.offset_left + hud_el.parent_node.offset_left  + hud_el.parent_node.parent_node.offset_left
 	local hy = hud_el.offset_top + hud_el.parent_node.offset_top  + hud_el.parent_node.parent_node.offset_top
 	local hw = hud_el.offset_width
-	
+
 	--increase those coords by percentage
 	hx = hx + (0.02 * hx)
 	hy = hy + (-0.2 * hy)
 	hw = hw + (0.2 * hw)
-	
+
 	ui.HudConfig.initHudConfig(hx, hy, hw)
-	
+
 	ScpuiSystem.data.memory.hud_config.Mx = 0
 	ScpuiSystem.data.memory.hud_config.My = 0
 	ScpuiSystem.data.memory.hud_config.Draw = true
-	
-	self.r = 0
-	self.g = 0
-	self.b = 0
-	self.a = 0
-	
-	self.mutex = true -- stop circular updates at start
-	
-	self:value_update(self.r, self.g, self.b, self.a)
-	
-	self.mutex = false -- now allow updates
-	
+
+	self.Mutex = true -- stop circular updates at start
+
+	self:sliderValueUpdate(self.RedValue, self.GreenValue, self.BlueValue, self.AlphaValue)
+
+	self.Mutex = false -- now allow updates
+
 	self.Document:GetElementById("popup_btn"):SetClass("hidden", true)
 	self.Document:GetElementById("hud_on_btn"):SetClass("hidden", true)
 	self.Document:GetElementById("hud_off_btn"):SetClass("hidden", true)
-	
-	self.selectAll = false
-	
+
 	self:initPresets()
-	
-	topics.hudconfig.initialize:send(self)
+
+	Topics.hudconfig.initialize:send(self)
 end
 
+--- Initialize our color presets
+--- @return nil
 function HudConfigController:initPresets()
 	local parent_el = self.Document:GetElementById("list_presets_ul")
-	
+
 	ScpuiSystem:clearEntries(parent_el)
-	
-	self.oldPreset = nil
-	
-	for i = 1, #self.presetColors do
-		local entry = self.presetColors[i]
-		
+
+	self.PreviousPreset = nil
+
+	for i = 1, #self.PresetColors do
+		local entry = self.PresetColors[i]
+
 		local li_el = self.Document:CreateElement("li")
 		li_el.id = "preset_" .. i
-		
+
 		li_el:SetClass("preset_list_element", true)
 		li_el:SetClass("button_1", true)
-		
+
 		li_el.inner_rml = entry.Name
-		
+
 		li_el:AddEventListener("click", function(_, _, _)
-				self:SelectPreset(i, entry.Name)
+				self:selectPreset(i, entry.Name)
 			end)
-		
+
 		parent_el:AppendChild(li_el)
 	end
-	
+
 	for i = 1, #ui.HudConfig.GaugePresets do
 		local entry = ui.HudConfig.GaugePresets[i]
-		
+
 		local li_el = self.Document:CreateElement("li")
-		li_el.id = "preset_" .. i + #self.presetColors
-		
+		li_el.id = "preset_" .. i + #self.PresetColors
+
 		li_el:SetClass("preset_list_element", true)
 		li_el:SetClass("button_1", true)
-		
+
 		li_el.inner_rml = entry.Name
-		
+
 		li_el:AddEventListener("click", function(_, _, _)
-				self:SelectPreset(i + #self.presetColors, entry.Name)
+				self:selectPreset(i + #self.PresetColors, entry.Name)
 			end)
-		
+
 		parent_el:AppendChild(li_el)
 	end
-	
+
 end
 
+--- Set a all gauges to a preset color setting
+--- @param idx number The preset index
+--- @return nil
 function HudConfigController:setColor(idx)
 
-	local entry = self.presetColors[idx]
+	local entry = self.PresetColors[idx]
 
-	self.r = entry.r
-	self.g = entry.g
-	self.b = entry.b
-	self.a = entry.a
-	
+	self.RedValue = entry.R
+	self.GreenValue = entry.G
+	self.BlueValue = entry.B
+	self.AlphaValue = entry.A
+
 	for i = 1, #ui.HudConfig.GaugeConfigs do
 		self:changeGaugeColor(ui.HudConfig.GaugeConfigs[i])
 	end
 
 end
 
-function HudConfigController:SelectPreset(idx, name)
+--- Select a preset color setting, either file or built-in color
+--- @param idx number The preset index
+--- @param name string The preset name
+--- @return nil
+function HudConfigController:selectPreset(idx, name)
 
 	--deselect all if all is selected
-	if self.selectAll == true then
+	if self.SelectAll == true then
 		self:select_all()
 	end
 
-	if self.currentPreset == idx then
+	if self.CurrentPreset == idx then
 		return
 	end
 
-	self.currentPreset = idx
-	
-	if self.oldPreset == nil then
-		self.oldPreset = idx
+	self.CurrentPreset = idx
+
+	if self.PreviousPreset == nil then
+		self.PreviousPreset = idx
 	else
-		local presetID = "preset_" .. self.oldPreset
-		self.Document:GetElementById(presetID):SetPseudoClass("checked", false)
-			
-		self.oldPreset = idx
+		self.Document:GetElementById("preset_" .. self.PreviousPreset):SetPseudoClass("checked", false)
+
+		self.PreviousPreset = idx
 	end
-	
-	local presetID = "preset_" .. self.oldPreset
-	self.Document:GetElementById(presetID):SetPseudoClass("checked", true)
-	
+
+	self.Document:GetElementById("preset_" .. self.PreviousPreset):SetPseudoClass("checked", true)
+
 	--is this a built-in preset?
 	local builtin = 0
-	for i = 1, #self.presetColors do
-		local entry = self.presetColors[i]
-		
+	for i = 1, #self.PresetColors do
+		local entry = self.PresetColors[i]
+
 		if entry.Name == name then
 			builtin = i
 			break
 		end
 	end
-	
+
 	if builtin > 0 then
 		self:setColor(builtin)
 	else
 		ui.HudConfig.usePresetFile(name)
 	end
-	
-	self.currentPresetName = name
-	
+
+	self.CurrentPresetName = name
+
 	--causes nothing to be selected and updates the UI accordingly
 	self:mouse_click()
 
 end
 
-function HudConfigController:UnselectAllPresets()
-	if not self.click then
-		if self.oldPreset ~= nil then
-			local presetID = "preset_" .. self.oldPreset
+--- Unselect all presets in the preset list
+--- @return nil
+function HudConfigController:unselectAllPresets()
+	if not self.Click then
+		if self.PreviousPreset ~= nil then
+			local presetID = "preset_" .. self.PreviousPreset
 			self.Document:GetElementById(presetID):SetPseudoClass("checked", false)
 		end
-				
-		self.oldPreset = nil
-		self.currentPreset = nil
-		self.currentPresetName = nil
+
+		self.PreviousPreset = nil
+		self.CurrentPreset = nil
+		self.CurrentPresetName = nil
 	end
 end
 
+--- Save the current settings as a preset file
+--- @param name string The preset name
+--- @return nil
 function HudConfigController:savePreset(name)
 
 	local continue = true
-	
+
 	--Make sure preset names have no spaces and aren't longer than 28 characters
-	local name = name:gsub("%s+", "")
+	name = name:gsub("%s+", "")
 	if #name > 28 then
 		name = name:sub(1, 28)
 	end
@@ -231,58 +267,64 @@ function HudConfigController:savePreset(name)
 			break
 		end
 	end
-	
+
 	--is this a built-in preset?
-	for i = 1, #self.presetColors do
-		local entry = self.presetColors[i]
-		
+	for i = 1, #self.PresetColors do
+		local entry = self.PresetColors[i]
+
 		if entry.Name == name then
 			continue = false
 			break
 		end
 	end
-	
+
 	if continue == true then
 		ui.HudConfig.saveToPreset(name)
 		self:initPresets()
 	else
 		local text = "An identical preset already exists!"
 		local title = ""
+		--- @type dialog_button[]
 		local buttons = {}
 		buttons[1] = {
-			b_type = dialogs.BUTTON_TYPE_POSITIVE,
-			b_text = ba.XSTR("Okay", 888290),
-			b_value = "",
-			b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
+			Type = Dialogs.BUTTON_TYPE_POSITIVE,
+			Text = ba.XSTR("Okay", 888290),
+			Value = "",
+			Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 		}
-		
-		self:Show(text, title, false, buttons)
+
+		self:showDialog(text, title, false, buttons)
 	end
-	
+
 end
 
-function HudConfigController:deletePreset()
+--- Called by the RML to delete the selected preset
+--- @return nil
+function HudConfigController:delete_preset()
 
-	if self.currentPresetName == nil then
+	if self.CurrentPresetName == nil then
 		return
 	end
 
-	local preset = self.currentPresetName
-	
+	local preset = self.CurrentPresetName
+
 	for i = 1, #ui.HudConfig.GaugePresets do
 		local entry = ui.HudConfig.GaugePresets[i]
-		
+
 		if entry.Name == preset then
 			entry:deletePreset()
 			break
 		end
 	end
-	
+
 	self:initPresets()
-	
+
 end
 
-function HudConfigController:Exit(element)
+--- Called by the RML to exit the HUD Config UI
+--- @param element Element
+--- @return nil
+function HudConfigController:exit(element)
 
     ui.playElementSound(element, "click", "success")
 	ScpuiSystem.data.memory.hud_config.Draw = nil
@@ -291,7 +333,11 @@ function HudConfigController:Exit(element)
 
 end
 
-function HudConfigController:global_keydown(_, event)
+--- Global keydown function handles all keypresses
+--- @param element Element The main document element
+--- @param event Event The event that was triggered
+--- @return nil
+function HudConfigController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
 		ScpuiSystem.data.memory.hud_config.Draw = nil
@@ -300,6 +346,8 @@ function HudConfigController:global_keydown(_, event)
 	end
 end
 
+--- Tells FSO to draw the gauges for the HUD Config UI
+--- @return nil
 function HudConfigController:drawHUD()
 	if ScpuiSystem.data.memory.hud_config ~= nil then
 		if ScpuiSystem.data.memory.hud_config.Draw == false then
@@ -309,108 +357,135 @@ function HudConfigController:drawHUD()
 	end
 end
 
+--- Change a gauge's color
+--- @param gauge gauge_config The gauge to change
+--- @return nil
 function HudConfigController:changeGaugeColor(gauge)
-	local color = gr.createColor(self.r, self.g, self.b, self.a)
+	local color = gr.createColor(self.RedValue, self.GreenValue, self.BlueValue, self.AlphaValue)
 	gauge.CurrentColor = color
 end
 
-function HudConfigController:convert_slider_to_val(num)
+--- Convert a slider value to a color value
+--- @param num number The slider value
+--- @return integer value The color value
+function HudConfigController:convertSliderToVal(num)
 	--reverse the order first
 	local rev = 1 - num
 	return math.floor(rev * 255)
 end
 
-function HudConfigController:convert_val_to_slider(num)
+--- Convert a color value to a slider value
+--- @param num integer The color value
+--- @return number value The slider value
+function HudConfigController:convertValToSlider(num)
 	local rev = num / 255
 	--now reverse the value
 	return 1 - rev
 end
 
-function HudConfigController:recalc_alpha()
-	self.a = math.floor((self.r + self.g + self.b) / 3)
+--- Recalculate what the alpha value should be based on the current colors
+--- @return nil
+function HudConfigController:recalculateAlpha()
+	self.AlphaValue = math.floor((self.RedValue + self.GreenValue + self.BlueValue) / 3)
 end
 
-function HudConfigController:recalc_colors()
-	if self.a > self.a_old then
-		local pct = (self.a - self.a_old) / (255 - self.a_old)
-		
-		self.r = self.r + ((255 - self.r) * pct)
-		self.g = self.g + ((255 - self.g) * pct)
-		self.b = self.b + ((255 - self.b) * pct)
+--- Recalculate what the color values should be based on the current alpha value
+--- @return nil
+function HudConfigController:recalculateColors()
+	if self.AlphaValue > self.PreviousAlphaValue then
+		local pct = (self.AlphaValue - self.PreviousAlphaValue) / (255 - self.PreviousAlphaValue)
+
+		self.RedValue = self.RedValue + ((255 - self.RedValue) * pct)
+		self.GreenValue = self.GreenValue + ((255 - self.GreenValue) * pct)
+		self.BlueValue = self.BlueValue + ((255 - self.BlueValue) * pct)
 	else
-		local pct = (self.a_old - self.a) / self.a_old
-		
-		self.r = self.r - (self.r * pct)
-		self.g = self.g - (self.g * pct)
-		self.b = self.b - (self.b * pct)
+		local pct = (self.PreviousAlphaValue - self.AlphaValue) / self.PreviousAlphaValue
+
+		self.RedValue = self.RedValue - (self.RedValue * pct)
+		self.GreenValue = self.GreenValue - (self.GreenValue * pct)
+		self.BlueValue = self.BlueValue - (self.BlueValue * pct)
 	end
 end
 
+--- Called by the RML to update a slider value
+--- @param element Element The slider element
+--- @param event Event The event that was triggered
+--- @param id number The slider id. Should be one of the SLIDER_ enumerations
+--- @return nil
 function HudConfigController:slider_update(element, event, id)
-	if id == 1 then
-		if self.r ~= self:convert_slider_to_val(event.parameters.value) and not self.mutex then
-			self.mutex = true
-			self.r = self:convert_slider_to_val(event.parameters.value)
-			self:recalc_alpha()
+	if id == self.SLIDER_RED then
+		if self.RedValue ~= self:convertSliderToVal(event.parameters.value) and not self.Mutex then
+			self.Mutex = true
+			self.RedValue = self:convertSliderToVal(event.parameters.value)
+			self:recalculateAlpha()
 		else
 			return
 		end
 	end
-	if id == 2 then
-		if self.g ~= self:convert_slider_to_val(event.parameters.value) and not self.mutex then
-			self.mutex = true
-			self.g = self:convert_slider_to_val(event.parameters.value)
-			self:recalc_alpha()
+	if id == self.SLIDER_GREEN then
+		if self.GreenValue ~= self:convertSliderToVal(event.parameters.value) and not self.Mutex then
+			self.Mutex = true
+			self.GreenValue = self:convertSliderToVal(event.parameters.value)
+			self:recalculateAlpha()
 		else
 			return
 		end
 	end
-	if id == 3 then
-		if self.b ~= self:convert_slider_to_val(event.parameters.value) and not self.mutex then
-			self.mutex = true
-			self.b = self:convert_slider_to_val(event.parameters.value)
-			self:recalc_alpha()
+	if id == self.SLIDER_BLUE then
+		if self.BlueValue ~= self:convertSliderToVal(event.parameters.value) and not self.Mutex then
+			self.Mutex = true
+			self.BlueValue = self:convertSliderToVal(event.parameters.value)
+			self:recalculateAlpha()
 		else
 			return
 		end
 	end
-	if id == 4 then
-		if self.a ~= self:convert_slider_to_val(event.parameters.value) and not self.mutex then
-			self.mutex = true
-			self.a_old = self.a
-			self.a = self:convert_slider_to_val(event.parameters.value)
-			self:recalc_colors()
+	if id == self.SLIDER_ALPHA then
+		if self.AlphaValue ~= self:convertSliderToVal(event.parameters.value) and not self.Mutex then
+			self.Mutex = true
+			self.PreviousAlphaValue = self.AlphaValue
+			self.AlphaValue = self:convertSliderToVal(event.parameters.value)
+			self:recalculateColors()
 		else
 			return
 		end
 	end
-	
-	if self.selectAll then
+
+	if self.SelectAll then
 		for i = 1, #ui.HudConfig.GaugeConfigs do
 			self:changeGaugeColor(ui.HudConfig.GaugeConfigs[i])
 		end
-	else	
-		if self.curGaugeName ~= nil then
-			self:changeGaugeColor(self.selectedGauge)
+	else
+		if self.SelectedGaugeName ~= nil then
+			self:changeGaugeColor(self.SelectedGauge)
 		end
 	end
-	
-	self:value_update(self.r, self.g, self.b, self.a)
-	
-	self.mutex = false
-	self:UnselectAllPresets()
+
+	self:sliderValueUpdate(self.RedValue, self.GreenValue, self.BlueValue, self.AlphaValue)
+
+	self.Mutex = false
+	self:unselectAllPresets()
 end
 
-function HudConfigController:value_update(r, g, b, a)
-	Element.As.ElementFormControlInput(self.Document:GetElementById("r_slider")).value = self:convert_val_to_slider(r)
-	Element.As.ElementFormControlInput(self.Document:GetElementById("g_slider")).value = self:convert_val_to_slider(g)
-	Element.As.ElementFormControlInput(self.Document:GetElementById("b_slider")).value = self:convert_val_to_slider(b)
-	Element.As.ElementFormControlInput(self.Document:GetElementById("a_slider")).value = self:convert_val_to_slider(a)
+--- Update the slider values based on the color values
+--- @param r number The red color value
+--- @param g number The green color value
+--- @param b number The blue color value
+--- @param a number The alpha color value
+--- @return nil
+function HudConfigController:sliderValueUpdate(r, g, b, a)
+	Element.As.ElementFormControlInput(self.Document:GetElementById("r_slider")).value = self:convertValToSlider(r)
+	Element.As.ElementFormControlInput(self.Document:GetElementById("g_slider")).value = self:convertValToSlider(g)
+	Element.As.ElementFormControlInput(self.Document:GetElementById("b_slider")).value = self:convertValToSlider(b)
+	Element.As.ElementFormControlInput(self.Document:GetElementById("a_slider")).value = self:convertValToSlider(a)
 end
 
+--- Toggle the slider controls on or off
+--- @param lock boolean Lock the controls
+--- @return nil
 function HudConfigController:lockColorControls(lock)
 	local color_lock_el = self.Document:GetElementById("color_lock")
-	
+
 	if lock then
 		color_lock_el:SetClass("locked", true)
 		color_lock_el:SetClass("unlocked", false)
@@ -420,49 +495,56 @@ function HudConfigController:lockColorControls(lock)
 	end
 end
 
-function HudConfigController:setGaugeFlags(flag)
-	
-	if flag == 1 then
-		self.selectedGauge.ShowGaugeFlag = true
+--- Called by the RML to set the gauge flags
+--- @param flag number The flag to set. Should be one of the GAUGE_FLAG_ enumerations
+--- @return nil
+function HudConfigController:set_gauge_flags(flag)
+
+	if flag == self.GAUGE_FLAG_ON then
+		self.SelectedGauge.ShowGaugeFlag = true
 		self:lockColorControls(false)
 	end
-	
-	if flag == 2 then
-		self.selectedGauge.ShowGaugeFlag = false
+
+	if flag == self.GAUGE_FLAG_OFF then
+		self.SelectedGauge.ShowGaugeFlag = false
 		self:lockColorControls(true)
 	end
-	
-	if flag == 3 then
-		self.selectedGauge.PopupGaugeFlag = not self.selectedGauge.PopupGaugeFlag
-		self.selectedGauge.ShowGaugeFlag = true
+
+	if flag == self.GAUGE_FLAG_POPUP then
+		self.SelectedGauge.PopupGaugeFlag = not self.SelectedGauge.PopupGaugeFlag
+		self.SelectedGauge.ShowGaugeFlag = true
 		self:lockColorControls(false)
 	end
-	
+
 	self:setupButtonOptions()
-	self:value_update(63, 63, 63, 63)
+	self:sliderValueUpdate(63, 63, 63, 63)
 end
 
+--- Toggles the popup option for the current gauge
+--- @return nil
 function HudConfigController:togglePopupOption()
 	local popup_el = self.Document:GetElementById("popup_btn")
-	
-	if self.selectedGauge.CanPopup then
+
+	if self.SelectedGauge.CanPopup then
 		popup_el:SetClass("hidden", false)
 	else
 		popup_el:SetClass("hidden", true)
 	end
 end
 
+--- Initialize the UI button options
+--- @return nil
 function HudConfigController:setupButtonOptions()
 	local popup_el = self.Document:GetElementById("popup_btn")
 	local hud_on_el = self.Document:GetElementById("hud_on_btn")
 	local hud_off_el = self.Document:GetElementById("hud_off_btn")
-	
-	if self.selectedGauge.PopupGaugeFlag then
+
+	if self.SelectedGauge.PopupGaugeFlag then
 		hud_on_el:SetPseudoClass("checked", false)
 		hud_off_el:SetPseudoClass("checked", false)
 		popup_el:SetPseudoClass("checked", true)
 	else
-		if self.selectedGauge.ShowGaugeFlag then
+		if self.SelectedGauge.ShowGaugeFlag then
 			hud_on_el:SetPseudoClass("checked", true)
 			hud_off_el:SetPseudoClass("checked", false)
 			popup_el:SetPseudoClass("checked", false)
@@ -473,80 +555,96 @@ function HudConfigController:setupButtonOptions()
 			self:lockColorControls(true)
 		end
 	end
-	
-	if self.selectedGauge.UsesIffForColor then
+
+	if self.SelectedGauge.UsesIffForColor then
 		self:lockColorControls(true)
 	end
 
 end
 
-function HudConfigController:setDefault()
+--- Called by the RML to set the configuration back to default
+--- @return nil
+function HudConfigController:set_default()
 	self:mouse_click()
-	ui.HudConfig.setToDefault(self.default)
+	ui.HudConfig.setToDefault(self.DefaultConfigFile)
 end
 
+--- Called by the RML to select all gauges
+--- @return nil
 function HudConfigController:select_all()
-	if self.selectAll == true then
-		self.selectAll = false
+	if self.SelectAll == true then
+		self.SelectAll = false
 	else
-		self.selectAll = true
+		self.SelectAll = true
 	end
 	self:mouse_click()
-	self.Document:GetElementById("select_all_btn"):SetPseudoClass("checked", self.selectAll)
-	ui.HudConfig.selectAllGauges(self.selectAll)
-	self:lockColorControls(not self.selectAll)
+	self.Document:GetElementById("select_all_btn"):SetPseudoClass("checked", self.SelectAll)
+	ui.HudConfig.selectAllGauges(self.SelectAll)
+	self:lockColorControls(not self.SelectAll)
 end
 
+--- Called by the RML to select a gauge. When click is try we capture the id of the gauge the mouse was over
+--- @return nil
 function HudConfigController:mouse_click()
-	
+
 	self.Document:GetElementById("hud_on_btn"):SetClass("hidden", true)
 	self.Document:GetElementById("hud_off_btn"):SetClass("hidden", true)
 	self.Document:GetElementById("popup_btn"):SetClass("hidden", true)
 	self:lockColorControls(false)
-	
-	self.click = true
+
+	self.Click = true
 
 	if ScpuiSystem.data.memory.hud_config.Gauge then
-		self.curGaugeName = nil
-		self.selectedGauge = ScpuiSystem.data.memory.hud_config.Gauge
-		self.selectedGauge:setSelected(true)
-		
-		local color = self.selectedGauge.CurrentColor
-		self:value_update(color.Red, color.Blue, color.Green, color.Alpha)
-		self.curGaugeName = self.selectedGauge.Name
-		
-		if self.curGaugeName ~= nil then
+		self.SelectedGaugeName = nil
+		self.SelectedGauge = ScpuiSystem.data.memory.hud_config.Gauge
+		self.SelectedGauge:setSelected(true)
+
+		local color = self.SelectedGauge.CurrentColor
+		self:sliderValueUpdate(color.Red, color.Blue, color.Green, color.Alpha)
+		self.SelectedGaugeName = self.SelectedGauge.Name
+
+		if self.SelectedGaugeName ~= nil then
 			self.Document:GetElementById("hud_on_btn"):SetClass("hidden", false)
 			self.Document:GetElementById("hud_off_btn"):SetClass("hidden", false)
-		
+
 			self:togglePopupOption()
 			self:setupButtonOptions()
 		end
 	end
-	
-	self.click = false
+
+	self.Click = false
 end
 
+--- Called by the RML whenever the mouse moves over the HUD Gauges element
+--- @param element Element The HUD Gauges element
+--- @param event Event The event that was triggered
+--- @return nil
 function HudConfigController:mouse_move(element, event)
 
 	if ScpuiSystem.data.memory.hud_config ~= nil then
 		ScpuiSystem.data.memory.hud_config.Mx = event.parameters.mouse_x
 		ScpuiSystem.data.memory.hud_config.My = event.parameters.mouse_y
 	end
-	
+
 end
 
-function HudConfigController:Show(text, title, input, buttons)
+--- Show a dialog box
+--- @param text string The dialog text
+--- @param title string The dialog title
+--- @param input boolean Whether the dialog should have an input field
+--- @param buttons dialog_button[] The dialog buttons
+--- @return nil
+function HudConfigController:showDialog(text, title, input, buttons)
 	--Create a simple dialog box with the text and title
 
 	ScpuiSystem.data.memory.hud_config.Draw = false
-	
-	local dialog = dialogs.new()
+
+	local dialog = Dialogs.new()
 		dialog:title(title)
 		dialog:text(text)
 		dialog:input(input)
 		for i = 1, #buttons do
-			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
+			dialog:button(buttons[i].Type, buttons[i].Text, buttons[i].Value, buttons[i].Keypress)
 		end
 		dialog:escape("")
 		dialog:show(self.Document.context)
@@ -557,36 +655,45 @@ function HudConfigController:Show(text, title, input, buttons)
 	ui.enableInput(self.Document.context)
 end
 
-function HudConfigController:getPresetInput()
-	
-	self.promptControl = 1
+--- Create a dialog box to get a preset name
+--- @return nil
+function HudConfigController:get_preset_input()
+
+	self.PromptControl = self.PROMPT_GET_PRESET_NAME
 
 	local text = "Please enter a name for the preset: "
 	local title = ""
+	--- @type dialog_button[]
 	local buttons = {}
 	buttons[1] = {
-		b_type = dialogs.BUTTON_TYPE_POSITIVE,
-		b_text = ba.XSTR("Okay", 888290),
-		b_value = "",
-		b_keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
+		Type = Dialogs.BUTTON_TYPE_POSITIVE,
+		Text = ba.XSTR("Okay", 888290),
+		Value = "",
+		Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
 	}
-	
-	self:Show(text, title, true, buttons)
+
+	self:showDialog(text, title, true, buttons)
 end
 
+--- Handle dialog responses
+--- @param response string The dialog response
+--- @return nil
 function HudConfigController:dialog_response(response)
-	local path = self.promptControl
-	self.promptControl = nil
+	local path = self.PromptControl
+	self.PromptControl = nil
 	ScpuiSystem.data.memory.hud_config.Draw = true
-	if path == 1 then
+	if path == self.PROMPT_GET_PRESET_NAME then
 		self:savePreset(response)
 	end
 end
 
+--- Called when the screen is being unloaded
+--- @return nil
 function HudConfigController:unload()
-	topics.hudconfig.unload:send(self)
+	Topics.hudconfig.unload:send(self)
 end
 
+--- Create a hook to draw the hud gauges every frame
 engine.addHook("On Frame", function()
 	if (ba.getCurrentGameState().Name == "GS_STATE_HUD_CONFIG") and (ScpuiSystem.data.Render == true) then
 		HudConfigController:drawHUD()

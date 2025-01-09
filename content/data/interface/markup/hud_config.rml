@@ -20,7 +20,7 @@
 					<div id=mod_panel>
 						<div id=mod_btn_wrapper>
 							<div id=hud_on_cont>
-								<button id="hud_on_btn" class="hud_on button_1" onclick="controller:setGaugeFlags(1)">
+								<button id="hud_on_btn" class="hud_on button_1" onclick="controller:set_gauge_flags(controller.GAUGE_FLAG_ON)">
 									<span id="hud_on_img" class="hud_on button_img">
 										<img src="round.png" class="psuedo_img"></img>
 									</span>
@@ -30,7 +30,7 @@
 								</button>
 							</div>
 							<div id=hud_off_cont>
-								<button id="hud_off_btn" class="hud_off button_1" onclick="controller:setGaugeFlags(2)">
+								<button id="hud_off_btn" class="hud_off button_1" onclick="controller:set_gauge_flags(controller.GAUGE_FLAG_OFF)">
 									<span id="hud_off_img" class="hud_off button_img">
 										<img src="round.png" class="psuedo_img"></img>
 									</span>
@@ -40,7 +40,7 @@
 								</button>
 							</div>
 							<div id=popup_cont>
-								<button id="popup_btn" class="popup button_1" onclick="controller:setGaugeFlags(3)">
+								<button id="popup_btn" class="popup button_1" onclick="controller:set_gauge_flags(controller.GAUGE_FLAG_POPUP)">
 									<span id="popup_img" class="popup button_img">
 										<img src="round.png" class="psuedo_img"></img>
 									</span>
@@ -57,7 +57,7 @@
 					<div id=global_btn_panel>
 						<div id=global_btn_wrapper>
 							<div id=reset_cont>
-								<button id="reset_btn" class="reset button_1" onclick="controller:setDefault()">
+								<button id="reset_btn" class="reset button_1" onclick="controller:set_default()">
 									<span id="reset_img" class="reset button_img">
 										<img src="default.png" class="psuedo_img"></img>
 									</span>
@@ -88,16 +88,16 @@
 			</div>
 			<div id=color_panel>
 				<div id=range_cont_r>
-					<input id=r_slider class="slider_range_el" type="range" min="0" max="1" step="0.01" orientation="vertical" onchange="controller:slider_update(element, event, 1)"></input>
+					<input id=r_slider class="slider_range_el" type="range" min="0" max="1" step="0.01" orientation="vertical" onchange="controller:slider_update(element, event, controller.SLIDER_RED)"></input>
 				</div>
 				<div id=range_cont_g>
-					<input id=g_slider class="slider_range_el" type="range" min="0" max="1" step="0.01" orientation="vertical" onchange="controller:slider_update(element, event, 2)"></input>
+					<input id=g_slider class="slider_range_el" type="range" min="0" max="1" step="0.01" orientation="vertical" onchange="controller:slider_update(element, event, controller.SLIDER_GREEN)"></input>
 				</div>
 				<div id=range_cont_b>
-					<input id=b_slider class="slider_range_el" type="range" min="0" max="1" step="0.01" orientation="vertical" onchange="controller:slider_update(element, event, 3)"></input>
+					<input id=b_slider class="slider_range_el" type="range" min="0" max="1" step="0.01" orientation="vertical" onchange="controller:slider_update(element, event, controller.SLIDER_BLUE)"></input>
 				</div>
 				<div id=range_cont_a>
-					<input id=a_slider class="slider_range_el" type="range" min="0" max="1" step="0.01" orientation="vertical" onchange="controller:slider_update(element, event, 4)"></input>
+					<input id=a_slider class="slider_range_el" type="range" min="0" max="1" step="0.01" orientation="vertical" onchange="controller:slider_update(element, event, controller.SLIDER_ALPHA)"></input>
 				</div>
 				<div id=color_text_wrapper>
 				</div>
@@ -112,7 +112,7 @@
 				</div>
 				<div id=preset_btn_wrapper>
 					<div id=new_cont>
-						<button id="new_btn" class="new button_1" onclick="controller:getPresetInput()">
+						<button id="new_btn" class="new button_1" onclick="controller:get_preset_input()">
 							<span id="new_img" class="new button_img">
 								<img src="star.png" class="psuedo_img"></img>
 							</span>
@@ -122,7 +122,7 @@
 						</button>
 					</div>
 					<div id=delete_cont>
-						<button id="delete_btn" class="delete button_1" onclick="controller:deletePreset()">
+						<button id="delete_btn" class="delete button_1" onclick="controller:delete_preset()">
 							<span id="delete_img" class="delete button_img">
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>
@@ -139,7 +139,7 @@
 			<div id=bottom_panel_b>
 				<div id=b_panel_wrapper>
 					<div id=accept_cont>
-						<button id="accept_btn" class="accept button_1" onclick="controller:Exit(element)">
+						<button id="accept_btn" class="accept button_1" onclick="controller:exit(element)">
 							<span id="accept_img" class="accept button_img">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>

@@ -416,3 +416,11 @@
 --- @field Type enumeration The type of hotkey setting, one of the HOTKEY_TYPE enumerations
 --- @field Keys_List string[] The list of keys for the ship
 --- @field Index integer The index of the hotkey into the hotkey list
+
+--- SCPUI HUD Config Color
+--- @class scpui_hud_config_color
+--- @field Name string The name of the color
+--- @field R integer The red value of the color
+--- @field G integer The green value of the color
+--- @field B integer The blue value of the color
+--- @field A integer The alpha value of the color
