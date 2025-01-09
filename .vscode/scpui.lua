@@ -400,3 +400,19 @@
 --- @field Filename string The filename of the campaign
 --- @field Description string The description of the campaign
 --- @field Element Element | nil the element for the campaign list item
+
+--- SCPUI Game Help Section
+--- @class game_help_section : help_section
+--- @field Subtitle string The subtitle of the section
+
+--- SCPUI Hotkey Setting
+--- @class scpui_hotkey_setting
+--- @field Heading string The heading of the hotkey setting
+--- @field Ships_List scpui_hotkey_ship_setting[] The ships hotkey settings
+
+--- SCPUI Hotkey Ship Setting
+--- @class scpui_hotkey_ship_setting
+--- @field Text string The text of the hotkey setting
+--- @field Type enumeration The type of hotkey setting, one of the HOTKEY_TYPE enumerations
+--- @field Keys_List string[] The list of keys for the ship
+--- @field Index integer The index of the hotkey into the hotkey list

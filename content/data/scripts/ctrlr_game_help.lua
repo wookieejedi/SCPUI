@@ -1,120 +1,142 @@
-local class = require("lib_class")
-local topics = require("lib_ui_topics")
+-----------------------------------
+--Controller for the Game Help UI
+-----------------------------------
 
-local GamehelpController = class()
+local Topics = require("lib_ui_topics")
 
+local Class = require("lib_class")
+
+local GamehelpController = Class()
+
+--- Called by the class constructor
+--- @return nil
 function GamehelpController:init()
+	self.Document = nil ---@type Document The RML document
+	self.TotalSections = 0 ---@type number The total number of sections in the game help to display
+	self.Sections = {} ---@type game_help_section[] The sections of the game help
+	self.CurrentSection = 1 ---@type number The current section of the game help to display
 end
 
----@param document Document
+--- Called by the RML document
+--- @param document Document
 function GamehelpController:initialize(document)
 
     self.Document = document
 
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
-	
+
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-	
+
 	if mn.isInMission() then
 		ScpuiSystem:pauseAllAudio(true)
 	end
-	
+
 	ui.GameHelp.initGameHelp()
-	
-	self.numSections = #ui.GameHelp.Help_Sections
+
+	self.TotalSections = #ui.GameHelp.Help_Sections
 	if ScpuiSystem.data.table_flags.HideMulti then
-		self.numSections = self.numSections - 1
+		self.TotalSections = self.TotalSections - 1
 	end
-	self.sections = {}
-	
+	self.Sections = {}
+
 	local count = 1
 	for i = 1, #ui.GameHelp.Help_Sections do
 		if ui.GameHelp.Help_Sections[i].Title == 'Multiplayer Keys' and ScpuiSystem.data.table_flags.HideMulti then
 			--Skip adding the multi keys
 		else
-			self.sections[count] = {
-				Title = nil,
-				Subtitle = nil,
-				Header = nil,
-				Keys = {},
-				Texts = {}
+			self.Sections[count] = {
+				Title = ui.GameHelp.Help_Sections[i].Title,
+				Subtitle = "Page " .. count .. " of " .. self.TotalSections,
+				Header = ui.GameHelp.Help_Sections[i].Header,
+				Keys = ui.GameHelp.Help_Sections[i].Keys,
+				Texts = ui.GameHelp.Help_Sections[i].Texts,
+				isValid = function() return ui.GameHelp.Help_Sections[i]:isValid() end
 			}
-			self.sections[count].Title = ui.GameHelp.Help_Sections[i].Title
-			self.sections[count].Subtitle = "Page " .. count .. " of " .. self.numSections
-			self.sections[count].Header = ui.GameHelp.Help_Sections[i].Header
-			self.sections[count].Keys = ui.GameHelp.Help_Sections[i].Keys
-			self.sections[count].Texts = ui.GameHelp.Help_Sections[i].Texts
-			
+
 			count = count + 1
 		end
 	end
-	
+
 	ui.GameHelp.closeGameHelp()
-	
-	topics.gamehelp.initialize:send(self)
-	
-	self:ChangeSection(1)
-	
+
+	Topics.gamehelp.initialize:send(self)
+
+	self:changeSection(1)
+
 end
 
-function GamehelpController:ChangeSection(section)
+--- Go to a specific section of the game help
+--- @param section number The section to go to
+--- @return nil
+function GamehelpController:changeSection(section)
 
-	self.currentSection = section
-	self:CreateEntries(section)
-	self.Document:GetElementById("gamehelp_title").inner_rml = self.sections[section].Title
-	self.Document:GetElementById("gamehelp_subtitle").inner_rml = self.sections[section].Subtitle
-	self.Document:GetElementById("gamehelp_header").inner_rml = self.sections[section].Header
-	
+	self.CurrentSection = section
+	self:createSectionListItems()
+	self.Document:GetElementById("gamehelp_title").inner_rml = self.Sections[section].Title
+	self.Document:GetElementById("gamehelp_subtitle").inner_rml = self.Sections[section].Subtitle
+	self.Document:GetElementById("gamehelp_header").inner_rml = self.Sections[section].Header
+
 end
 
-function GamehelpController:CreateEntries(section)
+--- Create the entries for the current section
+--- @return nil
+function GamehelpController:createSectionListItems()
 
-	local list_el = self.Document:GetElementById("list_keys_ul")
+	local list_keys_el = self.Document:GetElementById("list_keys_ul")
 
-	ScpuiSystem:clearEntries(list_el)
-	
-	for i = 1, #self.sections[self.currentSection].Keys do
-		local line = self.sections[self.currentSection].Keys[i]
+	ScpuiSystem:clearEntries(list_keys_el)
+
+	for i = 1, #self.Sections[self.CurrentSection].Keys do
+		local line = self.Sections[self.CurrentSection].Keys[i]
 		local li_el = self.Document:CreateElement("li")
 		li_el.inner_rml = line
-		list_el:AppendChild(li_el)
+		list_keys_el:AppendChild(li_el)
 	end
-	
-	local list_el = self.Document:GetElementById("list_texts_ul")
 
-	ScpuiSystem:clearEntries(list_el)
-	
-	for i = 1, #self.sections[self.currentSection].Texts do
-		local line = self.sections[self.currentSection].Texts[i]
+	local list_texts_el = self.Document:GetElementById("list_texts_ul")
+
+	ScpuiSystem:clearEntries(list_texts_el)
+
+	for i = 1, #self.Sections[self.CurrentSection].Texts do
+		local line = self.Sections[self.CurrentSection].Texts[i]
 		local li_el = self.Document:CreateElement("li")
 		li_el.inner_rml = line
-		list_el:AppendChild(li_el)
+		list_texts_el:AppendChild(li_el)
 	end
 end
 
-function GamehelpController:DecrementSection(element)
+--- Decrement the current section and loop back to the last section if needed
+--- @param element Element The element that triggered the event
+--- @return nil
+function GamehelpController:decrement_section(element)
 
-    if self.currentSection == 1 then
-		self:ChangeSection(self.numSections)
+    if self.CurrentSection == 1 then
+		self:changeSection(self.TotalSections)
 	else
-		self:ChangeSection(self.currentSection - 1)
+		self:changeSection(self.CurrentSection - 1)
 	end
 
 end
 
-function GamehelpController:IncrementSection(element)
+--- Increment the current section and loop back to the first section if needed
+--- @param element Element The element that triggered the event
+--- @return nil
+function GamehelpController:increment_section(element)
 
-    if self.currentSection == self.numSections then
-		self:ChangeSection(1)
+    if self.CurrentSection == self.TotalSections then
+		self:changeSection(1)
 	else
-		self:ChangeSection(self.currentSection + 1)
+		self:changeSection(self.CurrentSection + 1)
 	end
 
 end
 
-function GamehelpController:Exit(element)
+--- The exit button was clicked
+--- @param element Element The element that triggered the event
+--- @return nil
+function GamehelpController:exit(element)
 
     ui.playElementSound(element, "click", "success")
 	if mn.isInMission() then
@@ -124,7 +146,11 @@ function GamehelpController:Exit(element)
 
 end
 
-function GamehelpController:global_keydown(_, event)
+--- Global keydown function handles all keypresses
+--- @param element Element The main document element
+--- @param event Event The event that was triggered
+--- @return nil
+function GamehelpController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
 		if mn.isInMission() then
@@ -134,8 +160,10 @@ function GamehelpController:global_keydown(_, event)
     end
 end
 
+--- Called when the screen is being unloaded
+--- @return nil
 function GamehelpController:unload()
-	topics.gamehelp.unload:send(self)
+	Topics.gamehelp.unload:send(self)
 end
 
 return GamehelpController
