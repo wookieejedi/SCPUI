@@ -84,6 +84,7 @@
 888318, "Advance To The Next Mission"
 888345, "No, retry later"
 888340, "Accept this mission outcome?"
+888562, "Mission Kills by Ship Type"
 ;;debrief.rml
 888055, "Debriefing"
 888056, "Statistics"
@@ -328,6 +329,6 @@
 888560, "wookiejedi"
 888561, "WoolieWool"
 
-;;Next available ID: 888562
+;;Next available ID: 888563
 
 #end

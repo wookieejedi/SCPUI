@@ -1,34 +1,58 @@
-local async_util = require("lib_async")
-local dialogs = require("lib_dialogs")
-local utils = require("lib_utils")
-local topics = require("lib_ui_topics")
+-----------------------------------
+--Controller for the Debrief UI
+-----------------------------------
 
-local class = require("lib_class")
+local AsyncUtil = require("lib_async")
+local Dialogs = require("lib_dialogs")
+local Topics = require("lib_ui_topics")
 
-local DebriefingController = class()
+local Class = require("lib_class")
 
+local DebriefingController = Class()
+
+DebriefingController.STATE_NONE = 0 --- @type number Enumeration for medals, options, or other non-debrief states
+DebriefingController.STATE_DEBRIEF = 1 --- @type number Enumeration for the debriefing state
+DebriefingController.STATE_STATS = 2 --- @type number Enumeration for the stats state
+
+DebriefingController.PAGE_COMMAND_FIRST = 1 --- @type number Enumeration for the first page command
+DebriefingController.PAGE_COMMAND_PREV = 2 --- @type number Enumeration for the previous page command
+DebriefingController.PAGE_COMMAND_NEXT = 3 --- @type number Enumeration for the next page command
+DebriefingController.PAGE_COMMAND_LAST = 4 --- @type number Enumeration for the last page command
+
+--- Called by the class constructor
+--- @return nil
 function DebriefingController:init()
+    --Check if we need to play the pre-debrief cutscene
 	if not ScpuiSystem.data.state_init_status.Debrief then
 		ScpuiSystem:maybePlayCutscene(MOVIE_PRE_DEBRIEF)
 	end
-    self.stages = {}
-    self.recommendVisible = false
-    self.player = nil
-    self.page = 1
-    self.help_shown = false
+
+    --Now initialize all our variables
+    self.Stages = {} --- @type debriefing_stage[] The stages of the debriefing
+    self.RecommendVisible = false --- @type boolean Whether the recommendation text is currently shown
+    self.Player = nil --- @type player The current player, used for getting stats and medals
+    self.Page = 1 --- @type number The current page of the stats screen
+    self.HelpShown = false --- @type boolean Whether the help text is currently shown
+    self.SelectedSection = DebriefingController.STATE_DEBRIEF --- @type number The currently selected section of the debriefing screen
+    self.CurrentAudioStage = 0 --- @type number The current audio stage being played
+    self.AudioFinished = false --- @type boolean Whether the audio has finished playing
+    self.CurrentVoiceHandle = nil --- @type audio_stream The current audio stream handle
+    self.RecommendationElements = {} --- @type Element[] The recommendation elements
+    self.NumStages = 0 --- @type number The number of stages in the debriefing
+    self.ChatEl = nil --- @type Element The chat window element
+    self.ChatInputEl = nil --- @type Element The chat input element
+    self.Document = nil --- @type Document The RML document
 end
 
----@param document Document
+--- Called by the RML document
+--- @param document Document
 function DebriefingController:initialize(document)
     self.Document = document
-    self.selectedSection = 1
-    self.audioPlaying = 0
-	self.audioFinished = false
-    
+
     if not ScpuiSystem.data.state_init_status.Debrief then
         ui.Debriefing.initDebriefing()
         if not mn.hasDebriefing() then
-			topics.debrief.skip:send()
+			Topics.debrief.skip:send()
             self:close()
             ui.Debriefing.acceptMission()
 			ScpuiSystem:maybePlayCutscene(MOVIE_POST_DEBRIEF)
@@ -37,168 +61,181 @@ function DebriefingController:initialize(document)
         self:startMusic()
         ScpuiSystem.data.state_init_status.Debrief = true
     end
-    
-    self.player = ba.getCurrentPlayer()    
-    
-    if self.player.ShowSkipPopup and ui.Debriefing.canSkip() and ui.Debriefing.mustReplay() then
-        self:OfferSkip()
+
+    self.Player = ba.getCurrentPlayer()
+
+    if self.Player.ShowSkipPopup and ui.Debriefing.canSkip() and ui.Debriefing.mustReplay() then
+        self:offerSkipDialog()
     end
-    
+
     ---Load background choice
     self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
-	
-	self.chat_el = self.Document:GetElementById("chat_window")
-	self.input_id = self.Document:GetElementById("chat_input")
-    
+
+	self.ChatEl = self.Document:GetElementById("chat_window")
+	self.ChatInputEl = self.Document:GetElementById("chat_input")
+
     ---Load the desired font size from the save file
     self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-    
+
     self.Document:GetElementById("mission_name").inner_rml = mn.getMissionTitle()
     self.Document:GetElementById("awards_wrapper"):SetClass("hidden", true)
-    
+
     local li_el = self.Document:CreateElement("li")
-    
-    local promoStage, promoName, promoFile = ui.Debriefing.getEarnedPromotion()
-    local badgeStage, badgeName, badgeFile = ui.Debriefing.getEarnedBadge()
-    local medalName, medalFile = ui.Debriefing.getEarnedMedal()
-    
-    self.numStages = 0
-    self.audioPlaying = 0
-    
-    local traitorStage = ui.Debriefing.getTraitor()
-    
-    if not traitorStage then
-        if promoName then
-            self.numStages = self.numStages + 1
-            self.stages[self.numStages] = promoStage
+
+    local promo_stage, promo_name, promo_file = ui.Debriefing.getEarnedPromotion()
+    local badge_stage, badge_name, badge_file = ui.Debriefing.getEarnedBadge()
+    local medal_name, medal_file = ui.Debriefing.getEarnedMedal()
+    local traitor_stage = ui.Debriefing.getTraitor()
+
+    if not traitor_stage then
+        if promo_name then
+            self.NumStages = self.NumStages + 1
+            self.Stages[self.NumStages] = promo_stage
             self.Document:GetElementById("awards_wrapper"):SetClass("hidden", false)
             local awards_el = self.Document:GetElementById("medal_image_wrapper")
             local imgEl = self.Document:CreateElement("img")
-            imgEl:SetAttribute("src", promoFile)
+            imgEl:SetAttribute("src", promo_file)
             imgEl:SetClass("medal_img", true)
             awards_el:AppendChild(imgEl)
-            self.Document:GetElementById("promotion_text").inner_rml = promoName
+            self.Document:GetElementById("promotion_text").inner_rml = promo_name
         end
-        
-        if badgeName then
-            self.numStages = self.numStages + 1
-            self.stages[self.numStages] = badgeStage
+
+        if badge_name then
+            self.NumStages = self.NumStages + 1
+            self.Stages[self.NumStages] = badge_stage
             self.Document:GetElementById("awards_wrapper"):SetClass("hidden", false)
             local awards_el = self.Document:GetElementById("medal_image_wrapper")
             local imgEl = self.Document:CreateElement("img")
-            imgEl:SetAttribute("src", badgeFile)
+            imgEl:SetAttribute("src", badge_file)
             imgEl:SetClass("medal_img", true)
             awards_el:AppendChild(imgEl)
-            self.Document:GetElementById("badge_text").inner_rml = badgeName
+            self.Document:GetElementById("badge_text").inner_rml = badge_name
         end
-        
-        if medalName then
+
+        if medal_name then
 			--Check for an alt debrief bitmap
-			if ScpuiSystem.data.Medal_Info[medalName] then
-				if ScpuiSystem.data.Medal_Info[medalName].AltDebriefBitmap then
-					medalFile = ScpuiSystem.data.Medal_Info[medalName].AltDebriefBitmap
+			if ScpuiSystem.data.Medal_Info[medal_name] then
+				if ScpuiSystem.data.Medal_Info[medal_name].AltDebriefBitmap then
+					medal_file = ScpuiSystem.data.Medal_Info[medal_name].AltDebriefBitmap
 				end
 			end
             self.Document:GetElementById("awards_wrapper"):SetClass("hidden", false)
             local awards_el = self.Document:GetElementById("medal_image_wrapper")
             local imgEl = self.Document:CreateElement("img")
-            imgEl:SetAttribute("src", medalFile)
+            imgEl:SetAttribute("src", medal_file)
             imgEl:SetClass("medal_img", true)
             awards_el:AppendChild(imgEl)
-            self.Document:GetElementById("medal_text").inner_rml = medalName
+            self.Document:GetElementById("medal_text").inner_rml = medal_name
         end
-        
+
         local debriefing = ui.Debriefing.getDebriefing()
 
         for i = 1, #debriefing do
             --- @type debriefing_stage
             local stage = debriefing[i]
             if stage:checkVisible() then
-                self.numStages = self.numStages + 1
-                self.stages[self.numStages] = stage
+                self.NumStages = self.NumStages + 1
+                self.Stages[self.NumStages] = stage
                 --This is where we should replace variables and containers probably!
             end
         end
     else
-        self.numStages = 1
-        self.stages[1] = traitorStage
+        self.NumStages = 1
+        self.Stages[1] = traitor_stage
     end
-	
+
 	self.Document:GetElementById("stage_select"):SetClass("hidden", true)
 	self.Document:GetElementById("play_cont"):SetClass("hidden", true)
 	self.Document:GetElementById("stop_cont"):SetClass("hidden", true)
-    
-    self:BuildText()
-    
-    self:start_audio()
-    
+
+    self:buildText()
+
+    self:startAudio()
+
     self.Document:GetElementById("debrief_btn"):SetPseudoClass("checked", true)
-    
-	topics.debrief.initialize:send(self)
+
+	Topics.debrief.initialize:send(self)
 
 end
 
-function DebriefingController:start_audio()
-	self.audioPlaying = 0
-	self.audioFinished = false
-	self:PlayVoice()
+--- Start playing the debriefing audio at stage 0
+--- @return nil
+function DebriefingController:startAudio()
+	self.CurrentAudioStage = 0
+	self.AudioFinished = false
+	self:playVoice()
 	self.Document:GetElementById("play_cont"):SetClass("hidden", true)
 	self.Document:GetElementById("stop_cont"):SetClass("hidden", false)
 end
 
+--- Wrapper to start voice playback when the play button is pressed
+--- @return nil
+function DebriefingController:start_audio()
+    self:startAudio()
+end
+
+--- Stop playing the debriefing audio and set the current audio stage to the last stage when the button is pressed
+--- @return nil
 function DebriefingController:stop_audio()
-	self.audioPlaying = self.numStages
-	self:StopVoice()
+	self.CurrentAudioStage = self.NumStages
+	self:stopVoice()
 	self.Document:GetElementById("play_cont"):SetClass("hidden", false)
 	self.Document:GetElementById("stop_cont"):SetClass("hidden", true)
 end
 
-function DebriefingController:PlayVoice()
-	if self.selectedSection ~= 1 then
+--- Play all the audio sections using an async check to automatically move to the next stage as long as stop is not pressed
+--- @return nil
+function DebriefingController:playVoice()
+    -- Only play the voice if we are on the debriefing screen and not stats
+	if self.SelectedSection ~= DebriefingController.STATE_DEBRIEF then
 		return
 	end
 	-- If we've played all the audio then don't play any more!
-	if self.audioPlaying == self.numStages then
-		self.audioFinished = true
+	if self.CurrentAudioStage == self.NumStages then
+		self.AudioFinished = true
 		self.Document:GetElementById("play_cont"):SetClass("hidden", false)
 		self.Document:GetElementById("stop_cont"):SetClass("hidden", true)
 		return
 	end
     async.run(function()
         -- First, wait until the text has been shown fully
-        async.await(async_util.wait_for(1.0))
+        async.await(AsyncUtil.wait_for(1.0))
 
         -- And now we can start playing the voice file
-        if self.stages[self.audioPlaying + 1] then
-            if self.stages[self.audioPlaying + 1].AudioFilename then
-                self.audioPlaying = self.audioPlaying + 1
-                local file = self.stages[self.audioPlaying].AudioFilename
+        if self.Stages[self.CurrentAudioStage + 1] then
+            if self.Stages[self.CurrentAudioStage + 1].AudioFilename then
+                self.CurrentAudioStage = self.CurrentAudioStage + 1
+                local file = self.Stages[self.CurrentAudioStage].AudioFilename
                 if #file > 0 and string.lower(file) ~= "none" then
 					--If a voice is already playing then close it and start a new one
-					self:StopVoice()
-                    self.current_voice_handle = ad.openAudioStream(file, AUDIOSTREAM_VOICE)
-                    self.current_voice_handle:play(ad.MasterVoiceVolume)
+					self:stopVoice()
+                    self.CurrentVoiceHandle = ad.openAudioStream(file, AUDIOSTREAM_VOICE)
+                    self.CurrentVoiceHandle:play(ad.MasterVoiceVolume)
                 end
             end
         end
 
         self:waitForStageFinishAsync()
-        
-        if self.selectedSection == 1 then
-            self:PlayVoice()
+
+        if self.SelectedSection == DebriefingController.STATE_DEBRIEF then
+            self:playVoice()
         end
     end, async.OnFrameExecutor)
 end
 
-function DebriefingController:StopVoice()
-	if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
-		self.current_voice_handle:close(false)
+--- Stop the current voice playback
+--- @return nil
+function DebriefingController:stopVoice()
+	if self.CurrentVoiceHandle ~= nil and self.CurrentVoiceHandle:isValid() then
+		self.CurrentVoiceHandle:close(false)
 	end
 end
 
+--- Wait for the current voice handle to finish playing + 0.5 seconds
+--- @return nil
 function DebriefingController:waitForStageFinishAsync()
-    if self.current_voice_handle ~= nil and self.current_voice_handle:isValid() then
-        while self.current_voice_handle:isPlaying() do
+    if self.CurrentVoiceHandle ~= nil and self.CurrentVoiceHandle:isValid() then
+        while self.CurrentVoiceHandle:isPlaying() do
             async.await(async.yield())
         end
     else
@@ -206,36 +243,38 @@ function DebriefingController:waitForStageFinishAsync()
     end
 
     -- Voice part is done so wait for a bit before saying we are actually finished
-    async.await(async_util.wait_for(0.5))
+    async.await(AsyncUtil.wait_for(0.5))
 end
 
-function DebriefingController:BuildText()
-    
-    local text_el = self.Document:GetElementById("debrief_text")
-    
-    self.RecIDs = {}
+--- Build all the text for the debrief state including inserting recommendations
+--- @return nil
+function DebriefingController:buildText()
 
-    for i = 1, #self.stages do
+    local text_el = self.Document:GetElementById("debrief_text")
+
+    self.RecommendationElements = {}
+
+    for i = 1, #self.Stages do
         local paragraph = self.Document:CreateElement("p")
         text_el:AppendChild(paragraph)
         paragraph:SetClass("debrief_text_actual", true)
-        local color_text = ScpuiSystem:setBriefingText(paragraph, self.stages[i].Text)
-        if self.stages[i].Recommendation ~= "" then
+        local color_text = ScpuiSystem:setBriefingText(paragraph, self.Stages[i].Text)
+        if self.Stages[i].Recommendation ~= "" then
             local recommendation = self.Document:CreateElement("p")
-            self.RecIDs[i] = recommendation
+            self.RecommendationElements[i] = recommendation
             text_el:AppendChild(recommendation)
-            recommendation.inner_rml = self.stages[i].Recommendation
+            recommendation.inner_rml = self.Stages[i].Recommendation
             recommendation:SetClass("hidden", true)
             recommendation:SetClass("red", true)
             recommendation:SetClass("recommendation", true)
         end
     end
 
-    if #self.RecIDs == 0 then
+    if #self.RecommendationElements == 0 then
         local paragraph = self.Document:CreateElement("p")
         text_el:AppendChild(paragraph)
         local recommendation = self.Document:CreateElement("p")
-        self.RecIDs[1] = recommendation
+        self.RecommendationElements[1] = recommendation
         text_el:AppendChild(recommendation)
         recommendation.inner_rml = ba.XSTR("We have no recommendations for you.", 888314)
         recommendation:SetClass("hidden", true)
@@ -245,31 +284,33 @@ function DebriefingController:BuildText()
 
 end
 
-function DebriefingController:BuildStats()
+--- Build all the stats text elements
+--- @return nil
+function DebriefingController:buildStats()
 
-    local stats = self.player.Stats
-    local name = self.player:getName()
+    local stats = self.Player.Stats
+    local name = self.Player:getName()
 
     ---@type number | string
     local difficulty = ba.getGameDifficulty()
 
     ---@type number | string
-    local missionTime = mn.getMissionTime() + mn.MissionHUDTimerPadding 
-    
+    local mission_time = mn.getMissionTime() + mn.MissionHUDTimerPadding
+
     --Convert mission time to minutes + seconds
-    missionTime = (math.floor(missionTime/60)) .. ":" .. (math.floor(missionTime % 60))
-    
+    mission_time = (math.floor(mission_time/60)) .. ":" .. (math.floor(mission_time % 60))
+
     if difficulty == 1 then difficulty = ba.XSTR("Very Easy", 469, false) end
     if difficulty == 2 then difficulty = ba.XSTR("Easy", 470, false) end
     if difficulty == 3 then difficulty = ba.XSTR("Medium", 471, false) end
     if difficulty == 4 then difficulty = ba.XSTR("Hard", 472, false) end
     if difficulty == 5 then difficulty = ba.XSTR("Very Hard", 473, false) end
-    
+
     local text_el = self.Document:GetElementById("debrief_text")
-    
+
     local titles = ""
     local numbers = ""
-    
+
     --Build stats header
     local header = self.Document:CreateElement("div")
     text_el:AppendChild(header)
@@ -282,8 +323,8 @@ function DebriefingController:BuildStats()
     header:AppendChild(page_el)
     page_el:SetClass("stats_header_right", true)
     name_el.inner_rml = name
-    page_el.inner_rml = self.page .. " of 4"
-    
+    page_el.inner_rml = self.Page .. " of 4"
+
     --Build stats sub header
     local subheader = self.Document:CreateElement("div")
     text_el:AppendChild(subheader)
@@ -294,80 +335,146 @@ function DebriefingController:BuildStats()
     name_el:SetClass("stats_left", true)
     subheader:AppendChild(page_el)
     page_el:SetClass("stats_right", true)
-    name_el.inner_rml = "Skill Level"
+    name_el.inner_rml = ba.XSTR("Skill Level", 1509, false)
     page_el.inner_rml = tostring(difficulty)
-    
+
     --Build stats page 1
-    if self.page == 1 then
-        titles = "Mission Time<br></br><br></br>Mission Stats<br></br><br></br>Total Kills<br></br><br></br>Primary Weapon Shots<br></br>Primary Weapon Hits<br></br>Primary Friendly Hits<br></br>Primary Hit %<br></br>Primary Friendly Hit %<br></br><br></br>Secondary Weapon Shots<br></br>Secondary Weapon Hits<br></br>Secondary Friendly Hits<br></br>Secondary Hit %<br></br>Secondary Friendly Hit %<br></br><br></br>Assists"
-        
-        local primaryHitPer = math.floor((stats.MissionPrimaryShotsHit / stats.MissionPrimaryShotsFired) * 100) .. "%"
-        local primaryFrHitPer = math.floor((stats.MissionPrimaryFriendlyHit / stats.MissionPrimaryShotsFired) * 100) .. "%"
-        local secondaryHitPer = math.floor((stats.MissionSecondaryShotsHit / stats.MissionSecondaryShotsFired) * 100) .. "%"
-        local secondaryFrHitPer = math.floor((stats.MissionSecondaryFriendlyHit / stats.MissionSecondaryShotsFired) * 100) .. "%"
-        
+    if self.Page == 1 then
+        local titles_table = {
+            ba.XSTR("Mission Time", 446, false), "<br></br><br></br>",
+            ba.XSTR("Mission Stats", 114, false), "<br></br><br></br>",
+            ba.XSTR("Total Kills", 115, false), "<br></br><br></br>",
+            ba.XSTR("Primary Weapon Shots", 116, false), "<br></br>",
+            ba.XSTR("Primary Weapon Hits", 117, false), "<br></br>",
+            ba.XSTR("Primary Friendly Hits", 118, false), "<br></br>",
+            ba.XSTR("Primary Hit %", 119, false), "<br></br>",
+            ba.XSTR("Primary Friendly Hit %", 120, false), "<br></br><br></br>",
+            ba.XSTR("Secondary Weapon Shots", 121, false), "<br></br>",
+            ba.XSTR("Secondary Weapon Hits", 122, false), "<br></br>",
+            ba.XSTR("Secondary Friendly Hits", 123, false), "<br></br>",
+            ba.XSTR("Secondary Hit %", 124, false), "<br></br>",
+            ba.XSTR("Secondary Friendly Hit %", 125, false), "<br></br><br></br>",
+            ba.XSTR("Assists", 126, false)
+        }
+
+        titles = table.concat(titles_table)
+
+        local primary_hit_percent = math.floor((stats.MissionPrimaryShotsHit / stats.MissionPrimaryShotsFired) * 100) .. "%"
+        local primary_fr_hit_percent = math.floor((stats.MissionPrimaryFriendlyHit / stats.MissionPrimaryShotsFired) * 100) .. "%"
+        local secondary_hit_percent = math.floor((stats.MissionSecondaryShotsHit / stats.MissionSecondaryShotsFired) * 100) .. "%"
+        local secondary_fr_hit_percent = math.floor((stats.MissionSecondaryFriendlyHit / stats.MissionSecondaryShotsFired) * 100) .. "%"
+
         --Zero out percentages if appropriate
         if stats.MissionPrimaryShotsHit == 0 then
-            primaryHitPer = 0 .. "%"
-            primaryFrHitPer = 0 .. "%"
+            primary_hit_percent = 0 .. "%"
+            primary_fr_hit_percent = 0 .. "%"
         end
         if stats.MissionSecondaryShotsHit == 0 then
-            secondaryHitPer = 0 .. "%"
-            secondaryFrHitPer = 0 .. "%"
+            secondary_hit_percent = 0 .. "%"
+            secondary_fr_hit_percent = 0 .. "%"
         end
-        
-        numbers = missionTime .. "<br></br><br></br><br></br><br></br>" .. stats.MissionTotalKills .. "<br></br><br></br>" .. stats.MissionPrimaryShotsFired .. "<br></br>" .. stats.MissionPrimaryShotsHit  .. "<br></br>" .. stats.MissionPrimaryFriendlyHit .. "<br></br>" .. primaryHitPer .. "<br></br>" .. primaryFrHitPer .. "<br></br><br></br>" .. stats.MissionSecondaryShotsFired .. "<br></br>" .. stats.MissionSecondaryShotsHit .. "<br></br>" .. stats.MissionSecondaryFriendlyHit .. "<br></br>" .. secondaryHitPer .. "<br></br>" .. secondaryFrHitPer .. "<br></br><br></br>" .. stats.MissionAssists
+
+        local numbers_table = {
+            mission_time, "<br></br><br></br><br></br><br></br>",
+            stats.MissionTotalKills, "<br></br><br></br>",
+            stats.MissionPrimaryShotsFired, "<br></br>",
+            stats.MissionPrimaryShotsHit, "<br></br>",
+            stats.MissionPrimaryFriendlyHit, "<br></br>",
+            primary_hit_percent, "<br></br>",
+            primary_fr_hit_percent, "<br></br><br></br>",
+            stats.MissionSecondaryShotsFired, "<br></br>",
+            stats.MissionSecondaryShotsHit, "<br></br>",
+            stats.MissionSecondaryFriendlyHit, "<br></br>",
+            secondary_hit_percent, "<br></br>",
+            secondary_fr_hit_percent, "<br></br><br></br>",
+            stats.MissionAssists
+        }
+
+        numbers = table.concat(numbers_table)
     end
-    
-    if self.page == 2 then
-        titles = "Mission Kills by Ship Type<br></br><br></br>"
+
+    if self.Page == 2 then
+        local mission_kills_s = ba.XSTR("Mission Kills by Ship Type", 888562)
+        titles = mission_kills_s .. "<br></br><br></br>"
         numbers = "<br></br><br></br>"
-        
+
         for i = 1, #tb.ShipClasses do
             local kills = stats:getMissionShipclassKills(tb.ShipClasses[i])
             if kills > 0 then
-                local name = topics.ships.name:send(tb.ShipClasses[i])
+                local name = Topics.ships.name:send(tb.ShipClasses[i])
                 titles = titles .. name .. "<br></br><br></br>"
                 numbers = numbers .. kills .. "<br></br><br></br>"
             end
         end
     end
-    
-    if self.page == 3 then
-        titles = "All Time Stats<br></br><br></br>Total Kills<br></br><br></br>Primary Weapon Shots<br></br>Primary Weapon Hits<br></br>Primary Friendly Hits<br></br>Primary Hit %<br></br>Primary Friendly Hit %<br></br><br></br>Secondary Weapon Shots<br></br>Secondary Weapon Hits<br></br>Secondary Friendly Hits<br></br>Secondary Hit %<br></br>Secondary Friendly Hit %<br></br><br></br>Assists"
-        
-        local primaryHitPer = math.floor((stats.PrimaryShotsHit / stats.PrimaryShotsFired) * 100) .. "%"
-        local primaryFrHitPer = math.floor((stats.PrimaryFriendlyHit / stats.PrimaryShotsFired) * 100) .. "%"
-        local secondaryHitPer = math.floor((stats.SecondaryShotsHit / stats.SecondaryShotsFired) * 100) .. "%"
-        local secondaryFrHitPer = math.floor((stats.SecondaryFriendlyHit / stats.SecondaryShotsFired) * 100) .. "%"
-        
+
+    if self.Page == 3 then
+        local titles_table = {
+            ba.XSTR("All Time Stats", 128, false), "<br></br><br></br>",
+            ba.XSTR("Total Kills", 115, false), "<br></br><br></br>",
+            ba.XSTR("Primary Weapon Shots", 116, false), "<br></br>",
+            ba.XSTR("Primary Weapon Hits", 117, false), "<br></br>",
+            ba.XSTR("Primary Friendly Hits", 118, false), "<br></br>",
+            ba.XSTR("Primary Hit %", 119, false), "<br></br>",
+            ba.XSTR("Primary Friendly Hit %", 120, false), "<br></br><br></br>",
+            ba.XSTR("Secondary Weapon Shots", 121, false), "<br></br>",
+            ba.XSTR("Secondary Weapon Hits", 122, false), "<br></br>",
+            ba.XSTR("Secondary Friendly Hits", 123, false), "<br></br>",
+            ba.XSTR("Secondary Hit %", 124, false), "<br></br>",
+            ba.XSTR("Secondary Friendly Hit %", 125, false), "<br></br><br></br>",
+            ba.XSTR("Assists", 126, false)
+        }
+
+        titles = table.concat(titles_table)
+
+        local primary_hit_percent = math.floor((stats.PrimaryShotsHit / stats.PrimaryShotsFired) * 100) .. "%"
+        local primary_fr_hit_percent = math.floor((stats.PrimaryFriendlyHit / stats.PrimaryShotsFired) * 100) .. "%"
+        local secondary_hit_percent = math.floor((stats.SecondaryShotsHit / stats.SecondaryShotsFired) * 100) .. "%"
+        local secondary_fr_hit_percent = math.floor((stats.SecondaryFriendlyHit / stats.SecondaryShotsFired) * 100) .. "%"
+
         --Zero out percentages if appropriate
         if stats.MissionPrimaryShotsHit == 0 then
-            primaryHitPer = 0 .. "%"
-            primaryFrHitPer = 0 .. "%"
+            primary_hit_percent = 0 .. "%"
+            primary_fr_hit_percent = 0 .. "%"
         end
         if stats.MissionSecondaryShotsHit == 0 then
-            secondaryHitPer = 0 .. "%"
-            secondaryFrHitPer = 0 .. "%"
+            secondary_hit_percent = 0 .. "%"
+            secondary_fr_hit_percent = 0 .. "%"
         end
-        
-        numbers = "<br></br><br></br>" .. stats.TotalKills .. "<br></br><br></br>" .. stats.PrimaryShotsFired .. "<br></br>" .. stats.PrimaryShotsHit  .. "<br></br>" .. stats.PrimaryFriendlyHit .. "<br></br>" .. primaryHitPer .. "<br></br>" .. primaryFrHitPer .. "<br></br><br></br>" .. stats.SecondaryShotsFired .. "<br></br>" .. stats.SecondaryShotsHit .. "<br></br>" .. stats.SecondaryFriendlyHit .. "<br></br>" .. secondaryHitPer .. "<br></br>" .. secondaryFrHitPer .. "<br></br><br></br>" .. stats.Assists
+
+        local numbers_table = {
+            "<br></br><br></br>",
+            stats.TotalKills, "<br></br><br></br>",
+            stats.PrimaryShotsFired, "<br></br>",
+            stats.PrimaryShotsHit, "<br></br>",
+            stats.PrimaryFriendlyHit, "<br></br>",
+            primary_hit_percent, "<br></br>",
+            primary_fr_hit_percent, "<br></br><br></br>",
+            stats.SecondaryShotsFired, "<br></br>",
+            stats.SecondaryShotsHit, "<br></br>",
+            stats.SecondaryFriendlyHit, "<br></br>",
+            secondary_hit_percent, "<br></br>",
+            secondary_fr_hit_percent, "<br></br><br></br>",
+            stats.Assists
+        }
+
+        numbers = table.concat(numbers_table)
     end
-    
-    if self.page == 4 then
+
+    if self.Page == 4 then
         titles = "All Time Kills by Ship Type<br></br><br></br>"
         numbers = "<br></br><br></br>"
-        
+
         for i = 1, #tb.ShipClasses do
             local kills = stats:getShipclassKills(tb.ShipClasses[i])
             if kills > 0 then
-                local name = topics.ships.name:send(tb.ShipClasses[i])
+                local name = Topics.ships.name:send(tb.ShipClasses[i])
                 titles = titles .. name .. "<br></br><br></br>"
                 numbers = numbers .. kills .. "<br></br><br></br>"
             end
         end
     end
-    
+
     --Actually write the stats data here
     local stats = self.Document:CreateElement("div")
     text_el:AppendChild(stats)
@@ -382,52 +489,64 @@ function DebriefingController:BuildStats()
 
 end
 
-function DebriefingController:ClearText()
+--- Clears the current text in the debriefing window
+--- @return nil
+function DebriefingController:clearDebriefText()
     self.Document:GetElementById("debrief_text").inner_rml = ""
 end
 
+--- Start the the debriefing music after a 2.5 second wait
+--- @return nil
 function DebriefingController:startMusic()
     local filename = ui.Debriefing.getDebriefingMusicName()
-    
+
     ScpuiSystem.data.memory.MusicHandle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
     async.run(function()
-        async.await(async_util.wait_for(2.5))
+        async.await(AsyncUtil.wait_for(2.5))
         ScpuiSystem.data.memory.MusicHandle:play(ad.MasterEventMusicVolume, true)
     end, async.OnFrameExecutor)
 end
 
-function DebriefingController:Show(text, title, buttons)
+--- Show a dialog box
+--- @param text string The text to display
+--- @param title string The title of the dialog box
+--- @param buttons dialog_button[] The buttons to display
+--- @return nil
+function DebriefingController:showDialog(text, title, buttons)
     --Create a simple dialog box with the text and title
 
-    local dialog = dialogs.new()
+    local dialog = Dialogs.new()
         dialog:title(title)
         dialog:text(text)
         dialog:escape("cancel")
         for i = 1, #buttons do
-            dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
+            dialog:button(buttons[i].Type, buttons[i].Text, buttons[i].Value, buttons[i].Keypress)
         end
         dialog:show(self.Document.context)
         :continueWith(function(response)
-        self:dialog_response(response)
-    end)
+            self:dialogReponse(response)
+        end)
     -- Route input to our context until the user dismisses the dialog box.
     ui.enableInput(self.Document.context)
 end
 
-function DebriefingController:dialog_response(response)
+--- Handle the dialog response
+--- @param response string The response from the dialog box
+--- @return nil
+function DebriefingController:dialogReponse(response)
     local switch = {
         accept = function()
-        
-            topics.debrief.accept:send()
-            
+
+            Topics.debrief.accept:send()
+
             self:close()
             ui.Debriefing.acceptMission()
 			ScpuiSystem:maybePlayCutscene(MOVIE_POST_DEBRIEF)
-        end, 
+        end,
         acceptquit = function()
-        
-            topics.debrief.accept:send()
-            
+
+            Topics.debrief.accept:send()
+
             self:close()
             ui.Debriefing.acceptMission(false)
 			ScpuiSystem:maybePlayCutscene(MOVIE_POST_DEBRIEF)
@@ -435,17 +554,17 @@ function DebriefingController:dialog_response(response)
             ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
         end,
         replay = function()
-        
-            topics.debrief.reject:send()
-            
+
+            Topics.debrief.reject:send()
+
             self:close()
             ui.Debriefing.clearMissionStats()
             ui.Debriefing.replayMission()
         end,
         quit = function()
-        
-            topics.debrief.reject:send()
-        
+
+            Topics.debrief.reject:send()
+
             self:close()
             ui.Debriefing.clearMissionStats()
             ui.Debriefing.replayMission(false)
@@ -453,19 +572,19 @@ function DebriefingController:dialog_response(response)
             ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
         end,
         skip = function()
-        
-            topics.debrief.accept:send()
-        
+
+            Topics.debrief.accept:send()
+
             self:close()
             ui.Debriefing.acceptMission(false)
 			ScpuiSystem:maybePlayCutscene(MOVIE_POST_DEBRIEF)
             ui.Briefing.skipMission()
         end,
         optout = function()
-            self.player.ShowSkipPopup = false
+            self.Player.ShowSkipPopup = false
         end,
         cancel = function()
-            --Do Nothing   
+            --Do Nothing
         end,
     }
 
@@ -476,159 +595,184 @@ function DebriefingController:dialog_response(response)
     end
 end
 
-function DebriefingController:GetCharacterAtWord(text, index)
+--- Return the character at a specific word index in a string
+--- @param text string The text to search
+--- @param index number The index of the word to search
+--- @return string The character at the start of the word
+function DebriefingController:getCharacterAtWord(text, index)
 
     local words = {}
     for word in text:gmatch("%S+") do table.insert(words, word) end
-    
+
     if index > #words then index = #words end
     if index < 1 then index = 1 end
-    
+
     return string.sub(words[index], 1, 1)
 
 end
 
-function DebriefingController:OfferSkip()
+--- Creates the skip mission dialog box
+--- @return nil
+function DebriefingController:offerSkipDialog()
     local text = ba.XSTR("You have failed this mission five times.  If you like, you may advance to the next mission.", 888315)
     local title = ""
+    --- @type dialog_button[]
     local buttons = {}
-    
-    
-    
+
+
+
     buttons[1] = {
-        b_type = dialogs.BUTTON_TYPE_NEGATIVE,
-        b_text = ba.XSTR("Do Not Skip This Mission", 888316),
-        b_value = "cancel",
-        b_keypress = self:GetCharacterAtWord(ba.XSTR("Do Not Skip This Mission", 888316), 2)
+        Type = Dialogs.BUTTON_TYPE_NEGATIVE,
+        Text = ba.XSTR("Do Not Skip This Mission", 888316),
+        Value = "cancel",
+        Keypress = self:getCharacterAtWord(ba.XSTR("Do Not Skip This Mission", 888316), 2)
     }
     buttons[2] = {
-        b_type = dialogs.BUTTON_TYPE_POSITIVE,
-        b_text = ba.XSTR("Advance To The Next Mission", 888318),
-        b_value = "skip",
-        b_keypress = self:GetCharacterAtWord(ba.XSTR("Advance To The Next Mission", 888318), 1)
+        Type = Dialogs.BUTTON_TYPE_POSITIVE,
+        Text = ba.XSTR("Advance To The Next Mission", 888318),
+        Value = "skip",
+        Keypress = self:getCharacterAtWord(ba.XSTR("Advance To The Next Mission", 888318), 1)
     }
     buttons[3] = {
-        b_type = dialogs.BUTTON_TYPE_NEUTRAL,
-        b_text = ba.XSTR("Don't Show Me This Again", 888320),
-        b_value = "optout",
-        b_keypress = self:GetCharacterAtWord(ba.XSTR("Don't Show Me This Again", 888320), 1)
+        Type = Dialogs.BUTTON_TYPE_NEUTRAL,
+        Text = ba.XSTR("Don't Show Me This Again", 888320),
+        Value = "optout",
+        Keypress = self:getCharacterAtWord(ba.XSTR("Don't Show Me This Again", 888320), 1)
     }
-        
-    self:Show(text, title, buttons)
+
+    self:showDialog(text, title, buttons)
 end
 
+--- A paging button was pressed, so set the appropriate page
+--- @param command number The command that was pressed. Should be one of the PAGE_COMMAND enumerations
+--- @return nil
 function DebriefingController:page_pressed(command)
-    if self.selectedSection == 1 then
+    if self.SelectedSection == DebriefingController.STATE_DEBRIEF then
         ui.playElementSound(nil, "click", "failure")
         --FIXMEEEE
     else
-        if command == 1 then
-            self.page = 1
+        if command == self.PAGE_COMMAND_FIRST then
+            self.Page = 1
         end
-        if command == 4 then
-            self.page = 4
+        if command == self.PAGE_COMMAND_LAST then
+            self.Page = 4
         end
-        if command == 2 then
-            self.page = self.page - 1
-            if self.page <= 0 then
-                self.page = 1
+        if command == self.PAGE_COMMAND_PREV then
+            self.Page = self.Page - 1
+            if self.Page <= 0 then
+                self.Page = 1
             end
         end
-        if command == 3 then
-            self.page = self.page + 1
-            if self.page >= 5 then
-                self.page = 4
+        if command == self.PAGE_COMMAND_NEXT then
+            self.Page = self.Page + 1
+            if self.Page >= 5 then
+                self.Page = 4
             end
         end
-        
+
         ui.playElementSound(nil, "click", "success")
-        self:ClearText()
-        self:BuildStats()
+        self:clearDebriefText()
+        self:buildStats()
     end
 end
 
+--- The debrief button was pressed so switch to the debrief text and restart the audio if it hasn't finished
+--- @param element Element The element that was pressed
+--- @return nil
 function DebriefingController:debrief_pressed(element)
-    if self.selectedSection ~= 1 then
+    if self.SelectedSection ~= DebriefingController.STATE_DEBRIEF then
         ui.playElementSound(element, "click", "success")
         self.Document:GetElementById("debrief_btn"):SetPseudoClass("checked", true)
         self.Document:GetElementById("stats_btn"):SetPseudoClass("checked", false)
-        self.selectedSection = 1
-        
+        self.SelectedSection = DebriefingController.STATE_DEBRIEF
+
         self.Document:GetElementById("stage_select"):SetClass("hidden", true)
 		self.Document:GetElementById("play_controls"):SetClass("hidden", false)
-        
-        self:ClearText()
-        self:BuildText()
-		
-		if not self.audioFinished then
-			self:start_audio()
+
+        self:clearDebriefText()
+        self:buildText()
+
+		if not self.AudioFinished then
+			self:startAudio()
 		end
-        
-        self.recommendVisible = false
+
+        self.RecommendVisible = false
     end
 end
 
+--- The stats button was pressed so switch to the stats text
+--- @param element Element The element that was pressed
+--- @return nil
 function DebriefingController:stats_pressed(element)
-    if self.selectedSection ~= 2 then
+    if self.SelectedSection ~= DebriefingController.STATE_STATS then
         ui.playElementSound(element, "click", "success")
         self.Document:GetElementById("debrief_btn"):SetPseudoClass("checked", false)
         self.Document:GetElementById("stats_btn"):SetPseudoClass("checked", true)
-        self.selectedSection = 2
-        
+        self.SelectedSection = DebriefingController.STATE_STATS
+
         self.Document:GetElementById("stage_select"):SetClass("hidden", false)
 		self.Document:GetElementById("play_controls"):SetClass("hidden", true)
-        
-        self:ClearText()
-        self:StopVoice()
-        self:BuildStats()
-        
-        self.recommendVisible = false
+
+        self:clearDebriefText()
+        self:stopVoice()
+        self:buildStats()
+
+        self.RecommendVisible = false
     end
 end
 
+--- The recommend button was pressed so toggle the recommendations on or off
+--- @param element Element The element that was pressed
+--- @return nil
 function DebriefingController:recommend_pressed(element)
     ui.playElementSound(element, "click", "success")
-    
-    for i = 1, #self.RecIDs do
-        self.RecIDs[i]:SetClass("hidden", self.recommendVisible)
-    end
-    
-    self.recommendVisible = not self.recommendVisible
-end
-    
 
+    for i = 1, #self.RecommendationElements do
+        self.RecommendationElements[i]:SetClass("hidden", self.RecommendVisible)
+    end
+
+    self.RecommendVisible = not self.RecommendVisible
+end
+
+--- The replay button was pressed so show a dialog box to confirm the replay of the mission
+--- @param element Element The element that was pressed
+--- @return nil
 function DebriefingController:replay_pressed(element)
     ui.playElementSound(element, "click", "success")
     if ui.Debriefing:mustReplay() then
         ui.Debriefing.clearMissionStats()
-        
-        topics.debrief.reject:send()
-        
+
+        Topics.debrief.reject:send()
+
         self:close()
         ui.Debriefing.replayMission()
     else
         local text = ba.XSTR("If you choose to replay this mission, you will be required to complete it again before proceeding to future missions.\n\nIn addition, any statistics gathered during this mission will be discarded if you choose to replay.", 888322)
         text = string.gsub(text,"\n","<br></br>")
         local title = ""
+        ---@type dialog_button[]
         local buttons = {}
         buttons[1] = {
-            b_type = dialogs.BUTTON_TYPE_NEGATIVE,
-            b_text = ba.XSTR("Cancel", 888091),
-            b_value = "cancel",
-            b_keypress = self:GetCharacterAtWord(ba.XSTR("Cancel", 888091), 1)
+            Type = Dialogs.BUTTON_TYPE_NEGATIVE,
+            Text = ba.XSTR("Cancel", 888091),
+            Value = "cancel",
+            Keypress = self:getCharacterAtWord(ba.XSTR("Cancel", 888091), 1)
         }
         buttons[2] = {
-            b_type = dialogs.BUTTON_TYPE_POSITIVE,
-            b_text = ba.XSTR("Replay", 888325),
-            b_value = "replay",
-            b_keypress = self:GetCharacterAtWord(ba.XSTR("Replay", 888325), 1)
+            Type = Dialogs.BUTTON_TYPE_POSITIVE,
+            Text = ba.XSTR("Replay", 888325),
+            Value = "replay",
+            Keypress = self:getCharacterAtWord(ba.XSTR("Replay", 888325), 1)
         }
-            
-        self:Show(text, title, buttons)
+
+        self:showDialog(text, title, buttons)
     end
 end
 
-function DebriefingController:accept_pressed()
+--- The accept mission button was pressed so accept the mission or show a dialog box if necessary instead
+--- @param element Element The element that was pressed
+--- @return nil
+function DebriefingController:accept_pressed(element)
     if ui.Debriefing:mustReplay() then
         local text
         if ui.Debriefing.getTraitor() then
@@ -637,110 +781,128 @@ function DebriefingController:accept_pressed()
             text = ba.XSTR("You have failed this mission and cannot accept.  What do you you wish to do instead?", 888328)
         end
         local title = ""
+        ---@type dialog_button[]
         local buttons = {}
         buttons[1] = {
-            b_type = dialogs.BUTTON_TYPE_NEUTRAL,
-            b_text = ba.XSTR("Return to Debriefing", 888329),
-            b_value = "cancel",
-            b_keypress = self:GetCharacterAtWord(ba.XSTR("Return to Debriefing", 888329), 3)
+            Type = Dialogs.BUTTON_TYPE_NEUTRAL,
+            Text = ba.XSTR("Return to Debriefing", 888329),
+            Value = "cancel",
+            Keypress = self:getCharacterAtWord(ba.XSTR("Return to Debriefing", 888329), 3)
         }
         buttons[2] = {
-            b_type = dialogs.BUTTON_TYPE_NEUTRAL,
-            b_text = ba.XSTR("Go to Flight Deck", 888331),
-            b_value = "quit",
-            b_keypress = self:GetCharacterAtWord(ba.XSTR("Go to Flight Deck", 888331), 1)
+            Type = Dialogs.BUTTON_TYPE_NEUTRAL,
+            Text = ba.XSTR("Go to Flight Deck", 888331),
+            Value = "quit",
+            Keypress = self:getCharacterAtWord(ba.XSTR("Go to Flight Deck", 888331), 1)
         }
         buttons[3] = {
-            b_type = dialogs.BUTTON_TYPE_NEUTRAL,
-            b_text = ba.XSTR("Replay Mission", 888058),
-            b_value = "replay",
-            b_keypress = self:GetCharacterAtWord(ba.XSTR("Replay Mission", 888058), 1)
+            Type = Dialogs.BUTTON_TYPE_NEUTRAL,
+            Text = ba.XSTR("Replay Mission", 888058),
+            Value = "replay",
+            Keypress = self:getCharacterAtWord(ba.XSTR("Replay Mission", 888058), 1)
         }
-            
-        self:Show(text, title, buttons)
+
+        self:showDialog(text, title, buttons)
     else
-    
-        topics.debrief.accept:send()
-    
+
+        Topics.debrief.accept:send()
+
         self:close()
         ui.Debriefing.acceptMission()
 		ScpuiSystem:maybePlayCutscene(MOVIE_POST_DEBRIEF)
     end
 end
 
+--- The medals button was clicked so switch to the medals game state
+--- @param element Element The element that was pressed
+--- @return nil
 function DebriefingController:medals_button_clicked(element)
     ui.playElementSound(element, "click", "success")
-    self.selectedSection = 0
+    self.SelectedSection = DebriefingController.STATE_NONE
     ba.postGameEvent(ba.GameEvents["GS_EVENT_VIEW_MEDALS"])
 end
 
+--- The options button was clicked so switch to the options game state
+--- @param element Element The element that was pressed
+--- @return nil
 function DebriefingController:options_button_clicked(element)
     ui.playElementSound(element, "click", "success")
-    self.selectedSection = 0
+    self.SelectedSection = DebriefingController.STATE_NONE
     ba.postGameEvent(ba.GameEvents["GS_EVENT_OPTIONS_MENU"])
 end
 
+--- The help button was clicked so toggle showing the help text
+--- @param element Element The element that was pressed
+--- @return nil
 function DebriefingController:help_clicked(element)
     ui.playElementSound(element, "click", "success")
-    
-    self.help_shown  = not self.help_shown
+
+    self.HelpShown  = not self.HelpShown
 
     local help_texts = self.Document:GetElementsByClassName("tooltip")
     for _, v in ipairs(help_texts) do
-        v:SetPseudoClass("shown", self.help_shown)
+        v:SetPseudoClass("shown", self.HelpShown)
     end
 end
 
-function DebriefingController:global_keydown(_, event)
+--- Global keydown function handles all keypresses
+--- @param element Element The main document element
+--- @param event Event The event that was triggered
+--- @return nil
+function DebriefingController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
         if ui.Debriefing:mustReplay() then
             local text = ba.XSTR("Because this mission was a failure, you must replay this mission when you continue your campaign.\n\nReturn to the Flight Deck?", 888335)
             text = string.gsub(text,"\n","<br></br>")
             local title = ""
+            ---@type dialog_button[]
             local buttons = {}
             buttons[1] = {
-                b_type = dialogs.BUTTON_TYPE_NEGATIVE,
-                b_text = ba.XSTR("No", 888298),
-                b_value = "cancel",
-                b_keypress = self:GetCharacterAtWord(ba.XSTR("No", 888298), 1)
+                Type = Dialogs.BUTTON_TYPE_NEGATIVE,
+                Text = ba.XSTR("No", 888298),
+                Value = "cancel",
+                Keypress = self:getCharacterAtWord(ba.XSTR("No", 888298), 1)
             }
             buttons[2] = {
-                b_type = dialogs.BUTTON_TYPE_POSITIVE,
-                b_text = ba.XSTR("Yes", 888296),
-                b_value = "quit",
-                b_keypress = self:GetCharacterAtWord(ba.XSTR("Yes", 888296), 1)
+                Type = Dialogs.BUTTON_TYPE_POSITIVE,
+                Text = ba.XSTR("Yes", 888296),
+                Value = "quit",
+                Keypress = self:getCharacterAtWord(ba.XSTR("Yes", 888296), 1)
             }
-                
-            self:Show(text, title, buttons)
+
+            self:showDialog(text, title, buttons)
         else
             local text = ba.XSTR("Accept this mission outcome?", 888340)
             local title = ""
+            ---@type dialog_button[]
             local buttons = {}
             buttons[1] = {
-                b_type = dialogs.BUTTON_TYPE_NEGATIVE,
-                b_text = ba.XSTR("Cancel", 888091),
-                b_value = "cancel",
-                b_keypress = self:GetCharacterAtWord(ba.XSTR("Cancel", 888091), 1)
+                Type = Dialogs.BUTTON_TYPE_NEGATIVE,
+                Text = ba.XSTR("Cancel", 888091),
+                Value = "cancel",
+                Keypress = self:getCharacterAtWord(ba.XSTR("Cancel", 888091), 1)
             }
             buttons[2] = {
-                b_type = dialogs.BUTTON_TYPE_POSITIVE,
-                b_text = ba.XSTR("Yes", 888296),
-                b_value = "acceptquit",
-                b_keypress = self:GetCharacterAtWord(ba.XSTR("Yes", 888296), 1)
+                Type = Dialogs.BUTTON_TYPE_POSITIVE,
+                Text = ba.XSTR("Yes", 888296),
+                Value = "acceptquit",
+                Keypress = self:getCharacterAtWord(ba.XSTR("Yes", 888296), 1)
             }
             buttons[3] = {
-                b_type = dialogs.BUTTON_TYPE_NEUTRAL,
-                b_text = ba.XSTR("No, retry later", 888345),
-                b_value = "quit",
-                b_keypress = self:GetCharacterAtWord(ba.XSTR("No, retry later", 888345), 1)
+                Type = Dialogs.BUTTON_TYPE_NEUTRAL,
+                Text = ba.XSTR("No, retry later", 888345),
+                Value = "quit",
+                Keypress = self:getCharacterAtWord(ba.XSTR("No, retry later", 888345), 1)
             }
-                
-            self:Show(text, title, buttons)
+
+            self:showDialog(text, title, buttons)
         end
     end
 end
 
+--- Close the debriefing controller, stop the audio, and unload the debriefing state
+--- @return nil
 function DebriefingController:close()
     if ScpuiSystem.data.memory.MusicHandle ~= nil and ScpuiSystem.data.memory.MusicHandle:isValid() then
         ScpuiSystem.data.memory.MusicHandle:close(false)
@@ -750,11 +912,13 @@ function DebriefingController:close()
     ScpuiSystem.data.state_init_status.Debrief = false
 end
 
+--- Called when the screen is being unloaded
+--- @return nil
 function DebriefingController:unload()
-	self.selectedSection = 0
-    self:StopVoice()
-	
-	topics.debrief.unload:send(self)
+	self.SelectedSection = DebriefingController.STATE_NONE
+    self:stopVoice()
+
+	Topics.debrief.unload:send(self)
 end
 
 --Prevent the debriefing UI from being drawn if we're just going

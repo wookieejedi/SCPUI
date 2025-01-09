@@ -16,7 +16,7 @@
 		<div id=chat_wrapper class="hidden">
 			<div id=chat_window>
 			</div>
-			<input id=chat_input type="text" maxlength="512" onblur="controller:InputFocusLost()"
+			<input id=chat_input type="text" maxlength="512" onblur="controller:input_focus_lost()"
 				onchange="controller:InputChange(event)"></input>
 			<div id=submit_cont>
 				<button id="submit_btn" class="submit button_1" onclick="controller:submit_pressed()">
@@ -95,28 +95,28 @@
 				<div id=stage_select>
 					<div id=button_wrapper>
 						<div id=skip_cont>
-							<button id="cmdlast_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(4)">
+							<button id="cmdlast_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(controller.PAGE_COMMAND_LAST)">
 								<span id="cmdlast_img" class="arrowbuttons button_img">
 									<img src="skip-r.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=arrow_cont>
-							<button id="cmdnext_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(3)">
+							<button id="cmdnext_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(controller.PAGE_COMMAND_NEXT)">
 								<span id="cmdnext_img" class="arrowbuttons button_img">
 									<img src="arrow-down.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=arrow_cont>
-							<button id="cmdprev_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(2)">
+							<button id="cmdprev_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(controller.PAGE_COMMAND_PREV)">
 								<span id="cmdprev_img" class="arrowbuttons button_img">
 									<img src="arrow-up.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=skip_cont>
-							<button id="cmdfirst_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(1)">
+							<button id="cmdfirst_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(controller.PAGE_COMMAND_FIRST)">
 								<span id="cmdfirst_img" class="arrowbuttons button_img">
 									<img src="skip-l.png" class="psuedo_img"></img>
 								</span>
