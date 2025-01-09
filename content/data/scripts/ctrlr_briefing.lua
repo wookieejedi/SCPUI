@@ -13,6 +13,10 @@ local AbstractBriefingController = require("ctrlr_briefing_common")
 --- Briefing controller is merged with the Briefing Common Controller
 local BriefingController = Class(AbstractBriefingController)
 
+BriefingController.STATE_BRIEFING = 1
+BriefingController.STATE_SHIP_SELECTION = 2
+BriefingController.STATE_WEAPON_SELECTION = 3
+
 --- Make sure the briefing map is uninitialized
 ScpuiSystem.data.memory.briefing_map = nil
 
@@ -250,19 +254,19 @@ function BriefingController:buildGoalsList()
 end
 
 --- A brief state button was clicked by the player, so try to change to that game state
---- @param state number The state to change to
+--- @param state number The state to change to. Should be one of the STATE enumerations
 --- @return nil
 function BriefingController:change_brief_state(state)
-	if state == 1 then
+	if state == BriefingController.STATE_BRIEFING then
 		--Do nothing because we're this is the current state!
 		--ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
-	elseif state == 2 then
+	elseif state == BriefingController.STATE_SHIP_SELECTION then
 		if mn.isScramble() then
 			ad.playInterfaceSound(10)
 		else
 			ba.postGameEvent(ba.GameEvents["GS_EVENT_SHIP_SELECTION"])
 		end
-	elseif state == 3 then
+	elseif state == BriefingController.STATE_WEAPON_SELECTION then
 		if mn.isScramble() then
 			ad.playInterfaceSound(10)
 		else

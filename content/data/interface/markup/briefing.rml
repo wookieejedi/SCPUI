@@ -49,7 +49,7 @@
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
 					<div id=bullet_cont>
-						<button id="brief_btn" class="bullet button_1" onclick="controller:change_brief_state(1)">
+						<button id="brief_btn" class="bullet button_1" onclick="controller:change_brief_state(controller.STATE_BRIEFING)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -59,7 +59,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="s_select_btn" class="bullet button_1" onclick="controller:change_brief_state(2)">
+						<button id="s_select_btn" class="bullet button_1" onclick="controller:change_brief_state(controller.STATE_SHIP_SELECTION)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -69,7 +69,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="w_select_btn" class="bullet button_1" onclick="controller:change_brief_state(3)">
+						<button id="w_select_btn" class="bullet button_1" onclick="controller:change_brief_state(controller.STATE_WEAPON_SELECTION)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
