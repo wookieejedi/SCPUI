@@ -424,3 +424,15 @@
 --- @field G integer The green value of the color
 --- @field B integer The blue value of the color
 --- @field A integer The alpha value of the color
+
+--- SCPUI Multi Setup Player
+--- @class scpui_multi_setup_player
+--- @field Name string The name of the player
+--- @field Team number The team of the player
+--- @field Host boolean True if the player is the host, false otherwise
+--- @field Observer boolean True if the player is an observer, false otherwise
+--- @field Captain boolean True if the player is the captain, false otherwise
+--- @field InternalId string The internal ID of the player for the UI
+--- @field Index number The index of the player in the NetPlayers list
+--- @field Entry net_player The net player entry for the player
+--- @field Key? string The player element id
