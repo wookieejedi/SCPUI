@@ -201,6 +201,11 @@ function DebriefingController:playVoice()
         -- First, wait until the text has been shown fully
         async.await(AsyncUtil.wait_for(1.0))
 
+        -- Just in case the player has left the debriefing screen really fast
+        if self.SelectedSection == DebriefingController.STATE_NONE then
+            return
+        end
+
         -- And now we can start playing the voice file
         if self.Stages[self.CurrentAudioStage + 1] then
             if self.Stages[self.CurrentAudioStage + 1].AudioFilename then
