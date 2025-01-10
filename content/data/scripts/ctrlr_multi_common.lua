@@ -78,6 +78,49 @@ function AbstractMultiController:initialize(document)
     self.Document = document
 end
 
+--- Send the current input chat string to the server
+--- @return nil
+function AbstractMultiController:sendChat()
+	if string.len(self.SubmittedChatValue) > 0 then
+		if self.Subclass == self.CTRL_PXO then
+			ui.MultiPXO.sendChat(self.SubmittedChatValue)
+		else
+			ui.MultiGeneral.sendChat(self.SubmittedChatValue)
+		end
+		self.ChatInputEl:SetAttribute("value", "")
+		self.SubmittedChatValue = ""
+	end
+end
+
+--- Get the player stats and display them in a dialog box
+--- @param name string The name of player to get the stats for
+--- @return nil
+function AbstractMultiController:getPlayerStats(name)
+
+	local stats = nil
+
+	if self.Subclass == self.CTRL_PXO then
+		stats = ui.MultiPXO.getPlayerStats(name)
+	else
+		stats = self:getPlayerByName(name).Entry:getStats()
+	end
+
+	ScpuiSystem.data.memory.multiplayer_general.DialogType = AbstractMultiController.DIALOG_PLAYER_STATS
+
+	local text = self:initializeStatsText(stats)
+	local title = name .. "'s stats"
+	---@type dialog_button[]
+	local buttons = {}
+	buttons[1] = {
+		Type = Dialogs.BUTTON_TYPE_POSITIVE,
+		Text = ba.XSTR("Okay", 888290),
+		Value = "",
+		Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
+	}
+
+	self:showDialog(text, title, false, buttons)
+end
+
 --- Show a dialog box
 --- @param text string The text to display in the dialog box
 --- @param title string The title of the dialog box
@@ -437,6 +480,28 @@ function AbstractMultiController:updatePlayersList()
 			if not Utils.table.contains(players, self.Player_Ids[i]) then
 				self:removePlayer(i)
 			end
+		end
+	end
+end
+
+--- Get a player from the Player_List by key
+--- @param key string The key to search for
+--- @return scpui_multi_setup_player? player The player object
+function AbstractMultiController:getPlayerByKey(key)
+	for i = 1, #self.Player_List do
+		if self.Player_List[i].Key == key then
+			return self.Player_List[i]
+		end
+	end
+end
+
+--- Get a player from the Player_List by name
+--- @param name string The name to search for
+--- @return scpui_multi_setup_player? player The player object
+function AbstractMultiController:getPlayerByName(name)
+	for i = 1, #self.Player_List do
+		if self.Player_List[i].Name == name then
+			return self.Player_List[i]
 		end
 	end
 end

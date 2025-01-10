@@ -153,7 +153,7 @@ end
 --- @return nil
 function HostOptionsController:submit_pressed()
 	if self.SubmittedChatValue then
-		self:sendChat()
+		AbstractMultiController.sendChat(self)
 	end
 end
 
@@ -179,17 +179,8 @@ function HostOptionsController:global_keydown(element, event)
 	end
 end
 
---- Send the chat message to the server
---- @return nil
-function HostOptionsController:sendChat()
-	if string.len(self.SubmittedChatValue) > 0 then
-		ui.MultiGeneral.sendChat(self.SubmittedChatValue)
-		self.ChatInputEl:SetAttribute("value", "")
-		self.SubmittedChatValue = ""
-	end
-end
-
 --- When the element loses focus
+--- @return nil
 function HostOptionsController:input_focus_lost()
 	--do nothing
 end
@@ -205,7 +196,7 @@ function HostOptionsController:input_change(event)
 	else
 		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
-		self:sendChat()
+		AbstractMultiController.sendChat(self)
 	end
 
 end

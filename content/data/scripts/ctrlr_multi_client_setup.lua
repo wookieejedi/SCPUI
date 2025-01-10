@@ -90,7 +90,7 @@ end
 --- @return nil
 function ClientSetupController:team_1_pressed()
 	if self.SelectedPlayerEl then
-		local player = self:getPlayerByKey(self.SelectedPlayerEl.id).Entry
+		local player = AbstractMultiController.getPlayerByKey(self, self.SelectedPlayerEl.id).Entry
 		if player:isSelf() then
 			self.Document:GetElementById("team_2_btn"):SetPseudoClass("checked", false)
 			self.Document:GetElementById("team_1_btn"):SetPseudoClass("checked", true)
@@ -103,7 +103,7 @@ end
 --- @return nil
 function ClientSetupController:team_2_pressed()
 	if self.SelectedPlayerEl then
-		local player = self:getPlayerByKey(self.SelectedPlayerEl.id).Entry
+		local player = AbstractMultiController.getPlayerByKey(self, self.SelectedPlayerEl.id).Entry
 		if player:isSelf() then
 			self.Document:GetElementById("team_1_btn"):SetPseudoClass("checked", false)
 			self.Document:GetElementById("team_2_btn"):SetPseudoClass("checked", true)
@@ -112,34 +112,11 @@ function ClientSetupController:team_2_pressed()
 	end
 end
 
---- Get the player stats and display them in a dialog box
---- @param player net_player The player to get the stats for
---- @return nil
-function ClientSetupController:getPlayerStats(player)
-
-	local stats = player:getStats()
-
-	ScpuiSystem.data.memory.multiplayer_general.DialogType = AbstractMultiController.DIALOG_PLAYER_STATS
-
-	local text = AbstractMultiController.initializeStatsText(self, stats)
-	local title = player.Name .. "'s stats"
-	---@type dialog_button[]
-	local buttons = {}
-	buttons[1] = {
-		Type = Dialogs.BUTTON_TYPE_POSITIVE,
-		Text = ba.XSTR("Okay", 888290),
-		Value = "",
-		Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
-	}
-
-	AbstractMultiController.showDialog(self, text, title, false, buttons)
-end
-
 --- Called by the RML to show the player stats for the currently selected player
 --- @return nil
 function ClientSetupController:pilot_info_pressed()
 	if self.SelectedPlayerEl then
-		self:getPlayerStats(self:getPlayerByKey(self.SelectedPlayerEl.id).Entry)
+		AbstractMultiController.getPlayerStats(self, AbstractMultiController.getPlayerByKey(self, self.SelectedPlayerEl.id).Name)
 	end
 end
 
@@ -147,7 +124,7 @@ end
 --- @return nil
 function ClientSetupController:submit_pressed()
 	if self.SubmittedChatValue then
-		self:sendChat()
+		AbstractMultiController.sendChat(self)
 	end
 end
 
@@ -164,16 +141,6 @@ end
 function ClientSetupController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
        self:exit(true)
-	end
-end
-
---- Send the current input chat string to the server
---- @return nil
-function ClientSetupController:sendChat()
-	if string.len(self.SubmittedChatValue) > 0 then
-		ui.MultiGeneral.sendChat(self.SubmittedChatValue)
-		self.ChatInputEl:SetAttribute("value", "")
-		self.SubmittedChatValue = ""
 	end
 end
 
@@ -194,20 +161,9 @@ function ClientSetupController:input_change(event)
 	else
 		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
-		self:sendChat()
+		AbstractMultiController.sendChat(self)
 	end
 
-end
-
---- Get a player from the Player_List by key
---- @param key string The key to search for
---- @return scpui_multi_setup_player? player The player object
-function ClientSetupController:getPlayerByKey(key)
-	for i = 1, #self.Player_List do
-		if self.Player_List[i].Key == key then
-			return self.Player_List[i]
-		end
-	end
 end
 
 --- Called when the screen is being unloaded

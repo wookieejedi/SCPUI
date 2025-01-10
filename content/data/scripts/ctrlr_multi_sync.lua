@@ -14,7 +14,7 @@ local MultiSyncController = Class(AbstractMultiController)
 --- Called by the class constructor
 --- @return nil
 function MultiSyncController:init()
-	self.Players_List = {} --- @type scpui_multi_setup_player[] list of actual players
+	self.Player_List = {} --- @type scpui_multi_setup_player[] list of actual players
 	self.Document = nil --- @type Document the RML document
 	self.PlayersListEl = nil --- @type Element the players list element
 	self.ChatEl = nil --- @type Element the chat window element
@@ -72,7 +72,7 @@ end
 --- @return nil
 function MultiSyncController:submit_pressed()
 	if self.SubmittedChatValue then
-		self:sendChat()
+		AbstractMultiController.sendChat(self)
 	end
 end
 
@@ -87,7 +87,7 @@ end
 --- @return nil
 function MultiSyncController:kick_pressed()
 	if self.SelectedPlayerEl then
-		self:kickPlayer(self:getPlayerByKey(self.SelectedPlayerEl.id).Entry)
+		self:kickPlayer(AbstractMultiController.getPlayerByKey(self, self.SelectedPlayerEl.id).Entry)
 	end
 end
 
@@ -113,16 +113,6 @@ function MultiSyncController:global_keydown(element, event)
 	end
 end
 
---- Sends the chat to the server
---- @return nil
-function MultiSyncController:sendChat()
-	if string.len(self.SubmittedChatValue) > 0 then
-		ui.MultiGeneral.sendChat(self.SubmittedChatValue)
-		self.ChatInputEl:SetAttribute("value", "")
-		self.SubmittedChatValue = ""
-	end
-end
-
 --- Callled by the RML when the chat input focus is lost
 --- @return nil
 function MultiSyncController:input_focus_lost()
@@ -140,20 +130,9 @@ function MultiSyncController:input_change(event)
 	else
 		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
-		self:sendChat()
+		AbstractMultiController.sendChat(self)
 	end
 
-end
-
---- Gets a player by their key identifier
---- @param key string the key identifier of the player
---- @return scpui_multi_setup_player? player the player
-function MultiSyncController:getPlayerByKey(key)
-	for i = 1, #self.Players_List do
-		if self.Players_List[i].Key == key then
-			return self.Players_List[i]
-		end
-	end
 end
 
 --- Called when the screen is being unloaded

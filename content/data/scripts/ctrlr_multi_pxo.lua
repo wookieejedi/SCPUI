@@ -105,7 +105,7 @@ end
 --- @return nil
 function PXOController:pilot_info_pressed()
 	if self.SelectedPxoPlayer then
-		self:getPlayerStats(self.SelectedPxoPlayer.Name)
+		AbstractMultiController.getPlayerStats(self, self.SelectedPxoPlayer.Name)
 	end
 end
 
@@ -173,38 +173,6 @@ function PXOController:getPlayerChannel(player_name)
 	end
 
 	AbstractMultiController.showDialog(self, text, title, false, buttons)
-end
-
---- Get the player stats and create a dialog box to display them
---- @param player_name string the name of the player to get stats for
---- @return nil
-function PXOController:getPlayerStats(player_name)
-	local stats = ui.MultiPXO.getPlayerStats(player_name)
-
-	ScpuiSystem.data.memory.multiplayer_general.DialogType = AbstractMultiController.DIALOG_PLAYER_STATS
-
-	local text = AbstractMultiController.initializeStatsText(self, stats)
-	local title = player_name .. "'s stats"
-	--- @type dialog_button[]
-	local buttons = {}
-	buttons[1] = {
-		Type = Dialogs.BUTTON_TYPE_POSITIVE,
-		Text = ba.XSTR("Okay", 888290),
-		Value = "",
-		Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
-	}
-
-	AbstractMultiController.showDialog(self, text, title, false, buttons)
-end
-
---- Sends the chat message to the PXO server
---- @return nil
-function PXOController:sendChat()
-	if string.len(self.SubmittedChatValue) > 0 then
-		ui.MultiPXO.sendChat(self.SubmittedChatValue)
-		self.ChatInputEl:SetAttribute("value", "")
-		self.SubmittedChatValue = ""
-	end
 end
 
 --- Exit the PXO screen and shutdown multiplayer pxo
@@ -299,7 +267,7 @@ end
 --- @return nil
 function PXOController:submit_pressed()
 	if self.SubmittedChatValue then
-		self:sendChat()
+		AbstractMultiController.sendChat(self)
 	end
 end
 
@@ -320,7 +288,7 @@ function PXOController:input_change(event)
 	else
 		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
-		self:sendChat()
+		AbstractMultiController.sendChat(self)
 	end
 
 end

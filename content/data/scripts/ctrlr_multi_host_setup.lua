@@ -15,7 +15,7 @@ local HostSetupController = Class(AbstractMultiController)
 --- Called by the class constructor
 --- @return nil
 function HostSetupController:init()
-	self.Players_List = {} --- @type scpui_multi_setup_player[] list of actual players
+	self.Player_List = {} --- @type scpui_multi_setup_player[] list of actual players
 	self.MissionsListEl = nil --- @type Element mission list element
 	self.PlayersListEl = nil --- @type Element player list element
 	self.ChatEl = nil --- @type Element chat element
@@ -191,7 +191,7 @@ function HostSetupController:team_1_pressed()
 	if self.SelectedPlayerEl then
 		self.Document:GetElementById("team_2_btn"):SetPseudoClass("checked", false)
 		self.Document:GetElementById("team_1_btn"):SetPseudoClass("checked", true)
-		self:getPlayerByKey(self.SelectedPlayerEl.id).Entry.Team = 0
+		AbstractMultiController.getPlayerByKey(self, self.SelectedPlayerEl.id).Entry.Team = 0
 	end
 end
 
@@ -201,37 +201,15 @@ function HostSetupController:team_2_pressed()
 	if self.SelectedPlayerEl then
 		self.Document:GetElementById("team_1_btn"):SetPseudoClass("checked", false)
 		self.Document:GetElementById("team_2_btn"):SetPseudoClass("checked", true)
-		self:getPlayerByKey(self.SelectedPlayerEl.id).Entry.Team = 1
+		AbstractMultiController.getPlayerByKey(self, self.SelectedPlayerEl.id).Entry.Team = 1
 	end
-end
-
---- Get the player stats
---- @param player net_player The player to get the stats for
-function HostSetupController:getPlayerStats(player)
-
-	local stats = player:getStats()
-
-	ScpuiSystem.data.memory.multiplayer_general.DialogType = AbstractMultiController.DIALOG_PLAYER_STATS
-
-	local text = AbstractMultiController.initializeStatsText(self, stats)
-	local title = player.Name .. "'s stats"
-	---@type dialog_button[]
-	local buttons = {}
-	buttons[1] = {
-		Type = Dialogs.BUTTON_TYPE_POSITIVE,
-		Text = ba.XSTR("Okay", 888290),
-		Value = "",
-		Keypress = string.sub(ba.XSTR("Okay", 888290), 1, 1)
-	}
-
-	AbstractMultiController.showDialog(self, text, title, false, buttons)
 end
 
 --- Called by the RML when the player info button is pressed
 --- @return nil
 function HostSetupController:pilot_info_pressed()
 	if self.SelectedPlayerEl then
-		self:getPlayerStats(self:getPlayerByKey(self.SelectedPlayerEl.id).Entry)
+		AbstractMultiController.getPlayerStats(self, AbstractMultiController.getPlayerByKey(self, self.SelectedPlayerEl.id).Name)
 	end
 end
 
@@ -239,7 +217,7 @@ end
 --- @return nil
 function HostSetupController:kick_pressed()
 	if self.SelectedPlayerEl then
-		self:getPlayerByKey(self.SelectedPlayerEl.id).Entry:kickPlayer()
+		AbstractMultiController.getPlayerByKey(self, self.SelectedPlayerEl.id).Entry:kickPlayer()
 	end
 end
 
@@ -260,7 +238,7 @@ end
 --- @return nil
 function HostSetupController:submit_pressed()
 	if self.SubmittedChatValue then
-		self:sendChat()
+		AbstractMultiController.sendChat(self)
 	end
 end
 
@@ -286,17 +264,8 @@ function HostSetupController:global_keydown(element, event)
 	end
 end
 
---- Send the chat string to the server
---- @return nil
-function HostSetupController:sendChat()
-	if string.len(self.SubmittedChatValue) > 0 then
-		ui.MultiGeneral.sendChat(self.SubmittedChatValue)
-		self.ChatInputEl:SetAttribute("value", "")
-		self.SubmittedChatValue = ""
-	end
-end
-
 --- Called by the RML when the chat input is no longer focused
+--- @return nil
 function HostSetupController:input_focus_lost()
 	--do nothing
 end
@@ -312,7 +281,7 @@ function HostSetupController:input_change(event)
 	else
 		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
-		self:sendChat()
+		AbstractMultiController.sendChat(self)
 	end
 
 end
@@ -337,17 +306,6 @@ function HostSetupController:filter_changed()
 	self.Missions_List = {} -- list of actual missions
 	ScpuiSystem:clearEntries(self.MissionsListEl)
 	self.SelectedMissionEl = nil
-end
-
---- Get a player by their key
---- @param key string The key of the player
---- @return scpui_multi_setup_player? player The player
-function HostSetupController:getPlayerByKey(key)
-	for i = 1, #self.Players_List do
-		if self.Players_List[i].Key == key then
-			return self.Players_List[i]
-		end
-	end
 end
 
 --- Called when the screen is being unloaded

@@ -204,6 +204,7 @@ function JoinGameController:global_keydown(element, event)
 end
 
 --- Called by the RML when an input box loses focus
+--- @return nil
 function JoinGameController:input_focus_lost()
 	--do nothing
 end
