@@ -214,8 +214,15 @@
 --- SCPUI Multi Host Memory
 --- @class multi_host_memory
 --- @field MultiHostSetup? boolean True if the multi host setup is ready, false otherwise
---- @field HostFilter enumeration The mission list filter type. One of the MUTLI_TYPE enumerations
---- @field HostList string The mission list type
+--- @field HostFilter? enumeration The mission list filter type. One of the MUTLI_TYPE enumerations
+--- @field HostList? string The mission list type
+
+--- SCPUI Multi General Memory
+--- @class multi_general_memory
+--- @field DialogResponse? string The response from the dialog
+--- @field DialogType? number The type of dialog that was shown. Should be one of the DIALOG_ enumerations
+--- @field Context? any The context to use for running multiplayer network updates
+--- @field RunNetwork? boolean True if the network should be run, false otherwise
 
 --- SCPUI Control Config Memory
 --- @class control_config_memory
@@ -288,8 +295,9 @@
 --- @field medal_text? medal_memory The current medal memory for SCPUI
 --- @field splash_screen? splash_screen_memory The current splash screen memory for SCPUI
 --- @field model_rendering? model_draw_memory The current model draw memory for SCPUI
---- @field multiplayer_host? multi_host_memory The current multi host memory for SCPUI
---- @field control_config? control_config_memory The current control config memory for SCPUI
+--- @field multiplayer_host multi_host_memory The current multi host memory for SCPUI
+--- @field control_config control_config_memory The current control config memory for SCPUI
+--- @field multiplayer_general multi_general_memory The current multiplayer general memory for SCPUI
 
 --- SCPUI Custom Options Data
 --- @class custom_option_data

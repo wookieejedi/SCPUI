@@ -93,7 +93,7 @@ return {
 		description = Topic(function(x) return x.Description end),
 		type = Topic(function(x) return ba.XSTR('Other', 888553) end)
 	},
-	
+
 	--Interfaces
 	pilotselect = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the document context
@@ -272,6 +272,44 @@ return {
 	},
 	mission = { --All UIs where mission can be committed to!
 		commit = Topic(true) --Whether or not to continue to with the Commit press. Sends the context and expects boolean return
+	},
+
+	--- Multiplayer UIs
+	multisync = {
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
+	},
+	multistartgame = {
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
+	},
+	multipxo = {
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
+	},
+	multipxohelp = {
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
+	},
+	multipaused = {
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
+	},
+	multijoingame = {
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
+	},
+	multihostsetup = {
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
+	},
+	multihostoptions = {
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
+	},
+	multiclientsetup = {
+		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
+		unload = Topic(nil) --Runs arbitrary script and expects no return value. Sends the document context
 	}
 }
 

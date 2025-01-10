@@ -467,7 +467,7 @@ function DebriefingController:buildStats()
     end
 
     if self.Page == 4 then
-        titles = "All Time Kills by Ship Type<br></br><br></br>"
+        titles = ba.XSTR( "All-time Kills by Ship Type", 448, false) .. "<br></br><br></br>"
         numbers = "<br></br><br></br>"
 
         for i = 1, #tb.ShipClasses do

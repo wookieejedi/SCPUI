@@ -60,7 +60,7 @@ function CommandBriefingController:initialize(document)
 
 	Topics.cmdbriefing.initialize:send(self)
 
-    self:goToStage(1)
+    AbstractBriefingController.goToStage(self, 1)
 end
 
 --- The help button was clicked
