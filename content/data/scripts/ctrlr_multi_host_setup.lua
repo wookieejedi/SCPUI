@@ -2,7 +2,6 @@
 --Controller for the Multi Host Setup UI
 -----------------------------------
 
-local Dialogs = require("lib_dialogs")
 local Topics = require("lib_ui_topics")
 
 local Class = require("lib_class")

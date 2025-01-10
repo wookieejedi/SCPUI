@@ -2,7 +2,6 @@
 --Controller for the Multi PXO Help UI
 -----------------------------------
 
-local AsyncUtil = require("lib_async")
 local Topics = require("lib_ui_topics")
 
 local Class = require("lib_class")

@@ -2,7 +2,6 @@
 --Shared Controller for all Multi Controllers
 -----------------------------------
 
-local AsyncUtil = require("lib_async")
 local Dialogs = require("lib_dialogs")
 local Topics = require("lib_ui_topics")
 local Utils = require("lib_utils")
