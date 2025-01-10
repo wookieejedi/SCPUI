@@ -1,80 +1,97 @@
-local class = require("lib_class")
-local async_util = require("lib_async")
-local utils = require("lib_utils")
-local dialogs = require("lib_dialogs")
-local topics = require("lib_ui_topics")
+-----------------------------------
+--Controller for the Multi Pause UI
+-----------------------------------
 
-local MultiPausedController = class()
+local AsyncUtil = require("lib_async")
+local Topics = require("lib_ui_topics")
 
-local pausedText = {"GAME IS PAUSED", 888347}
+local Class = require("lib_class")
 
-local screenRender = nil
+local MultiPausedController = Class()
 
+--- Called by the class constructor
+--- @return nil
 function MultiPausedController:init()
+	self.Document = nil --- @type Document the RML document
+	self.Pauser = nil --- @type string the name of the player who paused the game
+	self.ChatEl = nil --- @type Element the chat window element
+	self.ChatInputEl = nil --- @type Element the chat input element
+	self.SubmittedChatValue = nil --- @type string the value of the chat input
+	self.ScreenRender = nil --- @type string the screen render image blob
 end
 
----@param document Document
+--- Called by the RML document
+--- @param document Document
 function MultiPausedController:initialize(document)
 
 	ui.MultiPauseScreen.initPause()
-	
-	if screenRender == nil then
-		screenRender = gr.screenToBlob()
+
+	if self.ScreenRender == nil then
+		self.ScreenRender = gr.screenToBlob()
 	end
 
     self.Document = document
-	
+
 	if mn.isInMission() then
 		ui.MultiPauseScreen.initPause()
 	end
-	
-	self.pauser = ui.MultiPauseScreen.Pauser
-	self.Document:GetElementById("pauser_name").inner_rml = self.pauser
+
+	self.Pauser = ui.MultiPauseScreen.Pauser
+	self.Document:GetElementById("pauser_name").inner_rml = self.Pauser
 
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-	
-	self.chat_el = self.Document:GetElementById("chat_window")
-	self.input_id = self.Document:GetElementById("chat_input")
-	
+
+	self.ChatEl = self.Document:GetElementById("chat_window")
+	self.ChatInputEl = self.Document:GetElementById("chat_input")
+
 	local main_bg = self.Document:GetElementById("screenrender")
-	local imgEl = self.Document:CreateElement("img")
-	main_bg:AppendChild(imgEl)
-	imgEl:RemoveAttribute("src")
-	imgEl:SetAttribute("src", screenRender)
-	
-	self.submittedValue = ""
-	
+	local img_el = self.Document:CreateElement("img")
+	main_bg:AppendChild(img_el)
+	img_el:RemoveAttribute("src")
+	img_el:SetAttribute("src", self.ScreenRender)
+
+	self.SubmittedChatValue = ""
+
 	self:updateLists()
 	ui.MultiGeneral.setPlayerState()
-	
-	topics.multipaused.initialize:send(self)
-	
+
+	Topics.multipaused.initialize:send(self)
+
 end
 
+--- Called by the RML to submit the chat to the server
+--- @return nil
 function MultiPausedController:submit_pressed()
-	if self.submittedValue then
+	if self.SubmittedChatValue then
 		self:sendChat()
 	end
 end
 
+--- Submits the current chat value to the server
+--- @return nil
 function MultiPausedController:sendChat()
-	if string.len(self.submittedValue) > 0 then
-		ui.MultiGeneral.sendChat(self.submittedValue)
-		self.input_id:SetAttribute("value", "")
-		self.submittedValue = ""
+	if string.len(self.SubmittedChatValue) > 0 then
+		ui.MultiGeneral.sendChat(self.SubmittedChatValue)
+		self.ChatInputEl:SetAttribute("value", "")
+		self.SubmittedChatValue = ""
 	end
 end
 
-function MultiPausedController:InputFocusLost()
+--- Called by the RML when the chat input loses focus
+--- @return nil
+function MultiPausedController:input_focus_lost()
 	--do nothing
 end
 
-function MultiPausedController:InputChange(event)
+--- Called by the RML when the chat input accepts a keypress
+--- @param event Event the keypress event
+--- @return nil
+function MultiPausedController:input_change(event)
 
 	if event.parameters.linebreak ~= 1 then
-		local val = self.input_id:GetAttribute("value")
-		self.submittedValue = val
+		local val = self.ChatInputEl:GetAttribute("value")
+		self.SubmittedChatValue = val
 	else
 		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
@@ -83,27 +100,36 @@ function MultiPausedController:InputChange(event)
 
 end
 
+--- Called by the RML when the exit button is pressed
 function MultiPausedController:exit_pressed()
 	ui.MultiPauseScreen.closePause(true)
 end
 
+--- Global keydown function handles all keypresses
+--- @param element Element The main document element
+--- @param event Event The event that was triggered
+--- @return nil
 function MultiPausedController:global_keydown(element, event)
     if (event.parameters.key_identifier == rocket.key_identifier.ESCAPE) or (event.parameters.key_identifier == rocket.key_identifier.PAUSE) then
         ui.MultiPauseScreen.requestUnpause()
 	end
 end
 
+--- Called when the screen is being unloaded
+--- @return nil
 function MultiPausedController:unload()
 	ui.MultiPauseScreen.closePause()
 	self.screenRender = nil
-	
-	topics.multipaused.unload:send(self)
+
+	Topics.multipaused.unload:send(self)
 end
 
+--- Runs all the network functions to update the chat. Runs every 0.01 seconds
+--- @return nil
 function MultiPausedController:updateLists()
 	ui.MultiPauseScreen.runNetwork()
 	local chat = ui.MultiGeneral.getChat()
-	
+
 	local txt = ""
 	for i = 1, #chat do
 		local line = ""
@@ -114,14 +140,14 @@ function MultiPausedController:updateLists()
 		end
 		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
 	end
-	self.chat_el.inner_rml = txt
-	self.chat_el.scroll_top = self.chat_el.scroll_height
-	
+	self.ChatEl.inner_rml = txt
+	self.ChatEl.scroll_top = self.ChatEl.scroll_height
+
 	async.run(function()
-        async.await(async_util.wait_for(0.01))
+        async.await(AsyncUtil.wait_for(0.01))
         self:updateLists()
     end, async.OnFrameExecutor)
-	
+
 end
 
 return MultiPausedController

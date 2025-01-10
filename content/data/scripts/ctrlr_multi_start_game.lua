@@ -1,24 +1,37 @@
-local topics = require("lib_ui_topics")
-local class = require("lib_class")
-local async_util = require("lib_async")
-local utils = require("lib_utils")
-local dialogs = require("lib_dialogs")
+-----------------------------------
+--Controller for the Multi Start Game UI
+-----------------------------------
 
-local JoinGameController = class()
+local AsyncUtil = require("lib_async")
+local Dialogs = require("lib_dialogs")
+local Topics = require("lib_ui_topics")
 
+local Class = require("lib_class")
+
+local JoinGameController = Class()
+
+--- Called by the class constructor
+--- @return nil
 function JoinGameController:init()
-
+	self.MissionTitle = nil --- @type string the title of the mission
+	self.GamePassword = nil --- @type string The password for the game
+	self.SelectedRank = nil --- @type number The selected rank value
+	self.GameType = nil --- @type enumeration The type of game being created. Should be one of the MULTI_GAME_TYPE enumerations
+	self.TitleInputEl = nil --- @type Element The title input element
+	self.PasswordInputEl = nil --- @type Element The password input element
+	self.Document = nil --- @type Document The RML document
 end
 
----@param document Document
+--- Called by the RML document
+--- @param document Document
 function JoinGameController:initialize(document)
 
 	self.Document = document
 
-	self.missionTitle = ba.getCurrentPlayer():getName() .. "'s game"
-	self.password = ""
-	self.selected_rank = 1
-	self.game_type = MULTI_GAME_TYPE_OPEN
+	self.MissionTitle = ba.getCurrentPlayer():getName() .. "'s game"
+	self.GamePassword = ""
+	self.SelectedRank = 1
+	self.GameType = MULTI_GAME_TYPE_OPEN
 
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
@@ -26,10 +39,10 @@ function JoinGameController:initialize(document)
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
-	self.title_input_el = self.Document:GetElementById("title_input")
-	self.title_input_el:SetAttribute("value", self.missionTitle)
+	self.TitleInputEl = self.Document:GetElementById("title_input")
+	self.TitleInputEl:SetAttribute("value", self.MissionTitle)
 
-	self.password_input_el = self.Document:GetElementById("password_input")
+	self.PasswordInputEl = self.Document:GetElementById("password_input")
 
 	ui.MultiStartGame.initMultiStart()
 
@@ -40,10 +53,12 @@ function JoinGameController:initialize(document)
 	self:updateLists()
 	ui.MultiGeneral.setPlayerState()
 
-	topics.multistartgame.initialize:send(self)
+	Topics.multistartgame.initialize:send(self)
 
 end
 
+--- Add each valid rank to the ranks dropdown
+--- @return nil
 function JoinGameController:buildRankList()
 	local select_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("dropdown_cont").first_child)
 
@@ -59,6 +74,8 @@ function JoinGameController:buildRankList()
 	end
 end
 
+--- uncheck all the buttons
+--- @return nil
 function JoinGameController:uncheckButtons()
 	self.Document:GetElementById("open_btn"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("password_btn"):SetPseudoClass("checked", false)
@@ -66,147 +83,139 @@ function JoinGameController:uncheckButtons()
 	self.Document:GetElementById("rank_below_btn"):SetPseudoClass("checked", false)
 end
 
+--- toggle the password input field on or off
+--- @param lock boolean
+--- @return nil
 function JoinGameController:lockPassword(lock)
 	self.Document:GetElementById("password_lock"):SetClass("hidden", not lock)
 end
 
+--- toggle the rank dropdown on or off
+--- @param lock boolean
+--- @return nil
 function JoinGameController:lockRank(lock)
 	self.Document:GetElementById("rank_lock"):SetClass("hidden", not lock)
 end
 
+--- Exit the game creation screen and close Multi Start
+--- @param continue? boolean -- Unused
+--- @return nil
 function JoinGameController:exit(continue)
 	ui.MultiStartGame.closeMultiStart(false)
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_MULTI_JOIN_GAME"])
 end
 
-function JoinGameController:dialogResponse(response)
-	local path = self.promptControl
-	self.promptControl = nil
-	if path == 1 then --MOTD
-		--Do nothing!
-	elseif path == 2 then --Join Private Channel
-		if response and response ~= "" then
-			ui.MultiPXO.joinPrivateChannel(response)
-		end
-	elseif path == 3 then --Show Player Stats
-		--Do nothing!
-	elseif path == 4 then --Find player
-		if response and response ~= "" then
-			self:GetPlayerChannel(response)
-		end
-	elseif path == 5 then --Find player response
-		if response == true then
-			self:joinChannel(self.foundChannel)
-		end
-		self.foundChannel = nil
-	end
-end
-
-function JoinGameController:Show(text, title, input, buttons)
-	--Create a simple dialog box with the text and title
-
-	local dialog = dialogs.new()
-		dialog:title(title)
-		dialog:text(text)
-		dialog:input(input)
-		for i = 1, #buttons do
-			dialog:button(buttons[i].b_type, buttons[i].b_text, buttons[i].b_value, buttons[i].b_keypress)
-		end
-		dialog:escape("")
-		dialog:show(self.Document.context)
-		:continueWith(function(response)
-			self:dialogResponse(response)
-    end)
-	-- Route input to our context until the user dismisses the dialog box.
-	ui.enableInput(self.Document.context)
-end
-
+--- Called by the RML when the join button is pressed
+--- @return nil
 function JoinGameController:join_pressed()
-	ui.MultiStartGame.setName(self.missionTitle)
+	ui.MultiStartGame.setName(self.MissionTitle)
 
 	local arg = nil
 
-	if self.game_type == MULTI_GAME_TYPE_PASSWORD then
-		arg = self.password
+	if self.GameType == MULTI_GAME_TYPE_PASSWORD then
+		arg = self.GamePassword
 	end
 
-	if self.game_type == MULTI_GAME_TYPE_RANK_ABOVE or self.game_type == MULTI_GAME_TYPE_RANK_BELOW then
-		arg = self.selected_rank
+	if self.GameType == MULTI_GAME_TYPE_RANK_ABOVE or self.GameType == MULTI_GAME_TYPE_RANK_BELOW then
+		arg = self.SelectedRank
 	end
 
-	ui.MultiStartGame.setGameType(self.game_type, arg)
+	ui.MultiStartGame.setGameType(self.GameType, arg)
 	ui.MultiStartGame.closeMultiStart(true)
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_MULTI_HOST_SETUP"])
 end
 
+--- Called by the RML when the help button is pressed
+--- @return nil
 function JoinGameController:help_pressed()
 	--show help overlay
 end
 
+--- Called by the RML when the open button is pressed
+--- @return nil
 function JoinGameController:open_pressed()
 	self:uncheckButtons()
 	self.Document:GetElementById("open_btn"):SetPseudoClass("checked", true)
 	self:lockPassword(true)
 	self:lockRank(true)
 
-	self.game_type = MULTI_GAME_TYPE_OPEN
+	self.GameType = MULTI_GAME_TYPE_OPEN
 end
 
+--- Called by the RML when the password button is pressed
+--- @return nil
 function JoinGameController:password_pressed()
 	self:uncheckButtons()
 	self.Document:GetElementById("password_btn"):SetPseudoClass("checked", true)
 	self:lockPassword(false)
 	self:lockRank(true)
 
-	self.game_type = MULTI_GAME_TYPE_PASSWORD
+	self.GameType = MULTI_GAME_TYPE_PASSWORD
 end
 
+--- Called by the RML when the rank above button is pressed
+--- @return nil
 function JoinGameController:rank_above_pressed()
 	self:uncheckButtons()
 	self.Document:GetElementById("rank_above_btn"):SetPseudoClass("checked", true)
 	self:lockPassword(true)
 	self:lockRank(false)
 
-	self.game_type = MULTI_GAME_TYPE_RANK_ABOVE
+	self.GameType = MULTI_GAME_TYPE_RANK_ABOVE
 end
 
+--- Called by the RML when the rank below button is pressed
+--- @return nil
 function JoinGameController:rank_below_pressed()
 	self:uncheckButtons()
 	self.Document:GetElementById("rank_below_btn"):SetPseudoClass("checked", true)
 	self:lockPassword(true)
 	self:lockRank(false)
 
-	self.game_type = MULTI_GAME_TYPE_RANK_BELOW
+	self.GameType = MULTI_GAME_TYPE_RANK_BELOW
 end
 
+--- Called by the RML when the options button is pressed
+--- @return nil
 function JoinGameController:options_pressed()
 	ba.postGameEvent(ba.GameEvents["GS_EVENT_OPTIONS_MENU"])
 end
 
+--- Called by the RML when the exit button is pressed
+--- @return nil
 function JoinGameController:exit_pressed()
 	self:exit()
 end
 
-
-
-function JoinGameController:global_keydown(_, event)
+--- Global keydown function handles all keypresses
+--- @param element Element The main document element
+--- @param event Event The event that was triggered
+--- @return nil
+function JoinGameController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
        self:exit()
 	end
 end
 
-function JoinGameController:InputFocusLost()
+--- Called by the RML when an input box loses focus
+function JoinGameController:input_focus_lost()
 	--do nothing
 end
 
-function JoinGameController:get_rank_index(rank_name)
+--- Get the index of a rank by rank name
+--- @param rank_name string The name of the rank
+--- @return number index The index of the rank
+function JoinGameController:getRankIndex(rank_name)
 	for i = 1, #ui.Medals.Ranks_List do
 		if ui.Medals.Ranks_List[i].Name == rank_name then
 			return i
 		end
 	end
+	return -1
 end
 
+--- Called by the RML when the rank dropdown is changed
+--- @return nil
 function JoinGameController:rank_changed()
 	local select_el = Element.As.ElementFormControlDataSelect(self.Document:GetElementById("dropdown_cont").first_child)
 
@@ -214,9 +223,9 @@ function JoinGameController:rank_changed()
 
 	local player_rank = ba.getCurrentPlayer().Stats.Rank.Index
 
-	local rank_idx = self:get_rank_index(rank)
+	local rank_idx = self:getRankIndex(rank)
 
-	if self.game_type == MULTI_GAME_TYPE_RANK_ABOVE then
+	if self.GameType == MULTI_GAME_TYPE_RANK_ABOVE then
 		if player_rank < rank_idx then
 			select_el.selection = player_rank
 			--Maybe show a popup warning that they can't choose a rank above their own!
@@ -224,7 +233,7 @@ function JoinGameController:rank_changed()
 		end
 	end
 
-	if self.game_type == MULTI_GAME_TYPE_RANK_BELOW then
+	if self.GameType == MULTI_GAME_TYPE_RANK_BELOW then
 		if player_rank > rank_idx then
 			select_el.selection = player_rank
 			--Maybe show a popup warning that they can't choose a rank below their own!
@@ -233,48 +242,65 @@ function JoinGameController:rank_changed()
 	end
 
 	if rank_idx then
-		self.selected_rank = rank_idx
+		self.SelectedRank = rank_idx
 	end
 end
 
+--- Called by the RML when the title input box has a keyup event
+--- @param element Element The title input element
+--- @param event Event The event that was triggered
+--- @return nil
 function JoinGameController:title_keyup(element, event)
     if event.parameters.key_identifier ~= rocket.key_identifier.ESCAPE then
         return
     end
 end
 
+--- Called by the RML when the title input box has a keypress event
+--- @param event Event The event that was triggered
+--- @return nil
 function JoinGameController:title_input_change(event)
     --local stringValue = event.parameters.value:gsub("^%s*(.-)%s*$", "%1")
 	--self.title_input_el:SetAttribute("value", stringValue)
-	self.missionTitle = event.parameters.value
+	self.MissionTitle = event.parameters.value
 end
 
+--- Called by the RML when the password input box has a keyup event
+--- @param element Element The password input element
+--- @param event Event The event that was triggered
+--- @return nil
 function JoinGameController:password_keyup(element, event)
     if event.parameters.key_identifier ~= rocket.key_identifier.ESCAPE then
         return
     end
 end
 
+--- Called by the RML when the password input box has a keypress event
+--- @param event Event The event that was triggered
+--- @return nil
 function JoinGameController:password_input_change(event)
     local stringValue = event.parameters.value:gsub("^%s*(.-)%s*$", "%1")
-	self.password_input_el:SetAttribute("value", stringValue)
-	self.password = stringValue
+	self.PasswordInputEl:SetAttribute("value", stringValue)
+	self.GamePassword = stringValue
 end
 
+--- Runs the network functions every 0.01 seconds
 function JoinGameController:updateLists()
 	ui.MultiStartGame.runNetwork()
 
 	--self.Document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
 
 	async.run(function()
-        async.await(async_util.wait_for(0.01))
+        async.await(AsyncUtil.wait_for(0.01))
         self:updateLists()
     end, async.OnFrameExecutor)
 
 end
 
+--- Called when the screen is being unloaded
+--- @return nil
 function JoinGameController:unload()
-	topics.multistartgame.unload:send(self)
+	Topics.multistartgame.unload:send(self)
 end
 
 return JoinGameController

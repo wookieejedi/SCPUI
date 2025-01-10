@@ -1000,7 +1000,7 @@ player = {}
 preset = {}
 --- @class preset
 --- @field Name string # The name,  The name of the preset
---- @field clonePreset fun(self: self, Name: string, overwrite?: boolean): boolean # Clones the preset into a new preset with the specified name. Sets it as the active preset
+--- @field clonePreset fun(self: self, Name: string): boolean # Clones the preset into a new preset with the specified name. Sets it as the active preset
 --- @field deletePreset fun(self: self): boolean # Deletes the preset file entirely. Cannot delete a currently active preset.
 
 -- promise: A promise that represents an operation that will return a value at some point in the future
@@ -1019,8 +1019,8 @@ pxo_channel = {}
 --- @field isValid fun(self: self): boolean # Detects whether handle is valid
 --- @field Name string # The name,  The name of the channel
 --- @field Description string # The description,  The description of the channel
---- @field NumPlayers string # The number of players,  The number of players in the channel
---- @field NumGames string # The number of games,  The number of games the channel
+--- @field NumPlayers number # The number of players,  The number of players in the channel
+--- @field NumGames number # The number of games,  The number of games the channel
 --- @field isCurrent fun(self: self): boolean # Returns whether this is the current channel
 --- @field joinChannel fun(self: self): nil # Joins the specified channel
 
@@ -2412,7 +2412,7 @@ ui.MissionLog = {}
 --- @field clearAll fun(): boolean # Clears all control bindings.
 --- @field resetToPreset fun(): boolean # Resets all control bindings to the current preset defaults.
 --- @field usePreset fun(PresetName: string): boolean # Uses a defined preset if it can be found.
---- @field createPreset fun(Name: string, overwrite?: boolean): boolean # Creates a new preset with the given name. Returns true if successful, false otherwise.
+--- @field createPreset fun(Name: string): boolean # Creates a new preset with the given name. Returns true if successful, false otherwise.
 --- @field undoLastChange fun(): nil # Reverts the last change to the control bindings
 --- @field searchBinds fun(): number # Waits for a keypress to search for. Returns index into Control Configs if the key matches a bind. Should run On Frame.
 --- @field acceptBinding fun(): boolean # Accepts changes to the keybindings. Returns true if successful, false if there are key conflicts or the preset needs to be saved.
@@ -2451,7 +2451,7 @@ ui.PauseScreen = {}
 --- @field getChat fun(): table # Gets the entire chat as a table of tables each with the following values: Callsign - the name of the message sender, Message - the message text, Mode - the mode where 0 is normal, 1 is private message, 2 is channel switch, 3 is server message, 4 is MOTD
 --- @field sendChat fun(param1: string): nil # Sends a string to the current channel's IRC chat
 --- @field getPlayers fun(): string # Gets the entire player list as a table of strings
---- @field getPlayerChannel fun(param1: string): string # Searches for a player and returns if they were found and the channel they are on. Channel is an empty string if channel is private or player is not found.
+--- @field getPlayerChannel fun(param1: string): string, string # Searches for a player and returns if they were found and the channel they are on. Channel is an empty string if channel is private or player is not found.
 --- @field getPlayerStats fun(param1: string): scoring_stats # Gets a handle of the player stats by player name or invalid handle if the name is invalid
 --- @field StatusText string # the status text,  The current status text
 --- @field MotdText string # the motd text,  The current message of the day
@@ -2516,7 +2516,7 @@ ui.MultiClientSetup = {}
 --- @field closeMultiSync fun(QuitGame: boolean): nil # Closes MultiSync. If QuitGame is true then it cancels and leaves the game automatically.
 --- @field runNetwork fun(): nil # Runs the network required commands to run the chat
 --- @field startCountdown fun(): nil # Starts the Launch Mission Countdown that, when finished, will move all players into the mission.
---- @field getCountdownTime fun(): nil # Gets the current countdown time. Will be -1 before the countdown starts otherwise will be the num seconds until missions starts.
+--- @field getCountdownTime fun(): number # Gets the current countdown time. Will be -1 before the countdown starts otherwise will be the num seconds until missions starts.
 ui.MultiSync = {}
 
 --- MultiPreJoin: API for accessing data related to the Pre Join UI.

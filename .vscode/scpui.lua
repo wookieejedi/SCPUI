@@ -436,6 +436,7 @@
 --- @field InternalId string The internal ID of the player for the UI
 --- @field Index number The index of the player in the NetPlayers list
 --- @field Entry net_player The net player entry for the player
+--- @field State? string The current state of the player
 --- @field Key? string The player element id
 
 --- SCPUI Multi Setup Player
@@ -466,3 +467,16 @@
 --- @field InternalId string The internal ID of the game for the UI
 --- @field Index number The index of the game in the active games list
 --- @field Key? string The game element id
+
+--- SCPUI PXO Channel
+--- @class scpui_pxo_channel
+--- @field Name string The name of the channel
+--- @field NumPlayers number The number of players in the channel
+--- @field NumGames number The number of games in the channel
+--- @field IsCurrent boolean True if the channel is the current channel, false otherwise
+--- @field Key? string The channel element id
+
+--- SCPUI PXO Chat Player
+--- @class scpui_pxo_chat_player
+--- @field Name string The name of the player
+--- @field Key? string The player element id

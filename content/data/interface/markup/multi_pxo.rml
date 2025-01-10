@@ -21,7 +21,7 @@
 			</div>
 			<div id=player_btns_wrapper>
 				<div id=web_rank_cont>
-					<button id="web_rank_btn" class="web_rank button_1" onclick="controller:WebRankPressed()">
+					<button id="web_rank_btn" class="web_rank button_1" onclick="controller:web_rank_pressed()">
 						<span id="web_rank_img" class="web_rank button_img">
 							<img src="target.png" class="psuedo_img"></img>
 						</span>
@@ -31,7 +31,7 @@
 					</button>
 				</div>
 				<div id=pilot_info_cont>
-					<button id="pilot_info_btn" class="pilot_info button_1" onclick="controller:PilotInfoPressed()">
+					<button id="pilot_info_btn" class="pilot_info button_1" onclick="controller:pilot_info_pressed()">
 						<span id="pilot_info_img" class="pilot_info button_img">
 							<img src="create-pilot.png" class="psuedo_img"></img>
 						</span>
@@ -41,7 +41,7 @@
 					</button>
 				</div>
 				<div id=find_pilot_cont>
-					<button id="find_pilot_btn" class="find_pilot button_1" onclick="controller:FindPilotPressed()">
+					<button id="find_pilot_btn" class="find_pilot button_1" onclick="controller:find_pilot_pressed()">
 						<span id="find_pilot_img" class="find_pilot button_img">
 							<img src="detail.png" class="psuedo_img"></img>
 						</span>
@@ -60,7 +60,7 @@
 				</ul>
 			</div>
 			<div id=join_public_cont>
-				<button id="join_public_btn" class="join_public button_1" onclick="controller:joinPublicPressed()">
+				<button id="join_public_btn" class="join_public button_1" onclick="controller:join_public_pressed()">
 					<span id="join_public_img" class="join_public button_img">
 						<img src="select.png" class="psuedo_img"></img>
 					</span>
@@ -70,7 +70,7 @@
 				</button>
 			</div>
 			<div id=join_private_cont>
-				<button id="join_private_btn" class="join_private button_1" onclick="controller:joinPrivatePressed()">
+				<button id="join_private_btn" class="join_private button_1" onclick="controller:join_private_pressed()">
 					<span id="join_private_img" class="join_private button_img">
 						<img src="select.png" class="psuedo_img"></img>
 					</span>
@@ -84,11 +84,11 @@
 		<div id=chat_wrapper>
 			<div id=chat_window>
 			</div>
-			<input id=chat_input type="text" maxlength="512" onblur="controller:InputFocusLost()"
-				onchange="controller:InputChange(event)"></input>
+			<input id=chat_input type="text" maxlength="512" onblur="controller:input_focus_lost()"
+				onchange="controller:input_change(event)"></input>
 			<div id=submit_btn_wrapper>
 				<div id=submit_cont>
-					<button id="submit_btn" class="submit button_1" onclick="controller:SubmitPressed()">
+					<button id="submit_btn" class="submit button_1" onclick="controller:submit_pressed()">
 						<span id="submit_img" class="submit button_img">
 							<img src="select.png" class="psuedo_img"></img>
 						</span>

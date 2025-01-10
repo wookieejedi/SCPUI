@@ -60,6 +60,12 @@ function ScpuiSystemUiController:init() -- All UI Controllers must have an init 
     self.Variable = nil -- Initialize all ui variables in the init method using PascalCase. For different types of variables, refer to the global member documentation above.
 end
 
+function ScpuiSystemUiController:initialize(document) -- All UI Controllers must have an initialize method. This should be called by the body on load and send the document
+    self.Document = document -- Initialize the document here to the class instance variable
+
+    --- Perform any other necessary initialization
+end
+
 function ScpuiSystemUiController:processData() -- UI Controller methods must use camelCase for internal methods
 end
 

@@ -130,8 +130,8 @@ function HostSetupController:dialogResponse(response)
 	--- Only dialog here is showing player stats which requires no response
 	return
 
-	--[[local path = self.promptControl
-	self.promptControl = nil
+	--[[local path = self.PromptControl
+	self.PromptControl = nil
 	if path == 1 then --MOTD
 		--Do nothing!
 	elseif path == 2 then --Join Private Channel
@@ -322,7 +322,7 @@ function HostSetupController:getPlayerStats(player)
 
 	local stats = player:getStats()
 
-	self.promptControl = 3
+	--self.PromptControl = 3
 
 	local text = self:initializeStatsText(stats)
 	local title = player.Name .. "'s stats"

@@ -25,7 +25,7 @@
 						<img src="ops-panel-vert-l.png"></img>
 					</div>
 					<div id=game_title_input>
-						<input id=title_input type="text" maxlength="30" onblur="controller:InputFocusLost()" onchange="controller:title_input_change(event)" onkeyup="controller:title_keyup(element, event)"></input>
+						<input id=title_input type="text" maxlength="30" onblur="controller:input_focus_lost()" onchange="controller:title_input_change(event)" onkeyup="controller:title_keyup(element, event)"></input>
 						<img src="paused.png"></img>
 					</div>
 				</div>
@@ -39,7 +39,7 @@
 						<img src="ops-panel-vert-tall-l.png"></img>
 					</div>
 					<div id=game_type_input>
-						<input id=password_input type="text" maxlength="30" onblur="controller:InputFocusLost()" onchange="controller:password_input_change(event)" onkeyup="controller:password_keyup(element, event)"></input>
+						<input id=password_input type="text" maxlength="30" onblur="controller:input_focus_lost()" onchange="controller:password_input_change(event)" onkeyup="controller:password_keyup(element, event)"></input>
 						<img src="paused.png"></img>
 					</div>
 				</div>
