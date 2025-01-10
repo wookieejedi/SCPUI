@@ -332,6 +332,7 @@
 --- @field Player_Ribbons? ribbon_info[] The player ribbons for SCPUI
 --- @field Generated_Icons? loadout_icon[] The rocket UI icons for SCPUI loadout screens
 --- @field ScpuiOptionValues custom_option_data The values for the built-in SCPUI options
+--- @field Reset? boolean True if SCPUI should regen the icons, false otherwise
 
 --- SCPUI Dialog Button
 --- @class dialog_button

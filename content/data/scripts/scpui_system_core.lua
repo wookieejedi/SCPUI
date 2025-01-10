@@ -1,5 +1,5 @@
-local utils = require("lib_utils")
-local topics = require("lib_ui_topics")
+local Utils = require("lib_utils")
+local Topics = require("lib_ui_topics")
 
 -----------------------------------
 --This is the core SCPUI file. It handles state management and
@@ -7,8 +7,8 @@ local topics = require("lib_ui_topics")
 --everything. Modify with care.
 -----------------------------------
 
-local updateCategory = engine.createTracingCategory("UpdateRocket", false)
-local renderCategory = engine.createTracingCategory("RenderRocket", true)
+local UpdateCategory = engine.createTracingCategory("UpdateRocket", false)
+local RenderCategory = engine.createTracingCategory("RenderRocket", true)
 
 ScpuiSystem = {}
 
@@ -96,7 +96,6 @@ end
 --- Load ScpuiSystem submodules (script files starting with `scpui_sm_`)
 --- @return nil
 function ScpuiSystem:loadSubmodels()
-    local scriptDir = "data/scripts"
     local files = cf.listFiles("data/scripts", "*.lua")
 	local submodules_prefix = "scpui_sm_"
 
@@ -106,15 +105,15 @@ function ScpuiSystem:loadSubmodels()
 
     for _, filename in ipairs(files) do
         if string.find(filename, submodules_prefix) then -- Check for "scpui_system_"
-            local moduleName = filename:match(submodules_prefix .. "(.-).lua")
-            if moduleName and moduleName ~= "core" then
-                local modulePath = string.format("%s%s", submodules_prefix, moduleName)
-                local ok, module = pcall(require, modulePath)
+            local module_name = filename:match(submodules_prefix .. "(.-).lua")
+            if module_name and module_name ~= "core" then
+                local module_path = string.format("%s%s", submodules_prefix, module_name)
+                local ok, module = pcall(require, module_path)
                 if ok then
-					require(modulePath)
-                    ba.print("SCPUI loaded submodel: " .. moduleName .. "\n")
+					require(module_path)
+                    ba.print("SCPUI loaded submodel: " .. module_name .. "\n")
                 else
-                    ba.warning("SCPUI Error loading submodel " .. modulePath .. ": " .. module .. "\n")
+                    ba.warning("SCPUI Error loading submodel " .. module_path .. ": " .. module .. "\n")
                 end
             end
         end
@@ -199,7 +198,7 @@ function ScpuiSystem:parseScpuiTable(data)
 
 		if state == "GS_STATE_SCRIPTING" then
 			parse.requiredString("+Substate:")
-			local state = parse.getString()
+			state = parse.getString()
 			parse.requiredString("+Markup:")
 			local markup = parse.getString()
 			ba.print("SCPUI found definition for script substate " .. state .. " : " .. markup .. "\n")
@@ -220,7 +219,7 @@ function ScpuiSystem:parseScpuiTable(data)
 
 		while parse.optionalString("$Campaign Background:") do
 			parse.requiredString("+Campaign Filename:")
-			local campaign = utils.strip_extension(parse.getString())
+			local campaign = Utils.strip_extension(parse.getString())
 
 			parse.requiredString("+RCSS Class Name:")
 			local classname = parse.getString()
@@ -236,7 +235,7 @@ function ScpuiSystem:parseScpuiTable(data)
 
 		while parse.optionalString("$Campaign Background:") do
 			parse.requiredString("+Campaign Filename:")
-			local campaign = utils.strip_extension(parse.getString())
+			local campaign = Utils.strip_extension(parse.getString())
 
 			parse.requiredString("+RCSS Class Name:")
 			local classname = parse.getString()
@@ -251,12 +250,12 @@ function ScpuiSystem:parseScpuiTable(data)
 		while parse.optionalString("$Briefing Grid Background:") do
 
 			parse.requiredString("+Mission Filename:")
-			local mission = utils.strip_extension(parse.getString())
+			local mission = Utils.strip_extension(parse.getString())
 
 			parse.requiredString("+Default Background Filename:")
 			local default_file = parse.getString()
 
-			if not utils.hasExtension(default_file) then
+			if not Utils.hasExtension(default_file) then
 				ba.warning("SCPUI parsed background file, " .. default_file .. ", that does not include an extension!")
 			end
 
@@ -270,7 +269,7 @@ function ScpuiSystem:parseScpuiTable(data)
 				parse.requiredString("+Background Filename:")
 				local file = parse.getString()
 
-				if not utils.hasExtension(file) then
+				if not Utils.hasExtension(file) then
 					ba.warning("SCPUI parsed background file, " .. default_file .. ", that does not include an extension!")
 				end
 
@@ -358,10 +357,10 @@ function ScpuiSystem:stateFrame()
 	end
 
 	-- Add some tracing scopes here to see how long this stuff takes
-	updateCategory:trace(function()
+	UpdateCategory:trace(function()
 		self.data.Context:Update()
 	end)
-	renderCategory:trace(function()
+	RenderCategory:trace(function()
 		self.data.Context:Render()
 	end)
 end
@@ -377,7 +376,7 @@ function ScpuiSystem:stateEnd(substate)
 
 	--Provide a UI topic for custom mod options to apply user selections
 	if not substate and (hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT" or hv.OldState.Name == "GS_STATE_OPTIONS_MENU") then
-		topics.options.apply:send(nil)
+		Topics.options.apply:send(nil)
 	end
 
 	if not substate then
@@ -471,30 +470,30 @@ end
 --- show it using SCPUI's own dialog system
 --- @return nil
 function ScpuiSystem:dialogStart()
-	local dialogs = require("lib_dialogs")
+	local Dialogs = require("lib_dialogs")
 	if hv.IsDeathPopup then
 		self.data.DeathDialog = { Abort = {}, Submit = nil }
 	else
 		self.data.Dialog = { Abort = {}, Submit = nil }
 	end
-	local dialog = dialogs.new()
+	local dialog = Dialogs.new()
 		dialog:title(hv.Title)
 		dialog:text(hv.Text)
 		dialog:input(hv.IsInputPopup)
 
 		if hv.IsDeathPopup then
 			dialog:style(2)
-			dialog:text(topics.deathpopup.setText:send(self))
+			dialog:text(Topics.deathpopup.setText:send(self))
 		else
 			dialog:escape(-1) --Assuming that all non-death built-in popups can be cancelled safely with a negative response!
 		end
 
 	for i, button in ipairs(hv.Choices) do
-		local positivity = dialogs.BUTTON_TYPE_NEUTRAL
+		local positivity = Dialogs.BUTTON_TYPE_NEUTRAL
 		if button.Positivity == 1 then
-			positivity = dialogs.BUTTON_TYPE_POSITIVE
+			positivity = Dialogs.BUTTON_TYPE_POSITIVE
 		elseif button.Positivity == -1 then
-			positivity = dialogs.BUTTON_TYPE_NEGATIVE
+			positivity = Dialogs.BUTTON_TYPE_NEGATIVE
 		end
 		dialog:button(positivity, button.Text, i - 1, button.Shortcut)
 	end
@@ -518,12 +517,12 @@ end
 --- @return nil
 function ScpuiSystem:dialogFrame()
 	-- Add some tracing scopes here to see how long this stuff takes
-	updateCategory:trace(function()
+	UpdateCategory:trace(function()
 		if hv.Freeze ~= nil and hv.Freeze ~= true then
 			self.data.Context:Update()
 		end
 	end)
-	renderCategory:trace(function()
+	RenderCategory:trace(function()
 		self.data.Context:Render()
 	end)
 
@@ -682,10 +681,10 @@ function ScpuiSystem:loadFrame()
 	ScpuiSystem.data.memory.loading_bar.LoadProgress = hv.Progress
 
 	-- Add some tracing scopes here to see how long this stuff takes
-	updateCategory:trace(function()
+	UpdateCategory:trace(function()
 		self.data.Context:Update()
 	end)
-	renderCategory:trace(function()
+	RenderCategory:trace(function()
 		self.data.Context:Render()
 	end)
 end

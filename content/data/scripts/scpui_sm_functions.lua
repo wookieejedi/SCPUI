@@ -4,30 +4,30 @@
 -----------------------------------
 
 --- Helper function to parse a table
---- @param parserObject table The context/target object that owns the `parseFunction`.
+--- @param parser_object table The context/target object that owns the `parseFunction`.
 --- @param parseFunction function The function to call to parse the table.
---- @param tblName string The name of the table to parse.
---- @param tbmName string The suffix string of the tbm files to parse.
+--- @param tbl_name string The name of the table to parse.
+--- @param tbm_name string The suffix string of the tbm files to parse.
 --- @return nil
-function ScpuiSystem:parseTable(parserObject, parseFunction, tblName, tbmName)
-    ba.print("Beginning parse of " .. tblName .. ".tbl...\n")
+function ScpuiSystem:parseTable(parser_object, parseFunction, tbl_name, tbm_name)
+    ba.print("Beginning parse of " .. tbl_name .. ".tbl...\n")
 
     -- Check if the base table exists and parse it
-    if cf.fileExists(tblName .. '.tbl', '', true) then
-        parseFunction(parserObject, tblName .. '.tbl')
+    if cf.fileExists(tbl_name .. '.tbl', '', true) then
+        parseFunction(parser_object, tbl_name .. '.tbl')
     end
 
     -- Parse any associated .tbm files
-    for _, v in ipairs(cf.listFiles("data/tables", "*-" .. tbmName .. ".tbm")) do
-        parseFunction(parserObject, v)
+    for _, v in ipairs(cf.listFiles("data/tables", "*-" .. tbm_name .. ".tbm")) do
+        parseFunction(parser_object, v)
     end
 end
 
 --- Replace angle brackets in a string with their HTML entity equivalents
---- @param inputString string The string to replace angle brackets in.
+--- @param input_string string The string to replace angle brackets in.
 --- @return string
-function ScpuiSystem:replaceAngleBrackets(inputString)
-    local result = string.gsub(inputString, "<", "&lt;")
+function ScpuiSystem:replaceAngleBrackets(input_string)
+    local result = string.gsub(input_string, "<", "&lt;")
     result = string.gsub(result, ">", "&gt;")
     return result
 end
@@ -45,12 +45,12 @@ end
 --- @param toggle boolean Whether to pause or unpause the audio channels.
 --- @return nil
 function ScpuiSystem:pauseAllAudio(toggle)
-	local topics = require("lib_ui_topics")
+	local Topics = require("lib_ui_topics")
 
 	ad.pauseMusic(-1, toggle)
 	ad.pauseWeaponSounds(toggle)
 	ad.pauseVoiceMessages(toggle)
-	topics.Scpui.pauseAudio:send(toggle)
+	Topics.Scpui.pauseAudio:send(toggle)
 end
 
 --- Gets the absolute left position of an element
@@ -94,8 +94,8 @@ end
 --- @param scene enumeration The scene to check if a cutscene should be played for. Should be one of MOVIE_PRE_FICTION, MOVIE_PRE_CMD_BRIEF, MOVIE_PRE_BRIEF, MOVIE_PRE_GAME, MOVIE_PRE_DEBRIEF, MOVIE_POST_DEBRIEF, MOVIE_END_CAMPAIGN
 --- @return nil
 function ScpuiSystem:maybePlayCutscene(scene)
-	local topics = require("lib_ui_topics")
-	topics.playcutscene.start:send(self)
+	local Topics = require("lib_ui_topics")
+	Topics.playcutscene.start:send(self)
 	if ScpuiSystem.data.memory.MusicHandle ~= nil then
 		ScpuiSystem.data.memory.MusicHandle:pause()
 	end
@@ -110,7 +110,7 @@ function ScpuiSystem:maybePlayCutscene(scene)
 	if ScpuiSystem.data.memory.MusicHandle ~= nil then
 		ScpuiSystem.data.memory.MusicHandle:unpause()
 	end
-	topics.playcutscene.finish:send(self)
+	Topics.playcutscene.finish:send(self)
 end
 
 --- Sets the base pixel font size for SCPUI to use. Attempts to replicate the font size as it would appear on a 1080p screen.
@@ -120,7 +120,7 @@ function ScpuiSystem:getFontPixelSize(val)
 	local vmin = math.min(gr.getScreenWidth(), gr.getScreenHeight())
 	local size = vmin * 0.012 --Gets roughly 12px font on 1080p
 	-- Lua has no math.round(); math.floor(x + 0.5) is the idiomatic replacement.
-	local pixelSize = math.floor(size + 0.5)
+	local pixel_size = math.floor(size + 0.5)
 
 	local function convert(value)
 		if not value then return nil end
@@ -135,9 +135,9 @@ function ScpuiSystem:getFontPixelSize(val)
 		val = convert(val)
 	end
 
-	local finalSize = math.max(1, math.min(ScpuiSystem.data.NumFontSizes, pixelSize + val))
+	local final_size = math.max(1, math.min(ScpuiSystem.data.NumFontSizes, pixel_size + val))
 
-	return tostring(finalSize)
+	return tostring(final_size)
 end
 
 --- DEPRECATED: Use getFontPixelSize instead.
@@ -185,15 +185,15 @@ function ScpuiSystem:getFontSize(val, default)
     end
 
     -- Perform the conversion
-    local convertedValue = 1 + (val * 19)
-    return math.floor(convertedValue)
+    local converted_value = 1 + (val * 19)
+    return math.floor(converted_value)
 end
 
 --- Gets the background rcss class to use based on the current campaign. Returns "general_bg" if no class is found.
 --- @return string class The rcss class to use to set the background image
 function ScpuiSystem:getBackgroundClass()
-	local campaignfilename = ba.getCurrentPlayer():getCampaignFilename()
-	local bgclass = self.data.Backgrounds_List[campaignfilename]
+	local campaign_filename = ba.getCurrentPlayer():getCampaignFilename()
+	local bgclass = self.data.Backgrounds_List[campaign_filename]
 
 	if not bgclass then
 		bgclass = "general_bg"
@@ -443,100 +443,100 @@ function ScpuiSystem:setBriefingText(parent, brief_text, recommendation)
 	--- @param document Document The document to create the text element in
 	--- @param text string The text to add
 	--- @param color_tag string The color tag to use for the text
-	--- @param colorTable table The table of color tags to use
+	--- @param color_table table The table of color tags to use
 	--- @return number | nil lines The number of lines added
-	local function add_text_element(parent, document, text, color_tag, colorTable)
+	local function add_text_element(parent, document, text, color_tag, color_table)
 		if #text == 0 then
 			-- If no text, do not output anything
 			return
 		end
 
-		local colorVal = colorTable[color_tag]
+		local color_val = color_table[color_tag]
 
-		if not colorVal then
+		if not color_val then
 			--FSO already has a warning for malformed color tags so let's just try to keep going
 			text = ' ' .. color_tag .. text --try to preserve the original text
 		end
 
-		local spanEl = document:CreateElement("span")
-		local textEl = document:CreateTextNode(text)
+		local span_el = document:CreateElement("span")
+		local text_el = document:CreateTextNode(text)
 
-		if colorVal then
-			spanEl.style.color = ("rgba(%d, %d, %d, %d)"):format(colorVal.Red, colorVal.Green, colorVal.Blue, colorVal.Alpha)
+		if color_val then
+			span_el.style.color = ("rgba(%d, %d, %d, %d)"):format(color_val.Red, color_val.Green, color_val.Blue, color_val.Alpha)
 		end
 
-		spanEl:AppendChild(textEl)
+		span_el:AppendChild(text_el)
 
-		parent:AppendChild(spanEl)
+		parent:AppendChild(span_el)
 	end
 
 	--- Local function to add line elements to a parent element, setting color tags or color classes as required
 	--- @param document Document The document to create the elements in
 	--- @param paragraph Element The parent element to add the line elements to
 	--- @param line string The line to add elements for
-	--- @param defaultColorTag string The default color tag to use
-	--- @param colorTags table The table of color tags to use
+	--- @param default_color_tag string The default color tag to use
+	--- @param color_tags table The table of color tags to use
 	--- @return nil
-	local function add_line_elements(document, paragraph, line, defaultColorTag, colorTags)
-		local searchIndex = 1
-		local colorStack = { defaultColorTag }
+	local function add_line_elements(document, paragraph, line, default_color_tag, color_tags)
+		local search_index = 1
+		local color_stack = { default_color_tag }
 
 		while true do
-			local startIdx, endIdx, colorChar, groupChar = line:find("%$(%a?)([{}]?)%s*", searchIndex)
-			if startIdx == nil then
+			local start_idx, end_idx, color_char, group_char = line:find("%$(%a?)([{}]?)%s*", search_index)
+			if start_idx == nil then
 				break
 			end
 
-			if #colorChar == 0 and groupChar ~= "}" then
+			if #color_char == 0 and group_char ~= "}" then
 				ba.error(string.format("Color block error in line %q", line))
 			end
 
 			-- Flush out text that was before our tag
-			local pendingText = line:sub(searchIndex, startIdx - 1)
-			add_text_element(paragraph, document, pendingText, colorStack[#colorStack], colorTags)
+			local pending_text = line:sub(search_index, start_idx - 1)
+			add_text_element(paragraph, document, pending_text, color_stack[#color_stack], color_tags)
 
-			searchIndex = endIdx + 1
+			search_index = end_idx + 1
 
-			if #colorChar == 0 then
+			if #color_char == 0 then
 				-- This must be the end of a color group. Remove the last color from the stack and continue
-				table.remove(colorStack)
+				table.remove(color_stack)
 			else
-				table.insert(colorStack, colorChar)
+				table.insert(color_stack, color_char)
 
-				if groupChar == "{" then
+				if group_char == "{" then
 					-- The start of a group so there is nothing for us to do here at the moment
 				else
 					-- We need to know if our word was terminated by white space or an explicit break so we store the whitespace
 					-- in a group and check that later
-					local rangeEndStart, rangeEndEnd, whitespace = utils.find_first_either(line, { "(%s)", "%$|" }, searchIndex)
+					local range_end_start, range_end_end, whitespace = utils.find_first_either(line, { "(%s)", "%$|" }, search_index)
 
-					local coloredText
+					local colored_text
 					if whitespace then
 						-- If we broke on whitespace then we still need to include those characters in the colored range
 						-- to ensure the spacing is correct. To do that, we build the substring until the end of the range
-						coloredText = line:sub(endIdx + 1, rangeEndEnd)
-					elseif rangeEndEnd == nil then
+						colored_text = line:sub(end_idx + 1, range_end_end)
+					elseif range_end_end == nil then
 						-- If we did not find the end then we ended the line with a color sequence
-						coloredText = line:sub(endIdx + 1)
+						colored_text = line:sub(end_idx + 1)
 					else
-						coloredText = line:sub(endIdx + 1, rangeEndStart - 1)
+						colored_text = line:sub(end_idx + 1, range_end_start - 1)
 					end
-					add_text_element(paragraph, document, coloredText, colorStack[#colorStack], colorTags)
+					add_text_element(paragraph, document, colored_text, color_stack[#color_stack], color_tags)
 
-					table.remove(colorStack)
+					table.remove(color_stack)
 
-					if rangeEndEnd ~= nil then
-						searchIndex = rangeEndEnd + 1
+					if range_end_end ~= nil then
+						search_index = range_end_end + 1
 					else
 						-- Still need to update this so that the final text element will not be shown twice
-						searchIndex = #line
+						search_index = #line
 					end
 				end
 			end
 		end
 
-		local remainingText = line:sub(searchIndex)
-		add_text_element(paragraph, document, remainingText, colorStack[#colorStack], colorTags)
+		local remaining_text = line:sub(search_index)
+		add_text_element(paragraph, document, remaining_text, color_stack[#color_stack], color_tags)
 	end
 
 	-- First, clear all the children of this element
@@ -544,15 +544,15 @@ function ScpuiSystem:setBriefingText(parent, brief_text, recommendation)
 
     local document = parent.owner_document
 
-    local colorTags = ui.ColorTags
-    local defaultColorTag = ui.DefaultTextColorTag(2)
+    local color_tags = ui.ColorTags
+    local default_color_tag = ui.DefaultTextColorTag(2)
 
-	local tooltipRegister = {}
+	local tooltip_register = {}
 
     local rml_mode = false
-    local escapeStart, escapeEnd = brief_text:find("^%s*!html%s*")
-    if escapeStart then
-        brief_text = brief_text:sub(escapeEnd + 1)
+    local escape_start, escape_end = brief_text:find("^%s*!html%s*")
+    if escape_start then
+        brief_text = brief_text:sub(escape_end + 1)
         rml_mode = true
     end
 
@@ -572,13 +572,13 @@ function ScpuiSystem:setBriefingText(parent, brief_text, recommendation)
         if rml_mode then
             -- In HTML mode, we just use the text unescaped as the inner RML after running
 			-- it through the keyword system
-            paragraph.inner_rml, tooltipRegister = ScpuiSystem:applyKeywordClasses(ba.replaceVariables(line))
+            paragraph.inner_rml, tooltip_register = ScpuiSystem:applyKeywordClasses(ba.replaceVariables(line))
         else
-            add_line_elements(document, paragraph, ba.replaceVariables(line), defaultColorTag, colorTags)
+            add_line_elements(document, paragraph, ba.replaceVariables(line), default_color_tag, color_tags)
         end
 
         parent:AppendChild(paragraph)
-		for key, value in pairs(tooltipRegister) do
+		for key, value in pairs(tooltip_register) do
 			ScpuiSystem:addTooltip(document, key, value)
 		end
     end
@@ -591,9 +591,9 @@ function ScpuiSystem:setBriefingText(parent, brief_text, recommendation)
 
     -- Try to estimate the amount of lines this will get. The value 130 is chosen based on the original width of the
     -- text window in retail FS2
-    local paragraphLines = utils.table.map(lines, function(line)
+    local paragraph_lines = utils.table.map(lines, function(line)
         return #line / 130
     end)
 
-    return utils.table.sum(paragraphLines) + #lines
+    return utils.table.sum(paragraph_lines) + #lines
 end

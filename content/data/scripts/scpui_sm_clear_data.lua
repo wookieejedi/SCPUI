@@ -2,39 +2,41 @@
 --This file adds hooks used to clear loadouts in specific cases
 -----------------------------------
 
---Clears all the current loadout if F12 is detected during mission load
+--- Clears all the current loadout if F12 is detected during mission load
+--- @return nil
 local function clearLoadoutWithKeypress()
-	local loadoutHandler = require("lib_loadout_handler")
-	
-	local key = loadoutHandler:getMissionKey()
+	local LoadoutHandler = require("lib_loadout_handler")
+
+	local key = LoadoutHandler:getMissionKey()
 	ba.print("SCPUI got command to delete loadout file '" .. key .. "'!\n")
-	
-	local data = loadoutHandler:loadLoadoutsFromFile()
+
+	local data = LoadoutHandler:loadLoadoutsFromFile()
 
 	if data == nil then return end
-	
+
 	data[key] = nil
-	
-	loadoutHandler:saveLoadoutsToFile(data)
+
+	LoadoutHandler:saveLoadoutsToFile(data)
 end
 
---Clears all campaign related loadout save data on campaign start or restart
+--- Clears all campaign related loadout save data on campaign start or restart
+--- @return nil
 local function clearLoadoutOnCampaignStart()
 	ba.print("SCPUI got command to delete all campaign loadouts!\n")
-	
-	local loadoutHandler = require("lib_loadout_handler")
-	local data = loadoutHandler:loadLoadoutsFromFile()
-	
+
+	local LoadoutHandler = require("lib_loadout_handler")
+	local data = LoadoutHandler:loadLoadoutsFromFile()
+
 	if data == nil then return end
-	
+
 	---@param k string
 	for k, _ in pairs(data) do
 		if k:sub(-1) == "c" then
 			data[k] = nil
 		end
 	end
-	
-	loadoutHandler:saveLoadoutsToFile(data)
+
+	LoadoutHandler:saveLoadoutsToFile(data)
 end
 
 engine.addHook("On Key Pressed", function()

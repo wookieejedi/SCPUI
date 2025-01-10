@@ -4,8 +4,6 @@
 
 ScpuiSystem.data.Generated_Icons = {}
 
-local async_util = require("lib_async")
-
 --- Open the cache file and return the contents
 --- @return table
 function ScpuiSystem:openCache()
@@ -14,15 +12,15 @@ function ScpuiSystem:openCache()
 	local json = require('dkjson')
 	local location = 'data/config'
 	local file = nil
-	
-	local modname = string.sub(ScpuiSystem:getModTitle(), 1, 20)
-	
-	if modname == "" then
+
+	local mod_name = string.sub(ScpuiSystem:getModTitle(), 1, 20)
+
+	if mod_name == "" then
 		ba.print("SCPUI could not load the icon cache because no mod name was found!\n")
 		return {}
 	end
-	
-	local filename = "scpui_" .. modname:gsub(" ", "") .. ".cache"
+
+	local filename = "scpui_" .. mod_name:gsub(" ", "") .. ".cache"
 	local cache
 	if cf.fileExists(filename, location) then
 		file = cf.openFile(filename, 'r', location)
@@ -32,7 +30,7 @@ function ScpuiSystem:openCache()
 			cache = {}
 		end
 	end
-	
+
 	return cache
 
 end
@@ -44,16 +42,16 @@ function ScpuiSystem:saveCache(cache)
 
 	local json = require('dkjson')
 	local location = 'data/config'
-	
-	local modname = string.sub(ScpuiSystem:getModTitle(), 1, 20)
-	
-	if modname == "" then
+
+	local mod_name = string.sub(ScpuiSystem:getModTitle(), 1, 20)
+
+	if mod_name == "" then
 		ba.print("SCPUI could not get a valid mod name. Skipping icon caching!\n")
 		return
 	end
-	
-	local filename = "scpui_" .. modname:gsub(" ", "") .. ".cache"
-	
+
+	local filename = "scpui_" .. mod_name:gsub(" ", "") .. ".cache"
+
 	local file = cf.openFile(filename, 'w', location)
 	file:write(json.encode(cache))
 	file:close()
@@ -70,73 +68,73 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 	if ScpuiSystem.data.Generated_Icons[item] ~= nil then
 		return
 	end
-	
-	local ship3d, shipEffect, shipicon3d = ui.ShipWepSelect.get3dShipChoices()
-	local weapon3d, weaponEffect, weaponicon3d = ui.ShipWepSelect.get3dWeaponChoices()
-	
-	local gen3d = false
-	
-	if (shipicon3d and is_ship) or (weaponicon3d and not is_ship) then
-		gen3d = true
+
+	local ship_3d, ship_effect, ship_icon_3d = ui.ShipWepSelect.get3dShipChoices()
+	local weapon_3d, weapon_effect, weapon_icon_3d = ui.ShipWepSelect.get3dWeaponChoices()
+
+	local gen_3d = false
+
+	if (ship_icon_3d and is_ship) or (weapon_icon_3d and not is_ship) then
+		gen_3d = true
 	end
-	
+
 	---@type loadout_icon
 	local icon_details = {
 		Width = 0,
 		Height = 0,
 		Icon = {}
 	}
-	
+
 	local o_clr = gr.getColor(true)
-	
+
 	--Create a texture and then draw the image to it, save the output
 	local function makeIconFromIconFile(filename)
 		local imag_h = nil
-		
-		local validExtensions = {".ani", ".eff", ".png"}
-		
+
+		local valid_extensions = {".ani", ".eff", ".png"}
+
 		--Iterate through the extensions and check if the file exists
 		local exists = false
-		for _, extension in ipairs(validExtensions) do
-			local fullFilename = filename .. extension
-			if cf.fileExists(fullFilename, "", true) then
+		for _, extension in ipairs(valid_extensions) do
+			local full_filename = filename .. extension
+			if cf.fileExists(full_filename, "", true) then
 				exists = true
 				break
 			end
 		end
-		
+
 		--Warn but continue because icon generation will create an empty frame for the icon.
 		if not exists then
 			ba.warning("Could not generate an icon from file " .. filename .. "! Check that the file exists...")
 		end
-		
+
 		if is_ship == true then
 			imag_h = gr.loadTexture(tb.ShipClasses[item].SelectIconFilename, true, true)
 		else
 			imag_h = gr.loadTexture(tb.WeaponClasses[item].SelectIconFilename, true, true)
 		end
-		
-		local numFrames = 0
-		
+
+		local num_frames = 0
+
 		--Invalid image files somehow don't fully error as a texture except when getting frames
 		--So in that case we leave frames at 0 and the draw function will just create an empty
 		--image for the icon frame. The log will show an error from the drawing function.
 		if imag_h:isValid() then
-			numFrames = imag_h:getFramesLeft()
+			num_frames = imag_h:getFramesLeft()
 		end
-		
+
 		local width = imag_h:getWidth()
 		local height = imag_h:getHeight()
 		local tex_h = gr.createTexture(width, height)
 		gr.setTarget(tex_h)
 		for j = 1, 6, 1 do
 			gr.clearScreen(0,0,0,0)
-			gr.drawImage(imag_h[math.min(j, numFrames)], 0, 0, width, height, 0, 1, 1, 0, 1)
+			gr.drawImage(imag_h[math.min(j, num_frames)], 0, 0, width, height, 0, 1, 1, 0, 1)
 			icon_details.Icon[j] = gr.screenToBlob()
 		end
 		icon_details.Width = width
 		icon_details.Height = height
-		
+
 		--clean up
 		gr.setTarget()
 		tex_h:destroyRenderTarget()
@@ -144,13 +142,13 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 		imag_h:unload()
 		tex_h:unload()
 	end
-	
+
 	--Create a texture and then draw the model to it, save the output
 	local function makeIconFromModel()
 		local name = nil
 		local icon = nil
 		local model_h = nil
-		local modelDetails = {
+		local model_details = {
 			width = nil,
 			height = nil,
 			heading = nil,
@@ -163,31 +161,31 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 			name = tb.ShipClasses[item].Name
 			icon = tb.ShipClasses[item].SelectIconFilename
 			model_h = tb.ShipClasses[item]
-			modelDetails.width = ScpuiSystem.data.table_flags.IconDimensions.ship.Width
-			modelDetails.height = ScpuiSystem.data.table_flags.IconDimensions.ship.Height
-			modelDetails.heading = 50
-			modelDetails.pitch = 15
-			modelDetails.bank = 50
-			modelDetails.zoom = 1.1
+			model_details.width = ScpuiSystem.data.table_flags.IconDimensions.ship.Width
+			model_details.height = ScpuiSystem.data.table_flags.IconDimensions.ship.Height
+			model_details.heading = 50
+			model_details.pitch = 15
+			model_details.bank = 50
+			model_details.zoom = 1.1
 		else
 			name = tb.WeaponClasses[item].Name
 			icon = tb.WeaponClasses[item].SelectIconFilename
 			model_h = tb.WeaponClasses[item]
-			modelDetails.width = ScpuiSystem.data.table_flags.IconDimensions.weapon.Width
-			modelDetails.height = ScpuiSystem.data.table_flags.IconDimensions.weapon.Height
-			modelDetails.heading = 75
-			modelDetails.pitch = 0
-			modelDetails.bank = 40
-			modelDetails.zoom = 0.4
+			model_details.width = ScpuiSystem.data.table_flags.IconDimensions.weapon.Width
+			model_details.height = ScpuiSystem.data.table_flags.IconDimensions.weapon.Height
+			model_details.heading = 75
+			model_details.pitch = 0
+			model_details.bank = 40
+			model_details.zoom = 0.4
 		end
-		
-		icon_details.Width = modelDetails.width
-		icon_details.Height = modelDetails.height
 
-		local tex_h = gr.createTexture(modelDetails.width, modelDetails.height)
+		icon_details.Width = model_details.width
+		icon_details.Height = model_details.height
+
+		local tex_h = gr.createTexture(model_details.width, model_details.height)
 		gr.setTarget(tex_h)
 		gr.clearScreen(0,0,0,0)
-		local result = model_h:renderTechModel(0, 0, modelDetails.width, modelDetails.height, modelDetails.heading, modelDetails.pitch, modelDetails.bank, modelDetails.zoom, false)
+		local result = model_h:renderTechModel(0, 0, model_details.width, model_details.height, model_details.heading, model_details.pitch, model_details.bank, model_details.zoom, false)
 		if not result then
 			--If we don't have an icon file then we're done!
 			if not icon or #icon == 0 then
@@ -198,49 +196,49 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 				gr.setColor(o_clr)
 				tex_h:destroyRenderTarget()
 				tex_h:unload()
-				
+
 				--now try a 2D icon
 				makeIconFromIconFile(icon)
 				return
 			end
 		end
 		local blob = gr.screenToBlob()
-		
+
 		for j = 1, 5, 1 do -- 1 through 5 are the plain ship for now
 			icon_details.Icon[j] = blob
 		end
-		
+
 		local function colorize(color, loop, monochrome, index)
 			gr.setTarget() --Have to clear the target between textures
-			local tex_i = gr.createTexture(modelDetails.width, modelDetails.height)
+			local tex_i = gr.createTexture(model_details.width, model_details.height)
 			gr.setTarget(tex_i)
 			gr.clearScreen(0,0,0,0)
 			--Draw the normal version first to have a solid base.. this is pretty hacky, but what are ya gonna do about it?
-			gr.drawImage(tex_h, 0, 0, modelDetails.width, modelDetails.height, 0, 0, 1, 1, 2, false)
+			gr.drawImage(tex_h, 0, 0, model_details.width, model_details.height, 0, 0, 1, 1, 2, false)
 			gr.setColor(color)
 			for l = 1, loop do -- Now draw the monochrome on top 4 times to "colorize" the image
-				gr.drawImage(tex_h, 0, 0, modelDetails.width, modelDetails.height, 0, 0, 1, 1, 2, monochrome)
+				gr.drawImage(tex_h, 0, 0, model_details.width, model_details.height, 0, 0, 1, 1, 2, monochrome)
 			end
 			icon_details.Icon[index] = gr.screenToBlob()
 			tex_i:destroyRenderTarget()
 			tex_i:unload()
 		end
-		
+
 		colorize(gr.createColor(255, 255, 255, 0.2), 1, true, 2) --Full color mouseover
 		colorize(gr.createColor(255, 255, 255, 0.5), 1, true, 3) --Full color highlighted
 		colorize(gr.createColor(255, 165, 0), 4, true, 4) --Orange for items being dragged
 		colorize(gr.createColor(128, 128, 128), 4, true, 5) --Grey for locked
 		colorize(gr.createColor(225, 225, 225), 4, true, 6) --Grey highlighted
-		
+
 		--clean up
 		gr.setTarget()
 		gr.setColor(o_clr)
 		tex_h:destroyRenderTarget()
 		tex_h:unload()
 	end
-	
+
 	--Icon from 3D model or from a file?
-	if gen3d then
+	if gen_3d then
 		makeIconFromModel()
 	else
 		local icon = nil
@@ -249,7 +247,7 @@ function ScpuiSystem:setIconFrames(item, is_ship)
 		else
 			icon = tb.WeaponClasses[item].SelectIconFilename
 		end
-		
+
 		--If we don't have a file then fallback to using the model
 		if not icon or #icon == 0 then
 			makeIconFromModel()
@@ -266,14 +264,14 @@ end
 --- @return nil
 function ScpuiSystem:beginIconGeneration()
 	ScpuiSystem.data.Generated_Icons = ScpuiSystem:openCache()
-	
-	if ScpuiSystem.data.Generated_Icons == nil or ScpuiSystemReset == true then
+
+	if ScpuiSystem.data.Generated_Icons == nil or ScpuiSystem.data.Reset == true then
 		ba.print("SCPUI is resetting icon cache!\n")
 		ScpuiSystem.data.Generated_Icons = {}
 	end
-	
+
 	--prevent the keypress hook now
-	ScpuiSystemReset = true
+	ScpuiSystem.data.Reset = true
 end
 
 --- Finish the icon generation by saving the cache to disk and freeing all models
@@ -293,7 +291,7 @@ function ScpuiSystem:genIcons()
 	if not ScpuiSystem.data.Active then
 		return
 	end
-	
+
 	ScpuiSystem:addPreload(
 		"SCPUI is starting generation of ship and weapon loadout icons!",
 		"Initializing icon generation...",
@@ -305,12 +303,12 @@ function ScpuiSystem:genIcons()
 
 		local v = tb.WeaponClasses[i]
 
-		if v:isPlayerAllowed() then		
-			local safeName = v.Name:gsub("'", "\\'")
+		if v:isPlayerAllowed() then
+			local safe_name = v.Name:gsub("'", "\\'")
 			ScpuiSystem:addPreload(
 				"Generating icon for " .. v.Name,
 				"Generating " .. v.Name .. " icon",
-				"ScpuiSystem:setIconFrames('" .. safeName .. "', false)",
+				"ScpuiSystem:setIconFrames('" .. safe_name .. "', false)",
 				1
 			)
 		end
@@ -322,17 +320,17 @@ function ScpuiSystem:genIcons()
 		local v = tb.ShipClasses[i]
 
 		if v:isPlayerAllowed() then
-			local safeName = v.Name:gsub("'", "\\'")
+			local safe_name = v.Name:gsub("'", "\\'")
 			ScpuiSystem:addPreload(
 				"Generating icon for " .. v.Name,
 				"Generating " .. v.Name .. " icon",
-				"ScpuiSystem:setIconFrames('" .. safeName .. "', true)",
+				"ScpuiSystem:setIconFrames('" .. safe_name .. "', true)",
 				2
 			)
 		end
 
 	end
-	
+
 	ScpuiSystem:addPreload(
 		"Saving ship and weapon loadout icons!",
 		"Finalizing icon generation...",
@@ -345,8 +343,8 @@ end
 --- Forces the icon cache to be cleared and regenerated
 --- @return nil
 local function resetIconCache()
-    if ScpuiSystemReset == nil then
-		ScpuiSystemReset = true
+    if ScpuiSystem.data.Reset == nil then
+		ScpuiSystem.data.Reset = true
 		ba.print("SCPUI got manual command to reset the icon cache!\n")
 	end
 end

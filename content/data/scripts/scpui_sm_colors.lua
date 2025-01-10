@@ -14,7 +14,7 @@ function ScpuiSystem:initKeywords()
     if cf.fileExists('keywords.tbl') then
         affixes = ScpuiSystem:parseKeywords('keywords.tbl', affixes)
     end
-  
+
     for _, v in ipairs(cf.listFiles("data/tables", "*-kwrd.tbm")) do
         ScpuiSystem:parseKeywords(v, affixes)
     end
@@ -49,10 +49,10 @@ end
 
 --- Parse the keywords table
 --- @param data string The file to parse
---- @param inheritedAffixes scpui_keywords
+--- @param inherited_affixes scpui_keywords
 --- @return scpui_keywords
-function ScpuiSystem:parseKeywords(data, inheritedAffixes)
-    local keywordAlgorithm = require("lib_keyword_algorithm")
+function ScpuiSystem:parseKeywords(data, inherited_affixes)
+    local KeywordAlgorithm = require("lib_keyword_algorithm")
     parse.readFileText(data, "data/tables")
     local lang = "#" .. ba.getCurrentLanguage()
 
@@ -66,11 +66,11 @@ function ScpuiSystem:parseKeywords(data, inheritedAffixes)
     end
 
     ---@type scpui_keywords
-    local globalAffixes = ScpuiSystem:parseKeywordAffixes(inheritedAffixes)
+    local global_affixes = ScpuiSystem:parseKeywordAffixes(inherited_affixes)
     while parse.optionalString("$Style:") do
         local any = false
         local style = parse.getString()
-        local affixes = ScpuiSystem:parseKeywordAffixes(globalAffixes)
+        local affixes = ScpuiSystem:parseKeywordAffixes(global_affixes)
         while parse.optionalString("+Text:") do
             any = true
             local text = parse.getString()
@@ -81,7 +81,7 @@ function ScpuiSystem:parseKeywords(data, inheritedAffixes)
             for _, prefix in ipairs(affixes.Prefixes) do
                 for _, suffix in ipairs(affixes.Suffixes) do
                     local t = prefix .. text .. suffix
-                    if not keywordAlgorithm.registerKeyword(t, style, tooltip) then
+                    if not KeywordAlgorithm.registerKeyword(t, style, tooltip) then
                         parse.displayMessage("SCPUI Keyword '" .. t .. "' already exists. Skipping!")
                     end
                 end
@@ -94,7 +94,7 @@ function ScpuiSystem:parseKeywords(data, inheritedAffixes)
 
     parse.requiredString("#End")
     parse.stop()
-    return globalAffixes
+    return global_affixes
 end
 
 --- Check the global timers table and show the tooltip if the timer is greater than 3
@@ -102,7 +102,7 @@ end
 --- @param id string The id of the tooltip
 --- @return nil
 function ScpuiSystem:maybeShowTooltip(tool_el, id)
-    local async_util = require("lib_async")
+    local AsyncUtil = require("lib_async")
     if ScpuiSystem.data.Tooltip_Timers[id] == nil then
         return
     end
@@ -111,7 +111,7 @@ function ScpuiSystem:maybeShowTooltip(tool_el, id)
         tool_el:SetPseudoClass("shown", true)
     else
         async.run(function()
-            async.await(async_util.wait_for(1.0))
+            async.await(AsyncUtil.wait_for(1.0))
             if ScpuiSystem.data.Tooltip_Timers[id] ~= nil then
                 ScpuiSystem.data.Tooltip_Timers[id] = ScpuiSystem.data.Tooltip_Timers[id] + 1
                 ScpuiSystem:maybeShowTooltip(tool_el, id)
@@ -143,21 +143,21 @@ function ScpuiSystem:addTooltip(document, id, tooltip)
 
     -- Set the width of the tooltip
     -- Calculate the width of the tooltip element
-    local maxCharacters = 25 -- Maximum characters before wrapping
-    local fontPixelSize = ScpuiSystem:getFontPixelSize()
-    local actualCharacters = math.min(maxCharacters, #tooltip)
-    local elementWidth = fontPixelSize * actualCharacters
+    local max_characters = 25 -- Maximum characters before wrapping
+    local font_pixel_size = ScpuiSystem:getFontPixelSize()
+    local actual_characters = math.min(max_characters, #tooltip)
+    local element_width = font_pixel_size * actual_characters
 
-    tool_el.style.width = elementWidth .. "px"
+    tool_el.style.width = element_width .. "px"
 
     -- Calculate the number of characters that fit in one line
-    local charactersPerLine = math.floor(elementWidth / fontPixelSize)
+    local characters_per_line = math.floor(element_width / font_pixel_size)
 
     -- Calculate the number of lines required
-    local numberOfLines = math.ceil(#tooltip / charactersPerLine)
+    local number_of_lines = math.ceil(#tooltip / characters_per_line)
 
-    local totalWidth = elementWidth + 10 -- Tooltip class has a padding of 5
-    local totalHeight = ((numberOfLines * fontPixelSize) + 10)
+    local total_width = element_width + 10 -- Tooltip class has a padding of 5
+    local total_height = ((number_of_lines * font_pixel_size) + 10)
 
     -- Now append!
     tool_el.inner_rml = "<span class=\"tooltiptext\">" .. tooltip .. "</span>"
@@ -165,8 +165,8 @@ function ScpuiSystem:addTooltip(document, id, tooltip)
     root:AppendChild(tool_el)
 
     parent:AddEventListener("mouseover", function(event, _, _)
-        local x = event.parameters.mouse_x - totalWidth
-        local y = event.parameters.mouse_y - totalHeight
+        local x = event.parameters.mouse_x - total_width
+        local y = event.parameters.mouse_y - total_height
         tool_el.style.left = math.max(3, x) .. "px"
         tool_el.style.top = math.max(3, y) .. "px"
         if ScpuiSystem.data.Tooltip_Timers[id] == nil then
@@ -182,11 +182,11 @@ function ScpuiSystem:addTooltip(document, id, tooltip)
 end
 
 --- Apply keyword classes to the input text which is then colorized
---- @param inputText string The text to colorize
+--- @param input_text string The text to colorize
 --- @return string, table register The colorized text and a table of tooltips
-function ScpuiSystem:applyKeywordClasses(inputText)
-    local keywordAlgorithm = require("lib_keyword_algorithm")
-    return keywordAlgorithm.colorize(inputText)
+function ScpuiSystem:applyKeywordClasses(input_text)
+    local KeywordAlgorithm = require("lib_keyword_algorithm")
+    return KeywordAlgorithm.colorize(input_text)
 end
 
 ScpuiSystem:initKeywords()
