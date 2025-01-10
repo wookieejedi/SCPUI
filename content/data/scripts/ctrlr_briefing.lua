@@ -133,7 +133,7 @@ function BriefingController:initialize(document)
 		num_stages = num_stages + 1
 	end
 	if #self.Stages_List > 0 then
-		self:goToStage(1)
+		AbstractBriefingController.goToStage(self, 1)
 	end
 
 	if mn.isInCampaign() then

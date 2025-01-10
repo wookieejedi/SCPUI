@@ -3,12 +3,14 @@
 -----------------------------------
 
 local AsyncUtil = require("lib_async")
-local Dialogs = require("lib_dialogs")
 local Topics = require("lib_ui_topics")
 
 local Class = require("lib_class")
 
-local JoinGameController = Class()
+local AbstractMultiController = require("ctrlr_multi_common")
+
+--- This multi controller is merged with the Multi Common Controller
+local JoinGameController = Class(AbstractMultiController)
 
 --- Called by the class constructor
 --- @return nil
@@ -20,11 +22,15 @@ function JoinGameController:init()
 	self.TitleInputEl = nil --- @type Element The title input element
 	self.PasswordInputEl = nil --- @type Element The password input element
 	self.Document = nil --- @type Document The RML document
+
+	self.Subclass = AbstractMultiController.CTRL_START_GAME
 end
 
 --- Called by the RML document
 --- @param document Document
 function JoinGameController:initialize(document)
+	AbstractMultiController.initialize(self, document)
+	ScpuiSystem.data.memory.multiplayer_general.Context = self
 
 	self.Document = document
 
@@ -50,7 +56,7 @@ function JoinGameController:initialize(document)
 
 	self.Document:GetElementById("open_btn"):SetPseudoClass("checked", true)
 
-	self:updateLists()
+	ScpuiSystem.data.memory.multiplayer_general.RunNetwork = true
 	ui.MultiGeneral.setPlayerState()
 
 	Topics.multistartgame.initialize:send(self)
@@ -284,22 +290,10 @@ function JoinGameController:password_input_change(event)
 	self.GamePassword = stringValue
 end
 
---- Runs the network functions every 0.01 seconds
-function JoinGameController:updateLists()
-	ui.MultiStartGame.runNetwork()
-
-	--self.Document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
-
-	async.run(function()
-        async.await(AsyncUtil.wait_for(0.01))
-        self:updateLists()
-    end, async.OnFrameExecutor)
-
-end
-
 --- Called when the screen is being unloaded
 --- @return nil
 function JoinGameController:unload()
+	ScpuiSystem.data.memory.multiplayer_general.RunNetwork = false
 	Topics.multistartgame.unload:send(self)
 end
 

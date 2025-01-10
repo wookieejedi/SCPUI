@@ -53,7 +53,9 @@ ScpuiSystem.data = {
 		MultiReady = false,
 		WarningCountShown = false,
 		loading_bar = {},
-		control_config = {}
+		multiplayer_host = {},
+		control_config = {},
+		multiplayer_general = {}
 	},
 	Render = true,
 	Tooltip_Timers = {},

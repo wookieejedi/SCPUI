@@ -252,7 +252,7 @@ function BarracksScreenController:commit_pressed(element)
     if not ui.PilotSelect.checkPilotLanguage(self.SelectedPilotName) then
         ui.playElementSound(element, "click", "error")
 
-        self:showWrongPilotLanguageDialog()
+        PilotSelectController.showWrongPilotLanguageDialog(self)
         return
     end
 

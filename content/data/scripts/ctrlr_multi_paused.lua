@@ -2,12 +2,14 @@
 --Controller for the Multi Pause UI
 -----------------------------------
 
-local AsyncUtil = require("lib_async")
 local Topics = require("lib_ui_topics")
 
 local Class = require("lib_class")
 
-local MultiPausedController = Class()
+local AbstractMultiController = require("ctrlr_multi_common")
+
+--- This multi controller is merged with the Multi Common Controller
+local MultiPausedController = Class(AbstractMultiController)
 
 --- Called by the class constructor
 --- @return nil
@@ -18,11 +20,15 @@ function MultiPausedController:init()
 	self.ChatInputEl = nil --- @type Element the chat input element
 	self.SubmittedChatValue = nil --- @type string the value of the chat input
 	self.ScreenRender = nil --- @type string the screen render image blob
+
+	self.Subclass = AbstractMultiController.CTRL_PAUSED
 end
 
 --- Called by the RML document
 --- @param document Document
 function MultiPausedController:initialize(document)
+	AbstractMultiController.initialize(self, document)
+	ScpuiSystem.data.memory.multiplayer_general.Context = self
 
 	ui.MultiPauseScreen.initPause()
 
@@ -53,7 +59,7 @@ function MultiPausedController:initialize(document)
 
 	self.SubmittedChatValue = ""
 
-	self:updateLists()
+	ScpuiSystem.data.memory.multiplayer_general.RunNetwork = true
 	ui.MultiGeneral.setPlayerState()
 
 	Topics.multipaused.initialize:send(self)
@@ -118,36 +124,11 @@ end
 --- Called when the screen is being unloaded
 --- @return nil
 function MultiPausedController:unload()
+	ScpuiSystem.data.memory.multiplayer_general.RunNetwork = false
 	ui.MultiPauseScreen.closePause()
 	self.screenRender = nil
 
 	Topics.multipaused.unload:send(self)
-end
-
---- Runs all the network functions to update the chat. Runs every 0.01 seconds
---- @return nil
-function MultiPausedController:updateLists()
-	ui.MultiPauseScreen.runNetwork()
-	local chat = ui.MultiGeneral.getChat()
-
-	local txt = ""
-	for i = 1, #chat do
-		local line = ""
-		if chat[i].Callsign ~= "" then
-			line = chat[i].Callsign .. ": " .. chat[i].Message
-		else
-			line = chat[i].Message
-		end
-		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
-	end
-	self.ChatEl.inner_rml = txt
-	self.ChatEl.scroll_top = self.ChatEl.scroll_height
-
-	async.run(function()
-        async.await(AsyncUtil.wait_for(0.01))
-        self:updateLists()
-    end, async.OnFrameExecutor)
-
 end
 
 return MultiPausedController

@@ -2,13 +2,14 @@
 --Controller for the Multi Host Options UI
 -----------------------------------
 
-local AsyncUtil = require("lib_async")
-local Dialogs = require("lib_dialogs")
 local Topics = require("lib_ui_topics")
 
 local Class = require("lib_class")
 
-local HostOptionsController = Class()
+local AbstractMultiController = require("ctrlr_multi_common")
+
+--- This multi controller is merged with the Multi Common Controller
+local HostOptionsController = Class(AbstractMultiController)
 
 --- Called by the class constructor
 --- @return nil
@@ -27,11 +28,15 @@ function HostOptionsController:init()
 	self.KillLimit = 0 ---@type number The kill limit
 	self.ObserversLimit = 0 ---@type number The observers limit
 	self.SubmittedChatValue = "" ---@type string The submitted chat value
+
+	self.Subclass = AbstractMultiController.CTRL_HOST_OPTIONS
 end
 
 --- Called by the RML document
 --- @param document Document
 function HostOptionsController:initialize(document)
+	AbstractMultiController.initialize(self, document)
+	ScpuiSystem.data.memory.multiplayer_general.Context = self
 
 	self.Document = document
 
@@ -54,7 +59,7 @@ function HostOptionsController:initialize(document)
 
 	self:buildDropdowns()
 
-	self:updateLists()
+	ScpuiSystem.data.memory.multiplayer_general.RunNetwork = true
 	ui.MultiGeneral.setPlayerState()
 
 	if self.Netgame.HostModifiesShips then
@@ -355,38 +360,10 @@ function HostOptionsController:difficulty_changed()
 	end
 end
 
---- Runs the network and updates the chat window
---- Runs on a loop every 0.01 seconds
---- @return nil
-function HostOptionsController:updateLists()
-	ui.MultiHostSetup.runNetwork()
-	local chat = ui.MultiGeneral.getChat()
-
-	local txt = ""
-	for i = 1, #chat do
-		local line = ""
-		if chat[i].Callsign ~= "" then
-			line = chat[i].Callsign .. ": " .. chat[i].Message
-		else
-			line = chat[i].Message
-		end
-		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
-	end
-	self.ChatEl.inner_rml = txt
-	self.ChatEl.scroll_top = self.ChatEl.scroll_height
-
-	--self.Document:GetElementById("status_text").inner_rml = ui.MultiGeneral.StatusText
-
-	async.run(function()
-        async.await(AsyncUtil.wait_for(0.01))
-        self:updateLists()
-    end, async.OnFrameExecutor)
-
-end
-
 --- Called when the screen is being unloaded
 --- @return nil
 function HostOptionsController:unload()
+	ScpuiSystem.data.memory.multiplayer_general.RunNetwork = false
 	Topics.multihostoptions.unload:send(self)
 end
 

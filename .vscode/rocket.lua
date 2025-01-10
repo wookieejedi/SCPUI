@@ -357,7 +357,7 @@ ElementFormControlInput = {}
 ---@field max number
 ---@field min number
 ---@field step number
----@field value number
+---@field value any
 
 --- ElementFormControlDataInput Class
 ElementFormControlSelect = {}

@@ -7,18 +7,25 @@ local Topics = require("lib_ui_topics")
 
 local Class = require("lib_class")
 
-local PXOHelpController = Class()
+local AbstractMultiController = require("ctrlr_multi_common")
+
+--- This multi controller is merged with the Multi Common Controller
+local PXOHelpController = Class(AbstractMultiController)
 
 --- Called by the class constructor
 --- @return nil
 function PXOHelpController:init()
 	self.Document = nil --- @type Document the RML document
 	self.HelpElement = nil --- @type Element the help element
+
+	self.Subclass = AbstractMultiController.CTRL_PXO_HELP
 end
 
 --- Called by the RML document
 --- @param document Document
 function PXOHelpController:initialize(document)
+	AbstractMultiController.initialize(self, document)
+	ScpuiSystem.data.memory.multiplayer_general.Context = self
 
 	self.Document = document
 
@@ -36,7 +43,7 @@ function PXOHelpController:initialize(document)
 	self.HelpElement = self.Document:GetElementById("help_div")
 	self.HelpElement.inner_rml = full_help
 
-	self:updateLists()
+	ScpuiSystem.data.memory.multiplayer_general.RunNetwork = true
 	ui.MultiGeneral.setPlayerState()
 
 	Topics.multipxohelp.initialize:send(self)
@@ -64,20 +71,10 @@ function PXOHelpController:global_keydown(element, event)
 	end
 end
 
---- Runs the network functions every 0.01 seconds
-function PXOHelpController:updateLists()
-	ui.MultiPXO.runNetwork()
-
-	async.run(function()
-        async.await(AsyncUtil.wait_for(0.01))
-        self:updateLists()
-    end, async.OnFrameExecutor)
-
-end
-
 --- Called when the screen is being unloaded
 --- @return nil
 function PXOHelpController:unload()
+	ScpuiSystem.data.memory.multiplayer_general.RunNetwork = false
 	Topics.multipxohelp.unload:send(self)
 end
 
