@@ -35,9 +35,9 @@ function BriefingController:init()
 	self.HelpShown = false --- @type boolean Whether the help text is shown or not
 	self.Commit = false --- @type boolean Whether the player has committed to the mission
 	self.Required_Weapons = {} --- @type string[] List of required weapons for the mission
-	self.ChatElement = nil --- @type Element The chat window element
-	self.ChatInputElement = nil --- @type Element The chat input window element
-	self.SubmittedChatString = "" --- @type string The value of the chat input
+	self.ChatEl = nil --- @type Element The chat window element
+	self.ChatInputEl = nil --- @type Element The chat input window element
+	self.SubmittedChatValue = "" --- @type string The value of the chat input
 	self.Document = nil --- @type Document The RML document
 
 	--- @type scpui_brief_element_list List of ui element names for player control of the stages
@@ -96,8 +96,8 @@ function BriefingController:initialize(document)
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
 
-	self.ChatElement = self.Document:GetElementById("chat_window")
-	self.ChatInputElement = self.Document:GetElementById("chat_input")
+	self.ChatEl = self.Document:GetElementById("chat_window")
+	self.ChatInputEl = self.Document:GetElementById("chat_input")
 
 	--Get all the required weapons
 	local j = 1
@@ -184,12 +184,15 @@ function BriefingController:initialize(document)
 	brief_view_element:ReplaceChild(aniEl, brief_view_element.first_child)
 
 	if ScpuiSystem:inMultiGame() then
+		ScpuiSystem.data.memory.multiplayer_general.Context = self
+		ScpuiSystem.data.memory.multiplayer_general.RunNetwork = true
 		ui.MainHall.stopMusic(true) -- In multi we're coming from the Multi Sync UI so we need to stop these manually
 		ui.MainHall.stopAmbientSound()
+
+		-- Expose some multiplayer elements
 		self.Document:GetElementById("chat_wrapper"):SetClass("hidden", false)
 		--self.Document:GetElementById("c_panel_wrapper_multi"):SetClass("hidden", false)
 		self.Document:GetElementById("bottom_panel_c"):SetClass("hidden", false)
-		self:updateMultiplayerData()
 		ui.MultiGeneral.setPlayerState()
 	end
 
@@ -490,18 +493,8 @@ end
 --- The multiplayer chat submit button was pressed
 --- @return nil
 function BriefingController:submit_pressed()
-	if self.SubmittedChatString then
-		self:sendChat()
-	end
-end
-
---- Send the chat message to the server
---- @return nil
-function BriefingController:sendChat()
-	if string.len(self.SubmittedChatString) > 0 then
-		ui.MultiGeneral.sendChat(self.SubmittedChatString)
-		self.ChatInputElement:SetAttribute("value", "")
-		self.SubmittedChatString = ""
+	if self.SubmittedChatValue then
+		AbstractBriefingController.sendChat(self)
 	end
 end
 
@@ -516,43 +509,13 @@ end
 --- @return nil
 function BriefingController:input_change(event)
 	if event.parameters.linebreak ~= 1 then
-		local val = self.ChatInputElement:GetAttribute("value")
-		self.SubmittedChatString = val
+		local val = self.ChatInputEl:GetAttribute("value")
+		self.SubmittedChatValue = val
 	else
 		local submit_id = self.Document:GetElementById("submit_btn")
 		ui.playElementSound(submit_id, "click")
-		self:sendChat()
+		AbstractBriefingController.sendChat(self)
 	end
-end
-
---- Multiplayer function that updates every millisecond, checking for new messages and other multiplayer data
---- @return nil
-function BriefingController:updateMultiplayerData()
-	local chat = ui.MultiGeneral.getChat()
-
-	local txt = ""
-	for i = 1, #chat do
-		local line = ""
-		if chat[i].Callsign ~= "" then
-			line = chat[i].Callsign .. ": " .. chat[i].Message
-		else
-			line = chat[i].Message
-		end
-		txt = txt .. ScpuiSystem:replaceAngleBrackets(line) .. "<br></br>"
-	end
-	self.ChatElement.inner_rml = txt
-	self.ChatElement.scroll_top = self.ChatElement.scroll_height
-
-	if ui.MultiGeneral.getNetGame().Locked == true then
-		self.Document:GetElementById("lock_btn"):SetPseudoClass("checked", true)
-	else
-		self.Document:GetElementById("lock_btn"):SetPseudoClass("checked", false)
-	end
-
-	async.run(function()
-        async.await(AsyncUtil.wait_for(0.01))
-        self:updateMultiplayerData()
-    end, async.OnFrameExecutor)
 end
 
 --- During the briefing game state if SCPUI is rendering then try to draw the briefing map

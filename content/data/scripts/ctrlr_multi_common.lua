@@ -20,6 +20,9 @@ AbstractMultiController.CTRL_PXO_HELP = 6 --- @type number The PXO help enumerat
 AbstractMultiController.CTRL_PXO = 7 --- @type number The PXO enumeration
 AbstractMultiController.CTRL_START_GAME = 8 --- @type number The start game enumeration
 AbstractMultiController.CTRL_SYNC = 9 --- @type number The sync enumeration
+AbstractMultiController.CTRL_BRIEFING = 10 --- @type number The briefing enumeration
+AbstractMultiController.CTRL_SHIP_SELECT = 11 --- @type number The ship select enumeration
+AbstractMultiController.CTRL_WEAPON = 12 --- @type number The weapon select enumeration
 
 --- Enumerations for handling dialog responses
 AbstractMultiController.DIALOG_MOTD = 1 --- @type number The message of the day enumeration
@@ -35,6 +38,7 @@ function AbstractMultiController:init()
     self.Subclass = nil --- @type number The current subclass attached. One of the CTRL_ enumerations
     self.ChatEl = nil --- @type Element the chat window element
     self.ChatInputEl = nil --- @type Element the chat input element
+	self.SubmittedChatValue = "" --- @type string the submitted value from the chat input
     self.PlayersListEl = nil --- @type Element the players list element
     self.Player_Ids = {} --- @type string[] the list of player ids
     self.Player_List = {} --- @type scpui_multi_setup_player[] the list of players
@@ -1206,6 +1210,20 @@ function AbstractMultiController:updateCountdown()
 	end
 end
 
+--- Update the loadout locked button
+--- @return nil
+function AbstractMultiController:updateLoadoutLocked()
+	local locked_el = self.Document:GetElementById("lock_btn")
+	if not locked_el then
+		return
+	end
+	if ui.MultiGeneral.getNetGame().Locked == true then
+		locked_el:SetPseudoClass("checked", true)
+	else
+		locked_el:SetPseudoClass("checked", false)
+	end
+end
+
 AbstractMultiController.UpdateSwitch = function(self)
     return {
         [AbstractMultiController.CTRL_CLIENT_SETUP] = function()
@@ -1257,15 +1275,18 @@ AbstractMultiController.UpdateSwitch = function(self)
             self:updatePlayersList()
             self:updateTeams()
         end,
+		[AbstractMultiController.CTRL_BRIEFING] = function()
+			self:updateChat()
+			self:updateLoadoutLocked()
+		end,
     }
 end
 
-
 --- Runs the network commands to update all relevant UI elements.
---- Runs continuously every 0.01 seconds
+--- Runs continuously every frame as long as the previous loop has finished.
 --- @return nil
 function AbstractMultiController:updateLists()
-
+	ScpuiSystem.data.memory.multiplayer_general.RunNetwork = false
     local switch = AbstractMultiController.UpdateSwitch(self)
     if switch[self.Subclass] then
         switch[self.Subclass]()
@@ -1300,7 +1321,7 @@ function AbstractMultiController:updateLists()
 	if ScpuiSystem.data.memory.multiplayer_general.DialogResponse then
 		self:dialogResponse()
 	end
-
+	ScpuiSystem.data.memory.multiplayer_general.RunNetwork = true
 end
 
 --- During the briefing game state if SCPUI is rendering then try to draw the briefing map

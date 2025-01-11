@@ -8,7 +8,14 @@ local Topics = require("lib_ui_topics")
 
 local Class = require("lib_class")
 
-local AbstractBriefingController = Class()
+local AbstractMultiController = nil
+local AbstractBriefingController = nil
+if ScpuiSystem:inMultiGame() then
+	AbstractMultiController = require("ctrlr_multi_common")
+	AbstractBriefingController = Class(AbstractMultiController)
+else
+	AbstractBriefingController = Class()
+end
 
 AbstractBriefingController.CONTROLLER_FICTION_VIEWER = 1 --- @type number The fiction controller enumeration
 AbstractBriefingController.CONTROLLER_BRIEFING = 2 --- @type number The briefing controller enumeration
@@ -24,6 +31,7 @@ function AbstractBriefingController:init()
 	self.BriefState = AbstractBriefingController.CONTROLLER_BRIEFING --- @type number The current briefing state (briefing, command, fiction)
 	self.Stages_List = {} --- @type briefing_stage[] | cmd_briefing_stage[] The stages of the briefing
 	self.Document = nil --- @type Document The current RML document
+	self.SubmittedChatValue = "" --- @type string the submitted value from the chat input
 
 	--- @type execution_context The current UI active context
     self.UiActiveContext = async.context.combineContexts(async.context.captureGameState(),
@@ -50,6 +58,10 @@ end
 --- Called by the RML document
 --- @param document Document
 function AbstractBriefingController:initialize(document)
+	if AbstractMultiController and ScpuiSystem:inMultiGame()then
+		AbstractMultiController.initialize(self, document)
+		self.Subclass = AbstractMultiController.CTRL_BRIEFING
+	end
     self.Document = document
     self.Loaded = true
 
@@ -73,6 +85,14 @@ function AbstractBriefingController:initialize(document)
 
 	Topics.briefcommon.initialize:send(self)
 
+end
+
+--- Send the chat message to the server
+--- @return nil
+function AbstractBriefingController:sendChat()
+	if AbstractMultiController then
+		AbstractMultiController.sendChat(self)
+	end
 end
 
 --- Global keydown function handles all keypresses
