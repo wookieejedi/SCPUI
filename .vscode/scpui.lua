@@ -488,3 +488,48 @@
 --- @class scpui_pxo_chat_player
 --- @field Name string The name of the player
 --- @field Key? string The player element id
+
+--- SCPUI Custom Option
+--- @class scpui_custom_option : option
+--- @field ValidValues? any[] The valid values for the option
+--- @field DisplayNames? table<string, string> The display names for the option
+
+--- SCPUI Custom Option Control
+--- @class scpui_custom_option_control
+--- @field Key string The key of the custom option
+--- @field Type string The type of the custom option
+--- @field DefaultValue any The default value of the custom option
+--- @field CurrentValue any The current value of the custom option
+--- @field SavedValue any The saved value of the custom option
+--- @field IncrementValue any The increment value of the custom option
+--- @field ParentEl Element The parent element of the custom option
+--- @field Buttons? Element[] The button elements for the custom option
+--- @field NumPoints? number The number of points for the custom option
+--- @field Strings? string[] The display strings for the custom option
+--- @field Range? number The range of the custom option
+--- @field ValueEl? Element The value element of the custom option
+--- @field SelectEl? ElementFormControlDataSelect The select element of the custom option
+--- @field RangeEl? ElementFormControlInput The range element of the custom option
+--- @field MaxValue? number The maximum value of the custom option
+--- @field HasDefault boolean True if the custom option has no default, false otherwise
+--- @field ValidValues? any[] The valid values for the option
+--- @field DisplayNames? table<string, string> The display names for the option
+
+--- SCPUI Graphics Option Control
+--- @class scpui_graphics_option_control
+--- @field Key string The key of the graphics option
+--- @field Title? string The title of the graphics option
+--- @field Type string The type of the graphics option
+--- @field Option? option The option object for the graphics option
+--- @field CurrentValue any The current value of the graphics option
+--- @field SavedValue any The saved value of the graphics option
+--- @field ValidValues any[] The valid values for the graphics option
+--- @field ParentEl Element The parent ID of the graphics option
+--- @field SelectEl? ElementFormControlDataSelect The select element of the custom option
+
+--- SCPUI Option Data Source Wrapper
+--- @class scpui_option_data_source
+--- @field Option scpui_custom_option The custom option for the data source
+--- @field Values any[] The values of the custom option
+--- @field Source DataSource The data source for the custom option
+--- @field updateValues fun(self: self): nil The function to update the values of the custom option

@@ -9,7 +9,7 @@
         <div id=ipaddress_controls_wrapper>
             <div id="ipaddress_controls">
 				<div id=add_remove_cont>
-                    <button id="remove_btn" class="controls button_1" onclick="controller:RemoveSelectedIP()">
+                    <button id="remove_btn" class="controls button_1" onclick="controller:remove_selected_ip()">
                         <div id="remove_img" class="controls button_img">
                             <img src="exit.png" class="psuedo_img"></img>
                         </div>
@@ -19,7 +19,7 @@
                     </button>
                 </div>
                 <div id=add_remove_cont>
-                    <button id="add_btn" class="controls button_1" onclick="controller:AddSelectedIP()">
+                    <button id="add_btn" class="controls button_1" onclick="controller:add_selected_ip()">
                         <div id="add_img" class="controls button_img">
                             <img src="star.png" class="psuedo_img"></img>
                         </div>
@@ -28,7 +28,7 @@
                         </div>
                     </button>
                 </div>
-				<input id="add_ip_field" type="text" size="15" maxlength="50" onchange="controller:IPInputChange(event)"></input>
+				<input id="add_ip_field" type="text" size="15" maxlength="50" onchange="controller:ip_input_change(event)"></input>
             </div>
         </div>
         <img src="ops-panel-gen-l.png"></img>
@@ -63,13 +63,13 @@
         </div>
         <div id=login_creds_wrapper>
             <div class="login_entry_wrapper">
-                <span>XSTR("Login", 888182)</span><input id="login_field" type="text" size="20" maxlength="50" onchange="controller:LoginChanged()"></input>
+                <span>XSTR("Login", 888182)</span><input id="login_field" type="text" size="20" maxlength="50" onchange="controller:login_changed()"></input>
             </div>
             <div class="login_entry_wrapper">
-                <span>XSTR("Pass", 888183)</span><input id="pass_field" type="password" size="20" maxlength="50" onchange="controller:PassChanged()"></input>
+                <span>XSTR("Pass", 888183)</span><input id="pass_field" type="password" size="20" maxlength="50" onchange="controller:password_changed()"></input>
             </div>
             <div class="login_entry_wrapper">
-                <span>XSTR("Squad", 888184)</span><input id="squad_field" type="text" size="20" maxlength="50" onchange="controller:SquadChanged()"></input>
+                <span>XSTR("Squad", 888184)</span><input id="squad_field" type="text" size="20" maxlength="50" onchange="controller:squad_changed()"></input>
             </div>
         </div>
         <img src="ops-panel-gen-l.png"></img>
