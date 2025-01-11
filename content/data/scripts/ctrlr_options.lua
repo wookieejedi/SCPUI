@@ -5,7 +5,6 @@
 local AsyncUtil = require("lib_async")
 local DataSource = require("lib_datasource")
 local Dialogs  = require("lib_dialogs")
-local Templates = require("lib_templates")
 local Topics = require("lib_ui_topics")
 local Utils = require("lib_utils")
 
@@ -13,7 +12,7 @@ local Class = require("lib_class")
 
 local AbstractOptionsController = require("ctrlr_options_controls")
 
---- This multi controller is merged with the Multi Common Controller
+--- This multi controller is merged with the Companion Options Controller
 local OptionsController = Class(AbstractOptionsController)
 
 function OptionsController:init()
