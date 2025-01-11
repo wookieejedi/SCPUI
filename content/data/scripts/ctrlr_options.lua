@@ -75,10 +75,6 @@ function OptionsController:init()
 	self.TooltipWait = 5 --- @type number The time to wait before showing a tooltip
     self.OptionBackups = {} --- @class ValueDescription[] A table of mappings option->ValueDescription which contains backups of the original values for special options that apply their changes immediately
 
-	if mn.isInMission() then
-		ScpuiSystem:pauseAllAudio(true)
-	end
-
 end
 
 --- Called by the RML document
@@ -86,6 +82,10 @@ end
 function OptionsController:initialize(document)
 	AbstractOptionsController.initialize(self, document)
     self.Document = document
+
+	if mn.isInMission() then
+		ScpuiSystem:pauseAllAudio(true)
+	end
 
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
