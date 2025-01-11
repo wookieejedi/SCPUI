@@ -1224,6 +1224,16 @@ function AbstractMultiController:updateLoadoutLocked()
 	end
 end
 
+--- Update the loadouts from the server
+--- @return nil
+function AbstractMultiController:updateLoadouts()
+	 assert(ScpuiSystem.data.memory.multiplayer_general.LoadoutContext, "Loadout context is nil")
+
+	 ScpuiSystem.data.memory.multiplayer_general.LoadoutContext:update()
+	 ScpuiSystem.data.memory.multiplayer_general.Context:updateShipPool()
+	 ScpuiSystem.data.memory.multiplayer_general.Context:updateSlots()
+end
+
 AbstractMultiController.UpdateSwitch = function(self)
     return {
         [AbstractMultiController.CTRL_CLIENT_SETUP] = function()
@@ -1278,6 +1288,11 @@ AbstractMultiController.UpdateSwitch = function(self)
 		[AbstractMultiController.CTRL_BRIEFING] = function()
 			self:updateChat()
 			self:updateLoadoutLocked()
+		end,
+		[AbstractMultiController.CTRL_SHIP_SELECT] = function()
+			self:updateChat()
+			self:updateLoadoutLocked()
+			self:updateLoadouts()
 		end,
     }
 end

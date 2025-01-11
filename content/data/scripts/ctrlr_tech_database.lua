@@ -23,17 +23,17 @@ end
 
 --Iterate over all the ships, weapons, and intel but only grab the necessary data
 function TechDatabaseController:LoadData()
-	
+
 	--Initialize the lists
 	self.ships = {}
 	self.weapons = {}
 	self.intel = {}
-	
+
 	--Initialize the category tables
 	self.s_types = {}
 	self.w_types = {}
 	self.i_types = {}
-	
+
 	--Load seen data and verify tables
 	self.seenData = self:loadSeenDataFromFile()
 	if self.seenData["ships"] == nil then
@@ -45,9 +45,9 @@ function TechDatabaseController:LoadData()
 	if self.seenData["intel"] == nil then
 		self.seenData["intel"] = {}
 	end
-	
+
 	topics.techdatabase.beginDataLoad:send(self)
-	
+
 	local list_ships = tb.ShipClasses
 	local i = 1
 	while (i < #list_ships) do
@@ -62,19 +62,19 @@ function TechDatabaseController:LoadData()
 				Type = tostring(list_ships[i].TypeString),
 				Visibility = topics.ships.filter:send(list_ships[i])
 			}
-			
+
 			--build the category tables
 			if not utils.table.contains(self.s_types, ship.Type) then
 				table.insert(self.s_types, ship.Type)
 			end
-			
+
 			topics.techdatabase.initShipData:send({self, ship})
-			
+
 			table.insert(self.ships, ship)
 		end
 		i = i + 1
 	end
-	
+
 	local list_weapons = tb.WeaponClasses
 	local j = 1
 	while (j < #list_weapons) do
@@ -85,7 +85,7 @@ function TechDatabaseController:LoadData()
 			if list_weapons[j]:isSecondary() then
 				t_string = utils.xstr("Secondary", 888552)
 			end
-			
+
 			local weapon = {
 				Name = tostring(list_weapons[j].Name),
 				DefaultPos = list_weapons[j]:getWeaponClassIndex(),
@@ -95,19 +95,19 @@ function TechDatabaseController:LoadData()
 				Type = t_string,
 				Visibility = topics.weapons.filter:send(list_weapons[j])
 			}
-			
+
 			--build the category tables
 			if not utils.table.contains(self.w_types, weapon.Type) then
 				table.insert(self.w_types, weapon.Type)
 			end
-			
+
 			topics.techdatabase.initWeaponData:send({self, weapon})
-			
+
 			table.insert(self.weapons, weapon)
 		end
 		j = j + 1
 	end
-	
+
 	local list_intel = tb.IntelEntries
 	local k = 1
 	while (k < #list_intel) do
@@ -120,14 +120,14 @@ function TechDatabaseController:LoadData()
 			Anim = tostring(list_intel[k].AnimFilename),
 			Visibility = topics.intel.filter:send(list_intel[k])
 		}
-		
+
 		--build the category tables
 		if not utils.table.contains(self.i_types, intel.Type) then
 			table.insert(self.i_types, intel.Type)
 		end
-		
+
 		topics.techdatabase.initIntelData:send({self, intel})
-		
+
 		table.insert(self.intel, intel)
 		k = k + 1
 	end
@@ -139,32 +139,32 @@ function TechDatabaseController:initialize(document)
     self.Document = document
     self.elements = {}
     self.section = 1
-	
+
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-	
+
 	self.Document:GetElementById("tech_btn_1"):SetPseudoClass("checked", true)
 	self.Document:GetElementById("tech_btn_2"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("tech_btn_3"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("tech_btn_4"):SetPseudoClass("checked", false)
-	
+
 	topics.techroom.initialize:send(self)
 	topics.techdatabase.initialize:send(self)
-	
+
 	self:InitSortFunctions()
-	
+
 	--Get all the table data fresh each time in case there are changes
 	self:LoadData()
-	
+
 	self.SelectedEntry = nil
-	
+
 	self.SelectedSection = nil
-	
+
 	self:ChangeSection(1)
-	
+
 	local a_slider_el = self.Document:GetElementById("angle_range_cont").first_child
 	local a_range_el = Element.As.ElementFormControlInput(a_slider_el)
 	a_range_el.value = ScpuiSystem.data.ScpuiOptionValues.Database_Model_Angle or 0.5
@@ -172,7 +172,7 @@ function TechDatabaseController:initialize(document)
 	local s_slider_el = self.Document:GetElementById("speed_range_cont").first_child
 	local s_range_el = Element.As.ElementFormControlInput(s_slider_el)
 	s_range_el.value = ScpuiSystem.data.ScpuiOptionValues.Database_Model_Speed or 0.5
-	
+
 end
 
 function TechDatabaseController:setSortType(sort)
@@ -218,14 +218,14 @@ end
 function TechDatabaseController:InitSortFunctions()
 
 	self.sortFunctions = {}
-	
+
 
 	--Item Sorters
 	local function sortByIndexAsc(a, b)
 		return a.DefaultPos < b.DefaultPos
 	end
 	self.sortFunctions.sortByIndexAsc = sortByIndexAsc
-	
+
 	local function sortByIndexDes(a, b)
 		return a.DefaultPos > b.DefaultPos
 	end
@@ -235,12 +235,12 @@ function TechDatabaseController:InitSortFunctions()
 		return a.Name < b.Name
 	end
 	self.sortFunctions.sortByNameAsc = sortByNameAsc
-	
+
 	local function sortByNameDes(a, b)
 		return a.Name > b.Name
 	end
 	self.sortFunctions.sortByNameDes = sortByNameDes
-	
+
 	--Category Sorters
 	local function sortByTypeAsc_Alph(a, b)
 		if a.Type == b.Type then
@@ -250,7 +250,7 @@ function TechDatabaseController:InitSortFunctions()
 		end
 	end
 	self.sortFunctions.sortByTypeAsc_Alph = sortByTypeAsc_Alph
-	
+
 	local function sortByTypeDes_Alph(a, b)
 		if a.Type == b.Type then
 			return self.ItemSort(a, b)
@@ -259,7 +259,7 @@ function TechDatabaseController:InitSortFunctions()
 		end
 	end
 	self.sortFunctions.sortByTypeDes_Alph = sortByTypeDes_Alph
-	
+
 	local function sortByTypeAsc_Idx(a, b)
 		local tbl
 		if self.SelectedSection == "ships" then
@@ -269,7 +269,7 @@ function TechDatabaseController:InitSortFunctions()
 		elseif self.SelectedSection == "intel" then
 			tbl = self.i_types
 		end
-		
+
 		local a_idx = utils.table.ifind(tbl, a.Type)
 		local b_idx = utils.table.ifind(tbl, b.Type)
 		if a.Type == b.Type then
@@ -279,7 +279,7 @@ function TechDatabaseController:InitSortFunctions()
 		end
 	end
 	self.sortFunctions.sortByTypeAsc_Idx = sortByTypeAsc_Idx
-	
+
 	local function sortByTypeDes_Idx(a, b)
 		local tbl
 		if self.SelectedSection == "ships" then
@@ -289,7 +289,7 @@ function TechDatabaseController:InitSortFunctions()
 		elseif self.SelectedSection == "intel" then
 			tbl = self.i_types
 		end
-		
+
 		local a_idx = utils.table.ifind(tbl, a.Type)
 		local b_idx = utils.table.ifind(tbl, b.Type)
 		if a.Type == b.Type then
@@ -299,27 +299,27 @@ function TechDatabaseController:InitSortFunctions()
 		end
 	end
 	self.sortFunctions.sortByTypeDes_Idx = sortByTypeDes_Idx
-	
+
 	topics.techdatabase.initSortFuncs:send(self)
 end
 
-	
+
 
 function TechDatabaseController:SortList()
-	
+
 	self.ItemSort = nil
 	--loadstring(v.func .. '()' )()
-	
+
 	self:UncheckAllSortButtons()
-	
+
 	if self.currentSort == nil then
 		self.currentSort = "index_asc"
 	end
-	
+
 	if self.currentSortCategory == nil then
 		self.currentSortCategory = "none"
 	end
-	
+
 	--Check item sort
 	if self.currentSort == "index_asc" then
 		if self.currentSortCategory == "none" then
@@ -352,12 +352,12 @@ function TechDatabaseController:SortList()
 	else
 		if topics.techdatabase.sortItems:send(self) == false then
 			ba.warning("Got invalid sort method! Using Default.")
-			
+
 			self.currentSort = "index_asc"
 			return self:SortList()
 		end
 	end
-	
+
 	--Check categorization
 	if self.currentSortCategory ~= "none" then
 		if self.currentSortCategory == "type_asc_alph" then
@@ -382,7 +382,7 @@ function TechDatabaseController:SortList()
 	else
 		self.Document:GetElementById("default_cat_btn"):SetPseudoClass("checked", true)
 	end
-	
+
 	--save the choice to the player file
 	if ScpuiSystem.data.ScpuiOptionValues.Database_Sort_Method == nil then
 		ScpuiSystem.data.ScpuiOptionValues.Database_Sort_Method = {}
@@ -406,7 +406,7 @@ function TechDatabaseController:UncheckAllSortButtons()
 	self.Document:GetElementById("name_sort_btn"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("default_cat_btn"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("type_cat_btn"):SetPseudoClass("checked", false)
-	
+
 	topics.techdatabase.uncheckSorts:send(self)
 end
 
@@ -460,24 +460,24 @@ function TechDatabaseController:ChangeTechState(state)
 	if state == 4 then
 		topics.techroom.btn4Action:send()
 	end
-	
+
 end
 
 function TechDatabaseController:ChangeSection(section)
 
 	self.sectionIndex = section
-	
+
 	if section == 1 then section = "ships" end
 	if section == 2 then section = "weapons" end
 	if section == 3 then section = "intel" end
-	
+
 	self.show_all = false
 	self.Counter = 0
 
 	if section ~= self.SelectedSection then
-	
+
 		self.currentList = {}
-	
+
 		if section == "ships" then
 			self.currentList = self.ships
 		elseif section == "weapons" then
@@ -485,37 +485,37 @@ function TechDatabaseController:ChangeSection(section)
 		elseif section == "intel" then
 			self.currentList = self.intel
 		end
-		
+
 		if self.SelectedEntry then
 			self:ClearEntry()
 		end
-		
+
 		--If we had an old section on, remove the active class
 		if self.SelectedSection then
 			local oldbullet = self.Document:GetElementById(self.SelectedSection.."_btn")
 			oldbullet:SetPseudoClass("checked", false)
 		end
-		
+
 		self.SelectedSection = section
 		ScpuiSystem.data.memory.model_rendering.Section = section
-		
+
 		--Check for last sort type
 		if ScpuiSystem.data.ScpuiOptionValues.Database_Sort_Method ~= nil then
 			self.currentSort = ScpuiSystem.data.ScpuiOptionValues.Database_Sort_Method[section]
 		else
 			self.currentSort = "index_asc"
 		end
-		
+
 		if ScpuiSystem.data.ScpuiOptionValues.Database_Category ~= nil then
 			self.currentSortCategory = ScpuiSystem.data.ScpuiOptionValues.Database_Category[section]
 		else
 			self.currentSortCategory = "none"
-		end		
+		end
 
 		self:SortList()
-		
+
 		topics.techdatabase.selectSection:send({self, section})
-		
+
 		--Only create entries if there are any to create
 		if self.currentList[1] then
 			self.visibleList = {}
@@ -529,23 +529,23 @@ function TechDatabaseController:ChangeSection(section)
 
 		local newbullet = self.Document:GetElementById(self.SelectedSection.."_btn")
 		newbullet:SetPseudoClass("checked", true)
-		
+
 		--Scroll to the top of the list
 		self.Document:GetElementById("tech_list").scroll_top = 0
-		
+
 	end
-	
+
 end
 
 function TechDatabaseController:CreateEntryItem(entry, index, selectable, heading)
 
 	self.Counter = self.Counter + 1
-	
+
 	entry.Selectable = selectable
 	entry.Heading = heading
-	
+
 	local li_el = self.Document:CreateElement("li")
-	
+
 	local new_el = "<span style=\"color:red;margin-right:10;\">NEW!</span>"
 	local vis_name = "<span>" .. entry.DisplayName .. "</span>"
 
@@ -555,7 +555,7 @@ function TechDatabaseController:CreateEntryItem(entry, index, selectable, headin
 			vis_name = new_el .. vis_name
 		end
 	end
-	
+
 	li_el.inner_rml = vis_name
 	li_el.id = entry.Name
 
@@ -575,12 +575,12 @@ function TechDatabaseController:CreateEntryItem(entry, index, selectable, headin
 		end)
 		li_el:AddEventListener("dblclick", function(_, _, _)
 			self:SelectEntry(entry)
-			self:BreakoutReader()
+			self:show_breakout_reader()
 		end)
 	end
 	self.visibleList[self.Counter] = entry
 	entry.key = li_el.id
-	
+
 	self.visibleList[self.Counter].Index = self.Counter
 
 	return li_el
@@ -591,11 +591,11 @@ function TechDatabaseController:CreateEntries(list)
 	local list_names_el = self.Document:GetElementById("list_items_ul")
 
 	ScpuiSystem:clearEntries(list_names_el)
-	
+
 	self.cur_category = nil
 
 	for i, v in ipairs(list) do
-	
+
 		--maybe create a category header
 		if utils.extractString(self.currentSortCategory, "_") == "type" then
 			if v.Visibility or self.show_all then
@@ -611,7 +611,7 @@ function TechDatabaseController:CreateEntries(list)
 		else
 			topics.techdatabase.createHeader:send({self, v})
 		end
-					
+
 		if self.show_all or v.Visibility then
 			list_names_el:AppendChild(self:CreateEntryItem(v, i, true, false))
 		end
@@ -630,13 +630,13 @@ function TechDatabaseController:SelectEntry(entry)
 		self.SelectedIndex = entry.Index
 
 		ScpuiSystem.data.memory.model_rendering.RotationSpeed = 40
-		
+
 		local aniWrapper = self.Document:GetElementById("tech_view")
 		if aniWrapper.first_child ~= nil then
 			aniWrapper.first_child:RemoveChild(aniWrapper.first_child.first_child) --yo dawg
 		end
 		aniWrapper:RemoveChild(aniWrapper.first_child)
-	
+
 		if self.SelectedEntry then
 			local oldEntry = self.Document:GetElementById(self.SelectedEntry.key)
 			if oldEntry then
@@ -645,23 +645,23 @@ function TechDatabaseController:SelectEntry(entry)
 				self:setSeen(self.SelectedEntry.Name)
 			end
 		end
-		
+
 		local thisEntry = self.Document:GetElementById(entry.key)
 		self.SelectedEntry = entry
 		thisEntry:SetPseudoClass("checked", true)
-		
+
 		--Headings can be made selectable. If so, then custom code is required
 		if entry.Heading == true then
 			topics.techdatabase.selectHeader:send({self, entry})
 			return
 		end
-		
+
 		--Set the description text
 		self.Document:GetElementById("tech_desc").inner_rml = entry.Description or ''
 		self.Document:GetElementById("tech_desc").scroll_top = 0
-		
+
 		ScpuiSystem.data.memory.model_rendering.Class = nil
-		
+
 		--Decide if item is a weapon or a ship
 		if self.SelectedSection == "ships" then
 
@@ -671,21 +671,21 @@ function TechDatabaseController:SelectEntry(entry)
 				ScpuiSystem.data.memory.model_rendering.Element = self.Document:GetElementById("tech_view")
 				self.first_run = true
 			end, async.OnFrameExecutor)
-			
+
 			self:toggleSliders(true)
 
-		elseif self.SelectedSection == "weapons" then			
-			
+		elseif self.SelectedSection == "weapons" then
+
 			if entry.Anim ~= "" and utils.animExists(entry.Anim) then
 
 				local aniEl = self.Document:CreateElement("ani")
 				aniEl:SetAttribute("src", entry.Anim)
 				aniEl:SetClass("anim", true)
 				aniWrapper:ReplaceChild(aniEl, aniWrapper.first_child)
-				
+
 				self:toggleSliders(false)
 			else --If we don't have an anim, then draw the tech model
-			
+
 				async.run(function()
 					async.await(async_util.wait_for(0.001))
 					ScpuiSystem.data.memory.model_rendering.Class = entry.Name
@@ -695,13 +695,13 @@ function TechDatabaseController:SelectEntry(entry)
 
 				self:toggleSliders(true)
 			end
-		elseif self.SelectedSection == "intel" then			
+		elseif self.SelectedSection == "intel" then
 			self:toggleSliders(false)
-			
+
 			if entry.Anim then
 
 				local aniEl = self.Document:CreateElement("ani")
-				
+
 				if utils.animExists(entry.Anim) then
 					aniEl:SetAttribute("src", entry.Anim)
 				end
@@ -711,10 +711,10 @@ function TechDatabaseController:SelectEntry(entry)
 				--Do nothing because we have nothing to do!
 			end
 		end
-		
+
 		topics.techdatabase.selectEntry:send(self)
 
-	end	
+	end
 
 
 end
@@ -724,7 +724,7 @@ function TechDatabaseController:Show(text, title, buttons)
 
 	ScpuiSystem.data.memory.model_rendering.SavedIndex = ScpuiSystem.data.memory.model_rendering.Class
 	ScpuiSystem.data.memory.model_rendering.Class = nil
-	
+
 	local dialog = dialogs.new()
 		dialog:title(title)
 		dialog:text(text)
@@ -743,7 +743,7 @@ function TechDatabaseController:Show(text, title, buttons)
 	ui.enableInput(self.Document.context)
 end
 
-function TechDatabaseController:BreakoutReader()
+function TechDatabaseController:show_breakout_reader()
 	local text = self.SelectedEntry.Description
 	local title = "<span style=\"color:white;\">" .. self.SelectedEntry.DisplayName .. "</span>"
 	local buttons = {}
@@ -827,7 +827,7 @@ function TechDatabaseController:DrawModel()
 		if not thisItem then
 			return
 		end
-		
+
 		if not ScpuiSystem.data.memory.model_rendering.Click then
 			ScpuiSystem.data.memory.model_rendering.RotationSpeed = ScpuiSystem.data.memory.model_rendering.RotationSpeed + (ScpuiSystem.data.memory.model_rendering.Speed * ba.getRealFrametime())
 		end
@@ -835,67 +835,67 @@ function TechDatabaseController:DrawModel()
 		if ScpuiSystem.data.memory.model_rendering.RotationSpeed >= 100 then
 			ScpuiSystem.data.memory.model_rendering.RotationSpeed = ScpuiSystem.data.memory.model_rendering.RotationSpeed - 100
 		end
-		
+
 		local modelView = ScpuiSystem.data.memory.model_rendering.Element
 
 		--- If the modelView is not found, then we can't draw the model this frame
 		if not modelView then
 			return
 		end
-						
+
 		local modelLeft = modelView.offset_left + modelView.parent_node.offset_left + modelView.parent_node.parent_node.offset_left --This is pretty messy, but it's functional
 		local modelTop = modelView.parent_node.offset_top + modelView.parent_node.parent_node.offset_top + 2 --Does not include modelView.offset_top because that element's padding is set for anims
 		local modelWidth = modelView.offset_width
 		local modelHeight = modelView.offset_height + 10
-		
+
 		local calcX = (ScpuiSystem.data.memory.model_rendering.Sx - ScpuiSystem.data.memory.model_rendering.Mx) * -1
 		local calcY = (ScpuiSystem.data.memory.model_rendering.Sy - ScpuiSystem.data.memory.model_rendering.My) * -1
-		
+
 		local orient = ba.createOrientation(ScpuiSystem.data.memory.model_rendering.Angle, 0, ScpuiSystem.data.memory.model_rendering.RotationSpeed)
-		
+
 		--Move model based on mouse coordinates
 		if ScpuiSystem.data.memory.model_rendering.Click then
 			local dx = calcX * 1
 			local dy = calcY * 1
 			local radius = 100
-			
+
 			--reverse this one
 			dx = dx * -1
-			
+
 			local dr = dx*dx+dy+dy
-			
+
 			if dr < 0 then
 				dr = dr * -1
 			end
-			
+
 			if dr < 1 then
 				dr = 1
 			end
-			
+
 			dr = math.sqrt(dr)
-			
+
 			local denom = math.sqrt(radius*radius+dr*dr)
-			
+
 			local cos_theta = radius/denom
 			local sin_theta = dr/denom
-			
+
 			local cos_theta1 = 1 - cos_theta
-			
+
 			local dxdr = dx/dr
 			local dydr = dy/dr
-			
+
 			local fvec = ba.createVector((dxdr*sin_theta), (dydr*sin_theta), cos_theta)
 			local uvec = ba.createVector(((dxdr*dydr)*cos_theta1), (cos_theta + ((dxdr*dxdr)*cos_theta1)), 1)
 			local rvec = ba.createVector((cos_theta + (dydr*dydr)*cos_theta1), 1, 1)
-			
+
 			ScpuiSystem.data.memory.model_rendering.ClickOrientation = ba.createOrientationFromVectors(fvec, uvec, rvec)
-		
+
 			orient = ScpuiSystem.data.memory.model_rendering.ClickOrientation * orient
 		end
-		
+
 		--thisItem:renderTechModel(modelLeft, modelTop, modelLeft + modelWidth, modelTop + modelHeight, modelDraw.RotationSpeed, -15, 0, 1.1)
 		thisItem:renderTechModel2(modelLeft, modelTop, modelLeft + modelWidth, modelTop + modelHeight, orient, 1.1)
-		
+
 	end
 
 end
@@ -913,7 +913,7 @@ function TechDatabaseController:ClearData()
 	local aniWrapper = self.Document:GetElementById("tech_view")
 	aniWrapper:RemoveChild(aniWrapper.first_child)
 	self.Document:GetElementById("tech_desc").inner_rml = "<p></p>"
-	
+
 end
 
 function TechDatabaseController:global_keydown(element, event)
@@ -973,7 +973,7 @@ end
 
 function TechDatabaseController:select_next()
     local num = #self.visibleList
-	
+
 	if self.SelectedIndex == num then
 		ui.playElementSound(nil, "click", "error")
 	else
@@ -981,7 +981,7 @@ function TechDatabaseController:select_next()
 		while self.visibleList[self.SelectedIndex + count] ~= nil and self.visibleList[self.SelectedIndex + count].Selectable == false do
 			count = count + 1
 		end
-		
+
 		if (self.SelectedIndex + count) > num then
 			ui.playElementSound(nil, "click", "error")
 		elseif self.visibleList[self.SelectedIndex + count].Selectable == false then
@@ -992,7 +992,7 @@ function TechDatabaseController:select_next()
 	end
 end
 
-function TechDatabaseController:select_prev()	
+function TechDatabaseController:select_prev()
 	if self.SelectedIndex == 1 then
 		ui.playElementSound(nil, "click", "error")
 	else
@@ -1000,7 +1000,7 @@ function TechDatabaseController:select_prev()
 		while self.visibleList[self.SelectedIndex - count] ~= nil and self.visibleList[self.SelectedIndex - count].Selectable == false do
 			count = count + 1
 		end
-		
+
 		if (self.SelectedIndex - count) < 1 then
 			ui.playElementSound(nil, "click", "error")
 		elseif self.visibleList[self.SelectedIndex - count].Selectable == false then
@@ -1023,7 +1023,7 @@ end
 
 function TechDatabaseController:help_clicked(element)
     ui.playElementSound(element, "click", "success")
-    
+
 	self.help_shown  = not self.help_shown
 
     local help_texts = self.Document:GetElementsByClassName("tooltip")
@@ -1036,12 +1036,12 @@ function TechDatabaseController:loadSeenDataFromFile()
 
 	---@type json
 	local json = require('dkjson')
-  
+
 	local location = 'data/players'
-  
+
 	local file = nil
 	local config = {}
-  
+
 	if cf.fileExists('scpui_seen_tech.cfg') then
 		file = cf.openFile('scpui_seen_tech.cfg', 'r', location)
 		config = json.decode(file:read('*a'))
@@ -1050,17 +1050,17 @@ function TechDatabaseController:loadSeenDataFromFile()
 			config = {}
 		end
 	end
-  
+
 	if not config[ba.getCurrentPlayer():getName()] then
 		config[ba.getCurrentPlayer():getName()] = {}
 	end
-	
+
 	local mod = ScpuiSystem:getModTitle()
-	
+
 	if not config[ba.getCurrentPlayer():getName()][mod] then
 		config[ba.getCurrentPlayer():getName()][mod] = {}
 	end
-	
+
 	return config[ba.getCurrentPlayer():getName()][mod]
 end
 
@@ -1068,12 +1068,12 @@ function TechDatabaseController:saveSeenDataToFile(data)
 
 	---@type json
 	local json = require('dkjson')
-  
+
 	local location = 'data/players'
-  
+
 	local file = nil
 	local config = {}
-  
+
 	if cf.fileExists('scpui_seen_tech.cfg') then
 		file = cf.openFile('scpui_seen_tech.cfg', 'r', location)
 		config = json.decode(file:read('*a'))
@@ -1082,18 +1082,18 @@ function TechDatabaseController:saveSeenDataToFile(data)
 			config = {}
 		end
 	end
-  
+
 	if not config[ba.getCurrentPlayer():getName()] then
 		config[ba.getCurrentPlayer():getName()] = {}
 	end
-	
+
 	local mod = ScpuiSystem:getModTitle()
-	
+
 	config[ba.getCurrentPlayer():getName()][mod] = data
-	
+
 	local utils = require("lib_utils")
 	config = utils.cleanPilotsFromSaveData(config)
-  
+
 	file = cf.openFile('scpui_seen_tech.cfg', 'w', location)
 	file:write(json.encode(config))
 	file:close()
@@ -1103,7 +1103,7 @@ function TechDatabaseController:unload()
 	ScpuiSystem:saveOptionsToFile(ScpuiSystem.data.ScpuiOptionValues)
 	self:saveSeenDataToFile(self.seenData)
     ScpuiSystem:freeAllModels()
-	
+
 	topics.techdatabase.unload:send(self)
 end
 

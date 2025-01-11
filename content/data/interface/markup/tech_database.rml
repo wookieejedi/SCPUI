@@ -191,7 +191,7 @@
 				</div>
 				<div id=breakout_button>
 					<div id=breakout_cont>
-						<button id="breakout_btn" class="techbuttons button_1" onclick="controller:BreakoutReader()">
+						<button id="breakout_btn" class="techbuttons button_1" onclick="controller:show_breakout_reader()">
 							<span id="breakout_img" class="techbuttons button_img">
 								<img src="oval.png" class="psuedo_img"></img>
 							</span>

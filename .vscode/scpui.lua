@@ -98,6 +98,7 @@
 --- @field Name string The name of the ship
 --- @field Type string The name of the ship class
 --- @field Length string The length of the ship as a string
+--- @field Velocity string The velocity of the ship as a string
 --- @field AfterburnerVelocity string The afterburner velocity of the ship as a string
 --- @field Maneuverability string The maneuverability of the ship as a string
 --- @field Armor string The armor of the ship as a string
@@ -223,6 +224,7 @@
 --- @field DialogType? number The type of dialog that was shown. Should be one of the DIALOG_ enumerations
 --- @field Context? any The context to use for running multiplayer network updates
 --- @field RunNetwork? boolean True if the network should be run, false otherwise
+--- @field LoadoutContext? any The context to use for the loadout handler for this game instance
 
 --- SCPUI Control Config Memory
 --- @class control_config_memory

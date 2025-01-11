@@ -8,6 +8,7 @@ local Topics = require("lib_ui_topics")
 
 local Class = require("lib_class")
 
+--- Briefing Common Controller can be merged with the Multi Common Controller during multiplayer
 local AbstractMultiController = nil
 local AbstractBriefingController = nil
 if ScpuiSystem:inMultiGame() then

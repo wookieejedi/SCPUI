@@ -15,8 +15,8 @@
 		<div id=chat_wrapper class="hidden">
 			<div id=chat_window>
 			</div>
-			<input id=chat_input type="text" maxlength="512" onblur="controller:InputFocusLost()"
-				onchange="controller:InputChange(event)"></input>
+			<input id=chat_input type="text" maxlength="512" onblur="controller:input_focus_lost()"
+				onchange="controller:input_change(event)"></input>
 			<div id=submit_cont>
 				<button id="submit_btn" class="submit button_1" onclick="controller:submit_pressed()">
 					<span id="submit_img" class="submit button_img">
@@ -122,7 +122,7 @@
 			</div>
 			<div id=breakout_button>
 				<div id=breakout_cont>
-					<button id="breakout_btn" class="breakout button_1" onclick="controller:BreakoutReader()">
+					<button id="breakout_btn" class="breakout button_1" onclick="controller:show_breakout_reader()">
 						<span id="breakout_img" class="breakout button_img">
 							<img src="oval.png" class="psuedo_img"></img>
 						</span>

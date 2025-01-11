@@ -15,8 +15,8 @@
 		<div id=chat_wrapper class="hidden">
 			<div id=chat_window>
 			</div>
-			<input id=chat_input type="text" maxlength="512" onblur="controller:InputFocusLost()"
-				onchange="controller:InputChange(event)"></input>
+			<input id=chat_input type="text" maxlength="512" onblur="controller:input_focus_lost()"
+				onchange="controller:input_change(event)"></input>
 			<div id=submit_cont>
 				<button id="submit_btn" class="submit button_1" onclick="controller:submit_pressed()">
 					<span id="submit_img" class="submit button_img">
@@ -33,7 +33,7 @@
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
 					<div id=bullet_cont>
-						<button id="brief_btn" class="bullet button_1" onclick="controller:change_brief_state(1)">
+						<button id="brief_btn" class="bullet button_1" onclick="controller:change_brief_state(controller.STATE_BRIEFING)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -43,7 +43,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="s_select_btn" class="bullet button_1" onclick="controller:change_brief_state(2)">
+						<button id="s_select_btn" class="bullet button_1" onclick="controller:change_brief_state(controller.STATE_SHIP_SELECT)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -53,7 +53,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="w_select_btn" class="bullet button_1" onclick="controller:change_brief_state(3)">
+						<button id="w_select_btn" class="bullet button_1" onclick="controller:change_brief_state(controller.STATE_WEAPON_SELECT)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -76,7 +76,7 @@
 			</div>
 			<div id=breakout_button>
 				<div id=breakout_cont>
-					<button id="breakout_btn" class="breakout button_1" onclick="controller:BreakoutReader()">
+					<button id="breakout_btn" class="breakout button_1" onclick="controller:show_breakout_reader()">
 						<span id="breakout_img" class="breakout button_img">
 							<img src="oval.png" class="psuedo_img"></img>
 						</span>

@@ -424,7 +424,7 @@ function WeaponSelectController:CreateEntries(list)
 	end
 end
 
-function WeaponSelectController:BreakoutReader()
+function WeaponSelectController:show_breakout_reader()
 	local text = topics.weapons.description:send(tb.WeaponClasses[self.selectedWeapon])
 	local title = "<span style=\"color:white;\">" .. topics.weapons.name:send(tb.WeaponClasses[self.selectedWeapon]) .. "</span>"
 	local buttons = {}
@@ -1452,11 +1452,11 @@ function WeaponSelectController:sendChat()
 	end
 end
 
-function WeaponSelectController:InputFocusLost()
+function WeaponSelectController:input_focus_lost()
 	--do nothing
 end
 
-function WeaponSelectController:InputChange(event)
+function WeaponSelectController:input_change(event)
 	if event.parameters.linebreak ~= 1 then
 		local val = self.input_id:GetAttribute("value")
 		self.submittedValue = val

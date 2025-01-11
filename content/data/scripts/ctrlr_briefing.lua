@@ -13,9 +13,9 @@ local AbstractBriefingController = require("ctrlr_briefing_common")
 --- Briefing controller is merged with the Briefing Common Controller
 local BriefingController = Class(AbstractBriefingController)
 
-BriefingController.STATE_BRIEFING = 1
-BriefingController.STATE_SHIP_SELECTION = 2
-BriefingController.STATE_WEAPON_SELECTION = 3
+BriefingController.STATE_BRIEFING = 1 --- @type number The enumeration for the briefing game state
+BriefingController.STATE_SHIP_SELECTION = 2 --- @type number The enumeration for the ship selection game state
+BriefingController.STATE_WEAPON_SELECTION = 3 --- @type number The enumeration for the weapon selection game state
 
 --- Make sure the briefing map is uninitialized
 ScpuiSystem.data.memory.briefing_map = nil
