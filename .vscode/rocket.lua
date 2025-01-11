@@ -370,7 +370,7 @@ ElementFormControlSelect = {}
 --- ElementFormControlDataInput Class
 ElementFormControlDataSelect = {}
 ---@class ElementFormControlDataSelect : ElementFormControlSelect
----@field SetDataSource fun(self: self, data_source: DataSource) Sets the name and table of the new data source to be used by the select box.
+---@field SetDataSource fun(self: self, data_source: string) Sets the name and table of the new data source to be used by the select box.
 
 --- ElementTabSet Class
 ElementTabSet = {}
@@ -385,7 +385,7 @@ ElementDataGrid = {}
 ---@class ElementDataGrid : Element
 ---@field rows table<number, ElementDataGridRow>
 ---@field AddColumn fun(self: self, fields: string, formatter: string, initial_width: number, header_rml: string) Adds a new column to the data grid. The column will read the columns fields (in CSV format) from the grid’s data source, processing it through the data formatter named formatter. header_rml specifies the RML content of the column’s header.
----@field SetDataSource fun(self: self, data_source: DataSource) Sets the name and table of the new data source to be used by the data grid.
+---@field SetDataSource fun(self: self, data_source: string) Sets the name and table of the new data source to be used by the data grid.
 
 --- ElementDataGridRow Class
 ElementDataGridRow = {}

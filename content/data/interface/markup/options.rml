@@ -97,7 +97,7 @@
 			<div id=bottom_panel_c>
 				<div id=c_panel_wrapper>
 					<div id=control_cont>
-						<button id="control_btn" class="control button_1" onclick="controller:control_config_clicked()">
+						<button id="control_btn" class="control button_1" onclick="controller:control_config_clicked(element)">
 							<span id="control_img" class="control button_img">
 								<img src="ship.png" class="psuedo_img"></img>
 							</span>
@@ -107,7 +107,7 @@
 						</button>
 					</div>
 					<div id=hud_cont>
-						<button id="hud_btn" class="hud button_1" onclick="controller:hud_config_clicked()">
+						<button id="hud_btn" class="hud button_1" onclick="controller:hud_config_clicked(element)">
 							<span id="hud_img" class="hud button_img">
 								<img src="hud.png" class="psuedo_img"></img>
 							</span>
@@ -124,7 +124,7 @@
 			<div id=bottom_panel_exit>
 				<div id=exit_panel_wrapper>
 					<div id=exit_cont>
-						<button id="exit_btn" class="exit button_1" onclick="controller:exit_game_clicked()">
+						<button id="exit_btn" class="exit button_1" onclick="controller:exit_game_clicked(element)">
 							<span id="exit_img" class="exit button_img">
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>

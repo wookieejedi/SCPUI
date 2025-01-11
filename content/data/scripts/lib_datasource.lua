@@ -7,10 +7,10 @@ local Class = require("lib_class")
 local DataSourceWrapper = Class()
 
 --- Initialize the data source wrapper
---- @param option scpui_custom_option
+--- @param option scpui_option
 --- @return nil
 function DataSourceWrapper:init(option)
-    self.Option = nil --- @type scpui_custom_option | nil The option itself
+    self.Option = nil --- @type scpui_option | nil The option itself
     self.Values = nil --- @type any[] The values of a custom option only
     self.Source = nil --- @type DataSource The data source
 

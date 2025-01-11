@@ -490,12 +490,18 @@
 --- @field Key? string The player element id
 
 --- SCPUI Custom Option
---- @class scpui_custom_option : option
---- @field ValidValues? any[] The valid values for the option
---- @field DisplayNames? table<string, string> The display names for the option
+--- @class scpui_option : option
+--- @field ValidValues? any[] The valid values for the option. Available for Custom Options only
+--- @field DisplayNames? table<string, string> The display names for the option. Available for Custom Options only
+--- @field HasDefault? boolean True if the option has no default, false otherwise. Available for Custom Options only
+--- @field Value ValueDescription | string | number The value of the option. If the option is an FSO option this will be a ValueDescription else this will be a string or number.
+--- @field Type enumeration | string The type of the option. If the option is an FSO option this will be an enumeration else this will be a string.
+--- @field Max? number The maximum value of the option. Available for Custom Options only
+--- @field Min? number The minimum value of the option. Available for Custom Options only
+--- @field ForceSelector? boolean True if the option should force a selector, false otherwise. Available for Custom Options only
 
 --- SCPUI Custom Option Control
---- @class scpui_custom_option_control
+--- @class scpui_option_control
 --- @field Key string The key of the custom option
 --- @field Type string The type of the custom option
 --- @field DefaultValue any The default value of the custom option
@@ -529,7 +535,7 @@
 
 --- SCPUI Option Data Source Wrapper
 --- @class scpui_option_data_source
---- @field Option scpui_custom_option The custom option for the data source
+--- @field Option scpui_option The custom option for the data source
 --- @field Values any[] The values of the custom option
 --- @field Source DataSource The data source for the custom option
 --- @field updateValues fun(self: self): nil The function to update the values of the custom option
