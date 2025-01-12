@@ -31,6 +31,22 @@ AbstractMultiController.DIALOG_PLAYER_STATS = 3 --- @type number The player stat
 AbstractMultiController.DIALOG_FIND_PLAYER = 4 --- @type number The find player enumeration
 AbstractMultiController.DIALOG_FIND_PLAYER_RESPONSE = 5 --- @type number The find player response enumeration
 
+--- Game States to Hook into
+AbstractMultiController.GAME_STATE_HOOKS = {
+	"GS_STATE_MULTI_CLIENT_SETUP",
+	"GS_STATE_MULTI_HOST_OPTIONS",
+	"GS_STATE_MULTI_HOST_SETUP",
+	"GS_STATE_MULTI_JOIN_GAME",
+	"GS_STATE_MULTI_PAUSED",
+	"GS_STATE_PXO_HELP",
+	"GS_STATE_PXO",
+	"GS_STATE_START_GAME",
+	"GS_STATE_MULTI_MISSION_SYNC",
+	"GS_STATE_BRIEFING",
+	"GS_STATE_SHIP_SELECT",
+	"GS_STATE_WEAPON_SELECT"
+}
+
 --- Called by the class constructor
 --- @return nil
 function AbstractMultiController:init()
@@ -1349,13 +1365,15 @@ function AbstractMultiController:updateLists()
 	ScpuiSystem.data.memory.multiplayer_general.RunNetwork = true
 end
 
---- During the briefing game state if SCPUI is rendering then try to draw the briefing map
-engine.addHook("On Frame", function()
-	if ScpuiSystem.data.memory.multiplayer_general.RunNetwork then
-		ScpuiSystem.data.memory.multiplayer_general.Context:updateLists()
-	end
-end, {State="GS_STATE_BRIEFING"}, function()
-    return false
-end)
+--- During multiplayer run the network functions every frame
+for _, v_statename in ipairs(AbstractMultiController.GAME_STATE_HOOKS) do
+	engine.addHook("On Frame", function()
+		if ScpuiSystem.data.memory.multiplayer_general.RunNetwork then
+			ScpuiSystem.data.memory.multiplayer_general.Context:updateLists()
+		end
+	end, {State=v_statename}, function()
+		return false
+	end)
+end
 
 return AbstractMultiController
