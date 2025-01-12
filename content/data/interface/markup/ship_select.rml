@@ -97,7 +97,7 @@
 			<img src="select-window-right.png"></img>
 		</div>
 		<div id=ship_scroll_panel>
-			<div id=ship_scroll_wrapper ondragdrop="controller:DragOver(element, 0)">
+			<div id=ship_scroll_wrapper ondragdrop="controller:on_drag_over(element, 0)">
 				<div id=ship_icon_list>
 					<ul id=ship_icon_list_ul>
 					</ul>

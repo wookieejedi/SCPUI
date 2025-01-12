@@ -122,6 +122,15 @@
 --- @field Title string The display name of the weapon class
 --- @field Description string The description of the weapon class
 --- @field FireWait number The fire wait of the weapon
+--- @field Power number The power use of the weapon
+--- @field HullDamage number The hull damage of the weapon
+--- @field ShieldDamage number The shield damage of the weapon
+--- @field SubsystemDamage number The subsystem damage of the weapon
+--- @field Velocity number The velocity of the weapon
+--- @field Range number The range of the weapon
+--- @field RoF number The rate of fire of the weapon
+--- @field CargoSize number The cargo size of the weapon
+--- @field VolleySize number The volley size of the weapon
 --- @field Type string The type of the weapon, usually "primary" or "secondary"
 --- @field Key string The key for the weapon in the weapon pool
 --- @field GeneratedWidth number The width of the weapon icon

@@ -33,7 +33,7 @@
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
 					<div id=bullet_cont>
-						<button id="brief_btn" class="bullet button_1" onclick="controller:change_brief_state(1)">
+						<button id="brief_btn" class="bullet button_1" onclick="controller:change_brief_state(controller.STATE_BRIEFING)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -43,7 +43,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="s_select_btn" class="bullet button_1" onclick="controller:change_brief_state(2)">
+						<button id="s_select_btn" class="bullet button_1" onclick="controller:change_brief_state(controller.STATE_SHIP_SELECT)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -53,7 +53,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="w_select_btn" class="bullet button_1" onclick="controller:change_brief_state(3)">
+						<button id="w_select_btn" class="bullet button_1" onclick="controller:change_brief_state(controller.STATE_WEAPON_SELECT)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -75,27 +75,21 @@
 				</div>
 				<div id=ship_view>
 					<div id=primary_slots>
-						<div id=primary_one class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 1)" ondragdrop="controller:DragDrop(element, 1)" ondragend="controller:DragSlotEnd(element, 1)" ondragover="controller:DragOver(element, 1)" ondragout="controller:DragOut(element, 1)" ondragstart="controller:DragSlotStart(element, 1)">
+						<div id=primary_one class="weapon_slot button_3" onclick="controller:select_assigned_entry(element, 1)" ondragdrop="controller:on_drag_drop(element, 1)" ondragend="controller:drag_from_slot_to_slot_or_pool(element, 1)" ondragover="controller:on_drag_over(element, 1)" ondragout="controller:on_drag_out(element, 1)" ondragstart="controller:on_drag_start(element, 1)">
 						</div>
-						<div id=primary_two class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 2)" ondragdrop="controller:DragDrop(element, 2)" ondragend="controller:DragSlotEnd(element, 2)" ondragover="controller:DragOver(element, 2)"
-						 ondragout="controller:DragOut(element, 2)" ondragstart="controller:DragSlotStart(element, 2)">
+						<div id=primary_two class="weapon_slot button_3" onclick="controller:select_assigned_entry(element, 2)" ondragdrop="controller:on_drag_drop(element, 2)" ondragend="controller:drag_from_slot_to_slot_or_pool(element, 2)" ondragover="controller:on_drag_over(element, 2)" ondragout="controller:on_drag_out(element, 2)" ondragstart="controller:on_drag_start(element, 2)">
 						</div>
-						<div id=primary_three class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 3)" ondragdrop="controller:DragDrop(element, 3)" ondragend="controller:DragSlotEnd(element, 3)" ondragover="controller:DragOver(element, 3)"
-						 ondragout="controller:DragOut(element, 3)" ondragstart="controller:DragSlotStart(element, 3)">
+						<div id=primary_three class="weapon_slot button_3" onclick="controller:select_assigned_entry(element, 3)" ondragdrop="controller:on_drag_drop(element, 3)" ondragend="controller:drag_from_slot_to_slot_or_pool(element, 3)" ondragover="controller:on_drag_over(element, 3)" ondragout="controller:on_drag_out(element, 3)" ondragstart="controller:on_drag_start(element, 3)">
 						</div>
 					</div>
 					<div id=secondary_slots>
-						<div id=secondary_one class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 4)" ondragdrop="controller:DragDrop(element, 4)" ondragend="controller:DragSlotEnd(element, 4)" ondragover="controller:DragOver(element, 4)"
-						 ondragout="controller:DragOut(element, 4)" ondragstart="controller:DragSlotStart(element, 4)">
+						<div id=secondary_one class="weapon_slot button_3" onclick="controller:select_assigned_entry(element, 4)" ondragdrop="controller:on_drag_drop(element, 4)" ondragend="controller:drag_from_slot_to_slot_or_pool(element, 4)" ondragover="controller:on_drag_over(element, 4)" ondragout="controller:on_drag_out(element, 4)" ondragstart="controller:on_drag_start(element, 4)">
 						</div>
-						<div id=secondary_two class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 5)" ondragdrop="controller:DragDrop(element, 5)" ondragend="controller:DragSlotEnd(element, 5)" ondragover="controller:DragOver(element, 5)"
-						 ondragout="controller:DragOut(element, 5)" ondragstart="controller:DragSlotStart(element, 5)">
+						<div id=secondary_two class="weapon_slot button_3" onclick="controller:select_assigned_entry(element, 5)" ondragdrop="controller:on_drag_drop(element, 5)" ondragend="controller:drag_from_slot_to_slot_or_pool(element, 5)" ondragover="controller:on_drag_over(element, 5)" ondragout="controller:on_drag_out(element, 5)" ondragstart="controller:on_drag_start(element, 5)">
 						</div>
-						<div id=secondary_three class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 6)" ondragdrop="controller:DragDrop(element, 6)" ondragend="controller:DragSlotEnd(element, 6)" ondragover="controller:DragOver(element, 6)"
-						 ondragout="controller:DragOut(element, 6)" ondragstart="controller:DragSlotStart(element, 6)">
+						<div id=secondary_three class="weapon_slot button_3" onclick="controller:select_assigned_entry(element, 6)" ondragdrop="controller:on_drag_drop(element, 6)" ondragend="controller:drag_from_slot_to_slot_or_pool(element, 6)" ondragover="controller:on_drag_over(element, 6)" ondragout="controller:on_drag_out(element, 6)" ondragstart="controller:on_drag_start(element, 6)">
 						</div>
-						<div id=secondary_four class="weapon_slot button_3" onclick="controller:SelectAssignedEntry(element, 7)" ondragdrop="controller:DragDrop(element, 7)" ondragend="controller:DragSlotEnd(element, 7)" ondragover="controller:DragOver(element, 7)"
-						 ondragout="controller:DragOut(element, 7)" ondragstart="controller:DragSlotStart(element, 7)">
+						<div id=secondary_four class="weapon_slot button_3" onclick="controller:select_assigned_entry(element, 7)" ondragdrop="controller:on_drag_drop(element, 7)" ondragend="controller:drag_from_slot_to_slot_or_pool(element, 7)" ondragover="controller:on_drag_over(element, 7)" ondragout="controller:on_drag_out(element, 7)" ondragstart="controller:on_drag_start(element, 7)">
 						</div>
 					</div>
 					<div id=secondary_slot_amounts>
@@ -138,7 +132,7 @@
 		<div id=copy_to_wing_panel>
 			<div id=copy_to_wing_wrapper>
 				<div id=copy_to_wing_cont>
-					<button id="copy_btn" class="copy button_1"  onclick="controller:CopyToWing(element)">
+					<button id="copy_btn" class="copy button_1"  onclick="controller:copy_to_wing(element)">
 						<span id="copy_img" class="copy button_img">
 							<img src="multiplayer.png" class="psuedo_img"></img>
 						</span>
@@ -152,7 +146,7 @@
 		</div>
 		<div id=weapon_left_column>
 			<div id=weapon_scroll_panel>
-				<div id=scroll_button_wrapper ondragdrop="controller:DragDrop(element, 0)">
+				<div id=scroll_button_wrapper ondragdrop="controller:on_drag_drop(element, 0)">
 					<div id=primary_icon_list>
 						<ul id=primary_icon_list_ul>
 						</ul>
@@ -164,7 +158,7 @@
 				</div>
 			</div>
 			<div id=weapon_scroll_panel>
-				<div id=scroll_button_wrapper ondragdrop="controller:DragDrop(element, 0)">
+				<div id=scroll_button_wrapper ondragdrop="controller:on_drag_drop(element, 0)">
 					<div id=secondary_icon_list>
 						<ul id=secondary_icon_list_ul>
 						</ul>

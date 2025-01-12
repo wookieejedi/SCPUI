@@ -40,12 +40,13 @@ function ShipSelectController:init()
 	self.Enabled = false --- @type boolean True if there are ships in the loadout, false on error
 	self.Shipclass_Indexes = {} --- @type number[] The ship class indexes in the loadout
 	self.Active_Slots = {} --- @type number[] The active slots in the loadout
-	self.SelectedShip = '' --- @type string The selected ship name
+	self.SelectedShipName = '' --- @type string The selected ship name
 	self.AnimEl = nil --- @type Element the animation element
 	self.Required_Weapons = {} --- @type string[] The required weapons for the mission, if any
 	self.Ship3d = false --- @type boolean Whether the 3D ship view is enabled
 	self.ShipEffect = self.SHIP_EFFECT_OFF --- @type number The ship effect choice for the 3D ship view
 	self.Icon3d = false --- @type boolean Whether the 3D ship icons are enabled
+	self.Commit = false --- @type boolean Whether the commit to the mission was successful
 
 	LoadoutHandler:init()
 	ScpuiSystem.data.memory.model_rendering = {}
@@ -297,7 +298,7 @@ function ShipSelectController:activateShipSlot(slot)
 
 	--Add dragover detection
 	element:AddEventListener("dragdrop", function(_, _, _)
-		self:dragOverSlot(element, slot)
+		self:on_drag_overSlot(element, slot)
 	end)
 
 	if slot_info.ShipClassIndex > 0 then
@@ -431,8 +432,8 @@ end
 --- Called by the RML to show the current ship's description in a popup window
 --- @return nil
 function ShipSelectController:show_breakout_reader()
-	local text = Topics.ships.description:send(tb.ShipClasses[self.SelectedShip])
-	local title = "<span style=\"color:white;\">" .. Topics.ships.name:send(tb.ShipClasses[self.SelectedShip]) .. "</span>"
+	local text = Topics.ships.description:send(tb.ShipClasses[self.SelectedShipName])
+	local title = "<span style=\"color:white;\">" .. Topics.ships.name:send(tb.ShipClasses[self.SelectedShipName]) .. "</span>"
 	--- @type dialog_button[]
 	local buttons = {}
 	buttons[1] = {
@@ -511,7 +512,7 @@ function ShipSelectController:selectShip(entry, slot)
 	if entry.Key ~= self.SelectedEntry then
 
 		self.SelectedEntry = entry.Key
-		self.SelectedShip = entry.Name
+		self.SelectedShipName = entry.Name
 
 		self:displayShipInfo(entry)
 
@@ -617,7 +618,7 @@ end
 --- @param element Element the element being dragged
 --- @param slot number the slot number
 --- @return nil
-function ShipSelectController:dragOverSlot(element, slot)
+function ShipSelectController:on_drag_overSlot(element, slot)
 	self.replace = element
 	self.activeSlot = slot
 	element:SetPseudoClass("valid", false)

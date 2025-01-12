@@ -22,7 +22,7 @@ AbstractMultiController.CTRL_START_GAME = 8 --- @type number The start game enum
 AbstractMultiController.CTRL_SYNC = 9 --- @type number The sync enumeration
 AbstractMultiController.CTRL_BRIEFING = 10 --- @type number The briefing enumeration
 AbstractMultiController.CTRL_SHIP_SELECT = 11 --- @type number The ship select enumeration
-AbstractMultiController.CTRL_WEAPON = 12 --- @type number The weapon select enumeration
+AbstractMultiController.CTRL_WEAPON_SELECT = 12 --- @type number The weapon select enumeration
 
 --- Enumerations for handling dialog responses
 AbstractMultiController.DIALOG_MOTD = 1 --- @type number The message of the day enumeration
@@ -1230,8 +1230,13 @@ function AbstractMultiController:updateLoadouts()
 	 assert(ScpuiSystem.data.memory.multiplayer_general.LoadoutContext, "Loadout context is nil")
 
 	 ScpuiSystem.data.memory.multiplayer_general.LoadoutContext:update()
-	 ScpuiSystem.data.memory.multiplayer_general.Context:updateShipPool()
-	 ScpuiSystem.data.memory.multiplayer_general.Context:updateSlots()
+	 if self.Subclass == self.CTRL_SHIP_SELECT then
+		ScpuiSystem.data.memory.multiplayer_general.Context:updateShipPool()
+		ScpuiSystem.data.memory.multiplayer_general.Context:updateSlots()
+	 elseif self.Subclass == self.CTRL_WEAPON_SELECT then
+		ScpuiSystem.data.memory.multiplayer_general.Context:updateShipSlots()
+		ScpuiSystem.data.memory.multiplayer_general.Context:updateUiElements()
+	 end
 end
 
 AbstractMultiController.UpdateSwitch = function(self)
@@ -1290,6 +1295,11 @@ AbstractMultiController.UpdateSwitch = function(self)
 			self:updateLoadoutLocked()
 		end,
 		[AbstractMultiController.CTRL_SHIP_SELECT] = function()
+			self:updateChat()
+			self:updateLoadoutLocked()
+			self:updateLoadouts()
+		end,
+		[AbstractMultiController.CTRL_WEAPON_SELECT] = function()
 			self:updateChat()
 			self:updateLoadoutLocked()
 			self:updateLoadouts()
