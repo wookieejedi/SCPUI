@@ -16,7 +16,7 @@
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
 					<div id=bullet_cont>
-						<button id="tech_btn_1" class="bullet button_1" onclick="controller:ChangeTechState(1)">
+						<button id="tech_btn_1" class="bullet button_1" onclick="controller:change_tech_state(controller.STATE_DATABASE)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -26,7 +26,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="tech_btn_2" class="bullet button_1" onclick="controller:ChangeTechState(2)">
+						<button id="tech_btn_2" class="bullet button_1" onclick="controller:change_tech_state(controller.STATE_SIMULATOR)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -36,7 +36,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="tech_btn_3" class="bullet button_1" onclick="controller:ChangeTechState(3)">
+						<button id="tech_btn_3" class="bullet button_1" onclick="controller:change_tech_state(controller.STATE_CUTSCENE)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -46,7 +46,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="tech_btn_4" class="bullet button_1" onclick="controller:ChangeTechState(4)">
+						<button id="tech_btn_4" class="bullet button_1" onclick="controller:change_tech_state(controller.STATE_CREDITS)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -91,7 +91,7 @@
 			<div id=bot_left_panel>
 				<div id=bot_left_wrapper>
 					<div id=bullet_cont>
-						<button id="campaign_btn" class="bullet_c bullet button_1" onclick="controller:ChangeSection(2)">
+						<button id="campaign_btn" class="bullet_c bullet button_1" onclick="controller:change_section(controller.SECTION_CAMPAIGN)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -101,7 +101,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="single_btn" class="bullet_c bullet button_1" onclick="controller:ChangeSection(1)">
+						<button id="single_btn" class="bullet_c bullet button_1" onclick="controller:change_section(controller.SECTION_SINGLE)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>

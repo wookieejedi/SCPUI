@@ -992,9 +992,9 @@ function ShipSelectController:global_keydown(element, event)
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_START_BRIEFING"])
         --ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 	--elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.ctrl_key == 1 then
-	--	self:ChangeTechState(3)
+	--	self:change_tech_state(3)
 	--elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then
-	--	self:ChangeTechState(1)
+	--	self:change_tech_state(1)
 	end
 end
 

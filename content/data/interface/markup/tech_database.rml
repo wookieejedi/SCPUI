@@ -16,7 +16,7 @@
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
 					<div id=bullet_cont>
-						<button id="tech_btn_1" class="bullet button_1" onclick="controller:ChangeTechState(1)">
+						<button id="tech_btn_1" class="bullet button_1" onclick="controller:change_tech_state(controller.STATE_DATABASE)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -26,7 +26,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="tech_btn_2" class="bullet button_1" onclick="controller:ChangeTechState(2)">
+						<button id="tech_btn_2" class="bullet button_1" onclick="controller:change_tech_state(controller.STATE_SIMULATOR)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -36,7 +36,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="tech_btn_3" class="bullet button_1" onclick="controller:ChangeTechState(3)">
+						<button id="tech_btn_3" class="bullet button_1" onclick="controller:change_tech_state(controller.STATE_CUTSCENE)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -46,7 +46,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="tech_btn_4" class="bullet button_1" onclick="controller:ChangeTechState(4)">
+						<button id="tech_btn_4" class="bullet button_1" onclick="controller:change_tech_state(controller.STATE_CREDITS)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -69,7 +69,7 @@
 				</div>
 				<div id=sorting_b_panel_wrapper>
 					<div id=sort_bullet_cont>
-						<button id="default_sort_btn" class="bullet button_1" onclick="controller:setSortType('index')">
+						<button id="default_sort_btn" class="bullet button_1" onclick="controller:set_sort_type('index')">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -79,7 +79,7 @@
 						</button>
 					</div>
 					<div id=sort_bullet_cont>
-						<button id="name_sort_btn" class="bullet button_1" onclick="controller:setSortType('name')">
+						<button id="name_sort_btn" class="bullet button_1" onclick="controller:set_sort_type('name')">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -102,7 +102,7 @@
 				</div>
 				<div id=category_b_panel_wrapper>
 					<div id=sort_bullet_cont>
-						<button id="default_cat_btn" class="bullet button_1" onclick="controller:setSortCategory('none')">
+						<button id="default_cat_btn" class="bullet button_1" onclick="controller:set_sort_category('none')">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -112,7 +112,7 @@
 						</button>
 					</div>
 					<div id=sort_bullet_cont>
-						<button id="type_cat_btn" class="bullet button_1" onclick="controller:setSortCategory('type')">
+						<button id="type_cat_btn" class="bullet button_1" onclick="controller:set_sort_category('type')">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -205,7 +205,7 @@
 				<div id=tech_select>
 					<div id=button_wrapper>
 						<div id=ships_cont>
-							<button id="ships_btn" class="techbuttons button_1" onclick="controller:ChangeSection(1)">
+							<button id="ships_btn" class="techbuttons button_1" onclick="controller:change_section(controller.SECTION_SHIPS)">
 								<span id="ships_img" class="techbuttons button_img">
 									<img src="ship.png" class="psuedo_img"></img>
 								</span>
@@ -215,7 +215,7 @@
 							</button>
 						</div>
 						<div id=weapons_cont>
-							<button id="weapons_btn" class="techbuttons button_1" onclick="controller:ChangeSection(2)">
+							<button id="weapons_btn" class="techbuttons button_1" onclick="controller:change_section(controller.SECTION_WEAPONS)">
 								<span id="weapons_img" class="techbuttons button_img">
 									<img src="gun.png" class="psuedo_img"></img>
 								</span>
@@ -225,7 +225,7 @@
 							</button>
 						</div>
 						<div id=intel_cont>
-							<button id="intel_btn" class="techbuttons button_1" onclick="controller:ChangeSection(3)">
+							<button id="intel_btn" class="techbuttons button_1" onclick="controller:change_section(controller.SECTION_INTEL)">
 								<span id="intel_img" class="techbuttons button_img">
 									<img src="computer.png" class="psuedo_img"></img>
 								</span>
@@ -246,7 +246,7 @@
 			<div id=bottom_panel_a>
 				<div id=a_panel_wrapper>
 					<div id=accept_cont>
-						<button id="accept_btn" class="accept button_1" onclick="controller:commit_pressed(element)">
+						<button id="accept_btn" class="accept button_1" onclick="controller:exit_pressed(element)">
 							<span id="accept_img" class="accept button_img">
 								<img src="select.png" class="psuedo_img"></img>
 							</span>

@@ -1,221 +1,272 @@
-local dialogs = require("lib_dialogs")
-local class = require("lib_class")
-local topics = require("lib_ui_topics")
-local async_util = require("lib_async")
-local topics = require("lib_ui_topics")
+-----------------------------------
+--Controller for the Tech Credits UI
+-----------------------------------
 
-local TechCreditsController = class()
+local AsyncUtil = require("lib_async")
+local Topics = require("lib_ui_topics")
 
-local creditsImage = {}
+local Class = require("lib_class")
 
+local TechCreditsController = Class()
+
+TechCreditsController.STATE_DATABASE = 0 --- @type number The enumeration for the database state
+TechCreditsController.STATE_SIMULATOR = 1 --- @type number The enumeration for the simulator state
+TechCreditsController.STATE_CUTSCENE = 2 --- @type number The enumeration for the cutscene state
+TechCreditsController.STATE_CREDITS = 3 --- @type number The enumeration for the credits state
+
+--- Called by the class constructor
+--- @return nil
 function TechCreditsController:init()
+	self.Document = nil --- @type Document the RML document
+	self.CurrentScrollPosition = 0 --- @type number the current scroll position of the credits
+	self.ScrollRate = 0 --- @type number the rate at which the credits scroll
+	self.CreditsMusicHandle = nil --- @type audio_stream the handle for the credits music
+	self.CreditsTextElement = nil --- @type Element the element containing the credits text
+
+	ScpuiSystem.data.memory.credits_memory = {
+		X1 = 0,
+		Y1 = 0,
+		X2 = 0,
+		Y2 = 0,
+		Index = 0,
+		Alpha = 0,
+		FadeAmount = 0,
+		Timer = 0,
+		FadeTimer = 0,
+		ImageFile1 = nil,
+		ImageFile2 = nil
+	}
 end
 
----@param document Document
+--- Called by the RML document
+--- @param document Document
 function TechCreditsController:initialize(document)
     self.Document = document
-    self.elements = {}
-    self.section = 1
-	self.scroll = 0
-	
+
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
 
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-	
+
 	ui.TechRoom.buildCredits()
-	
-	self.rate = ui.TechRoom.Credits.ScrollRate
-	
+
+	self.ScrollRate = ui.TechRoom.Credits.ScrollRate
+
 	ad.stopMusic(0, true, "mainhall")
 	ui.MainHall.stopAmbientSound()
 	self:startMusic()
-	
-	local text_el = self.Document:GetElementById("credits_text")
-	
-	local CompleteCredits = string.gsub(ui.TechRoom.Credits.Complete,"\n","<br></br>")
-	
+
+	self.CreditsTextElement = self.Document:GetElementById("credits_text")
+
+	local complete_credits = string.gsub(ui.TechRoom.Credits.Complete,"\n","<br></br>")
+
 	--We need to calculate how much empty space to add before and after the credits
 	--so that we can cleanly loop the text. Get the height of the div, the height of
 	--a line, and do some math. Add that number of line breaks before and after!
-	local creditsHeight = text_el.offset_height
-	local lineHeight = self.Document:GetElementById("bullet_img").next_sibling.offset_height
-	local numBreaks = (math.ceil((creditsHeight / lineHeight) + ((10 - ScpuiSystem:getFontPixelSize()) * 1.3)))
-	local creditsBookend = ""
-	
-	while(numBreaks > 0) do
-		creditsBookend = creditsBookend .. "<br></br>"
-		numBreaks = numBreaks - 1
+	local credits_height = self.CreditsTextElement.offset_height
+	local line_height = self.Document:GetElementById("bullet_img").next_sibling.offset_height
+	local num_breaks = (math.ceil((credits_height / line_height) + ((10 - ScpuiSystem:getFontPixelSize()) * 1.3)))
+	local credits_bookend = ""
+
+	while(num_breaks > 0) do
+		credits_bookend = credits_bookend .. "<br></br>"
+		num_breaks = num_breaks - 1
 	end
-	
+
 	--Append new lines to the top and bottom of Credits so we can loop it later seamlessly
-	CompleteCredits = creditsBookend .. CompleteCredits .. creditsBookend
-	text_el.inner_rml = CompleteCredits
-	
-	self.creditsElement = text_el
-	
-	topics.techroom.initialize:send(self)
-	topics.techcredits.initialize:send(self)
-	
-	self:ScrollCredits()
-	
+	complete_credits = credits_bookend .. complete_credits .. credits_bookend
+	self.CreditsTextElement.inner_rml = complete_credits
+
+	Topics.techroom.initialize:send(self)
+	Topics.techcredits.initialize:send(self)
+
+	self:scrollCredits()
+
 	local image_el = self.Document:GetElementById("credits_image")
 	local image_x1 = image_el.offset_left + image_el.parent_node.offset_left
 	local image_y1 = image_el.offset_top + image_el.parent_node.offset_top
-	
-	creditsImage = {
-		x1 = image_x1,
-		y1 = image_y1,
-		x2 = image_x1 + image_el.offset_width,
-		y2 = image_y1 + image_el.offset_height,
-		index = ui.TechRoom.Credits.StartIndex,
-		alpha = 0,
-		fadeAmount = 0.01 / ui.TechRoom.Credits.FadeTime,
-		timer = ui.TechRoom.Credits.DisplayTime,
-		fadeTimer = ui.TechRoom.Credits.FadeTime,
-		imageFile1 = nil,
-		imageFile2 = nil
+
+	ScpuiSystem.data.memory.credits_memory = {
+		X1 = image_x1,
+		Y1 = image_y1,
+		X2 = image_x1 + image_el.offset_width,
+		Y2 = image_y1 + image_el.offset_height,
+		Index = ui.TechRoom.Credits.StartIndex,
+		Alpha = 0,
+		FadeAmount = 0.01 / ui.TechRoom.Credits.FadeTime,
+		Timer = ui.TechRoom.Credits.DisplayTime,
+		FadeTimer = ui.TechRoom.Credits.FadeTime,
+		ImageFile1 = nil,
+		ImageFile2 = nil
 	}
-	
+
 	self:chooseImage()
 	self:timeImages()
 
-	
+
 	self.Document:GetElementById("tech_btn_1"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("tech_btn_2"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("tech_btn_3"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("tech_btn_4"):SetPseudoClass("checked", true)
-	
+
 end
 
-function TechCreditsController:ChangeTechState(state)
+--- Called by the RML to change to a different tech room state
+--- @param state number Should be one of the STATE_ enumerations
+--- @return nil
+function TechCreditsController:change_tech_state(state)
 
-	if state == 1 then
-		topics.techroom.btn1Action:send()
+	if state == self.STATE_DATABASE then
+		Topics.techroom.btn1Action:send()
 	end
-	if state == 2 then
-		topics.techroom.btn2Action:send()
+	if state == self.STATE_SIMULATOR then
+		Topics.techroom.btn2Action:send()
 	end
-	if state == 3 then
-		topics.techroom.btn3Action:send()
+	if state == self.STATE_CUTSCENE then
+		Topics.techroom.btn3Action:send()
 	end
-	if state == 4 then
+	if state == self.STATE_CREDITS then
 		--This is where we are already, so don't do anything
 		--topics.techroom.btn4Action:send()
 	end
-	
+
 end
 
+--- Choose a credits image to display and begin fading it in
+--- @return nil
 function TechCreditsController:chooseImage()
 	---@type integer | string
-	local imageIndex = creditsImage.index
-	
-	if creditsImage.timer <= 0 then
-		if not creditsImage.imageFile2 then
-			creditsImage.index = creditsImage.index + 1
-			creditsImage.imageFile2 = creditsImage.imageFile1
-			creditsImage.alpha = 1.0
+	local image_index = ScpuiSystem.data.memory.credits_memory.Index
+
+	if ScpuiSystem.data.memory.credits_memory.Timer <= 0 then
+		if not ScpuiSystem.data.memory.credits_memory.ImageFile2 then
+			ScpuiSystem.data.memory.credits_memory.Index = ScpuiSystem.data.memory.credits_memory.Index + 1
+			ScpuiSystem.data.memory.credits_memory.ImageFile2 = ScpuiSystem.data.memory.credits_memory.ImageFile1
+			ScpuiSystem.data.memory.credits_memory.Alpha = 1.0
 		end
-		if creditsImage.fadeTimer > 0 then
-			creditsImage.fadeTimer = creditsImage.fadeTimer - 0.01
-			creditsImage.alpha = creditsImage.alpha - creditsImage.fadeAmount
+		if ScpuiSystem.data.memory.credits_memory.FadeTimer > 0 then
+			ScpuiSystem.data.memory.credits_memory.FadeTimer = ScpuiSystem.data.memory.credits_memory.FadeTimer - 0.01
+			ScpuiSystem.data.memory.credits_memory.Alpha = ScpuiSystem.data.memory.credits_memory.Alpha - ScpuiSystem.data.memory.credits_memory.FadeAmount
 		else
-			creditsImage.fadeTimer = ui.TechRoom.Credits.FadeTime
-			creditsImage.timer = ui.TechRoom.Credits.DisplayTime
-			creditsImage.imageFile2 = nil
-			creditsImage.alpha = 0
+			ScpuiSystem.data.memory.credits_memory.FadeTimer = ui.TechRoom.Credits.FadeTime
+			ScpuiSystem.data.memory.credits_memory.Timer = ui.TechRoom.Credits.DisplayTime
+			ScpuiSystem.data.memory.credits_memory.ImageFile2 = nil
+			ScpuiSystem.data.memory.credits_memory.Alpha = 0
 		end
 	end
-	
-	if creditsImage.index >= ui.TechRoom.Credits.NumImages then
-		creditsImage.index = 0
+
+	if ScpuiSystem.data.memory.credits_memory.Index >= ui.TechRoom.Credits.NumImages then
+		ScpuiSystem.data.memory.credits_memory.Index = 0
 	end
-	
-	if creditsImage.index < 10 then
-		imageIndex = "0" .. creditsImage.index
+
+	if ScpuiSystem.data.memory.credits_memory.Index < 10 then
+		image_index = "0" .. ScpuiSystem.data.memory.credits_memory.Index
 	end
-	
-	creditsImage.imageFile1 = "2_Crim" .. imageIndex .. ".png"
+
+	ScpuiSystem.data.memory.credits_memory.ImageFile1 = "2_Crim" .. image_index .. ".png"
 end
 
+--- Runs every 0.01 seconds to update the credits image timer
+--- @return nil
 function TechCreditsController:timeImages()
 	async.run(function()
-        async.await(async_util.wait_for(0.01))
-        creditsImage.timer = creditsImage.timer - 0.01
+        async.await(AsyncUtil.wait_for(0.01))
+        ScpuiSystem.data.memory.credits_memory.Timer = ScpuiSystem.data.memory.credits_memory.Timer - 0.01
 		self:chooseImage()
 		self:timeImages()
     end, async.OnFrameExecutor)
 end
 
+--- Draw the credits image for a frame
+--- @return nil
 function TechCreditsController:drawImage()
-	if creditsImage.imageFile2 then
-		gr.drawImage(creditsImage.imageFile2, creditsImage.x1, creditsImage.y1, creditsImage.x2, creditsImage.y2, 0, 0 , 1, 1, creditsImage.alpha)
+	if not ScpuiSystem.data.memory.credits_memory then return end
+	if ScpuiSystem.data.memory.credits_memory.ImageFile2 then
+		gr.drawImage(ScpuiSystem.data.memory.credits_memory.ImageFile2, ScpuiSystem.data.memory.credits_memory.X1, ScpuiSystem.data.memory.credits_memory.Y1, ScpuiSystem.data.memory.credits_memory.X2, ScpuiSystem.data.memory.credits_memory.Y2, 0, 0 , 1, 1, ScpuiSystem.data.memory.credits_memory.Alpha)
 	end
-	if creditsImage.imageFile1 then
-		gr.drawImage(creditsImage.imageFile1, creditsImage.x1, creditsImage.y1, creditsImage.x2, creditsImage.y2, 0, 0 , 1, 1, (1.0 - creditsImage.alpha))
+	if ScpuiSystem.data.memory.credits_memory.ImageFile1 then
+		gr.drawImage(ScpuiSystem.data.memory.credits_memory.ImageFile1, ScpuiSystem.data.memory.credits_memory.X1, ScpuiSystem.data.memory.credits_memory.Y1, ScpuiSystem.data.memory.credits_memory.X2, ScpuiSystem.data.memory.credits_memory.Y2, 0, 0 , 1, 1, (1.0 - ScpuiSystem.data.memory.credits_memory.Alpha))
 	end
 end
 
+--- Start the credits music
+--- @return nil
 function TechCreditsController:startMusic()
-    
+
 	local filename = ui.TechRoom.Credits.Music
 
-    self.music_handle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
+    self.CreditsMusicHandle = ad.openAudioStream(filename, AUDIOSTREAM_MENUMUSIC)
     async.run(function()
-        async.await(async_util.wait_for(1.5))
-        self.music_handle:play(ad.MasterEventMusicVolume, true)
+        async.await(AsyncUtil.wait_for(1.5))
+        self.CreditsMusicHandle:play(ad.MasterEventMusicVolume, true)
     end, async.OnFrameExecutor)
 end
 
-function TechCreditsController:ScrollCredits()
-	if self.scroll >= self.creditsElement.scroll_height then
-		self.scroll = 0
+--- Runs every 0.01 seconds to scroll the credits automatically
+--- @return nil
+function TechCreditsController:scrollCredits()
+	if self.CurrentScrollPosition >= self.CreditsTextElement.scroll_height then
+		self.CurrentScrollPosition = 0
 	else
-		self.scroll = self.scroll + self.rate / 50
+		self.CurrentScrollPosition = self.CurrentScrollPosition + self.ScrollRate / 50
 	end
-	self.creditsElement.scroll_top = self.scroll
-	
+	self.CreditsTextElement.scroll_top = self.CurrentScrollPosition
+
 	async.run(function()
-        async.await(async_util.wait_for(0.01))
-        self:ScrollCredits()
+        async.await(AsyncUtil.wait_for(0.01))
+        self:scrollCredits()
     end, async.OnFrameExecutor)
 end
 
+--- Global keydown function handles all keypresses
+--- @param element Element The main document element
+--- @param event Event The event that was triggered
+--- @return nil
 function TechCreditsController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
     elseif event.parameters.key_identifier == rocket.key_identifier.TAB then
-		self.rate = ui.TechRoom.Credits.ScrollRate * 10
+		self.ScrollRate = ui.TechRoom.Credits.ScrollRate * 10
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.ctrl_key == 1 then
-		self:ChangeTechState(3)
+		self:change_tech_state(3)
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then
-		self:ChangeTechState(1)
+		self:change_tech_state(1)
 	end
 end
 
+--- Global keyup function handles all key releases
+--- @param element Element The main document element
+--- @param event Event The event that was triggered
+--- @return nil
 function TechCreditsController:global_keyup(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.TAB then
-		self.rate = ui.TechRoom.Credits.ScrollRate
+		self.ScrollRate = ui.TechRoom.Credits.ScrollRate
 	end
 end
 
+--- Called by the RML when the exit button is pressed
+--- @param element Element The element that was clicked
+--- @return nil
 function TechCreditsController:exit_pressed(element)
     ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
 end
 
+--- Called when the screen is being unloaded
+--- @return nil
 function TechCreditsController:unload()
-	if self.music_handle ~= nil and self.music_handle:isValid() then
-        self.music_handle:close(true)
+	if self.CreditsMusicHandle ~= nil and self.CreditsMusicHandle:isValid() then
+        self.CreditsMusicHandle:close(true)
     end
 	ui.MainHall.startAmbientSound()
 	ui.MainHall.startMusic()
-	
-	topics.techcredits.unload:send(self)
+
+	Topics.techcredits.unload:send(self)
 end
 
+--- Every frame check if we are in the credits state and if so, draw the image
 engine.addHook("On Frame", function()
 	if ba.getCurrentGameState().Name == "GS_STATE_CREDITS" then
 		TechCreditsController:drawImage()

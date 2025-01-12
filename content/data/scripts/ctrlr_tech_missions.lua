@@ -1,75 +1,96 @@
-local dialogs = require("lib_dialogs")
-local class = require("lib_class")
-local async_util = require("lib_async")
-local utils = require("lib_utils")
-local async_util = require("lib_async")
-local topics = require("lib_ui_topics")
+-----------------------------------
+--Controller for the Tech Missions UI
+-----------------------------------
 
-local TechMissionsController = class()
+local AsyncUtil = require("lib_async")
+local Dialogs = require("lib_dialogs")
+local Topics = require("lib_ui_topics")
 
+local Class = require("lib_class")
+
+local TechMissionsController = Class()
+
+TechMissionsController.STATE_DATABASE = 0 --- @type number The enumeration for the database state
+TechMissionsController.STATE_SIMULATOR = 1 --- @type number The enumeration for the simulator state
+TechMissionsController.STATE_CUTSCENE = 2 --- @type number The enumeration for the cutscene state
+TechMissionsController.STATE_CREDITS = 3 --- @type number The enumeration for the credits state
+
+TechMissionsController.SECTION_SINGLE = 1 --- @type number The enumeration for the single mission section
+TechMissionsController.SECTION_CAMPAIGN = 2 --- @type number The enumeration for the campaign section
+
+--- Called by the class constructor
+--- @return nil
 function TechMissionsController:init()
-	self.help_shown = false
-	self.show_all = false
-	self.Counter = 0
-	self.help_shown = false
+	self.Document = nil --- @type Document The RML document
+	self.HelpShown = false --- @type boolean Whether the help text is shown
+	self.ShowAll = false --- @type boolean Whether all missions are shown
+	self.Counter = 0 --- @type number The counter for the number of missions
+	self.SelectedEntry = nil --- @type string The selected mission entry
+	self.SelectedIndex = 0 --- @type number The index of the selected mission
+	self.SelectedSection = nil --- @type string The selected section
+	self.SectionIndex = 0 --- @type number The index of the selected section. Should be one of the SECTION_ enumerations
+	self.Missions_List = {} --- @type scpui_mission_entry[] The current list of missions
+	self.ScrollingElement = nil --- @type Element The mission description element that is currently scrolling
+	self.ScrollTimer = nil --- @type number The timer for scrolling the mission description
+	self.CampaignName = "" --- @type string The name of the campaign
+	self.CampaignFilename = "" --- @type string The filename of the campaign
 end
 
----@param document Document
+--- Called by the RML document
+--- @param document Document
 function TechMissionsController:initialize(document)
     self.Document = document
-    self.elements = {}
-    self.section = 1
-	
+
 	---Load background choice
 	self.Document:GetElementById("main_background"):SetClass(ScpuiSystem:getBackgroundClass(), true)
-	
+
 	self.Document:GetElementById("tech_btn_1"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("tech_btn_2"):SetPseudoClass("checked", true)
 	self.Document:GetElementById("tech_btn_3"):SetPseudoClass("checked", false)
 	self.Document:GetElementById("tech_btn_4"):SetPseudoClass("checked", false)
-	
-	topics.techroom.initialize:send(self)
-	
-	topics.simulator.initialize:send(self)
+
+	Topics.techroom.initialize:send(self)
+
+	Topics.simulator.initialize:send(self)
 
 	---Load the desired font size from the save file
 	self.Document:GetElementById("main_background"):SetClass(("base_font" .. ScpuiSystem:getFontPixelSize()), true)
-	
-	self:Show("Building missions list...", "Mission Simulator")
-	
+
+	self:showDialog("Building missions list...", "Mission Simulator")
+
 	async.run(function()
-		async.await(async_util.wait_for(0.001))
-	
+		async.await(AsyncUtil.wait_for(0.001))
+
 		ui.TechRoom.buildMissionList()
-		
-		self:GetCampaign()
-		
-		self.Document:GetElementById("campaign_title").inner_rml = self.campaignName
-		self.Document:GetElementById("campaign_file").inner_rml = self.campaignFilename
-		
+
+		self:getPlayersCampaign()
+
+		self.Document:GetElementById("campaign_title").inner_rml = self.CampaignName
+		self.Document:GetElementById("campaign_file").inner_rml = self.CampaignFilename
+
 		self.SelectedEntry = nil
-		
+
 		--Check for last loaded section
-		local newSection = nil
-		if ScpuiSystem.data.ScpuiOptionValues.Sim_Room_Choice ~= nil then
-			newSection = ScpuiSystem.data.ScpuiOptionValues.Sim_Room_Choice
-		else
-			newSection = 2
-		end
-		
+		local new_section = ScpuiSystem.data.ScpuiOptionValues.Sim_Room_Choice or self.SECTION_CAMPAIGN
+
+
 		self.SelectedSection = nil
-		self:ChangeSection(newSection)
-		
+		self:change_section(new_section)
+
 		ScpuiSystem:closeDialog()
-	
+
 	end, async.OnFrameExecutor)
-	
+
 end
 
-function TechMissionsController:Show(text, title)
+--- Show a dialog box
+--- @param text string The text to display in the dialog box
+--- @param title string The title of the dialog box
+--- @return nil
+function TechMissionsController:showDialog(text, title)
 	--Create a simple dialog box with the text and title
 
-	local dialog = dialogs.new()
+	local dialog = Dialogs.new()
 		dialog:title(title)
 		dialog:text(text)
 		dialog:show(self.Document.context)
@@ -78,338 +99,369 @@ function TechMissionsController:Show(text, title)
 	ui.enableInput(self.Document.context)
 end
 
-function TechMissionsController:ChangeTechState(state)
+--- Called by the RML to change the tech room game state
+--- @param state number The state to change to. Should be one of the STATE_ enumerations
+--- @return nil
+function TechMissionsController:change_tech_state(state)
 
-	if state == 1 then
-		topics.techroom.btn1Action:send()
+	if state == self.STATE_DATABASE then
+		Topics.techroom.btn1Action:send()
 	end
-	if state == 2 then
+	if state == self.STATE_SIMULATOR then
 		--This is where we are already, so don't do anything
 		--topics.techroom.btn2Action:send()
 	end
-	if state == 3 then
-		topics.techroom.btn3Action:send()
+	if state == self.STATE_CUTSCENE then
+		Topics.techroom.btn3Action:send()
 	end
-	if state == 4 then
-		topics.techroom.btn4Action:send()
+	if state == self.STATE_CREDITS then
+		Topics.techroom.btn4Action:send()
 	end
-	
+
 end
 
-function TechMissionsController:ReloadList()
-
+--- Completely reloads the list of missions and updates the UI
+--- @return nil
+function TechMissionsController:reloadList()
 	local list_items_el = self.Document:GetElementById("list_item_names_ul")
 	ScpuiSystem:clearEntries(list_items_el)
-	self:ClearData()
+	self:clearData()
 	self.SelectedEntry = nil
 	self.visibleList = {}
 	self.Counter = 0
-	self:CreateEntries(self.currentList)
+	self:createMissionList(self.Missions_List)
 	if #self.visibleList > 0 then
-		self:SelectEntry(self.visibleList[1])
+		self:selectMissionEntry(self.visibleList[1])
 	end
-
 end
 
-function TechMissionsController:ChangeSection(section)
+--- Called by the RML to change the missions list section
+--- @param section number The section to change to. Should be one of the SECTION_ enumerations
+--- @return nil
+function TechMissionsController:change_section(section)
 
-	self.sectionIndex = section
+	self.SectionIndex = section
+	local section_name = ''
 
-	if section == 1 then 
-		section = "single"
-	elseif section == 2 then
-		section = "campaign"
+	if section == self.SECTION_SINGLE then
+		section_name = "single"
+	elseif section == self.SECTION_CAMPAIGN then
+		section_name = "campaign"
 	else
-		section = topics.simulator.sectionname:send(section)
-		
-		if section == nil then
-			section = "campaign"
-			self.sectionIndex = 2
+		section_name = Topics.simulator.sectionname:send(section)
+
+		if section_name == nil then
+			section_name = "campaign"
+			self.SectionIndex = self.SECTION_CAMPAIGN
 		end
 	end
-	
+
 	--save the choice to the player file
-	ScpuiSystem.data.ScpuiOptionValues.Sim_Room_Choice = self.sectionIndex
+	ScpuiSystem.data.ScpuiOptionValues.Sim_Room_Choice = self.SectionIndex
 	ScpuiSystem:saveOptionsToFile(ScpuiSystem.data.ScpuiOptionValues)
-	
-	self.show_all = false
+
+	self.ShowAll = false
 	self.Counter = 0
 
-	if section ~= self.SelectedSection then
-	
-		local missionList = nil
-		self.currentList = {}
-	
-		if section == "single" then
+	if section_name ~= self.SelectedSection then
+
+		local m_list = nil
+		self.Missions_List = {}
+
+		if section_name == "single" then
 			self.Document:GetElementById("campaign_name_wrapper"):SetClass("hidden", true)
-			missionList = ui.TechRoom.SingleMissions
+			m_list = ui.TechRoom.SingleMissions
 			local i = 0
 			local j = 1
-			while (i ~= #missionList) do
-				local file = missionList[i].Filename
-				if topics.simulator.listSingle:send(file) == true then
-					self.currentList[j] = {
-						Name = missionList[i].Name,
-						Filename = missionList[i].Filename,
-						Description = missionList[i].Description:gsub("\n", ""),
-						Author = missionList[i].Author,
-						isVisible = true
+			while (i ~= #m_list) do
+				local file = m_list[i].Filename
+				if Topics.simulator.listSingle:send(file) == true then
+					self.Missions_List[j] = {
+						Name = m_list[i].Name,
+						Filename = m_list[i].Filename,
+						Description = m_list[i].Description:gsub("\n", ""),
+						Author = m_list[i].Author,
+						Visible = true,
+						Key = '',
+						Index = 0
 					}
 					j = j + 1
 				end
 				i = i + 1
 			end
-		elseif section == "campaign" then
+		elseif section_name == "campaign" then
 			self.Document:GetElementById("campaign_name_wrapper"):SetClass("hidden", false)
-			missionList = ui.TechRoom.CampaignMissions
+			m_list = ui.TechRoom.CampaignMissions
 			local i = 0
 			local j = 1
-			while (i ~= #missionList) do
-				self.currentList[j] = {
-					Name = missionList[i].Name,
-					Filename = missionList[i].Filename,
-					Description = missionList[i].Description:gsub("\n", ""),
-					Author = missionList[i].Author,
-					isVisible = missionList[i].isVisible
+			while (i ~= #m_list) do
+				self.Missions_List[j] = {
+					Name = m_list[i].Name,
+					Filename = m_list[i].Filename,
+					Description = m_list[i].Description:gsub("\n", ""),
+					Author = m_list[i].Author,
+					Visible = m_list[i].isVisible,
+					Key = '',
+					Index = 0
 				}
 				j = j + 1
 				i = i + 1
 			end
 		else
-			topics.simulator.newsection:send({self, section})
+			Topics.simulator.newsection:send({self, section_name})
 		end
-		
+
 		if self.SelectedEntry then
-			self:ClearEntry()
+			self:clearSelectedEntry()
 		end
-		
+
 		--If we had an old section on, remove the active class
 		if self.SelectedSection then
-			local oldbullet = self.Document:GetElementById(self.SelectedSection.."_btn")
-			oldbullet:SetPseudoClass("checked", false)
+			local prev_bullet = self.Document:GetElementById(self.SelectedSection.."_btn")
+			prev_bullet:SetPseudoClass("checked", false)
 		end
-		
-		self.SelectedSection = section
-		
+
+		self.SelectedSection = section_name
+
 		--Only create entries if there are any to create
-		if self.currentList[1] then
+		if self.Missions_List[1] then
 			self.visibleList = {}
-			self:CreateEntries(self.currentList)
+			self:createMissionList(self.Missions_List)
 			--Only select an entry if there is one available to select
 			if #self.visibleList > 0 then
-				self:SelectEntry(self.visibleList[1])
+				self:selectMissionEntry(self.visibleList[1])
 			end
 		else
 			local list_names_el = self.Document:GetElementById("list_item_names_ul")
 			ScpuiSystem:clearEntries(list_names_el)
-			self:ClearData()
+			self:clearData()
 		end
 
-		local newbullet = self.Document:GetElementById(self.SelectedSection.."_btn")
-		newbullet:SetPseudoClass("checked", true)
-		
+		local new_bullet = self.Document:GetElementById(self.SelectedSection.."_btn")
+		new_bullet:SetPseudoClass("checked", true)
+
 	end
-	
+
 end
 
-function TechMissionsController:ScrollEntry(element)
-	if self.scrollingEl == element then
-		if self.scrollingEl.scroll_left < math.floor(self.scrollingEl.scroll_width -  self.scrollingEl.client_width) then
-			if self.scrollTimer == nil then
-				self.scrollTimer = 15
-			elseif self.scrollTimer > 0 then
-				self.scrollTimer = self.scrollTimer - 1
+--- Runs every 0.05 seconds to scroll the mission description, if necessary
+--- @param element Element The element to scroll
+--- @return nil
+function TechMissionsController:scrollMissionDescription(element)
+	if self.ScrollingElement == element then
+		if self.ScrollingElement.scroll_left < math.floor(self.ScrollingElement.scroll_width -  self.ScrollingElement.client_width) then
+			if self.ScrollTimer == nil then
+				self.ScrollTimer = 15
+			elseif self.ScrollTimer > 0 then
+				self.ScrollTimer = self.ScrollTimer - 1
 			else
-				self.scrollingEl.scroll_left = self.scrollingEl.scroll_left + 0.5
-				self.scrollTimer = -1
+				self.ScrollingElement.scroll_left = self.ScrollingElement.scroll_left + 0.5
+				self.ScrollTimer = -1
 			end
 		else
-			if self.scrollTimer ~= nil then
-				if self.scrollTimer == -1 then
-					self.scrollTimer = 50
-				elseif self.scrollTimer > 0 then
-					self.scrollTimer = self.scrollTimer - 1
+			if self.ScrollTimer ~= nil then
+				if self.ScrollTimer == -1 then
+					self.ScrollTimer = 50
+				elseif self.ScrollTimer > 0 then
+					self.ScrollTimer = self.ScrollTimer - 1
 				else
-					self.scrollingEl.scroll_left = 0
-					self.scrollTimer = nil
+					self.ScrollingElement.scroll_left = 0
+					self.ScrollTimer = nil
 				end
 			end
 		end
-		
+
 		async.run(function()
-			async.await(async_util.wait_for(0.05))
-			self:ScrollEntry(element)
+			async.await(AsyncUtil.wait_for(0.05))
+			self:scrollMissionDescription(element)
 		end, async.OnFrameExecutor)
 	end
 end
 
-function TechMissionsController:StartScrollEntry(element)
-	if element ~= nil and element.inner_rml ~= self.scrollingEl then
-		if self.scrollingEl ~= nil then
-			self.scrollingEl.scroll_left = 0
+--- When the mouse is hovered over a mission, start scrolling the description if it's longer than the view window
+--- @param element Element The element to scroll
+--- @return nil
+function TechMissionsController:startDescriptionScrolling(element)
+	if element ~= nil and element.inner_rml ~= self.ScrollingElement then
+		if self.ScrollingElement ~= nil then
+			self.ScrollingElement.scroll_left = 0
 		end
-		self.scrollTimer = nil
-		self.scrollingEl = element
-		self:ScrollEntry(element)
+		self.ScrollTimer = nil
+		self.ScrollingElement = element
+		self:scrollMissionDescription(element)
 	end
 end
 
-function TechMissionsController:ResetEntry(element)
+--- When the mouse leaves a mission, stop scrolling the description and reset the globals
+--- @param element Element The element to reset
+--- @return nil
+function TechMissionsController:resetMissionDescriptionScroll(element)
 	if element ~= nil then
-		self.scrollTimer = nil
-		self.scrollingEl = nil
+		self.ScrollTimer = nil
+		self.ScrollingElement = nil
 		element.scroll_left = 0
 	end
 end
 
-function TechMissionsController:CreateEntryItem(entry, index)
+--- Create a mission list item element and return it
+--- @param entry scpui_mission_entry The mission entry to create the element for
+--- @param index number The index of the mission entry
+--- @return Element li_el The created element
+function TechMissionsController:createMissionListItemElement(entry, index)
 
 	self.Counter = self.Counter + 1
 
 	local li_el = self.Document:CreateElement("li")
-	
+
 	local name_el = self.Document:CreateElement("div")
 	name_el:SetClass("missionlist_name", true)
 	name_el.inner_rml = entry.Name
-	
+
 	local author_el = self.Document:CreateElement("div")
 	author_el:SetClass("missionlist_author", true)
 	author_el.inner_rml = entry.Author
-	
+
 	local file_el = self.Document:CreateElement("div")
 	file_el:SetClass("missionlist_filename", true)
 	file_el.inner_rml = entry.Filename
-	
+
 	local desc_el = self.Document:CreateElement("div")
 	desc_el:SetClass("missionlist_description", true)
 	desc_el.inner_rml = entry.Description
-	
+
 	li_el:AppendChild(name_el)
 	li_el:AppendChild(author_el)
 	li_el:AppendChild(file_el)
 	li_el:AppendChild(desc_el)
-	
+
 	li_el.id = entry.Filename
 
 	li_el:SetClass("missionlist_element", true)
 	li_el:SetClass("button_1", true)
 	li_el:AddEventListener("click", function(_, _, _)
-		self:SelectEntry(entry)
+		self:selectMissionEntry(entry)
 	end)
 	li_el:AddEventListener("mouseover", function(_, _, _)
-		self:StartScrollEntry(li_el.first_child.next_sibling.next_sibling.next_sibling)
+		self:startDescriptionScrolling(li_el.first_child.next_sibling.next_sibling.next_sibling)
 	end)
 	li_el:AddEventListener("mouseout", function(_, _, _)
-		self:ResetEntry(li_el.first_child.next_sibling.next_sibling.next_sibling)
+		self:resetMissionDescriptionScroll(li_el.first_child.next_sibling.next_sibling.next_sibling)
 	end)
 	self.visibleList[self.Counter] = entry
-	entry.key = li_el.id
-	
+	entry.Key = li_el.id
+
 	self.visibleList[self.Counter].Index = self.Counter
-	
-	topics.simulator.createitem:send(li_el)
+
+	Topics.simulator.createitem:send(li_el)
 
 	return li_el
 end
 
-function TechMissionsController:CreateEntries(list)
+--- Create the list of missions
+--- @param list scpui_mission_entry[] The list of missions to create
+--- @return nil
+function TechMissionsController:createMissionList(list)
 
 	local list_names_el = self.Document:GetElementById("list_item_names_ul")
 
 	ScpuiSystem:clearEntries(list_names_el)
 
 	for i, v in pairs(list) do
-		if self.show_all and topics.simulator.allowall:send(self) then
-			list_names_el:AppendChild(self:CreateEntryItem(v, i))
-		elseif v.isVisible == true then
-			list_names_el:AppendChild(self:CreateEntryItem(v, i))
+		if self.ShowAll and Topics.simulator.allowall:send(self) then
+			list_names_el:AppendChild(self:createMissionListItemElement(v, i))
+		elseif v.Visible == true then
+			list_names_el:AppendChild(self:createMissionListItemElement(v, i))
 		end
 	end
 end
 
-function TechMissionsController:ClearEntry()
-
+--- Set the selected mission entry as unchecked
+--- @return nil
+function TechMissionsController:clearSelectedEntry()
 	self.Document:GetElementById(self.SelectedEntry):SetPseudoClass("checked", false)
 	self.SelectedEntry = nil
-
 end
 
-function TechMissionsController:ClearData()
+--- Originally intended to clear the UI?
+--- @return nil
+function TechMissionsController:clearData()
 
 	--We have nothing to clear here!
-	
+
 end
 
-function TechMissionsController:SelectEntry(entry)
+--- Sets the selected mission entry as checked
+--- @param entry scpui_mission_entry The mission entry to select
+--- @return nil
+function TechMissionsController:selectMissionEntry(entry)
 
-	if entry.key ~= self.SelectedEntry then
-	
+	if entry.Key ~= self.SelectedEntry then
+
 		self.SelectedIndex = entry.Index
-		
+
 		if self.SelectedEntry then
-			local oldEntry = self.Document:GetElementById(self.SelectedEntry)
-			if oldEntry then oldEntry:SetPseudoClass("checked", false) end
+			local previous_entry = self.Document:GetElementById(self.SelectedEntry)
+			if previous_entry then previous_entry:SetPseudoClass("checked", false) end
 		end
-		
-		local thisEntry = self.Document:GetElementById(entry.key)
-		self.SelectedEntry = entry.key
-		thisEntry:SetPseudoClass("checked", true)
-		
+
+		local this_entry = self.Document:GetElementById(entry.Key)
+		self.SelectedEntry = entry.Key
+		this_entry:SetPseudoClass("checked", true)
+
 	end
 
 end
 
-function TechMissionsController:GetCampaign()
+--- Gets the player's current campaign name and filename into the globals
+--- @return nil
+function TechMissionsController:getPlayersCampaign()
 
 	ui.CampaignMenu.loadCampaignList()
 
-    local names, fileNames, descriptions = ui.CampaignMenu.getCampaignList()
+    local names, filenames, descriptions = ui.CampaignMenu.getCampaignList()
 
-    local currentCampaignFile = ba.getCurrentPlayer():getCampaignFilename()
-    local selectedCampaign = ""
+    local current_campaign_file = ba.getCurrentPlayer():getCampaignFilename()
+    local selected_campaign = ""
 
-    self.names = names
-    self.descriptions = {}
-    self.fileNames = {}
     for i, v in ipairs(names) do
-        self.descriptions[v] = descriptions[i]
-        self.fileNames[v] = fileNames[i]
-
-        if string.lower(fileNames[i]) == string.lower(currentCampaignFile) then
-            selectedCampaign = v
+        if string.lower(filenames[i]) == string.lower(current_campaign_file) then
+            selected_campaign = v
         end
     end
-	
+
 	--It's possible that the current campaign is invalid for the mod, so let's check
-	if selectedCampaign == "" and not cf.fileExists(currentCampaignFile .. ".fc2") then
-		self.campaignFilename = ""
+	if selected_campaign == "" and not cf.fileExists(current_campaign_file .. ".fc2") then
+		self.CampaignFilename = ""
 	else
-		self.campaignFilename = currentCampaignFile .. ".fc2"
+		self.CampaignFilename = current_campaign_file .. ".fc2"
 	end
-	
-	self.campaignName = selectedCampaign
-	
+
+	self.CampaignName = selected_campaign
 end
 
+--- Global keydown function handles all keypresses
+--- @param element Element The main document element
+--- @param event Event The event that was triggered
+--- @return nil
 function TechMissionsController:global_keydown(element, event)
     if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
         event:StopPropagation()
 
         ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
     elseif event.parameters.key_identifier == rocket.key_identifier.S and event.parameters.ctrl_key == 1 and event.parameters.shift_key == 1 then
-		self.show_all = not self.show_all
-		self:ReloadList()
+		self.ShowAll = not self.ShowAll
+		self:reloadList()
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.ctrl_key == 1 then
-		self:ChangeTechState(1)
+		self:change_tech_state(1)
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then
-		self:ChangeTechState(3)
+		self:change_tech_state(3)
 	elseif event.parameters.key_identifier == rocket.key_identifier.TAB then
-		local newSection = topics.simulator.tabkey:send(self.sectionIndex)
-		self:ChangeSection(newSection)
+		local newSection = Topics.simulator.tabkey:send(self.SectionIndex)
+		self:change_section(newSection)
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.shift_key == 1 then
-		self:ScrollList(self.Document:GetElementById("mission_list"), 0)
+		self:scrollList(self.Document:GetElementById("mission_list"), 0)
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.shift_key == 1 then
-		self:ScrollList(self.Document:GetElementById("mission_list"), 1)
+		self:scrollList(self.Document:GetElementById("mission_list"), 1)
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP then
 		self:select_prev()
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
@@ -427,7 +479,11 @@ function TechMissionsController:global_keydown(element, event)
 	end
 end
 
-function TechMissionsController:ScrollList(element, direction)
+--- Scrolls the mission list up or down
+--- @param element Element The element to scroll
+--- @param direction number The direction to scroll. 0 for up, 1 for down
+--- @return nil
+function TechMissionsController:scrollList(element, direction)
 	if direction == 0 then
 		element.scroll_top = element.scroll_top - 15
 	else
@@ -435,45 +491,60 @@ function TechMissionsController:ScrollList(element, direction)
 	end
 end
 
+--- Called by the RML to select the next mission
+--- @return nil
 function TechMissionsController:select_next()
     local num = #self.visibleList
-	
+
 	if self.SelectedIndex == num then
 		ui.playElementSound(nil, "click", "error")
 	else
-		self:SelectEntry(self.visibleList[self.SelectedIndex + 1])
+		self:selectMissionEntry(self.visibleList[self.SelectedIndex + 1])
 	end
 end
 
-function TechMissionsController:select_prev()	
+--- Called by the RML to select the previous mission
+--- @return nil
+function TechMissionsController:select_prev()
 	if self.SelectedIndex == 1 then
 		ui.playElementSound(nil, "click", "error")
 	else
-		self:SelectEntry(self.visibleList[self.SelectedIndex - 1])
+		self:selectMissionEntry(self.visibleList[self.SelectedIndex - 1])
 	end
 end
 
+--- Called by the RML to start the selected mission
+--- @param element Element The element that was clicked
+--- @return nil
 function TechMissionsController:commit_pressed(element)
 	if self.SelectedEntry then
 		mn.startMission(self.SelectedEntry)
 	end
 end
 
+--- Called by the RML to show the options menu
+--- @param element Element The element that was clicked
+--- @return nil
 function TechMissionsController:options_button_clicked(element)
     ba.postGameEvent(ba.GameEvents["GS_EVENT_OPTIONS_MENU"])
 end
 
+--- Called by the RML to show or hide the help text
+--- @param element Element The element that was clicked
+--- @return nil
 function TechMissionsController:help_clicked(element)
-    self.help_shown  = not self.help_shown
+    self.HelpShown  = not self.HelpShown
 
     local help_texts = self.Document:GetElementsByClassName("tooltip")
     for _, v in ipairs(help_texts) do
-        v:SetPseudoClass("shown", self.help_shown)
+        v:SetPseudoClass("shown", self.HelpShown)
     end
 end
 
+--- Called when the screen is being unloaded
+--- @return nil
 function TechMissionsController:unload()
-	topics.simulator.unload:send(self)
+	Topics.simulator.unload:send(self)
 end
 
 return TechMissionsController

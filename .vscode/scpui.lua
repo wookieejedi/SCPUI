@@ -288,6 +288,20 @@
 --- @field overheadEffect? number The overhead effect choice
 --- @field OverheadSave? integer A place to store the index of the overhead model being rendered temporarily
 
+--- SCPUI Credits Image Data
+--- @class credits_image_memory
+--- @field X1 number The x1 position of the image
+--- @field Y1 number The y1 position of the image
+--- @field X2 number The x2 position of the image
+--- @field Y2 number The y2 position of the image
+--- @field Index number The current index of the image to display
+--- @field Alpha number The current alpha value of the image
+--- @field FadeAmount number The amount to fade the image by each frame
+--- @field Timer number The current timer for the image solid display time
+--- @field FadeTimer number The current timer for the image fade time
+--- @field ImageFile1 string? The filename of the current image
+--- @field ImageFile2 string? The filename of the next image
+
 --- SCPUI Global Memory
 --- @class scpui_memory
 --- @field Cutscene string The cutscene requested to be played by the tech room
@@ -306,6 +320,7 @@
 --- @field medal_text? medal_memory The current medal memory for SCPUI
 --- @field splash_screen? splash_screen_memory The current splash screen memory for SCPUI
 --- @field model_rendering? model_draw_memory The current model draw memory for SCPUI
+--- @field credits_memory? credits_image_memory The current credits image memory for SCPUI
 --- @field multiplayer_host multi_host_memory The current multi host memory for SCPUI
 --- @field control_config control_config_memory The current control config memory for SCPUI
 --- @field multiplayer_general multi_general_memory The current multiplayer general memory for SCPUI
@@ -550,3 +565,36 @@
 --- @field Values any[] The values of the custom option
 --- @field Source DataSource The data source for the custom option
 --- @field updateValues fun(self: self): nil The function to update the values of the custom option
+
+--- SCPUI Cutscene Entry
+--- @class scpui_cutscene_entry
+--- @field Name string The name of the cutscene
+--- @field Filename string The filename of the cutscene
+--- @field Description string The description of the cutscene
+--- @field Visible boolean True if the cutscene is visible, false otherwise
+--- @field Index number The index of the cutscene in the list
+--- @field Key string The element key of the cutscene
+
+--- SCPUI Mission Entry
+--- @class scpui_mission_entry
+--- @field Name string The name of the mission
+--- @field Filename string The filename of the mission
+--- @field Description string The description of the mission
+--- @field Author string The author of the mission
+--- @field Visible boolean True if the mission is visible, false otherwise
+--- @field Key string The element key of the cutscene
+--- @field Index number The index of the mission in the list
+
+--- SCPUI Tech Database Entry
+--- @class scpui_tech_database_entry
+--- @field Name string The name of the entry
+--- @field FsoIndex number The index of the entry in the FSO database
+--- @field DisplayName string The display name of the entry
+--- @field Description string The description of the entry
+--- @field Anim string? The animation filename for the entry
+--- @field Type string The type of the entry
+--- @field Visible boolean True if the entry is visible, false otherwise
+--- @field Key string The element key of the entry
+--- @field Index number The index of the entry in the list
+--- @field Selectable boolean True if the entry is selectable, false otherwise
+--- @field Heading boolean? The heading of the entry
