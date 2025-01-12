@@ -1662,11 +1662,9 @@ end
 
 --- Every frame draw the current weapon model and overhead model
 engine.addHook("On Frame", function()
-	if ba.getCurrentGameState().Name == "GS_STATE_WEAPON_SELECT" then
-		WeaponSelectController:drawSelectModel()
-		WeaponSelectController:drawOverheadModel()
-	end
-end, {}, function()
+	WeaponSelectController:drawSelectModel()
+	WeaponSelectController:drawOverheadModel()
+end, {State="GS_STATE_WEAPON_SELECT"}, function()
     return false
 end)
 

@@ -1354,7 +1354,7 @@ engine.addHook("On Frame", function()
 	if ScpuiSystem.data.memory.multiplayer_general.RunNetwork then
 		ScpuiSystem.data.memory.multiplayer_general.Context:updateLists()
 	end
-end, {}, function()
+end, {State="GS_STATE_BRIEFING"}, function()
     return false
 end)
 

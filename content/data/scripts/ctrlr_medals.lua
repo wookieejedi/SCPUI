@@ -367,10 +367,8 @@ end
 
 --- Every frame if the mouse is over a medal, draw a text box with the name of th medal
 engine.addHook("On Frame", function()
-	if ba.getCurrentGameState().Name == "GS_STATE_VIEW_MEDALS" then
-		MedalsController:drawText()
-	end
-end, {}, function()
+	MedalsController:drawText()
+end, {State="GS_STATE_VIEW_MEDALS"}, function()
     return false
 end)
 

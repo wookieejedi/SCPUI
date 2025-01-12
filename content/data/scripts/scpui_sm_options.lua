@@ -334,22 +334,20 @@ end
 --- Load and apply any custom options after a pilot is selected
 --- @return nil
 function ScpuiSystem:applyCustomOptions()
-    if ((hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT") and (hv.NewState.Name == "GS_STATE_MAIN_MENU")) or hv.OldState.Name == "GS_STATE_BARRACKS_MENU" then
-        --Here we load the mod options save data for the selected player
-        ScpuiSystem.data.ScpuiOptionValues = {}
-        local utils = require("lib_utils")
-        ScpuiSystem.data.ScpuiOptionValues = ScpuiSystem:loadOptionsFromFile()
+	--Here we load the mod options save data for the selected player
+	ScpuiSystem.data.ScpuiOptionValues = {}
+	local utils = require("lib_utils")
+	ScpuiSystem.data.ScpuiOptionValues = ScpuiSystem:loadOptionsFromFile()
 
-        --load defaults if we have bad data
-        if type(ScpuiSystem.data.ScpuiOptionValues) ~= "table" then
-            ba.print("SCPUI: Got bad ScpuiSystem.data.ScpuiOptionValues data! Loading defaults!")
-            ScpuiSystem.data.ScpuiOptionValues = {}
-            for i, v in ipairs(ScpuiSystem.data.Custom_Options) do
-                ScpuiSystem.data.ScpuiOptionValues[v.Key] = v.Value
-            end
-            ScpuiSystem:saveOptionsToFile(ScpuiSystem.data.ScpuiOptionValues)
-        end
-    end
+	--load defaults if we have bad data
+	if type(ScpuiSystem.data.ScpuiOptionValues) ~= "table" then
+		ba.print("SCPUI: Got bad ScpuiSystem.data.ScpuiOptionValues data! Loading defaults!")
+		ScpuiSystem.data.ScpuiOptionValues = {}
+		for i, v in ipairs(ScpuiSystem.data.Custom_Options) do
+			ScpuiSystem.data.ScpuiOptionValues[v.Key] = v.Value
+		end
+		ScpuiSystem:saveOptionsToFile(ScpuiSystem.data.ScpuiOptionValues)
+	end
 end
 
 ScpuiSystem:initCustomOptions()
@@ -381,5 +379,11 @@ else
 end
 
 engine.addHook("On State End", function()
+	if (hv.NewState.Name == "GS_STATE_MAIN_MENU") then
+		ScpuiSystem:applyCustomOptions()
+	end
+end, {State="GS_STATE_INITIAL_PLAYER_SELECT"})
+
+engine.addHook("On State End", function()
 	ScpuiSystem:applyCustomOptions()
-end)
+end, {State="GS_STATE_BARRACKS_MENU"})

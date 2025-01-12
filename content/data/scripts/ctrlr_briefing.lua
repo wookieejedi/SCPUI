@@ -520,19 +520,19 @@ end
 
 --- During the briefing game state if SCPUI is rendering then try to draw the briefing map
 engine.addHook("On Frame", function()
-	if (ba.getCurrentGameState().Name == "GS_STATE_BRIEFING") and (ScpuiSystem.data.Render == true) then
+	if (ScpuiSystem.data.Render == true) then
 		BriefingController:drawBriefingMap()
 	end
-end, {}, function()
+end, {State="GS_STATE_BRIEFING"}, function()
     return false
 end)
 
 --- Prevent the briefing UI from being drawn if we're just going to skip it in a frame or two
 engine.addHook("On Frame", function()
-	if ba.getCurrentGameState().Name == "GS_STATE_BRIEFING" and mn.hasNoBriefing() and not ui.isCutscenePlaying() then
+	if mn.hasNoBriefing() and not ui.isCutscenePlaying() then
 		gr.clearScreen()
 	end
-end, {}, function()
+end, {State="GS_STATE_BRIEFING"}, function()
     return false
 end)
 

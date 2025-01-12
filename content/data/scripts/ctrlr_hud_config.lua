@@ -695,10 +695,10 @@ end
 
 --- Create a hook to draw the hud gauges every frame
 engine.addHook("On Frame", function()
-	if (ba.getCurrentGameState().Name == "GS_STATE_HUD_CONFIG") and (ScpuiSystem.data.Render == true) then
+	if ScpuiSystem.data.Render then
 		HudConfigController:drawHUD()
 	end
-end, {}, function()
+end, {State="GS_STATE_HUD_CONFIG"}, function()
     return false
 end)
 

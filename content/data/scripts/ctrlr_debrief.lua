@@ -929,10 +929,10 @@ end
 --Prevent the debriefing UI from being drawn if we're just going
 --to skip it in a frame or two
 engine.addHook("On Frame", function()
-    if ba.getCurrentGameState().Name == "GS_STATE_DEBRIEF" and not mn.hasDebriefing() and not ui.isCutscenePlaying() then
+    if not mn.hasDebriefing() and not ui.isCutscenePlaying() then
         gr.clearScreen()
     end
-end, {}, function()
+end, {State="GS_STATE_DEBRIEF"}, function()
     return false
 end)
 
