@@ -28,7 +28,7 @@ For example, given the input 'Admiral Po', we'd see that 'Admiral' is a
 valid key, ' ' is a valid sub-key, and 'Po' is a valid sub-sub-key, and
 color it blue. Given 'Admiral Poopypants', we'd see that 'Admiral' is a
 valid key and ' ' is a valid sub-key, but since 'Poopypants' isn't a valid
-sub-sub-key, we stop there. However, keywords['Admiral'][' '] has no color, 
+sub-sub-key, we stop there. However, keywords['Admiral'][' '] has no color,
 so we backtrack to keywords['Admiral'], which does, and ultimately settle
 on white.
 
@@ -69,12 +69,12 @@ local keywords = {}
 local function registerKeyword(keyword, color, tooltip)
   local node = keywords
   for _, term in ipairs(getTerms(keyword)) do
-    local nextNode = node[term]
-    if not nextNode then
-      nextNode = {}
-      node[term] = nextNode
+    local next_node = node[term]
+    if not next_node then
+      next_node = {}
+      node[term] = next_node
     end
-    node = nextNode
+    node = next_node
   end
   if tooltip then
     node[TOOLTIP] = tooltip
@@ -97,13 +97,13 @@ local function getColor(terms, index, node)
   -- This would probably perform better as an iterative function.
   -- Refactor if the recursion proves to be a performance issue.
   local term = terms[index]
-  local nextNode = node[term]
-  if nextNode then
-    local nextIndex, nextColor, nextTooltip = getColor(terms, index + 1, nextNode)
-    if nextColor then
-     return nextIndex, nextColor, nextTooltip
+  local next_node = node[term]
+  if next_node then
+    local next_index, next_color, next_tooltip = getColor(terms, index + 1, next_node)
+    if next_color then
+     return next_index, next_color, next_tooltip
     else
-     return index, nextNode[COLOR], nextNode[TOOLTIP]
+     return index, next_node[COLOR], next_node[TOOLTIP]
     end
   else
     return nil, nil, nil
@@ -127,7 +127,7 @@ local function colorizeFragment(s)
     local j, color, tooltip = getColor(terms, i, keywords)
     if j and color then
       -- We found a keyword! Color it and skip ahead if it spans multiple terms.
-	  
+
 	  -- If we have a tooltip then add a unique id and register both
 	  local id = ''
 	  if tooltip then
@@ -135,16 +135,16 @@ local function colorizeFragment(s)
 	    local uuid = require("lib_uuid")
 		-- But that string can only be hex characters so let's jump through some hoops
 		local function randomHexChar()
-          local hexChars = "0123456789abcdef"
-		  return hexChars:sub(math.random(1, #hexChars), math.random(1, #hexChars))
+          local hex_chars = "0123456789abcdef"
+		  return hex_chars:sub(math.random(1, #hex_chars), math.random(1, #hex_chars))
 		end
-		local function replaceNonHexWithRandomHex(inputString)
-          return inputString:gsub("[^0-9a-fA-F]", function()
+		local function replaceNonHexWithRandomHex(input_string)
+          return input_string:gsub("[^0-9a-fA-F]", function()
             return randomHexChar()
           end)
         end
 		local key = uuid(j .. replaceNonHexWithRandomHex(tooltip) .. #tooltipRegister)
-		
+
 		-- Now register the tooltip with the uuid and set the id string
 	    tooltipRegister[key] = tooltip
 		id = "id='" .. key .. "'"

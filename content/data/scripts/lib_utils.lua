@@ -9,10 +9,10 @@ utils.table = {}
 
 --- Round a number to a specified number of decimal places
 --- @param num number The number to round
---- @param decimalPlaces? number The number of decimal places to round to
+--- @param decimal_places? number The number of decimal places to round to
 --- @return number The rounded number
-function utils.round(num, decimalPlaces)
-    local places = decimalPlaces or 0
+function utils.round(num, decimal_places)
+    local places = decimal_places or 0
     local multiplier = 10^places
     return math.floor(num * multiplier + 0.5) / multiplier
 end
@@ -24,7 +24,7 @@ end
 --- @return table<string, number> The parsed XSTR
 function utils.parseCustomXSTR(text)
 
-	local inputString = text
+	local input_string = text
 	local result = {}
 
 	-- Remove the leading and trailing parentheses
@@ -32,23 +32,23 @@ function utils.parseCustomXSTR(text)
 	text = string.gsub(text, "%)$", "")
 
 	-- Extract the values inside quotation marks
-	local quotedValue = string.match(inputString, '"([^"]+)"')
+	local quoated_value = string.match(input_string, '"([^"]+)"')
 
 	-- Extract the number after the comma
-	local numberValue = tonumber(string.match(inputString, ',%s*(-?%d+)'))
-	
-	if not quotedValue then
-		ba.warning("Could not find the string in the xstr '" .. inputString .. "'. Expected it to be contained within quotation marks.")
-		quotedValue = ""
-	end
-	
-	if not numberValue then
-		ba.warning("Could not find the number in the xstr '" .. inputString .. "'. Expected it to be a valid number after a comma.")
-		numberValue = -1
+	local number_value = tonumber(string.match(input_string, ',%s*(-?%d+)'))
+
+	if not quoated_value then
+		ba.warning("Could not find the string in the xstr '" .. input_string .. "'. Expected it to be contained within quotation marks.")
+		quoated_value = ""
 	end
 
-	table.insert(result, quotedValue)
-	table.insert(result, numberValue)
+	if not number_value then
+		ba.warning("Could not find the number in the xstr '" .. input_string .. "'. Expected it to be a valid number after a comma.")
+		number_value = -1
+	end
+
+	table.insert(result, quoated_value)
+	table.insert(result, number_value)
 
 	return result
 
@@ -65,15 +65,15 @@ function utils.translateCustomXSTR(text)
 end
 
 --- Parses a comma separated list into a table of values
---- @param inputString string The comma separated list to parse
+--- @param input_string string The comma separated list to parse
 --- @return table<string> The parsed list of values
-function utils.parseCommaSeparatedList(inputString)
+function utils.parseCommaSeparatedList(input_string)
     local result = {}
     -- Split the string by comma
-    for value in inputString:gmatch("[^,]+") do
+    for value in input_string:gmatch("[^,]+") do
         -- Trim leading and trailing whitespace from each value
-        local trimmedValue = value:match("^%s*(.-)%s*$")
-        table.insert(result, trimmedValue)
+        local trimmed_value = value:match("^%s*(.-)%s*$")
+        table.insert(result, trimmed_value)
     end
 
     return result
@@ -85,15 +85,15 @@ end
 --- @return boolean Whether the SEXP was run successfully
 function utils.runSEXP(sexp, ...)
 
-	local sexp = sexp
+	local sexp_string = sexp
 	local warned = false
-  
+
 	for _, data in ipairs(arg) do
-  
+
 		if data ~= nil and data ~= "" then
             ---@type any
 			local param = ""
-	
+
 			if type(data) == "boolean" then
 				param = "( " .. tostring(data) .. " )"
 			elseif type(data) == "number" then
@@ -101,44 +101,44 @@ function utils.runSEXP(sexp, ...)
 			elseif type(data) == "string" then
                 param = "!" .. data:gsub("!", "!!") .. "!"
             end
-		  
+
 			if param ~= "" then
-				sexp = sexp .. " " .. param
+				sexp_string = sexp_string .. " " .. param
 			else
 				ba.warning("Util runSEXP() got parameter '" .. tostring(data) .. "' which is not a valid data type! Must be boolean, number, or string.")
 				warned = true
 			end
-	  
+
 		end
-	
+
 	end
-  
+
 	if not warned then
-		return mn.runSEXP("( " .. sexp .. " )")
+		return mn.runSEXP("( " .. sexp_string .. " )")
 	end
-  
+
 	return false
-  
+
 end
 
 --- Removes data in a save table that is tied to pilots that can no longer be found
 --- @param data table The save data to clean
 --- @return table data The cleaned save data
 function utils.cleanPilotsFromSaveData(data)
-	
+
 	--get the pilots list
 	local pilots = ui.PilotSelect.enumeratePilots()
-	
-	local cleanData = {}
-	
+
+	local clean_data = {}
+
 	-- for each existing pilot, keep the data
 	for _, v in ipairs(pilots) do
 		if data[v] ~= nil then
-			cleanData[v] = data[v]
+			clean_data[v] = data[v]
 		end
     end
 
-	return cleanData
+	return clean_data
 end
 
 --- Check if an animation file exists. Checks all valid extensions
@@ -147,16 +147,16 @@ end
 function utils.animExists(name)
 	--remove extension if it's included
 	local file = name:match("(.+)%..+")
-	
+
 	if file == nil then
 		file = name
 	end
-	
+
 	--now see if it exists
-	local theseExts = {".png", ".ani", ".eff"}
-	for i = 1, #theseExts do
-		local thisFile = file .. theseExts[i]
-		if cf.fileExists(thisFile, "", true) then
+	local anim_exts = {".png", ".ani", ".eff"}
+	for i = 1, #anim_exts do
+		local this_file = file .. anim_exts[i]
+		if cf.fileExists(this_file, "", true) then
 			return true
 		end
 	end
@@ -174,7 +174,7 @@ function utils.getTableIndex(tab, val)
 			return i
 		end
 	end
-	
+
 	return -1
 
 end
@@ -189,18 +189,18 @@ end
 
 --- Check if a file has an extension of any kind
 --- @param filename string The filename to check
---- @return boolean hasExtension Whether the file has an extension
+--- @return boolean value Whether the file has an extension
 function utils.hasExtension(filename)
-    local lastDotIndex = filename:find("%.[^%.]*$")
-    return lastDotIndex ~= nil
+    local last_dot_index = filename:find("%.[^%.]*$")
+    return last_dot_index ~= nil
 end
 
 --- Check if a value is one of multiple values
 --- @param val any The value to check
 --- @param ... any The values to check against
---- @return boolean isOneOf Whether the value is one of the specified values
+--- @return boolean result Whether the value is one of the specified values
 function utils.isOneOf(val, ...)
-    for _,k in ipairs({...}) do 
+    for _,k in ipairs({...}) do
         if val == k then
             return true
         end
@@ -213,12 +213,12 @@ end
 --- @param stop string The character to stop at
 --- @return string text The extracted string
 function utils.extractString(inputstr, stop)
-	local startIndex, endIndex = string.find(inputstr, stop)
-    
+	local start_index, end_index = string.find(inputstr, stop)
+
     -- Check if an underscore was found
-    if startIndex then
+    if start_index then
         -- Extract the substring from the start to the first underscore
-        return string.sub(inputstr, 1, startIndex - 1)
+        return string.sub(inputstr, 1, start_index - 1)
     else
 		return inputstr
 	end
@@ -244,9 +244,9 @@ end
 --- @return table data The loaded config data
 function utils.loadConfig(filename)
   ---@type json
-  local json = require('dkjson')
+  local Json = require('dkjson')
   local file = cf.openFile(filename, 'r', 'data/config')
-  local config = json.decode(file:read('*a'))
+  local config = Json.decode(file:read('*a'))
   file:close()
   if not config then
     ba.error('Please ensure that ' .. filename .. ' exists in data/config and is valid JSON.')
@@ -370,26 +370,26 @@ end
 --- Find the first occurrence of any of the specified patterns in a string
 ---@param str string The string to search
 ---@param patterns string[] The patterns to search for
----@param startIdx number The index to start searching from
+---@param start_idx number The index to start searching from
 ---@return ... The result of the search, if any
-function utils.find_first_either(str, patterns, startIdx)
-    local firstResult = nil
+function utils.find_first_either(str, patterns, start_idx)
+    local first_result = nil
     for i, v in ipairs(patterns) do
-        local values = { str:find(v, startIdx) }
+        local values = { str:find(v, start_idx) }
 
         if values[1] ~= nil then
-            if firstResult == nil then
-                firstResult = values
-            elseif values[1] < firstResult[1] then
-                firstResult = values
+            if first_result == nil then
+                first_result = values
+            elseif values[1] < first_result[1] then
+                first_result = values
             end
         end
     end
 
-    if firstResult == nil then
+    if first_result == nil then
         return nil
     else
-        return unpack(firstResult)
+        return unpack(first_result)
     end
 end
 
@@ -420,14 +420,14 @@ function utils.rml_escape(inputStr)
 end
 
 --- Truncate a string at the first hash character
---- @param inputString string The string to truncate
+--- @param inputstr string The string to truncate
 --- @return string truncated The truncated string
-function utils.truncateAtHash(inputString)
-    local hashPosition = inputString:find("#") -- Find the position of the first #
-    if hashPosition then
-        return inputString:sub(1, hashPosition - 1) -- Return the substring up to (but not including) the #
+function utils.truncateAtHash(inputstr)
+    local hash_position = inputstr:find("#") -- Find the position of the first #
+    if hash_position then
+        return inputstr:sub(1, hash_position - 1) -- Return the substring up to (but not including) the #
     else
-        return inputString -- If no # is found, return the original string
+        return inputstr -- If no # is found, return the original string
     end
 end
 

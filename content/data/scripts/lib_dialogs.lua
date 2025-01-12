@@ -86,9 +86,9 @@ end
 --- @param properties dialog_factory The properties of the dialog
 --- @param finish_func function The function to call when the dialog is closed
 --- @param reject function The function to call when the dialog is rejected
---- @param abortCBTable table The table to store the abort functions in
+--- @param abort_cb_table table The table to store the abort functions in
 --- @return nil
-local function show_dialog(context, properties, finish_func, reject, abortCBTable)
+local function show_dialog(context, properties, finish_func, reject, abort_cb_table)
     ---@type Document
     local dialog_doc = nil
 
@@ -162,8 +162,8 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
         end
         for i = 1, #properties.Buttons_List, 1 do
             if properties.Buttons_List[i].Keypress ~= nil then
-                local thisKey = string.upper(properties.Buttons_List[i].Keypress)
-                if event.parameters.key_identifier == rocket.key_identifier[thisKey] then
+                local this_key = string.upper(properties.Buttons_List[i].Keypress)
+                if event.parameters.key_identifier == rocket.key_identifier[this_key] then
                     local val = properties.Buttons_List[i].Value
                     if properties.InputChoice then
                         val = dialog_doc:GetElementById("dialog_input"):GetAttribute("value")
@@ -184,8 +184,8 @@ local function show_dialog(context, properties, finish_func, reject, abortCBTabl
         end)
     end
 
-    if abortCBTable ~= nil then
-        abortCBTable.Abort = function()
+    if abort_cb_table ~= nil then
+        abort_cb_table.Abort = function()
             ScpuiSystem:closeDialog()
             reject()
         end
@@ -267,9 +267,9 @@ function factory_mt:background(color)
     return self
 end
 
-function factory_mt:show(context, abortCBTable)
+function factory_mt:show(context, abort_cb_table)
     return async.promise(function(resolve, reject)
-        show_dialog(context, self, resolve, reject, abortCBTable)
+        show_dialog(context, self, resolve, reject, abort_cb_table)
     end)
 end
 

@@ -2,7 +2,7 @@
 --This file sets up the UI Topics system, allowing a sort of hook-like structure for scripts to interact with
 -----------------------------------
 
-local class = require("lib_class")
+local Class = require("lib_class")
 
 --- A simple message bus.
 -- Messages can be sent to a topic, and are automatically received by any
@@ -19,7 +19,7 @@ local class = require("lib_class")
 -- given as the initial value factory, it is replaced with a function that
 -- always returns the value. For example, Topic(function(message) return 2 end)
 -- may be written as Topic(2).
-local Topic = class(function(self, initial)
+local Topic = Class(function(self, initial)
   self._subscriptions = {}
   if type(initial) == 'function' then
     self._initial = initial

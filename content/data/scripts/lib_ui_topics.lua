@@ -3,17 +3,23 @@
 -----------------------------------
 
 local Topic = require("lib_topic")
-local utils = require("lib_utils") --to allow use of utils.round()
+local Utils = require("lib_utils") --to allow use of utils.round()
 
+--- Returns the AltName if it exists, otherwise returns the Name.
+--- @param x shipclass | weaponclass the ship or weapon class to check
+--- @return string name the alt name or name
 local function altNameOrName(x)
-	local altName = x.AltName
-	if altName and altName ~= '' then
-		return altName
+	local alt_name = x.AltName
+	if alt_name and alt_name ~= '' then
+		return alt_name
 	else
 		return x.Name
 	end
 end
 
+--- Returns the index of the other tab in the simulator.
+--- @param x number
+--- @return number
 local function simulatorTab(x)
 	if x == 2 then
 		return 1
@@ -22,50 +28,53 @@ local function simulatorTab(x)
 	end
 end
 
-local function weaponStats(weaponClass)
-	local baseDamage = weaponClass.Damage
-	if weaponClass.OuterRadius > 0 then
+--- Updates weapon stats based on most of its properties.
+--- @param weapon_class weaponclass
+--- @return table values the weapon stats
+local function weaponStats(weapon_class)
+	local base_damage = weapon_class.Damage
+	if weapon_class.OuterRadius > 0 then
 		-- This weapon has a shockwave, which gives it additional damage on a direct hit.
 		-- Added formula to calculate shockwave damage -- WW
-		local bonusDamage
-		if weaponClass.ShockwaveDamage and weaponClass.ShockwaveDamage > 0 then
-			bonusDamage = weaponClass.ShockwaveDamage
+		local bonus_damage
+		if weapon_class.ShockwaveDamage and weapon_class.ShockwaveDamage > 0 then
+			bonus_damage = weapon_class.ShockwaveDamage
 		else
 			ba.print("Shockwave damage returned zero. Assuming equal to base damage.\n")
-			bonusDamage = baseDamage
+			bonus_damage = base_damage
 		end
-		baseDamage = baseDamage + bonusDamage
+		base_damage = base_damage + bonus_damage
 	end
 
-	local velocity = weaponClass.Speed
-	local rof = utils.round(1 / weaponClass.FireWait, 2)
-	local range = math.min(weaponClass.Range, (velocity * weaponClass.LifeMax))
+	local velocity = weapon_class.Speed
+	local rof = Utils.round(1 / weapon_class.FireWait, 2)
+	local range = math.min(weapon_class.Range, (velocity * weapon_class.LifeMax))
 
 	-- new code to calculate volley size -- WW
-	local isSwarmer, SwarmCount = weaponClass:getSwarmInfo()
-	local isCorkscrew, CorkscrewCount = weaponClass:getCorkscrewInfo()
+	local is_swarmer, swarm_count = weapon_class:getSwarmInfo()
+	local is_corkscrew, corkscrew_count = weapon_class:getCorkscrewInfo()
 
-	if not isSwarmer then
-		SwarmCount = 1
+	if not is_swarmer then
+		swarm_count = 1
 	end
 
-	if not isCorkscrew then
-		CorkscrewCount = 1
+	if not is_corkscrew then
+		corkscrew_count = 1
 	end
 
-	local burst = math.max(weaponClass.BurstShots, 1)
-	local volley = utils.round(SwarmCount * CorkscrewCount * burst)
+	local burst = math.max(weapon_class.BurstShots, 1)
+	local volley = Utils.round(swarm_count * corkscrew_count * burst)
 	-- end volley code
 
 	return {
-		HullDamage = baseDamage * weaponClass.ArmorFactor,
-		ShieldDamage = baseDamage * weaponClass.ShieldFactor,
-		SubsystemDamage = baseDamage * weaponClass.SubsystemFactor,
+		HullDamage = base_damage * weapon_class.ArmorFactor,
+		ShieldDamage = base_damage * weapon_class.ShieldFactor,
+		SubsystemDamage = base_damage * weapon_class.SubsystemFactor,
 		Velocity = velocity,
 		Range = range,
 		RoF = rof,
-		CargoSize = utils.round(weaponClass.CargoSize, 2),
-		Power = utils.round(weaponClass.EnergyConsumed / weaponClass.FireWait, 2),
+		CargoSize = Utils.round(weapon_class.CargoSize, 2),
+		Power = Utils.round(weapon_class.EnergyConsumed / weapon_class.FireWait, 2),
 		VolleySize = volley
 	}
 end
