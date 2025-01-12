@@ -1115,10 +1115,8 @@ end
 
 --- Add a hook to draw the currently selected ship every frame
 engine.addHook("On Frame", function()
-	if ba.getCurrentGameState().Name == "GS_STATE_SHIP_SELECT" then
-		ShipSelectController:drawSelectModel()
-	end
-end, {}, function()
+	ShipSelectController:drawSelectModel()
+end, {State="GS_STATE_SHIP_SELECT"}, function()
     return false
 end)
 

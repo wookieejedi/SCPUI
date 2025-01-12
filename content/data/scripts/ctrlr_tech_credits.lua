@@ -268,10 +268,8 @@ end
 
 --- Every frame check if we are in the credits state and if so, draw the image
 engine.addHook("On Frame", function()
-	if ba.getCurrentGameState().Name == "GS_STATE_CREDITS" then
-		TechCreditsController:drawImage()
-	end
-end, {}, function()
+	TechCreditsController:drawImage()
+end, {State="GS_STATE_CREDITS"}, function()
     return false
 end)
 

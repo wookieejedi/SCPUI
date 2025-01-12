@@ -1245,10 +1245,10 @@ end
 
 --- Every frame try to draw the current entry's model, if possible
 engine.addHook("On Frame", function()
-	if (ba.getCurrentGameState().Name == "GS_STATE_TECH_MENU") and (ScpuiSystem.data.Render == true) then
+	if ScpuiSystem.data.Render then
 		TechDatabaseController:drawModel()
 	end
-end, {}, function()
+end, {State="GS_STATE_TECH_MENU"}, function()
 	return false
 end)
 

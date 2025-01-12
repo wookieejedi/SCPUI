@@ -1258,14 +1258,12 @@ function ControlConfigController:unload()
 end
 
 engine.addHook("On Frame", function()
-	if ba.getCurrentGameState().Name == "GS_STATE_CONTROL_CONFIG" then
-		if ScpuiSystem.data.memory.control_config.NextDialog ~= nil then
-			ScpuiSystem.data.memory.control_config.Context:maybeShowDialogs()
-		elseif ScpuiSystem.data.memory.control_config.DialogResponse ~= nil then
-			ScpuiSystem.data.memory.control_config.Context:dialogResponse(ScpuiSystem.data.memory.control_config.DialogResponse)
-		end
+	if ScpuiSystem.data.memory.control_config.NextDialog ~= nil then
+		ScpuiSystem.data.memory.control_config.Context:maybeShowDialogs()
+	elseif ScpuiSystem.data.memory.control_config.DialogResponse ~= nil then
+		ScpuiSystem.data.memory.control_config.Context:dialogResponse(ScpuiSystem.data.memory.control_config.DialogResponse)
 	end
-end, {}, function()
+end, {State="GS_STATE_CONTROL_CONFIG"}, function()
     return false
 end)
 
