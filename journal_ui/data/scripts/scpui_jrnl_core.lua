@@ -2,99 +2,113 @@ if not JournalUI then
 	JournalUI = {}
 end
 
-JournalUI.sections = nil
-JournalUI.lists = {}
+JournalUI.SectionEnum = nil --- @type LuaEnum the enum for a journal sections in the sexp operators
+JournalUI.Enum_Lists = {} --- @type LuaEnum[] the enums for the journal entries in the sexp operators
 
-function JournalUI:GetGroupIndex(sectionname, sections)
-	
-	sectionname = string.lower(sectionname)
+--- Get the index for a specific section in a list of sections
+--- @param section_name string the name of the section to find
+--- @param sections scpui_journal_section the list of sections to search
+--- @return number? index the index of the section in the list
+function JournalUI:getGroupIndex(section_name, sections)
+
+	section_name = string.lower(section_name)
 
 	for i, v in ipairs(sections) do
-		if string.lower(v.Name) == sectionname then	return i end
+		if string.lower(v.Name) == section_name then
+			return i
+		end
 	end
-	
-	ba.error("Journal: Undefined group defined! Could not find " .. sectionname .. " group! Add or check spelling!")
-	
+
+	ba.error("Journal: Undefined group defined! Could not find " .. section_name .. " group! Add or check spelling!")
+
 	return nil
 
 end
 
-function JournalUI:ParseTable(file, entriesonly)
+--- Parse a journal table file
+--- @param file string the file to parse
+--- @param entriesonly? boolean whether to only parse the entries
+--- @return scpui_journal_data data the parsed journal data
+function JournalUI:parseJournalTable(file, entriesonly)
 
-	local newdata = {}
-	newdata.Sections = {}
-	newdata.Entries = {}
-	newdata.title = ba.XSTR("Journal", 888550)
-	
+	---@type scpui_journal_data
+	local newdata = {
+		Visible_List = {},
+		Section_List = {},
+		Entry_List = {},
+		Title = ba.XSTR("Journal", 888550),
+	}
+
 	if not parse.readFileText(file, "data/tables") then
 		return newdata
 	end
-	
+
 	if (not entriesonly) and parse.optionalString("#Journal Options") then
 		if parse.optionalString("$Title:") then
-			newdata.title = parse.getString()
+			newdata.Title = parse.getString()
 		end
 		parse.requiredString("#End")
 	end
-	
+
 	 if (not entriesonly) and parse.optionalString("#Journal Sections") then
-	 				
-		while parse.optionalString("$Name:") and (#newdata.Sections < 3) do
-				
+
+		while parse.optionalString("$Name:") and (#newdata.Section_List < 3) do
+
 			local t = {}
-			
+
 			t.Name = parse.getString()
-			
+
 			if parse.requiredString("$XSTR:") then
 				t.Display = ba.XSTR(t.Name, parse.getInt())
 			end
-			
-		newdata.Sections[#newdata.Sections+1] = t
-		
+
+		newdata.Section_List[#newdata.Section_List+1] = t
+
 		end
 
 		parse.requiredString("#End")
-		
+
 	end
-	
+
 	if parse.optionalString("#Journal Entries") then
-				
+
 		while parse.optionalString("$Name:") do
-		
+
+			---@type scpui_journal_entry
 			local t = {}
-			local newIndex
-			
+			local new_index
+
 			t.Name = parse.getString()
-			
+
 			if parse.requiredString("$XSTR:") then
 				t.Display = ba.XSTR(t.Name, parse.getInt())
 			end
-			
+
 			if parse.requiredString("$Group:") then
-				t.Group = parse.getString()		
-				t.GroupIndex = self:GetGroupIndex(t.Group, newdata.Sections)
+				t.Group = parse.getString()
+				t.GroupIndex = self:getGroupIndex(t.Group, newdata.Section_List)
 			end
-			
+
 			if parse.optionalString("$Visible by Default:") then
 				t.InitialVis = parse.getBoolean()
 			else
 				t.InitialVis = false
 			end
-			
+
 			if parse.optionalString("$Short Title:") then
 				t.Key = parse.getString()
 			else
-				t.Key = newIndex
+				t.Key = new_index
 			end
-			
+
 			if parse.requiredString("$File:") then
-				t.File = JournalUI:CheckLanguage(parse.getString())
+				t.File = JournalUI:checkLanguage(parse.getString())
 			end
-			
+
 			if parse.optionalString("$Image:") then
 				t.Image = parse.getString()
 			end
-			
+
 			if parse.optionalString("$Caption:") then
 				local caption = parse.getString()
 				if parse.requiredString("$Caption XSTR:") then
@@ -102,27 +116,30 @@ function JournalUI:ParseTable(file, entriesonly)
 				end
 			end
 
-			if not newdata.Entries[t.GroupIndex] then newdata.Entries[t.GroupIndex] = {} end
+			if not newdata.Entry_List[t.GroupIndex] then newdata.Entry_List[t.GroupIndex] = {} end
 
-			newIndex = #newdata.Entries[t.GroupIndex] + 1
+			new_index = #newdata.Entry_List[t.GroupIndex] + 1
 
 			--t.Name = newIndex .. " - " .. t.GroupIndex .. " - " .. t.Name
 
-			newdata.Entries[t.GroupIndex][newIndex] = t
+			newdata.Entry_List[t.GroupIndex][new_index] = t
 
 		end
-		
+
 		parse.requiredString("#End")
-		
+
 	end
-	
+
 	parse.stop()
-	
+
 	return newdata
-	
+
 end
 
-function JournalUI:CheckLanguage(filename)
+--- Check for a language specific file
+--- @param filename string the file to check
+--- @return string filename the filename to use
+function JournalUI:checkLanguage(filename)
 
 	local language = ba.getCurrentLanguageExtension()
 	if language ~= "" then
@@ -137,32 +154,36 @@ end
 
 --These are only needed for FS2 and not FRED?
 
-function JournalUI:LoadData()
-	
+--- Load the journal data for the current player
+--- @return scpui_journal_data? data the loaded journal data
+function JournalUI:loadData()
+
 	local player = ba.getCurrentPlayer()
-	local campaignfilename = player:getCampaignFilename()
-	
-	self.Data = self:ParseTable(campaignfilename .. "-journal.tbl")
-	
+	local campaign_filename = player:getCampaignFilename()
+
+	self.Data = self:parseJournalTable(campaign_filename .. "-journal.tbl")
+
 	if self.Data then
-		self.SaveData = self:LoadDataFromFile()
+		self.SaveData = self:loadDataFromFile()
 	end
 
 end
 
-function JournalUI:UnloadData()
-
+--- Unload the journal data
+--- @return nil
+function JournalUI:unloadData()
 	self.Data = nil
 	self.SaveData = nil
-
 end
 
-function JournalUI:DoesConfigExist()
+--- Check if the journal table exists
+--- @return boolean exists whether the journal table exists
+function JournalUI:doesConfigExist()
 
 	local player = ba.getCurrentPlayer()
-	local campaignfilename = player:getCampaignFilename()
-	
-	if cf.fileExists(campaignfilename .. "-journal.tbl", "data/tables", true) then
+	local campaign_filename = player:getCampaignFilename()
+
+	if cf.fileExists(campaign_filename .. "-journal.tbl", "data/tables", true) then
 		return true
 	else
 		return false
@@ -170,47 +191,53 @@ function JournalUI:DoesConfigExist()
 
 end
 
-function JournalUI:LoadDataFromFile()
-	
-	local saveLocation = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
-	local datasaver = require("lib_data_saver")
-	local config = datasaver:loadDataFromFile(saveLocation, true)
-	
+--- Load the journal data from a file
+--- @return table<number, scpui_journal_save_data[]> config the loaded journal data
+function JournalUI:loadDataFromFile()
+
+	local save_location = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
+	local Datasaver = require("lib_data_saver")
+	local config = Datasaver:loadDataFromFile(save_location, true)
+
 	if config == nil then
-		config = self:CreateSaveData()
-		self:SaveDataToFile(config)
+		config = self:createSaveData()
+		self:saveDataToFile(config)
 	end
-	
+
 	return config
 
 end
 
-function JournalUI:ClearNew()
+--- Clear the new flag for all entries and save it
+--- @return nil
+function JournalUI:clearNew()
 
 	local t = {}
-	
-	local saveLocation = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
-	local datasaver = require("lib_data_saver")
-	datasaver:saveDataToFile(saveLocation, t, true)	
+
+	local save_location = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
+	local Datasaver = require("lib_data_saver")
+	Datasaver:saveDataToFile(save_location, t, true)
 
 end
 
-function JournalUI:CheckNew()
+--- Check if there are any new entries
+--- @return boolean new whether there are new entries
+function JournalUI:checkNew()
 	local t = {}
 
-	local config = self:LoadDataFromFile()
-	
+	local config = self:loadDataFromFile()
+
 	if config ~= nil then
 		t = config
 	else
-		JournalUI:LoadData()
+		JournalUI:loadData()
 		if self.Data then
 			return true
 		else
 			return false
 		end
 	end
-	
+
 	for i = 1, #t do
 		for j, v in ipairs(t[i]) do
 			local item = t[i][j]
@@ -224,29 +251,31 @@ function JournalUI:CheckNew()
 
 end
 
-function JournalUI:CreateSaveData()
+--- Create the journal save data
+--- @return table<number, scpui_journal_save_data[]> t the created save data
+function JournalUI:createSaveData()
 
 	local t = {}
-	
+
 	if not self.Data then
-		self:LoadData()
+		self:loadData()
 	end
 
-	for i, section in ipairs(self.Data.Entries) do
+	for i, section in ipairs(self.Data.Entry_List) do
 
 		if not t[i] then t[i] = {} end
-		local saveSection = t[i]
+		local save_section = t[i]
 
 		for j, entry in ipairs(section) do
 
-			if not saveSection[j] then
-			
+			if not save_section[j] then
+
 				local t = {}
 				t.Key = string.lower(entry.Key)
 				t.Unread = true
 				t.Visible = entry.InitialVis
 
-				saveSection[j] = t
+				save_section[j] = t
 
 			end
 
@@ -259,42 +288,53 @@ function JournalUI:CreateSaveData()
 
 end
 
-function JournalUI:SaveDataToFile(t)
+--- Save the journal data to disk
+--- @param t table<number, scpui_journal_save_data[]> the data to save
+--- @return nil
+function JournalUI:saveDataToFile(t)
 
-	local saveLocation = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
-	local datasaver = require("lib_data_saver")
-	datasaver:saveDataToFile(saveLocation, t, true)
+	local save_location = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
+	local Datasaver = require("lib_data_saver")
+	Datasaver:saveDataToFile(save_location, t, true)
 
 end
 
-function JournalUI:LockEntry(section, ...)
+--- Lock a journal entry
+--- @param section string the section to lock the entry in
+--- @vararg string[] the key(s) of the entry to lock
+--- @return nil
+function JournalUI:lockEntry(section, ...)
 
 	--load data
-	self:LoadData()
+	self:loadData()
 	--get section
-	local section = self:GetGroupIndex(section, self.Data.Sections)
+	local section = self:getGroupIndex(section, self.Data.Section_List)
 	--get key(s)
 	for _, v in ipairs(arg) do
 		for _, entry in ipairs(self.SaveData[section] or {}) do
 			if string.lower(v[1] or v) == entry.Key then
 				entry.Visible = false
 				break
-			end	
+			end
 		end
 	end
 	--save
-	self:SaveDataToFile(self.SaveData)
+	self:saveDataToFile(self.SaveData)
 	--unload
-	self:UnloadData()
+	self:unloadData()
 
 end
 
-function JournalUI:UnlockEntry(section, ...)
+--- Unlock a journal entry
+--- @param section string the section to unlock the entry in
+--- @vararg string[] the key(s) of the entry to unlock
+--- @return boolean unlocked whether the entry was unlocked
+function JournalUI:unlockEntry(section, ...)
   local unlocked = false
 	--load data
-	self:LoadData()
+	self:loadData()
 	--get section
-	local section = self:GetGroupIndex(section, self.Data.Sections)
+	local section = self:getGroupIndex(section, self.Data.Section_List)
 	--get key(s)
 	for _, v in ipairs(arg) do
 		for _, entry in ipairs(self.SaveData[section] or {}) do
@@ -302,28 +342,30 @@ function JournalUI:UnlockEntry(section, ...)
         unlocked = not entry.Visible
 				entry.Visible = true
 				break
-			end	
+			end
 		end
 	end
 	--save
-	self:SaveDataToFile(self.SaveData)
+	self:saveDataToFile(self.SaveData)
 	--unload
-	self:UnloadData()
+	self:unloadData()
   return unlocked
 end
 
-function JournalUI:GetTitle()
+--- Get the title of the journal UI
+--- @return string title the title of the journal UI
+function JournalUI:getTitle()
 	local player = ba.getCurrentPlayer()
 	local campaignfilename = player:getCampaignFilename()
-	local data = self:ParseTable(campaignfilename .. "-journal.tbl")
-	return data.title
+	local data = self:parseJournalTable(campaignfilename .. "-journal.tbl")
+	return data.Title
 end
 
-function JournalUI:ClearAll()
-	
-	local config = self:CreateSaveData()
-	self:SaveDataToFile(config)
-
+--- Clear all journal data and reset to default
+--- @return nil
+function JournalUI:clearAll()
+	local config = self:createSaveData()
+	self:saveDataToFile(config)
 end
 
 mn.LuaSEXPs["lua-journal-unlock-article"].Action = function(section, ...)
@@ -339,36 +381,38 @@ mn.LuaSEXPs["lua-journal-unlock-article"].Action = function(section, ...)
 	end
 
 	if mn.isInCampaign() then
-		JournalUI:UnlockEntry(removeJournalPrefix(section), ...)
+		JournalUI:unlockEntry(removeJournalPrefix(section), ...)
 	end
 end
 
+--- If we're in FRED then create all the enums
 if ba.inMissionEditor() then
     local journal_files = cf.listFiles("data/tables", "*journal.tbl")
 
     for _, v in pairs(journal_files) do
-        local data = JournalUI:ParseTable(v)
-        
-        if #data.Sections > 0 then
+        local data = JournalUI:parseJournalTable(v)
+
+        if #data.Section_List > 0 then
             local name = "Journal Sections"
-            JournalUI.sections = mn.LuaEnums[name]
-            JournalUI.sections:removeEnumItem("<none>")
+            JournalUI.SectionEnum = mn.LuaEnums[name]
+            JournalUI.SectionEnum:removeEnumItem("<none>")
         end
-        for i = 1, #data.Sections do
-            local name = "Journal " .. data.Sections[i].Display
+        for i = 1, #data.Section_List do
+            local name = "Journal " .. data.Section_List[i].Display
             mn.addLuaEnum(name)
-            JournalUI.sections:addEnumItem(name)
-            JournalUI.lists[i] = mn.LuaEnums[name]
+            JournalUI.SectionEnum:addEnumItem(name)
+            JournalUI.Enum_Lists[i] = mn.LuaEnums[name]
         end
-        
-        for i = 1, #data.Entries do
-            for _, entry in ipairs(data.Entries[i]) do
-                JournalUI.lists[i]:addEnumItem(entry.Key)
+
+        for i = 1, #data.Entry_List do
+            for _, entry in ipairs(data.Entry_List[i]) do
+                JournalUI.Enum_Lists[i]:addEnumItem(entry.Key)
             end
         end
     end
 end
 
+--- On campaign begin, clear the journal data
 engine.addHook("On Campaign Begin", function()
-	JournalUI:ClearAll()
+	JournalUI:clearAll()
 end)
