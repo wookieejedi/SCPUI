@@ -352,6 +352,11 @@ end
 
 ScpuiSystem:initCustomOptions()
 
+--- Do not create engine hookes if we're in FRED
+if ba.inMissionEditor() then
+	return
+end
+
 --Here we load the global mod options or the defaults for use before a player is selected
 local saveFilename = 'scpui_options_global.cfg'
 if cf.fileExists(saveFilename, 'data/players', true) then

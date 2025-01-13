@@ -340,6 +340,11 @@ function ScpuiSystem:genIcons()
 
 end
 
+--- Do not create engine hookes if we're in FRED
+if ba.inMissionEditor() then
+	return
+end
+
 --- Forces the icon cache to be cleared and regenerated
 --- @return nil
 local function resetIconCache()

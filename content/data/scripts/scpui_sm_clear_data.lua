@@ -39,6 +39,11 @@ local function clearLoadoutOnCampaignStart()
 	LoadoutHandler:saveLoadoutsToFile(data)
 end
 
+--- Do not create engine hookes if we're in FRED
+if ba.inMissionEditor() then
+	return
+end
+
 engine.addHook("On Key Pressed", function()
 	clearLoadoutWithKeypress()
 end,

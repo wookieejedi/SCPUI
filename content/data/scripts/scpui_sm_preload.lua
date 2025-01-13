@@ -301,6 +301,11 @@ function ScpuiSystem:firstRun()
 
 end
 
+--- Do not create engine hookes if we're in FRED
+if ba.inMissionEditor() then
+	return
+end
+
 --- Run the preload system if SCPUI is active and preload has not yet been run
 --- @return nil
 local function runPreload()
