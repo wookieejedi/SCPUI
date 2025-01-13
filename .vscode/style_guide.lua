@@ -35,7 +35,9 @@ ScpuiSystemGlobal.data = { -- Represents the data table that must contain all da
     }
 }
 
---- Downstream mods may store data directly in the global table like `ScpuiSystem.SomeDataValue = 0`. Data stored outside the ScpuiSystem.data table does not need to be documented and is not type-checked
+ScpuiSystemGlobal.extensions = {} -- Represents the extensions table that must contain all extension-related members and methods. Each member must be documented in .vscode/scpui.lua
+
+--- Downstream mods may store data directly in the global table like `ScpuiSystem.SomeDataValue = 0`. Data stored outside the ScpuiSystem.data or ScpuiSystem.extensions table does not need to be documented and is not type-checked
 
 
 
@@ -53,8 +55,8 @@ function ScpuiSystemGlobal:exampleFunction(value, value_one) -- Functions within
 end
 
 --- UI Controllers
-local class = require("lib_class") -- Always use the class library for UI controllers
-local ScpuiSystemUiController = class() -- UI Controllers use PascalCase and must be a class and end with `Controller`
+local Class = require("lib_class") -- Always use the class library for UI controllers
+local ScpuiSystemUiController = Class() -- UI Controllers use PascalCase and must be a class and end with `Controller`
 
 function ScpuiSystemUiController:init() -- All UI Controllers must have an init method
     self.Variable = nil -- Initialize all ui variables in the init method using PascalCase. For different types of variables, refer to the global member documentation above.
@@ -133,7 +135,7 @@ local function exampleFunction(value, value_one)
 end
 
 --- Controller classes should not be documented with @class because their members methods are automatically inferred
-local ScpuiSystemNewController = class()
+local ScpuiSystemNewController = Class()
 
 --- Controllers and libraries must return themselves at the end of the file
 return ScpuiSystemNewController
