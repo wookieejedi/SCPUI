@@ -62,11 +62,8 @@ ScpuiSystem.data = {
 	ScpuiOptionValues = {}
 }
 
---RUN AWAY IT'S FRED!
-if ba.inMissionEditor() then
-	ScpuiSystem.data.Active = nil
-	return
-end
+--- Initialize the table for SCPUI extensions
+ScpuiSystem.extensions = {}
 
 --keep multiplayer standalone servers lean
 if ba.getCurrentMPStatus() == "MULTIPLAYER_STANDALONE" then
@@ -80,7 +77,9 @@ if false then
 	return
 end
 
-ScpuiSystem.data.Context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
+if not ba.inMissionEditor() then
+	ScpuiSystem.data.Context = rocket:CreateContext("menuui", Vector2i.new(gr.getCenterWidth(), gr.getCenterHeight()));
+end
 
 --- Initialize ScpuiSystem and send relevant scpui.tbl files to the parser
 --- @return nil
@@ -724,6 +723,13 @@ function ScpuiSystem:closeLoadScreen()
 	else
 		ui.disableInput()
 	end
+end
+
+--RUN AWAY IT'S FRED!
+if ba.inMissionEditor() then
+	ScpuiSystem.data.Active = nil
+	ScpuiSystem:init() -- Parse the tables and load the submodules for downstream extensions
+	return
 end
 
 ScpuiSystem:init()
