@@ -22,7 +22,7 @@ function PilotSelectController:init()
     self.Document = nil --- @type Document The current document
     self.SelectedPilotName = nil --- @type string | nil The currently selected pilot name
     self.SelectedPilotHandle = nil --- @type player The currently selected pilot handle
-    self.CurrentMode = "single" --- @type string The current mode of the player. Either "single" or "multi"
+    self.CurrentMode = "" --- @type string The current mode of the player. Either "single" or "multi"
     self.Pilot_Elements = {} --- @type Element[] The list of pilot elements
     self.CallsignInputActive = false --- @type boolean True if the callsign input is currently active and player can type
     self.callsignInputAction = nil --- @type function The function to call when the callsign has been submitted
@@ -269,7 +269,7 @@ function PilotSelectController:set_player_mode(element, mode)
         }
     end
 
-    local is_single   = mode == "single"
+    local is_single = mode == "single"
     self.CurrentMode = mode
 
     for _, v in ipairs(elements) do
