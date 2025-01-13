@@ -352,8 +352,8 @@ function PilotSelectController:callsign_input_change(element, event)
     -- if the linebreak parameter is not set, then clear out any invalid characters
     if event.parameters.linebreak ~= 1 then
         local function sanitizeString(input)
-            local sanitized = input:gsub("[^%a%s_%-%d]", "") -- Remove disallowed characters
-            sanitized = sanitized:gsub("^%d", "")            -- Remove digit if it's the first character
+            local sanitized = input:gsub("[^%a%d%s_%-%d]", "")
+            sanitized = sanitized:gsub("^[^%a]+", "") -- Ensure the first character is a letter
             return sanitized
         end
 
