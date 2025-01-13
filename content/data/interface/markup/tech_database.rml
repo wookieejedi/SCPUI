@@ -143,14 +143,14 @@
 				<div id=ship_select>
 					<div id=button_wrapper>
 						<div id=arrow_cont>
-							<button id="cmdprev_btn" class="arrowbuttons button_1" onclick="controller:select_prev()">
+							<button id="cmdprev_btn" class="arrowbuttons button_1" onclick="controller:select_prev(element)">
 								<span id="cmdprev_img" class="arrowbuttons button_img">
 									<img src="arrow-up.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=arrow_cont>
-							<button id="cmdnext_btn" class="arrowbuttons button_1" onclick="controller:select_next()">
+							<button id="cmdnext_btn" class="arrowbuttons button_1" onclick="controller:select_next(element)">
 								<span id="cmdnext_img" class="arrowbuttons button_img">
 									<img src="arrow-down.png" class="psuedo_img"></img>
 								</span>

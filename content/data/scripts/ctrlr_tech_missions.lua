@@ -463,9 +463,9 @@ function TechMissionsController:global_keydown(element, event)
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.shift_key == 1 then
 		self:scrollList(self.Document:GetElementById("mission_list"), 1)
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP then
-		self:select_prev()
+		self:selectPrev(element)
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
-		self:select_next()
+		self:selectNext(element)
 	elseif event.parameters.key_identifier == rocket.key_identifier.LEFT then
 		--self:select_prev()
 	elseif event.parameters.key_identifier == rocket.key_identifier.RIGHT then
@@ -492,22 +492,24 @@ function TechMissionsController:scrollList(element, direction)
 end
 
 --- Called by the RML to select the next mission
+--- @param element Element The element that was clicked
 --- @return nil
-function TechMissionsController:select_next()
+function TechMissionsController:selectNext(element)
     local num = #self.visibleList
 
 	if self.SelectedIndex == num then
-		ui.playElementSound(nil, "click", "error")
+		ui.playElementSound(element, "click", "error")
 	else
 		self:selectMissionEntry(self.visibleList[self.SelectedIndex + 1])
 	end
 end
 
 --- Called by the RML to select the previous mission
+--- @param element Element The element that was clicked
 --- @return nil
-function TechMissionsController:select_prev()
+function TechMissionsController:selectPrev(element)
 	if self.SelectedIndex == 1 then
-		ui.playElementSound(nil, "click", "error")
+		ui.playElementSound(element, "click", "error")
 	else
 		self:selectMissionEntry(self.visibleList[self.SelectedIndex - 1])
 	end

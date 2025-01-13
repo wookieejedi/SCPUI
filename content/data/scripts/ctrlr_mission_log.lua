@@ -59,7 +59,7 @@ function MissionlogController:initialize(document)
 
 	Topics.missionlog.initialize:send(self)
 
-	self:change_section(ScpuiSystem.data.memory.LogSection)
+	self:change_section(self.Document:GetElementById("main_background"), ScpuiSystem.data.memory.LogSection)
 
 end
 
@@ -206,9 +206,10 @@ function MissionlogController:initGoalsLog()
 end
 
 --- Change the current section of the mission log. Should be one of the SECTION_ enumerations
+--- @param element Element The element that was clicked
 --- @param section number The section to change to
 --- @return nil
-function MissionlogController:change_section(section)
+function MissionlogController:change_section(element, section)
 
 	local changeSection = false
 
@@ -220,7 +221,7 @@ function MissionlogController:change_section(section)
 
 	if changeSection then
 
-		ui.playElementSound(nil, "click", "success")
+		ui.playElementSound(element, "click", "success")
 
 		--first we clean up
 		if self.CurrentSection == self.SECTION_OBJECTIVES then
@@ -396,9 +397,9 @@ end
 function MissionlogController:decrement_section(element)
 
 	if self.CurrentSection == 1 then
-		self:change_section(self.TotalSections)
+		self:change_section(element, self.TotalSections)
 	else
-		self:change_section(self.CurrentSection - 1)
+		self:change_section(element, self.CurrentSection - 1)
 	end
 
 end
@@ -409,9 +410,9 @@ end
 function MissionlogController:increment_section(element)
 
 	if self.CurrentSection == self.TotalSections then
-		self:change_section(1)
+		self:change_section(element, 1)
 	else
-		self:change_section(self.CurrentSection + 1)
+		self:change_section(element, self.CurrentSection + 1)
 	end
 
 end

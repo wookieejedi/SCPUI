@@ -350,8 +350,9 @@ function HotkeyController:changeKey(key)
 end
 
 --- Called by the RML to decrement the current key by one
+--- @param element Element The element that was clicked on
 --- @return nil
-function HotkeyController:decrement_key()
+function HotkeyController:decrement_key(element)
 
     if self.CurrentKey == 1 then
 		self:changeKey(8)
@@ -362,8 +363,9 @@ function HotkeyController:decrement_key()
 end
 
 --- Called by the RML to increment the current key by one
+--- @param element Element The element that was clicked on
 --- @return nil
-function HotkeyController:increment_key()
+function HotkeyController:increment_key(element)
 
     if self.CurrentKey == 8 then
 		self:changeKey(1)
@@ -374,10 +376,11 @@ function HotkeyController:increment_key()
 end
 
 --- Called by the RML to reset all keys to their default values
+--- @param element Element The element that was clicked on
 --- @return nil
-function HotkeyController:reset_keys()
+function HotkeyController:reset_keys(element)
 
-    ui.playElementSound(nil, "click", "success")
+    ui.playElementSound(element, "click", "success")
 	ui.MissionHotkeys.resetHotkeys()
 
 	local parent_el = self.Document:GetElementById("log_text_wrapper")
@@ -387,19 +390,21 @@ function HotkeyController:reset_keys()
 end
 
 --- Called by the RML to clear the current key setting
+--- @param element Element The element that was clicked on
 --- @return nil
-function HotkeyController:clear_key()
+function HotkeyController:clear_key(element)
 
-    ui.playElementSound(nil, "click", "success")
+    ui.playElementSound(element, "click", "success")
 	self:removeKey(self.CurrentKey)
 
 end
 
 --- Called by the RML to reset everything to the default values
+--- @param element Element The element that was clicked on
 --- @return nil
-function HotkeyController:set_defaults()
+function HotkeyController:set_defaults(element)
 
-    ui.playElementSound(nil, "click", "success")
+    ui.playElementSound(element, "click", "success")
 	ui.MissionHotkeys.resetHotkeysDefault()
 
 	local parent_el = self.Document:GetElementById("log_text_wrapper")

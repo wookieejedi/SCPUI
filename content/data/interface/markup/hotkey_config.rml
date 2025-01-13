@@ -18,14 +18,14 @@
 				</div>
 				<div id=top_right_btn_wrapper>
 					<div id=increment_cont>
-						<button id="increment_btn" class="increment button_1" onclick="controller:decrement_key()">
+						<button id="increment_btn" class="increment button_1" onclick="controller:decrement_key(element)">
 							<span id="increment_img" class="increment button_img">
 								<img src="arrow-up.png" class="psuedo_img"></img>
 							</span>
 						</button>
 					</div>
 					<div id=decrement_cont>
-						<button id="decrement_btn" class="decrement button_1" onclick="controller:increment_key()">
+						<button id="decrement_btn" class="decrement button_1" onclick="controller:increment_key(element)">
 							<span id="decrement_img" class="decrement button_img">
 								<img src="arrow-down.png" class="psuedo_img"></img>
 							</span>
@@ -36,7 +36,7 @@
 				</div>
 				<div id=buttons_wrapper>
 					<div id=reset_cont>
-						<button id="reset_btn" class="reset button_1" onclick="controller:reset_keys()">
+						<button id="reset_btn" class="reset button_1" onclick="controller:reset_keys(element)">
 							<span id="reset_img" class="reset button_img">
 								<img src="decline.png" class="psuedo_img"></img>
 							</span>
@@ -46,7 +46,7 @@
 						</button>
 					</div>
 					<div id=clear_cont>
-						<button id="clear_btn" class="clear button_1" onclick="controller:clear_key()">
+						<button id="clear_btn" class="clear button_1" onclick="controller:clear_key(element)">
 							<span id="clear_img" class="clear button_img">
 								<img src="exit.png" class="psuedo_img"></img>
 							</span>
@@ -56,7 +56,7 @@
 						</button>
 					</div>
 					<div id=default_cont>
-						<button id="default_btn" class="default button_1" onclick="controller:set_defaults()">
+						<button id="default_btn" class="default button_1" onclick="controller:set_defaults(element)">
 							<span id="default_img" class="default button_img">
 								<img src="default.png" class="psuedo_img"></img>
 							</span>

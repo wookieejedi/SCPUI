@@ -120,9 +120,9 @@ function AbstractBriefingController:global_keydown(element, event)
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
 		self:scrollDown()
 	elseif self.BriefState ~= self.CONTROLLER_FICTION_VIEWER and event.parameters.key_identifier == rocket.key_identifier.LEFT then
-		self:goToPrevStage()
+		self:goToPrevStage(element)
 	elseif self.BriefState ~= self.CONTROLLER_FICTION_VIEWER and event.parameters.key_identifier == rocket.key_identifier.RIGHT then
-		self:goToNextStage()
+		self:goToNextStage(element)
 	elseif self.BriefState == self.CONTROLLER_FICTION_VIEWER and event.parameters.key_identifier == rocket.key_identifier.RETURN then
 		self:acceptPressed()
     end
@@ -142,9 +142,9 @@ end
 
 --- Advance to the next briefing stage, if possible
 --- @return nil
-function AbstractBriefingController:goToNextStage()
+function AbstractBriefingController:goToNextStage(element)
 	if self.CurrentStage >= #self.Stages_List then
-		ui.playElementSound(nil, "click", "fail")
+		ui.playElementSound(element, "click", "fail")
 		return
 	end
 
@@ -156,14 +156,14 @@ function AbstractBriefingController:goToNextStage()
 	end
 
 	self:goToStage(self.CurrentStage + 1)
-	ui.playElementSound(nil, "click", "success")
+	ui.playElementSound(element, "click", "success")
 end
 
 --- Backup to the previous briefing stage, if possible
 --- @return nil
-function AbstractBriefingController:goToPrevStage()
+function AbstractBriefingController:goToPrevStage(element)
 	if self.CurrentStage <= 1 then
-		ui.playElementSound(nil, "click", "fail")
+		ui.playElementSound(element, "click", "fail")
 		return
 	end
 
@@ -175,7 +175,7 @@ function AbstractBriefingController:goToPrevStage()
 	end
 
 	self:goToStage(self.CurrentStage - 1)
-	ui.playElementSound(nil, "click", "success")
+	ui.playElementSound(element, "click", "success")
 end
 
 --- Cuts to a briefing stage, showing static during the cut
@@ -341,11 +341,11 @@ function AbstractBriefingController:registerEventHandlers()
     end)
 
     self.Document:GetElementById(self.Element_Names.NextBtn):AddEventListener("click", function(_, el, _)
-        self:goToNextStage()
+        self:goToNextStage(el)
     end)
 
     self.Document:GetElementById(self.Element_Names.PrevBtn):AddEventListener("click", function(_, el, _)
-        self:goToPrevStage()
+        self:goToPrevStage(el)
     end)
 
     self.Document:GetElementById(self.Element_Names.FirstBtn):AddEventListener("click", function(_, el, _)

@@ -1051,9 +1051,9 @@ function TechDatabaseController:global_keydown(element, event)
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN then
 		self:scrollDescriptionText(self.Document:GetElementById("tech_desc"), 1)
 	elseif event.parameters.key_identifier == rocket.key_identifier.LEFT then
-		self:select_prev()
+		self:select_prev(element)
 	elseif event.parameters.key_identifier == rocket.key_identifier.RIGHT then
-		self:select_next()
+		self:select_next(element)
 	elseif event.parameters.key_identifier == rocket.key_identifier.RETURN then
 		--self:commit_pressed(element)
 	elseif event.parameters.key_identifier == rocket.key_identifier.F1 then
@@ -1088,12 +1088,13 @@ function TechDatabaseController:scrollDescriptionText(element, direction)
 end
 
 --- Called by the RML to select the next entry in the list
+--- @param element Element The element that triggered the event
 --- @return nil
-function TechDatabaseController:select_next()
+function TechDatabaseController:select_next(element)
     local num = #self.Visible_List
 
 	if self.SelectedIndex == num then
-		ui.playElementSound(nil, "click", "error")
+		ui.playElementSound(element, "click", "error")
 	else
 		local count = 1
 		while self.Visible_List[self.SelectedIndex + count] ~= nil and self.Visible_List[self.SelectedIndex + count].Selectable == false do
@@ -1101,9 +1102,9 @@ function TechDatabaseController:select_next()
 		end
 
 		if (self.SelectedIndex + count) > num then
-			ui.playElementSound(nil, "click", "error")
+			ui.playElementSound(element, "click", "error")
 		elseif self.Visible_List[self.SelectedIndex + count].Selectable == false then
-			ui.playElementSound(nil, "click", "error")
+			ui.playElementSound(element, "click", "error")
 		else
 			self:selectEntry(self.Visible_List[self.SelectedIndex + count])
 		end
@@ -1111,10 +1112,11 @@ function TechDatabaseController:select_next()
 end
 
 --- Called by the RML to select the previous entry in the list
+--- @param element Element The element that triggered the event
 --- @return nil
-function TechDatabaseController:select_prev()
+function TechDatabaseController:select_prev(element)
 	if self.SelectedIndex == 1 then
-		ui.playElementSound(nil, "click", "error")
+		ui.playElementSound(element, "click", "error")
 	else
 		local count = 1
 		while self.Visible_List[self.SelectedIndex - count] ~= nil and self.Visible_List[self.SelectedIndex - count].Selectable == false do
@@ -1122,9 +1124,9 @@ function TechDatabaseController:select_prev()
 		end
 
 		if (self.SelectedIndex - count) < 1 then
-			ui.playElementSound(nil, "click", "error")
+			ui.playElementSound(element, "click", "error")
 		elseif self.Visible_List[self.SelectedIndex - count].Selectable == false then
-			ui.playElementSound(nil, "click", "error")
+			ui.playElementSound(element, "click", "error")
 		else
 			self:selectEntry(self.Visible_List[self.SelectedIndex - count])
 		end

@@ -649,11 +649,12 @@ function DebriefingController:offerSkipDialog()
 end
 
 --- A paging button was pressed, so set the appropriate page
+--- @param element Element The element that was pressed
 --- @param command number The command that was pressed. Should be one of the PAGE_COMMAND enumerations
 --- @return nil
-function DebriefingController:page_pressed(command)
+function DebriefingController:page_pressed(element, command)
     if self.SelectedSection == DebriefingController.STATE_DEBRIEF then
-        ui.playElementSound(nil, "click", "failure")
+        ui.playElementSound(element, "click", "failure")
         --FIXMEEEE
     else
         if command == self.PAGE_COMMAND_FIRST then
@@ -675,7 +676,7 @@ function DebriefingController:page_pressed(command)
             end
         end
 
-        ui.playElementSound(nil, "click", "success")
+        ui.playElementSound(element, "click", "success")
         self:clearDebriefText()
         self:buildStats()
     end

@@ -95,28 +95,28 @@
 				<div id=stage_select>
 					<div id=button_wrapper>
 						<div id=skip_cont>
-							<button id="cmdlast_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(controller.PAGE_COMMAND_LAST)">
+							<button id="cmdlast_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(element, controller.PAGE_COMMAND_LAST)">
 								<span id="cmdlast_img" class="arrowbuttons button_img">
 									<img src="skip-r.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=arrow_cont>
-							<button id="cmdnext_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(controller.PAGE_COMMAND_NEXT)">
+							<button id="cmdnext_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(element, controller.PAGE_COMMAND_NEXT)">
 								<span id="cmdnext_img" class="arrowbuttons button_img">
 									<img src="arrow-down.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=arrow_cont>
-							<button id="cmdprev_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(controller.PAGE_COMMAND_PREV)">
+							<button id="cmdprev_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(element, controller.PAGE_COMMAND_PREV)">
 								<span id="cmdprev_img" class="arrowbuttons button_img">
 									<img src="arrow-up.png" class="psuedo_img"></img>
 								</span>
 							</button>
 						</div>
 						<div id=skip_cont>
-							<button id="cmdfirst_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(controller.PAGE_COMMAND_FIRST)">
+							<button id="cmdfirst_btn" class="arrowbuttons button_1" onclick="controller:page_pressed(element, controller.PAGE_COMMAND_FIRST)">
 								<span id="cmdfirst_img" class="arrowbuttons button_img">
 									<img src="skip-l.png" class="psuedo_img"></img>
 								</span>

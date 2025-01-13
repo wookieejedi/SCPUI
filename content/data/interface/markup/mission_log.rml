@@ -81,7 +81,7 @@
 				</div>
 				<div id=buttons_wrapper>
 					<div id=objectives_cont>
-						<button id="objectives_btn" class="objectives button_1" onclick="controller:change_section(controller.SECTION_OBJECTIVES)">
+						<button id="objectives_btn" class="objectives button_1" onclick="controller:change_section(element, controller.SECTION_OBJECTIVES)">
 							<span id="objectives_img" class="objectives button_img">
 								<img src="computer.png" class="psuedo_img"></img>
 							</span>
@@ -91,7 +91,7 @@
 						</button>
 					</div>
 					<div id=messages_cont>
-						<button id="messages_btn" class="messages button_1" onclick="controller:change_section(controller.SECTION_MESSAGES)">
+						<button id="messages_btn" class="messages button_1" onclick="controller:change_section(element, controller.SECTION_MESSAGES)">
 							<span id="messages_img" class="messages button_img">
 								<img src="dish.png" class="psuedo_img"></img>
 							</span>
@@ -101,7 +101,7 @@
 						</button>
 					</div>
 					<div id=events_cont>
-						<button id="events_btn" class="events button_1" onclick="controller:change_section(controller.SECTION_EVENTS)">
+						<button id="events_btn" class="events button_1" onclick="controller:change_section(element, controller.SECTION_EVENTS)">
 							<span id="events_img" class="events button_img">
 								<img src="ship.png" class="psuedo_img"></img>
 							</span>
