@@ -16,7 +16,7 @@
       end
 
       --Only setup journal stuff if the config exists
-      if JournalUI:doesConfigExist() then
+      if ScpuiSystem.extensions.JournalUi:doesConfigExist() then
 
         --Do the nasty and make the children
 
@@ -87,7 +87,7 @@
         button_text_el.style.top = "-50%"
         button_text_el.style.right = "0"
         button_text_el.style["text-align"] = "right"
-        button_text_el.inner_rml = JournalUI:getTitle()
+        button_text_el.inner_rml = ScpuiSystem.extensions.JournalUi:getTitle()
 
         if button_el then
           button_el:AddEventListener("click", function(_, _, _)
@@ -108,7 +108,7 @@
         end
 
         --New Journal Notification
-        if not JournalUI:checkNew() then
+        if not ScpuiSystem.extensions.JournalUi:checkNew() then
           new_el:SetClass("hidden", true)
         end
 

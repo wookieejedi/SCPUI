@@ -1,15 +1,14 @@
-if not JournalUI then
-	JournalUI = {}
-end
+--- Create the local JournalUi object
+local JournalUi = {}
 
-JournalUI.SectionEnum = nil --- @type LuaEnum the enum for a journal sections in the sexp operators
-JournalUI.Enum_Lists = {} --- @type LuaEnum[] the enums for the journal entries in the sexp operators
+JournalUi.SectionEnum = nil --- @type LuaEnum the enum for a journal sections in the sexp operators
+JournalUi.Enum_Lists = {} --- @type LuaEnum[] the enums for the journal entries in the sexp operators
 
 --- Get the index for a specific section in a list of sections
 --- @param section_name string the name of the section to find
 --- @param sections scpui_journal_section the list of sections to search
 --- @return number? index the index of the section in the list
-function JournalUI:getGroupIndex(section_name, sections)
+function JournalUi:getGroupIndex(section_name, sections)
 
 	section_name = string.lower(section_name)
 
@@ -29,7 +28,7 @@ end
 --- @param file string the file to parse
 --- @param entriesonly? boolean whether to only parse the entries
 --- @return scpui_journal_data data the parsed journal data
-function JournalUI:parseJournalTable(file, entriesonly)
+function JournalUi:parseJournalTable(file, entriesonly)
 
 	---@type scpui_journal_data
 	local newdata = {
@@ -102,7 +101,7 @@ function JournalUI:parseJournalTable(file, entriesonly)
 			end
 
 			if parse.requiredString("$File:") then
-				t.File = JournalUI:checkLanguage(parse.getString())
+				t.File = self:checkLanguage(parse.getString())
 			end
 
 			if parse.optionalString("$Image:") then
@@ -139,7 +138,7 @@ end
 --- Check for a language specific file
 --- @param filename string the file to check
 --- @return string filename the filename to use
-function JournalUI:checkLanguage(filename)
+function JournalUi:checkLanguage(filename)
 
 	local language = ba.getCurrentLanguageExtension()
 	if language ~= "" then
@@ -156,7 +155,7 @@ end
 
 --- Load the journal data for the current player
 --- @return scpui_journal_data? data the loaded journal data
-function JournalUI:loadData()
+function JournalUi:loadData()
 
 	local player = ba.getCurrentPlayer()
 	local campaign_filename = player:getCampaignFilename()
@@ -171,14 +170,14 @@ end
 
 --- Unload the journal data
 --- @return nil
-function JournalUI:unloadData()
+function JournalUi:unloadData()
 	self.Data = nil
 	self.SaveData = nil
 end
 
 --- Check if the journal table exists
 --- @return boolean exists whether the journal table exists
-function JournalUI:doesConfigExist()
+function JournalUi:doesConfigExist()
 
 	local player = ba.getCurrentPlayer()
 	local campaign_filename = player:getCampaignFilename()
@@ -193,7 +192,7 @@ end
 
 --- Load the journal data from a file
 --- @return table<number, scpui_journal_save_data[]> config the loaded journal data
-function JournalUI:loadDataFromFile()
+function JournalUi:loadDataFromFile()
 
 	local save_location = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
 	local Datasaver = require("lib_data_saver")
@@ -210,7 +209,7 @@ end
 
 --- Clear the new flag for all entries and save it
 --- @return nil
-function JournalUI:clearNew()
+function JournalUi:clearNew()
 
 	local t = {}
 
@@ -222,7 +221,7 @@ end
 
 --- Check if there are any new entries
 --- @return boolean new whether there are new entries
-function JournalUI:checkNew()
+function JournalUi:checkNew()
 	local t = {}
 
 	local config = self:loadDataFromFile()
@@ -230,7 +229,7 @@ function JournalUI:checkNew()
 	if config ~= nil then
 		t = config
 	else
-		JournalUI:loadData()
+		self:loadData()
 		if self.Data then
 			return true
 		else
@@ -253,7 +252,7 @@ end
 
 --- Create the journal save data
 --- @return table<number, scpui_journal_save_data[]> t the created save data
-function JournalUI:createSaveData()
+function JournalUi:createSaveData()
 
 	local t = {}
 
@@ -291,7 +290,7 @@ end
 --- Save the journal data to disk
 --- @param t table<number, scpui_journal_save_data[]> the data to save
 --- @return nil
-function JournalUI:saveDataToFile(t)
+function JournalUi:saveDataToFile(t)
 
 	local save_location = "journal_" .. ba.getCurrentPlayer():getCampaignFilename()
 	local Datasaver = require("lib_data_saver")
@@ -303,7 +302,7 @@ end
 --- @param section string the section to lock the entry in
 --- @vararg string[] the key(s) of the entry to lock
 --- @return nil
-function JournalUI:lockEntry(section, ...)
+function JournalUi:lockEntry(section, ...)
 
 	--load data
 	self:loadData()
@@ -329,7 +328,7 @@ end
 --- @param section string the section to unlock the entry in
 --- @vararg string[] the key(s) of the entry to unlock
 --- @return boolean unlocked whether the entry was unlocked
-function JournalUI:unlockEntry(section, ...)
+function JournalUi:unlockEntry(section, ...)
   local unlocked = false
 	--load data
 	self:loadData()
@@ -354,7 +353,7 @@ end
 
 --- Get the title of the journal UI
 --- @return string title the title of the journal UI
-function JournalUI:getTitle()
+function JournalUi:getTitle()
 	local player = ba.getCurrentPlayer()
 	local campaignfilename = player:getCampaignFilename()
 	local data = self:parseJournalTable(campaignfilename .. "-journal.tbl")
@@ -363,10 +362,13 @@ end
 
 --- Clear all journal data and reset to default
 --- @return nil
-function JournalUI:clearAll()
+function JournalUi:clearAll()
 	local config = self:createSaveData()
 	self:saveDataToFile(config)
 end
+
+--- Now that we have the JournalUi object, we can add it to the ScpuiSystem
+ScpuiSystem.extensions.JournalUi = JournalUi
 
 mn.LuaSEXPs["lua-journal-unlock-article"].Action = function(section, ...)
 
@@ -381,7 +383,7 @@ mn.LuaSEXPs["lua-journal-unlock-article"].Action = function(section, ...)
 	end
 
 	if mn.isInCampaign() then
-		JournalUI:unlockEntry(removeJournalPrefix(section), ...)
+		ScpuiSystem.extensions.JournalUi:unlockEntry(removeJournalPrefix(section), ...)
 	end
 end
 
@@ -390,29 +392,32 @@ if ba.inMissionEditor() then
     local journal_files = cf.listFiles("data/tables", "*journal.tbl")
 
     for _, v in pairs(journal_files) do
-        local data = JournalUI:parseJournalTable(v)
+        local data = ScpuiSystem.extensions.JournalUi:parseJournalTable(v)
 
         if #data.Section_List > 0 then
             local name = "Journal Sections"
-            JournalUI.SectionEnum = mn.LuaEnums[name]
-            JournalUI.SectionEnum:removeEnumItem("<none>")
+            ScpuiSystem.extensions.JournalUi.SectionEnum = mn.LuaEnums[name]
+            ScpuiSystem.extensions.JournalUi.SectionEnum:removeEnumItem("<none>")
         end
         for i = 1, #data.Section_List do
             local name = "Journal " .. data.Section_List[i].Display
             mn.addLuaEnum(name)
-            JournalUI.SectionEnum:addEnumItem(name)
-            JournalUI.Enum_Lists[i] = mn.LuaEnums[name]
+            ScpuiSystem.extensions.JournalUi.SectionEnum:addEnumItem(name)
+            ScpuiSystem.extensions.JournalUi.Enum_Lists[i] = mn.LuaEnums[name]
         end
 
         for i = 1, #data.Entry_List do
             for _, entry in ipairs(data.Entry_List[i]) do
-                JournalUI.Enum_Lists[i]:addEnumItem(entry.Key)
+                ScpuiSystem.extensions.JournalUi.Enum_Lists[i]:addEnumItem(entry.Key)
             end
         end
     end
+
+	--- We don't need the hook below in FRED
+	return
 end
 
 --- On campaign begin, clear the journal data
 engine.addHook("On Campaign Begin", function()
-	JournalUI:clearAll()
+	ScpuiSystem.extensions.JournalUi:clearAll()
 end)

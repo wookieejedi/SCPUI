@@ -38,12 +38,12 @@ function JournalController:initialize(document)
     local player = ba.getCurrentPlayer()
     local campaign_filename = player:getCampaignFilename()
 
-    self.Data = JournalUI:parseJournalTable(campaign_filename .. "-journal.tbl")
+    self.Data = ScpuiSystem.extensions.JournalUi:parseJournalTable(campaign_filename .. "-journal.tbl")
 
     if not self.Data then return end
 
     self.Data.Visible_List = {}
-    self.SaveData = JournalUI:loadDataFromFile()
+    self.SaveData = ScpuiSystem.extensions.JournalUi:loadDataFromFile()
 
     self.SelectedEntry = nil
 
@@ -197,7 +197,7 @@ function JournalController:selectEntry(key)
                 if saved_data.Unread then
                     this_entry.inner_rml = self.Data.Entry_List[self.SelectedSection][index].Name
                     saved_data.Unread = false
-                    JournalUI:saveDataToFile(self.SaveData)
+                    ScpuiSystem.extensions.JournalUi:saveDataToFile(self.SaveData)
                 end
 
             end
