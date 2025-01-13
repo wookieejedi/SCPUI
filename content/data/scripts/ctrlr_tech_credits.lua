@@ -113,22 +113,31 @@ function TechCreditsController:initialize(document)
 end
 
 --- Called by the RML to change to a different tech room state
+--- @param element Element The element that was clicked
 --- @param state number Should be one of the STATE_ enumerations
 --- @return nil
-function TechCreditsController:change_tech_state(state)
+function TechCreditsController:change_tech_state(element, state)
 
 	if state == self.STATE_DATABASE then
-		Topics.techroom.btn1Action:send()
+		if Topics.techroom.btn1Action:send() == false then
+			ui.playElementSound(element, "click", "error")
+		end
 	end
 	if state == self.STATE_SIMULATOR then
-		Topics.techroom.btn2Action:send()
+		if Topics.techroom.btn2Action:send() == false then
+			ui.playElementSound(element, "click", "error")
+		end
 	end
 	if state == self.STATE_CUTSCENE then
-		Topics.techroom.btn3Action:send()
+		if Topics.techroom.btn3Action:send() == false then
+			ui.playElementSound(element, "click", "error")
+		end
 	end
 	if state == self.STATE_CREDITS then
 		--This is where we are already, so don't do anything
-		--topics.techroom.btn4Action:send()
+		--if Topics.techroom.btn4Action:send() == false then
+			--ui.playElementSound(element, "click", "error")
+		--end
 	end
 
 end
@@ -231,9 +240,9 @@ function TechCreditsController:global_keydown(element, event)
     elseif event.parameters.key_identifier == rocket.key_identifier.TAB then
 		self.ScrollRate = ui.TechRoom.Credits.ScrollRate * 10
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.ctrl_key == 1 then
-		self:change_tech_state(3)
+		self:change_tech_state(element, 3)
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then
-		self:change_tech_state(1)
+		self:change_tech_state(element, 1)
 	end
 end
 

@@ -232,10 +232,10 @@ return {
 	},
 	techroom = { --All tech room UIs!
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context
-		btn1Action = Topic(nil), --The code to run when tech room button 1 is clicked. When changing game states, lowest priority takes precedence.
-		btn2Action = Topic(nil), --The code to run when tech room button 2 is clicked. When changing game states, lowest priority takes precedence.
-		btn3Action = Topic(nil), --The code to run when tech room button 3 is clicked. When changing game states, lowest priority takes precedence.
-		btn4Action = Topic(nil) --The code to run when tech room button 4 is clicked. When changing game states, lowest priority takes precedence.
+		btn1Action = Topic(nil), --The code to run when tech room button 1 is clicked. When changing game states, lowest priority takes precedence. Set value to false to play error sound
+		btn2Action = Topic(nil), --The code to run when tech room button 2 is clicked. When changing game states, lowest priority takes precedence. Set value to false to play error sound
+		btn3Action = Topic(nil), --The code to run when tech room button 3 is clicked. When changing game states, lowest priority takes precedence. Set value to false to play error sound
+		btn4Action = Topic(nil) --The code to run when tech room button 4 is clicked. When changing game states, lowest priority takes precedence. Set value to false to play error sound
 	},
 	techdatabase = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the context

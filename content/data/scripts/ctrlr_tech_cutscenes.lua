@@ -160,22 +160,31 @@ function TechCutscenesController:selectCutscene(entry)
 end
 
 --- Called by the RML to change the tech room game state
+--- @param element Element The element that was clicked
 --- @param state number The state to change to. Should be one of the STATE_ enumerations
 --- @return nil
-function TechCutscenesController:change_tech_state(state)
+function TechCutscenesController:change_tech_state(element, state)
 
 	if state == self.STATE_DATABASE then
-		Topics.techroom.btn1Action:send()
+		if Topics.techroom.btn1Action:send() == false then
+			ui.playElementSound(element, "click", "error")
+		end
 	end
 	if state == self.STATE_SIMULATOR then
-		Topics.techroom.btn2Action:send()
+		if Topics.techroom.btn2Action:send() == false then
+			ui.playElementSound(element, "click", "error")
+		end
 	end
 	if state == self.STATE_CUTSCENE then
 		--This is where we are already, so don't do anything
-		--topics.techroom.btn3Action:send()
+		--if Topics.techroom.btn3Action:send() == false then
+			--ui.playElementSound(element, "click", "error")
+		--end
 	end
 	if state == self.STATE_CREDITS then
-		Topics.techroom.btn4Action:send()
+		if Topics.techroom.btn4Action:send() == false then
+			ui.playElementSound(element, "click", "error")
+		end
 	end
 
 end
@@ -193,9 +202,9 @@ function TechCutscenesController:global_keydown(element, event)
 		self.ShowAll  = not self.ShowAll
 		self:reloadCutscenesList()
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.ctrl_key == 1 then
-		self:change_tech_state(2)
+		self:change_tech_state(element, 2)
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then
-		self:change_tech_state(4)
+		self:change_tech_state(element, 4)
 	elseif event.parameters.key_identifier == rocket.key_identifier.TAB then
 		--do nothing
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.shift_key == 1 then

@@ -16,7 +16,7 @@
 			<div id=top_panel_b>
 				<div id=top_b_panel_wrapper>
 					<div id=bullet_cont>
-						<button id="tech_btn_1" class="bullet button_1" onclick="controller:change_tech_state(controller.STATE_DATABASE)">
+						<button id="tech_btn_1" class="bullet button_1" onclick="controller:change_tech_state(element, controller.STATE_DATABASE)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -26,7 +26,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="tech_btn_2" class="bullet button_1" onclick="controller:change_tech_state(controller.STATE_SIMULATOR)">
+						<button id="tech_btn_2" class="bullet button_1" onclick="controller:change_tech_state(element, controller.STATE_SIMULATOR)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -36,7 +36,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="tech_btn_3" class="bullet button_1" onclick="controller:change_tech_state(controller.STATE_CUTSCENE)">
+						<button id="tech_btn_3" class="bullet button_1" onclick="controller:change_tech_state(element, controller.STATE_CUTSCENE)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
@@ -46,7 +46,7 @@
 						</button>
 					</div>
 					<div id=bullet_cont>
-						<button id="tech_btn_4" class="bullet button_1" onclick="controller:change_tech_state(controller.STATE_CREDITS)">
+						<button id="tech_btn_4" class="bullet button_1" onclick="controller:change_tech_state(element, controller.STATE_CREDITS)">
 							<span id="bullet_img" class="bullet button_img">
 								<img src="bullet-r.png" class="psuedo_img"></img>
 							</span>
