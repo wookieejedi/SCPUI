@@ -18,7 +18,7 @@
 			</div>
 			<div id=pilotlist>
 				<input id=pilot_name_input class="hidden" type="text" onblur="controller:callsign_input_focus_lost()"
-						onchange="controller:callsign_input_change(event)"
+						onchange="controller:callsign_input_change(element, event)"
 						onkeyup="controller:callsign_keyup(element, event)"></input>
 				<ul id=pilotlist_ul>
 				</ul>

@@ -340,15 +340,24 @@ function PilotSelectController:callsign_keyup(element, event)
 end
 
 --- On input change, capture the event and pass it to the action
+--- @param element Element The element that triggered the event
 --- @param event Event The event that was triggered
 --- @return nil
-function PilotSelectController:callsign_input_change(event)
+function PilotSelectController:callsign_input_change(element, event)
     if not self.CallsignInputActive then
         -- Only process enter events when we are actually inputting something
         return
     end
 
+    -- if the linebreak parameter is not set, then clear out any invalid characters
     if event.parameters.linebreak ~= 1 then
+        local function sanitizeString(input)
+            local sanitized = input:gsub("[^%a%s_%-%d]", "") -- Remove disallowed characters
+            sanitized = sanitized:gsub("^%d", "")            -- Remove digit if it's the first character
+            return sanitized
+        end
+
+        element:SetAttribute("value", sanitizeString(event.parameters.value))
         return
     end
 
