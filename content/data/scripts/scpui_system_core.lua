@@ -393,10 +393,6 @@ function ScpuiSystem:stateEnd(substate)
 	if not substate and hv.OldState.Name == "GS_STATE_SCRIPTING" then
 		ScpuiSystem.data.Substate = "none"
 	end
-
-	if ba.MultiplayerMode then
-		self.data.Render = ScpuiSystem.data.table_flags.DisableInMulti
-	end
 end
 
 --- Gets the name of a game state or substate in a table with indexed key 'Name'
@@ -527,6 +523,12 @@ function ScpuiSystem:dialogFrame()
 		self.data.Context:Render()
 	end)
 
+	if ba.isEngineVersionAtLeast(25, 0, 0) and ScpuiSystem.data.DialogDoc then
+		local text_el = ScpuiSystem.data.DialogDoc:GetElementById("text_container").first_child
+		if text_el then
+			text_el.inner_rml = hv.Text
+		end
+	end
 	if hv.IsDeathPopup then
 		local submit = self.data.DeathDialog.Submit
 		if submit == nil and not ScpuiSystem.data.Dialog then
