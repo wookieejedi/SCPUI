@@ -17,15 +17,14 @@ function M.wait_for(seconds)
     end, async.OnFrameExecutor)
 end
 
---- Waits for a condition to be true (Untested function!)
---- @param condition function The condition to wait for. Must return a truty value
---- @param interval number The interval in seconds to wait between checks. Defaults to 1 second.
+--- Waits for a condition to be true
+--- @param condition function The condition to wait for. Must return a truthy value
+--- @param interval number? The interval in seconds to wait between checks. Defaults to 1 second.
 --- @return promise A promise that resolves when the condition is met.
 function M.wait_until(condition, interval)
     return async.run(function()
-        -- Default interval to 1 second if not provided
-        interval = interval or 1
-        
+        -- Default interval to 0.01 seconds if not provided
+        interval = interval or 0.01
         while not condition() do
             -- Wait for the specified interval
             M.wait_for(interval)
