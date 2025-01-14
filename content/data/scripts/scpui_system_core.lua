@@ -396,7 +396,9 @@ function ScpuiSystem:stateEnd(substate)
 	ScpuiSystem.data.LastState = ScpuiSystem.data.CurrentState
 
 	--Provide a UI topic for custom mod options to apply user selections
-	if not substate and (hv.OldState.Name == "GS_STATE_INITIAL_PLAYER_SELECT" or hv.OldState.Name == "GS_STATE_OPTIONS_MENU") then
+	local valid_states = {"GS_STATE_INITIAL_PLAYER_SELECT", "GS_STATE_BARRACKS_MENU", "GS_STATE_OPTIONS_MENU"}
+
+	if not substate and (Utils.table.contains(valid_states, hv.OldState.Name)) then
 		Topics.options.apply:send(nil)
 	end
 
