@@ -118,24 +118,38 @@ end
 --- @return string size The font size to use as a string
 function ScpuiSystem:getFontPixelSize(val)
 	local vmin = math.min(gr.getScreenWidth(), gr.getScreenHeight())
-	local size = vmin * 0.012 --Gets roughly 12px font on 1080p
+	local font_pixels = gr.Fonts[1].Height
+
+	local size = vmin * (font_pixels/1000) --Gets roughly 12px font on 1080p
 	-- Lua has no math.round(); math.floor(x + 0.5) is the idiomatic replacement.
 	local pixel_size = math.floor(size + 0.5)
 
-	local function convert(value)
-		if not value then return nil end
-		local clamped_value = math.max(0, math.min(1, value))
-	    local scaled_value = (clamped_value - 0.5) * 20
-		return math.floor(scaled_value + 0.5)
-	end
+	local final_size
 
-	if not val then
-		val = convert(ScpuiSystem.data.ScpuiOptionValues.Font_Adjustment or 0.5)
-	else
-		val = convert(val)
-	end
+    -- Handle scaling using newer Font Multiplier values
+    if ScpuiSystem.data.FontValue and ba.isEngineVersionAtLeast(24, 3, 0) then
+        if not val then
+			val = ScpuiSystem.data.FontValue
+		end
 
-	local final_size = math.max(1, math.min(ScpuiSystem.data.NumFontSizes, pixel_size + val))
+		final_size = math.floor(pixel_size * val)
+    else
+        -- Default logic for older engine versions
+        local function convert(value)
+            if not value then return nil end
+            local clamped_value = math.max(0, math.min(1, value))
+            local scaled_value = (clamped_value - 0.5) * 20 -- Map to -10 to +10
+            return math.floor(scaled_value + 0.5)
+        end
+
+        if not val then
+            val = convert(ScpuiSystem.data.ScpuiOptionValues.Font_Adjustment or 0.5)
+        else
+            val = convert(val)
+        end
+
+        final_size = math.max(1, math.min(ScpuiSystem.data.NumFontSizes, pixel_size + val))
+    end
 
 	return tostring(final_size)
 end

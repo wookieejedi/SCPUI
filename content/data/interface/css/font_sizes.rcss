@@ -34,7 +34,7 @@
 	font-size: 4em;
 }
 
-/***RECORD SCRATCH*** Yeah. That's me. Fourty classes just for font sizes. You're probably wondering how I got here.
+/***RECORD SCRATCH*** Yeah. That's me. One hundred classes just for font sizes. You're probably wondering how I got here.
 Well, it's really not that long of a story. FSO crashes when directly setting font sizes too much,
 but it does fine when done via a class swap. So that's what we're doing. Whenever a new UI is loaded
 up, we set the root font size to one of these classes. I know, I know. It's pretty ugly. But sometimes
@@ -238,4 +238,304 @@ that's what you have to do in a 30 year old game engine. Ok, back to the CSS now
 .base_font40
 {
   font-size: 40px;
+}
+
+.base_font41
+{
+  font-size: 41px;
+}
+
+.base_font42
+{
+  font-size: 42px;
+}
+
+.base_font43
+{
+  font-size: 43px;
+}
+
+.base_font44
+{
+  font-size: 44px;
+}
+
+.base_font45
+{
+  font-size: 45px;
+}
+
+.base_font46
+{
+  font-size: 46px;
+}
+
+.base_font47
+{
+  font-size: 47px;
+}
+
+.base_font48
+{
+  font-size: 48px;
+}
+
+.base_font49
+{
+  font-size: 49px;
+}
+
+.base_font50
+{
+  font-size: 50px;
+}
+
+.base_font51
+{
+  font-size: 51px;
+}
+
+.base_font52
+{
+  font-size: 52px;
+}
+
+.base_font53
+{
+  font-size: 53px;
+}
+
+.base_font54
+{
+  font-size: 54px;
+}
+
+.base_font55
+{
+  font-size: 55px;
+}
+
+.base_font56
+{
+  font-size: 56px;
+}
+
+.base_font57
+{
+  font-size: 57px;
+}
+
+.base_font58
+{
+  font-size: 58px;
+}
+
+.base_font59
+{
+  font-size: 59px;
+}
+
+.base_font60
+{
+  font-size: 60px;
+}
+
+.base_font61
+{
+  font-size: 61px;
+}
+
+.base_font62
+{
+  font-size: 62px;
+}
+
+.base_font63
+{
+  font-size: 63px;
+}
+
+.base_font64
+{
+  font-size: 64px;
+}
+
+.base_font65
+{
+  font-size: 65px;
+}
+
+.base_font66
+{
+  font-size: 66px;
+}
+
+.base_font67
+{
+  font-size: 67px;
+}
+
+.base_font68
+{
+  font-size: 68px;
+}
+
+.base_font69
+{
+  font-size: 69px;
+}
+
+.base_font70
+{
+  font-size: 70px;
+}
+
+.base_font71
+{
+  font-size: 71px;
+}
+
+.base_font72
+{
+  font-size: 72px;
+}
+
+.base_font73
+{
+  font-size: 73px;
+}
+
+.base_font74
+{
+  font-size: 74px;
+}
+
+.base_font75
+{
+  font-size: 75px;
+}
+
+.base_font76
+{
+  font-size: 76px;
+}
+
+.base_font77
+{
+  font-size: 77px;
+}
+
+.base_font78
+{
+  font-size: 78px;
+}
+
+.base_font79
+{
+  font-size: 79px;
+}
+
+.base_font80
+{
+  font-size: 80px;
+}
+
+.base_font81
+{
+  font-size: 81px;
+}
+
+.base_font82
+{
+  font-size: 82px;
+}
+
+.base_font83
+{
+  font-size: 83px;
+}
+
+.base_font84
+{
+  font-size: 84px;
+}
+
+.base_font85
+{
+  font-size: 85px;
+}
+
+.base_font86
+{
+  font-size: 86px;
+}
+
+.base_font87
+{
+  font-size: 87px;
+}
+
+.base_font88
+{
+  font-size: 88px;
+}
+
+.base_font89
+{
+  font-size: 89px;
+}
+
+.base_font90
+{
+  font-size: 90px;
+}
+
+.base_font91
+{
+  font-size: 91px;
+}
+
+.base_font92
+{
+  font-size: 92px;
+}
+
+.base_font93
+{
+  font-size: 93px;
+}
+
+.base_font94
+{
+  font-size: 94px;
+}
+
+.base_font95
+{
+  font-size: 95px;
+}
+
+.base_font96
+{
+  font-size: 96px;
+}
+
+.base_font97
+{
+  font-size: 97px;
+}
+
+.base_font98
+{
+  font-size: 98px;
+}
+
+.base_font99
+{
+  font-size: 99px;
+}
+
+.base_font100
+{
+  font-size: 100px;
 }

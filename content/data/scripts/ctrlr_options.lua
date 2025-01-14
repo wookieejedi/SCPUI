@@ -126,7 +126,8 @@ function OptionsController:initialize(document)
 			"Audio.Music",
 			"Audio.Voice",
 			"Game.SkillLevel",
-			"Graphics.Gamma"
+			"Graphics.Gamma",
+			"Game.FontScaleFactor"
 		}
 
         if Utils.table.contains(basicOptions, key) then
@@ -363,27 +364,31 @@ end
 --- Initializes the basic built-in options and built-in SCPUI options
 --- @return nil
 function OptionsController:initializeBuiltInBasicOptions()
-	--Create the font size selector option
-	--- @type scpui_option
-	local fontAdjustment = {
-		Title = Utils.xstr({"Font Size Adjustment", 888393}),
-		Description = Utils.xstr({"Increases or decreases the font size", 888394}),
-		Key = "Font_Adjustment",
-		Type = "Range",
-		Category = "Custom",
-		Min = 0,
-		Max = 1,
-		Value = 0.5,
-		--- Rest are dummy values
-		Flags = {},
-		getValueFromRange = function() return { Value = 0, Display = "0" } end,
-		getInterpolantFromValue = function() return 0 end,
-		getValidValues = function() return {} end,
-		persistChanges = function() return true end
-	}
-	local font_adjust_el = self:createCustomOptionElement(fontAdjustment, "font_size_selector")
-	assert(font_adjust_el, "Failed to create option element for " .. fontAdjustment.Key)
-	self:addOptionTooltip(fontAdjustment, font_adjust_el)
+	local builtin_font_element_created = false
+	if ScpuiSystem.data.FontValue and not ba.isEngineVersionAtLeast(24, 3, 0) then
+		--Create the font size selector option
+		--- @type scpui_option
+		local fontAdjustment = {
+			Title = Utils.xstr({"Font Size Adjustment", 888393}),
+			Description = Utils.xstr({"Increases or decreases the font size", 888394}),
+			Key = "Font_Adjustment",
+			Type = "Range",
+			Category = "Custom",
+			Min = 0,
+			Max = 1,
+			Value = 0.5,
+			--- Rest are dummy values
+			Flags = {},
+			getValueFromRange = function() return { Value = 0, Display = "0" } end,
+			getInterpolantFromValue = function() return 0 end,
+			getValidValues = function() return {} end,
+			persistChanges = function() return true end
+		}
+		local font_adjust_el = self:createCustomOptionElement(fontAdjustment, "font_size_selector")
+		assert(font_adjust_el, "Failed to create option element for " .. fontAdjustment.Key)
+		self:addOptionTooltip(fontAdjustment, font_adjust_el)
+		builtin_font_element_created = true
+	end
 
 	--Create the briefing render style option
 	--- @type scpui_option
@@ -455,6 +460,8 @@ function OptionsController:initializeBuiltInBasicOptions()
             opt_el = AbstractOptionsController.createSelectionOptionElement(self, option, option:getValidValues(), "language_selector", {
                 --no_title = true
             })
+		elseif not builtin_font_element_created and key == "Game.FontScaleFactor" then
+			opt_el = self:createOptionElement(option, "font_size_selector")
 		elseif key == "Input.ForceFeedback" then
             opt_el = self:createOptionElement(option, "force_feeback_selector")
         elseif key == "Input.FFStrength" then
