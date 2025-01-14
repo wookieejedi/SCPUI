@@ -106,9 +106,9 @@ function ScpuiSystem:init()
 
         -- Get the range of the font multiplier
         local option = getFontOption()
-		assert(option, "Could not find the font option in the options table!")
-
-		ScpuiSystem.data.FontValue = tonumber(option.Value.Serialized)
+		if option then
+			ScpuiSystem.data.FontValue = tonumber(option.Value.Serialized)
+		end
 	end
 
 	ScpuiSystem.data.CurrentBaseFontClass = "base_font" .. self:getFontPixelSize()
