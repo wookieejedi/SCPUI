@@ -585,19 +585,34 @@ function AbstractOptionsController:initRangeControl(element, value_el, option, c
     end)
 
 	--This is a special case just for Font_Multiplier to allow live update
-	if option.Key == "Font_Adjustment" then
-		element:AddEventListener("click", function(event, _, _)
-			range_el.value = self.CustomOptions[option.Key].CurrentValue
-			self.FontChoice = "base_font" .. ScpuiSystem:getFontPixelSize(self.CustomOptions[option.Key].CurrentValue)
-			--Clear all possible font classes
-			for i = 1, ScpuiSystem.data.NumFontSizes do
-				local f_class = "base_font" .. i
-				self.Document:GetElementById("main_background"):SetClass(f_class, false)
-			end
+	if ba.isEngineVersionAtLeast(24, 3, 0) then
+		if option.Key == "Game.FontScaleFactor" then
+			element:AddEventListener("click", function(event, _, _)
+				--- @type ValueDescription | any
+				local this_value = option.Value
+				ScpuiSystem.data.FontValue = tonumber(this_value.Serialized)
+				local new_class = "base_font" .. ScpuiSystem:getFontPixelSize()
+				--Clear the last class
+				self.Document:GetElementById("main_background"):SetClass(ScpuiSystem.data.CurrentBaseFontClass, false)
 
-			--Now apply the new class
-			self.Document:GetElementById("main_background"):SetClass(self.FontChoice, true)
-		end)
+				--Now apply the new class
+				ScpuiSystem.data.CurrentBaseFontClass = new_class
+				self.Document:GetElementById("main_background"):SetClass(new_class, true)
+			end)
+		end
+	else
+		if option.Key == "Font_Adjustment" then
+			element:AddEventListener("click", function(event, _, _)
+				range_el.value = self.CustomOptions[option.Key].CurrentValue
+				local new_class = "base_font" .. ScpuiSystem:getFontPixelSize(self.CustomOptions[option.Key].CurrentValue)
+				--Clear the last class
+				self.Document:GetElementById("main_background"):SetClass(ScpuiSystem.data.CurrentBaseFontClass, false)
+
+				--Now apply the new class
+				ScpuiSystem.data.CurrentBaseFontClass = new_class
+				self.Document:GetElementById("main_background"):SetClass(new_class, true)
+			end)
+		end
 	end
 
 

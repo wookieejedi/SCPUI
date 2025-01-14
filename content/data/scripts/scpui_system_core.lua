@@ -92,6 +92,26 @@ function ScpuiSystem:init()
 	end
 
 	self:loadSubmodels()
+
+	if ba.isEngineVersionAtLeast(24, 3, 0) then
+		---@return option | nil
+		local function getFontOption()
+			local options = opt.Options
+			for _, v in ipairs(options) do
+				if v.Key == "Game.FontScaleFactor" then
+					return v
+				end
+			end
+		end
+
+        -- Get the range of the font multiplier
+        local option = getFontOption()
+		assert(option, "Could not find the font option in the options table!")
+
+		ScpuiSystem.data.FontValue = tonumber(option.Value.Serialized)
+	end
+
+	ScpuiSystem.data.CurrentBaseFontClass = "base_font" .. self:getFontPixelSize()
 end
 
 --- Load ScpuiSystem submodules (script files starting with `scpui_sm_`)
