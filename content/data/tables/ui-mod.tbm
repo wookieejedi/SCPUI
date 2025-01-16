@@ -6,4 +6,7 @@
 $Unicode mode: Yes
 $Enable in-game options: Yes
 
+#FRED SETTINGS
+$Enable scripting in FRED: TRUE
+
 #End

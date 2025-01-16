@@ -682,6 +682,24 @@ function ScpuiSystem:getModTitle()
     return title
 end
 
+--- Extracts the base mod ID from the mod root
+--- @return string The sanitized mod ID without versioning
+function ScpuiSystem:getModId()
+    local modRoot = ba.getModRootName()
+    -- Remove trailing semantic version if present (e.g., "-2.1.1")
+	local baseID = modRoot:match("^(.-)-?%d*%.?%d*%.?%d*$")
+
+	-- If no version string is found, sanitize the modRoot
+	if not baseID or baseID == "" then
+		baseID = modRoot
+	end
+
+	-- Sanitize the baseID by removing invalid characters for JSON keys
+	baseID = baseID:gsub("[^%w_]", "_")
+
+	return baseID
+end
+
 --- Adds a preload coroutine to the SCPUI system that will be run during the splash screens
 --- @param message string The debug message to print
 --- @param text string The debug string to display

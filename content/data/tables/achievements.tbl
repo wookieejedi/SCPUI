@@ -1,0 +1,11 @@
+#ACHIEVEMENTS
+
+;$Name: Achievement name (required)
+;+Description: Description text (required)
+;+Criteria:
+;    +Type: Number of Kills, Weapons Fired, Custom (required)
+;    +Target: Ship class or weapon Class (optional)
+;    +Threshold: Number greater than 0 (optional)
+;+Hidden: boolean (optional, default: false)
+
+#END
