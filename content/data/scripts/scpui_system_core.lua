@@ -507,14 +507,20 @@ function ScpuiSystem:dialogStart()
 			dialog:escape(-1) --Assuming that all non-death built-in popups can be cancelled safely with a negative response!
 		end
 
-	for i, button in ipairs(hv.Choices) do
-		local positivity = Dialogs.BUTTON_TYPE_NEUTRAL
-		if button.Positivity == 1 then
-			positivity = Dialogs.BUTTON_TYPE_POSITIVE
-		elseif button.Positivity == -1 then
-			positivity = Dialogs.BUTTON_TYPE_NEGATIVE
+	local hv_choices = hv.Choices
+	local num_choices = #hv_choices
+	if num_choices > 0 then
+		--put in reverse order so it matches retail UI
+		for i=num_choices,1, -1 do
+			local button = hv_choices[i]
+			local positivity = Dialogs.BUTTON_TYPE_NEUTRAL
+			if button.Positivity == 1 then
+				positivity = Dialogs.BUTTON_TYPE_POSITIVE
+			elseif button.Positivity == -1 then
+				positivity = Dialogs.BUTTON_TYPE_NEGATIVE
+			end
+			dialog:button(positivity, button.Text, i - 1, button.Shortcut)
 		end
-		dialog:button(positivity, button.Text, i - 1, button.Shortcut)
 	end
 
 	if hv.IsDeathPopup then
