@@ -56,23 +56,23 @@ selectarrow, slidertrack, sliderbar, sliderarrowdec, sliderarrowinc
 	top: 0;
 }
 
-.button_text
+button .button_text
 {
 	text-align: center;
 }
 
 /*Used to make sure button images do not take the global color*/
-.button_img
+button .button_img
 {
 	color:white;
 }
 
-.button_text_right
+button .button_text_right
 {
 	text-align: left;
 }
 
-.button_text_right p
+button .button_text_right p
 {
 	display: block;
 	margin-left: 140%;
@@ -80,12 +80,12 @@ selectarrow, slidertrack, sliderbar, sliderarrowdec, sliderarrowinc
 	position: absolute;
 }
 
-.button_text_left
+button .button_text_left
 {
 	text-align: right;
 }
 
-.button_text_left p
+button .button_text_left p
 {
 	display: block;
 	margin-left: -140%;
@@ -93,24 +93,24 @@ selectarrow, slidertrack, sliderbar, sliderarrowdec, sliderarrowinc
 	position: absolute;
 }
 
-.button_text_top
+button .button_text_top
 {
 	text-align: center;
 }
 
-.button_text_top p
+button .button_text_top p
 {
 	display: block;
 	margin-top: -130%;
 	position: absolute;
 }
 
-.button_text_bottom
+button .button_text_bottom
 {
 	text-align: center;
 }
 
-.button_text_bottom p
+button .button_text_bottom p
 {
 	display: block;
 	position: absolute;
