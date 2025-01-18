@@ -162,6 +162,22 @@ button:checked .pos
 	color: #c9e4c9;
 }
 
+button .neu
+{
+	color: #abbbab;
+}
+
+button:hover .neu
+{
+	color: #abbbab;
+}
+
+button:active .neu,
+button:checked .neu
+{
+	color: #abbbab;
+}
+
 /*Dropdown template*/
 select,
 dataselect
