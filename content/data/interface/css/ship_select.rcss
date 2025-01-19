@@ -265,19 +265,23 @@ div:drag
 
 .available
 {
-	border-width: 0.9%;
-	border-color: teal;
+	cborder-decorator: corner-borders;
+    cborder-thickness: 0.6%;
+	cborder-color: teal;
 }
 
 .available:valid
 {
-	border-color: white;
+	cborder-decorator: corner-borders;
+    cborder-thickness: 0.6%;
+	cborder-color: white;
 }
 
 .locked
 {
-	border-width: 0.9%;
-	border-color: grey;
+	cborder-decorator: corner-borders;
+    cborder-thickness: 0.6%;
+	cborder-color: grey;
 }
 
 div#breakout_button
