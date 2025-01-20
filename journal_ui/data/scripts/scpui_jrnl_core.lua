@@ -26,12 +26,12 @@ end
 
 --- Parse a journal table file
 --- @param file string the file to parse
---- @param entriesonly? boolean whether to only parse the entries
+--- @param entries_only? boolean whether to only parse the entries
 --- @return scpui_journal_data data the parsed journal data
-function JournalUi:parseJournalTable(file, entriesonly)
+function JournalUi:parseJournalTable(file, entries_only)
 
 	---@type scpui_journal_data
-	local newdata = {
+	local new_data = {
 		Visible_List = {},
 		Section_List = {},
 		Entry_List = {},
@@ -39,19 +39,19 @@ function JournalUi:parseJournalTable(file, entriesonly)
 	}
 
 	if not parse.readFileText(file, "data/tables") then
-		return newdata
+		return new_data
 	end
 
-	if (not entriesonly) and parse.optionalString("#Journal Options") then
+	if (not entries_only) and parse.optionalString("#Journal Options") then
 		if parse.optionalString("$Title:") then
-			newdata.Title = parse.getString()
+			new_data.Title = parse.getString()
 		end
 		parse.requiredString("#End")
 	end
 
-	 if (not entriesonly) and parse.optionalString("#Journal Sections") then
+	 if (not entries_only) and parse.optionalString("#Journal Sections") then
 
-		while parse.optionalString("$Name:") and (#newdata.Section_List < 3) do
+		while parse.optionalString("$Name:") and (#new_data.Section_List < 3) do
 
 			local t = {}
 
@@ -61,7 +61,7 @@ function JournalUi:parseJournalTable(file, entriesonly)
 				t.Display = ba.XSTR(t.Name, parse.getInt())
 			end
 
-		newdata.Section_List[#newdata.Section_List+1] = t
+		new_data.Section_List[#new_data.Section_List+1] = t
 
 		end
 
@@ -85,7 +85,7 @@ function JournalUi:parseJournalTable(file, entriesonly)
 
 			if parse.requiredString("$Group:") then
 				t.Group = parse.getString()
-				t.GroupIndex = self:getGroupIndex(t.Group, newdata.Section_List)
+				t.GroupIndex = self:getGroupIndex(t.Group, new_data.Section_List)
 			end
 
 			if parse.optionalString("$Visible by Default:") then
@@ -115,13 +115,13 @@ function JournalUi:parseJournalTable(file, entriesonly)
 				end
 			end
 
-			if not newdata.Entry_List[t.GroupIndex] then newdata.Entry_List[t.GroupIndex] = {} end
+			if not new_data.Entry_List[t.GroupIndex] then new_data.Entry_List[t.GroupIndex] = {} end
 
-			new_index = #newdata.Entry_List[t.GroupIndex] + 1
+			new_index = #new_data.Entry_List[t.GroupIndex] + 1
 
 			--t.Name = newIndex .. " - " .. t.GroupIndex .. " - " .. t.Name
 
-			newdata.Entry_List[t.GroupIndex][new_index] = t
+			new_data.Entry_List[t.GroupIndex][new_index] = t
 
 		end
 
@@ -131,7 +131,7 @@ function JournalUi:parseJournalTable(file, entriesonly)
 
 	parse.stop()
 
-	return newdata
+	return new_data
 
 end
 
@@ -142,9 +142,9 @@ function JournalUi:checkLanguage(filename)
 
 	local language = ba.getCurrentLanguageExtension()
 	if language ~= "" then
-		local langfile = filename:gsub(".txt", "") .. "-" .. language .. ".txt"
-		if cf.fileExists(langfile, "data/fiction", true) then
-			filename = langfile
+		local language_file = filename:gsub(".txt", "") .. "-" .. language .. ".txt"
+		if cf.fileExists(language_file, "data/fiction", true) then
+			filename = language_file
 		end
 	end
 	return filename
@@ -355,8 +355,8 @@ end
 --- @return string title the title of the journal UI
 function JournalUi:getTitle()
 	local player = ba.getCurrentPlayer()
-	local campaignfilename = player:getCampaignFilename()
-	local data = self:parseJournalTable(campaignfilename .. "-journal.tbl")
+	local campaign_filename = player:getCampaignFilename()
+	local data = self:parseJournalTable(campaign_filename .. "-journal.tbl")
 	return data.Title
 end
 
