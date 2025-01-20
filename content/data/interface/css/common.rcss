@@ -75,7 +75,7 @@ button .button_text_right
 button .button_text_right p
 {
 	display: block;
-	margin-left: 140%;
+	margin-left: 110%;
 	margin-top: -50%;
 	position: absolute;
 }
