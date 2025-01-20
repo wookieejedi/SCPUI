@@ -84,6 +84,8 @@ end
 --- Initialize ScpuiSystem and send relevant scpui.tbl files to the parser
 --- @return nil
 function ScpuiSystem:init()
+	ba.print("SCPUI Core is initializing. Standby...\n")
+
 	if cf.fileExists("scpui.tbl", "", true) then
 		self:parseScpuiTable("scpui.tbl")
 	end
@@ -771,6 +773,35 @@ function ScpuiSystem:closeLoadScreen()
 	end
 end
 
+--- Wrapper to create an engine hook that also will print to the log that the hook was created by SCPUI and for which lua script
+--- @param hook_name string The name of the hook
+--- @param hook_function function The function to run when the hook is triggered
+--- @param condition? table The condition to check before running the hook
+--- @param override_function? function The function to run to check if the hook should run as override
+--- @return nil
+function ScpuiSystem:addHook(hook_name, hook_function, condition, override_function)
+    if condition == nil and override_function == nil then
+        -- Call with only hook name and function
+        engine.addHook(hook_name, hook_function)
+    elseif override_function == nil then
+        -- Call with hook name, function, and condition
+        engine.addHook(hook_name, hook_function, condition)
+    else
+        -- Call with all parameters
+        engine.addHook(hook_name, hook_function, condition, override_function)
+    end
+
+	local function get_caller_file()
+		local info = debug.getinfo(3, "S") -- Level 3: The caller of the function that called addHook
+		if info and info.source then
+			return info.source
+		end
+		return "[unknown]"
+	end
+
+    ba.print("SCPUI registered hook '" .. hook_name .. "' for script document '" .. get_caller_file() .. "'\n")
+end
+
 mn.LuaSEXPs["scpui-show-menu"].Action = function(state)
 	ScpuiSystem:beginSubstate(state, true)
 end
@@ -786,19 +817,19 @@ ScpuiSystem:init()
 
 --Core Ui Takeover
 
-engine.addHook("On State Start", function()
+ScpuiSystem:addHook("On State Start", function()
 	ScpuiSystem:stateStart()
 end, {}, function()
 	return ScpuiSystem:hasOverrideForState(ScpuiSystem:getRocketUiHandle(hv.NewState))
 end)
 
-engine.addHook("On Frame", function()
+ScpuiSystem:addHook("On Frame", function()
 	ScpuiSystem:stateFrame()
 end, {}, function()
 	return ScpuiSystem:hasOverrideForCurrentState()
 end)
 
-engine.addHook("On State End", function()
+ScpuiSystem:addHook("On State End", function()
 	ScpuiSystem:stateEnd()
 end, {}, function()
 	return ScpuiSystem:hasOverrideForState(ScpuiSystem:getRocketUiHandle(hv.OldState))
@@ -806,7 +837,7 @@ end)
 
 --Dialog Takeover
 
-engine.addHook("On Dialog Init", function()
+ScpuiSystem:addHook("On Dialog Init", function()
 	if ScpuiSystem.data.Render == true then
 		ScpuiSystem:dialogStart()
 	end
@@ -814,7 +845,7 @@ end, {}, function()
 	return ScpuiSystem.data.Render
 end)
 
-engine.addHook("On Dialog Frame", function()
+ScpuiSystem:addHook("On Dialog Frame", function()
 	if ScpuiSystem.data.Render == true then
 		ScpuiSystem:dialogFrame()
 	end
@@ -822,7 +853,7 @@ end, {}, function()
 	return ScpuiSystem.data.Render
 end)
 
-engine.addHook("On Dialog Close", function()
+ScpuiSystem:addHook("On Dialog Close", function()
 	if ScpuiSystem.data.Render == true then
 		ScpuiSystem:dialogEnd()
 	end
@@ -832,19 +863,19 @@ end)
 
 --Load Screen Takeover
 
-engine.addHook("On Load Screen", function()
+ScpuiSystem:addHook("On Load Screen", function()
 	ScpuiSystem:loadStart()
 end, {}, function()
 	return ScpuiSystem:hasOverrideForState({Name = "LOAD_SCREEN"})
 end)
 
-engine.addHook("On Load Screen", function()
+ScpuiSystem:addHook("On Load Screen", function()
 	ScpuiSystem:loadFrame()
 end, {}, function()
 	return ScpuiSystem:hasOverrideForState({Name = "LOAD_SCREEN"})
 end)
 
-engine.addHook("On Load Complete", function()
+ScpuiSystem:addHook("On Load Complete", function()
 	ScpuiSystem:loadEnd()
 end, {}, function()
 	return ScpuiSystem:hasOverrideForState({Name = "LOAD_SCREEN"})
@@ -852,14 +883,16 @@ end)
 
 --Helpers
 
-engine.addHook("On Load Screen", function()
+ScpuiSystem:addHook("On Load Screen", function()
 	ScpuiSystem.data.memory.MissionLoaded = true
 end, {}, function()
 	return false
 end)
 
-engine.addHook("On Mission End", function()
+ScpuiSystem:addHook("On Mission End", function()
 	ScpuiSystem.data.memory.MissionLoaded = false
 end, {}, function()
 	return false
 end)
+
+ba.print("------------------ SCPUI is ready to go! ------------------ \n")

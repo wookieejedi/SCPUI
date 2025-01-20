@@ -1114,7 +1114,7 @@ function ShipSelectController:input_change(event)
 end
 
 --- Add a hook to draw the currently selected ship every frame
-engine.addHook("On Frame", function()
+ScpuiSystem:addHook("On Frame", function()
 	ShipSelectController:drawSelectModel()
 end, {State="GS_STATE_SHIP_SELECT"}, function()
     return false

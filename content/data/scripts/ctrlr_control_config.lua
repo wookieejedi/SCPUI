@@ -1257,7 +1257,7 @@ function ControlConfigController:unload()
 	Topics.controlconfig.unload:send(self)
 end
 
-engine.addHook("On Frame", function()
+ScpuiSystem:addHook("On Frame", function()
 	if ScpuiSystem.data.memory.control_config.NextDialog ~= nil then
 		ScpuiSystem.data.memory.control_config.Context:maybeShowDialogs()
 	elseif ScpuiSystem.data.memory.control_config.DialogResponse ~= nil then

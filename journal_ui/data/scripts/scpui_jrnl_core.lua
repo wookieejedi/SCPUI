@@ -418,6 +418,6 @@ if ba.inMissionEditor() then
 end
 
 --- On campaign begin, clear the journal data
-engine.addHook("On Campaign Begin", function()
+ScpuiSystem:addHook("On Campaign Begin", function()
 	ScpuiSystem.extensions.JournalUi:clearAll()
 end)

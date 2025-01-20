@@ -1661,7 +1661,7 @@ function WeaponSelectController:input_change(event)
 end
 
 --- Every frame draw the current weapon model and overhead model
-engine.addHook("On Frame", function()
+ScpuiSystem:addHook("On Frame", function()
 	WeaponSelectController:drawSelectModel()
 	WeaponSelectController:drawOverheadModel()
 end, {State="GS_STATE_WEAPON_SELECT"}, function()
