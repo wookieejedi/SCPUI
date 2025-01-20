@@ -1,6 +1,5 @@
 #Conditional Hooks
-$On Game Init:
-[
+$On Game Init: [
 
 require('scpui_jrnl_core')
 
