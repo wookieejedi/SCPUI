@@ -1,8 +1,75 @@
 --- Create the local JournalUi object
-local JournalUi = {}
+local JournalUi = {
+	Name = "Journal",
+	Version = "1.0.0",
+	Key = "JournalUi"
+}
 
-JournalUi.SectionEnum = nil --- @type LuaEnum the enum for a journal sections in the sexp operators
+JournalUi.SectionEnum = nil --- @type LuaEnum the enum for a journal section in the sexp operators
 JournalUi.Enum_Lists = {} --- @type LuaEnum[] the enums for the journal entries in the sexp operators
+
+--- Initialize the JournalUi object. Called after the journal extension is registered with SCPUI
+--- @return nil
+function JournalUi:init()
+
+	mn.LuaSEXPs["lua-journal-unlock-article"].Action = function(section, ...)
+
+		--Remove the first part of the parent enum name so we can unlock using the actual section name
+		local function removeJournalPrefix(inputString)
+			local prefix = "Journal "
+			if string.sub(inputString, 1, #prefix) == prefix then
+				return string.sub(inputString, #prefix + 1)
+			else
+				return inputString
+			end
+		end
+
+		if mn.isInCampaign() then
+			self:unlockEntry(removeJournalPrefix(section), ...)
+		end
+	end
+
+	--- If we're in FRED then create all the enums
+	if ba.inMissionEditor() then
+		local journal_files = cf.listFiles("data/tables", "*journal.tbl")
+
+		for _, v in pairs(journal_files) do
+			local data = self:parseJournalTable(v)
+
+			if #data.Section_List > 0 then
+				local name = "Journal Sections"
+				self.SectionEnum = mn.LuaEnums[name]
+				self.SectionEnum:removeEnumItem("<none>")
+			end
+			for i = 1, #data.Section_List do
+				local name = "Journal " .. data.Section_List[i].Display
+				mn.addLuaEnum(name)
+				self.SectionEnum:addEnumItem(name)
+				self.Enum_Lists[i] = mn.LuaEnums[name]
+			end
+
+			for i = 1, #data.Entry_List do
+				for _, entry in ipairs(data.Entry_List[i]) do
+					self.Enum_Lists[i]:addEnumItem(entry.Key)
+				end
+			end
+		end
+	else
+		ScpuiSystem:loadSubmodules("jrnl")
+
+		-- Register journal-specific topics
+		ScpuiSystem:registerExtensionTopics("journal", {
+			initialize = function() return nil end,
+			unload = function() return nil end
+		})
+
+		--- On campaign begin, clear the journal data
+		ScpuiSystem:addHook("On Campaign Begin", function()
+			self:clearAll()
+		end)
+	end
+
+end
 
 --- Get the index for a specific section in a list of sections
 --- @param section_name string the name of the section to find
@@ -367,57 +434,4 @@ function JournalUi:clearAll()
 	self:saveDataToFile(config)
 end
 
---- Now that we have the JournalUi object, we can add it to the ScpuiSystem
-ScpuiSystem.extensions.JournalUi = JournalUi
-
-mn.LuaSEXPs["lua-journal-unlock-article"].Action = function(section, ...)
-
-	--Remove the first part of the parent enum name so we can unlock using the actual section name
-	local function removeJournalPrefix(inputString)
-		local prefix = "Journal "
-		if string.sub(inputString, 1, #prefix) == prefix then
-			return string.sub(inputString, #prefix + 1)
-		else
-			return inputString
-		end
-	end
-
-	if mn.isInCampaign() then
-		ScpuiSystem.extensions.JournalUi:unlockEntry(removeJournalPrefix(section), ...)
-	end
-end
-
---- If we're in FRED then create all the enums
-if ba.inMissionEditor() then
-    local journal_files = cf.listFiles("data/tables", "*journal.tbl")
-
-    for _, v in pairs(journal_files) do
-        local data = ScpuiSystem.extensions.JournalUi:parseJournalTable(v)
-
-        if #data.Section_List > 0 then
-            local name = "Journal Sections"
-            ScpuiSystem.extensions.JournalUi.SectionEnum = mn.LuaEnums[name]
-            ScpuiSystem.extensions.JournalUi.SectionEnum:removeEnumItem("<none>")
-        end
-        for i = 1, #data.Section_List do
-            local name = "Journal " .. data.Section_List[i].Display
-            mn.addLuaEnum(name)
-            ScpuiSystem.extensions.JournalUi.SectionEnum:addEnumItem(name)
-            ScpuiSystem.extensions.JournalUi.Enum_Lists[i] = mn.LuaEnums[name]
-        end
-
-        for i = 1, #data.Entry_List do
-            for _, entry in ipairs(data.Entry_List[i]) do
-                ScpuiSystem.extensions.JournalUi.Enum_Lists[i]:addEnumItem(entry.Key)
-            end
-        end
-    end
-
-	--- We don't need the hook below in FRED
-	return
-end
-
---- On campaign begin, clear the journal data
-ScpuiSystem:addHook("On Campaign Begin", function()
-	ScpuiSystem.extensions.JournalUi:clearAll()
-end)
+return JournalUi

@@ -2,7 +2,7 @@
 --Controller for the Journal UI
 -----------------------------------
 
-local JournalTopics = require("lib_journal_topics")
+local Topics = require("lib_ui_topics")
 local Utils = require("lib_utils")
 
 local Class = require("lib_class")
@@ -53,7 +53,7 @@ function JournalController:initialize(document)
         end
     end
 
-    JournalTopics.journal.initialize:send(self)
+    Topics.journal.initialize:send(self)
 
     self.SelectedSection = nil
     self:change_section(1)
@@ -253,7 +253,7 @@ end
 --- Called when the screen is being unloaded
 --- @return nil
 function JournalController:unload()
-	JournalTopics.journal.unload:send(self)
+	Topics.journal.unload:send(self)
 end
 
 --- Global keydown function handles all keypresses
