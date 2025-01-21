@@ -1,3 +1,47 @@
+-----------------------------------
+--This file extends SCPUI by adding the journal core methods and members
+------------------------------------
+
+--- SCPUI Journal Data
+--- @class scpui_journal_data
+--- @field Visible_List Element[] The list of visible entry elements
+--- @field Section_List scpui_journal_section[] The sections of the journal
+--- @field Entry_List scpui_journal_entry[] table The entries of the journal
+--- @field Title string The title of the journal
+
+--- SCPUI Journal Section
+--- @class scpui_journal_section
+--- @field Display string The display name of the section
+--- @field Name string The name of the section
+
+--- SCPUI Journal Entry
+--- @class scpui_journal_entry
+--- @field File string? The filename of the journal entry
+--- @field Image string? The image filename of the journal entry
+--- @field Caption string? The caption of the journal entry
+--- @field Name string? The name of the journal entry
+--- @field Display string? The display name of the journal entry
+--- @field Key string? The element key of the journal entry
+--- @field Group string? The group of the journal entry
+--- @field GroupIndex number? The index of the group of the journal entry
+--- @field InitialVis boolean? True if the journal entry is initially visible, false otherwise
+
+--- SCPUI Journal Save Data
+--- @class scpui_journal_save_data
+--- @field Visible boolean True if the journal entry is visible, false otherwise
+--- @field Unread boolean True if the journal entry is unread, false otherwise
+
+--- Scpui Journal Extension
+--- @class JournalUi
+--- @field parseJournalTable fun(self: JournalUi, filename: string): scpui_journal_data Parses a journal table from the specified file.
+--- @field loadDataFromFile fun(self: JournalUi): table<number, scpui_journal_save_data[]> Loads the journal save data from disk.
+--- @field saveDataToFile fun(self: JournalUi, data: table<number, scpui_journal_save_data[]>): nil Saves the journal data to disk.
+--- @field checkNew fun(self: JournalUi): boolean Checks if there are new journal entries.
+--- @field getTitle fun(self: JournalUi): string Returns the title of the journal.
+--- @field doesConfigExist fun(self: JournalUi): boolean Checks if the journal configuration exists on disk.
+--- @field lockEntry fun(self: JournalUi, section: string, ...: string[]): nil Locks the specified journal entries.
+--- @field unlockEntry fun(self: JournalUi, section: string, ...: string[]): boolean Unlocks the specified journal entries.
+
 --- Create the local JournalUi object
 local JournalUi = {
 	Name = "Journal",

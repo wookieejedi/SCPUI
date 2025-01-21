@@ -9,6 +9,9 @@ local Class = require("lib_class")
 
 local JournalController = Class()
 
+--- @type JournalUi
+local JournalUi = ScpuiSystem.extensions.JournalUi
+
 --- Called by the class constructor
 --- @return nil
 function JournalController:init()
@@ -38,12 +41,12 @@ function JournalController:initialize(document)
     local player = ba.getCurrentPlayer()
     local campaign_filename = player:getCampaignFilename()
 
-    self.Data = ScpuiSystem.extensions.JournalUi:parseJournalTable(campaign_filename .. "-journal.tbl")
+    self.Data = JournalUi:parseJournalTable(campaign_filename .. "-journal.tbl")
 
     if not self.Data then return end
 
     self.Data.Visible_List = {}
-    self.SaveData = ScpuiSystem.extensions.JournalUi:loadDataFromFile()
+    self.SaveData = JournalUi:loadDataFromFile()
 
     self.SelectedEntry = nil
 
@@ -197,7 +200,7 @@ function JournalController:selectEntry(key)
                 if saved_data.Unread then
                     this_entry.inner_rml = self.Data.Entry_List[self.SelectedSection][index].Name
                     saved_data.Unread = false
-                    ScpuiSystem.extensions.JournalUi:saveDataToFile(self.SaveData)
+                    JournalUi:saveDataToFile(self.SaveData)
                 end
 
             end
