@@ -6,6 +6,7 @@ local Topics = require("lib_ui_topics")
 --all necessary preloading of content. Disabling this, disables
 --everything. Modify with care.
 -----------------------------------
+local version = "1.1.0 - RC3"
 
 local UpdateCategory = engine.createTracingCategory("UpdateRocket", false)
 local RenderCategory = engine.createTracingCategory("RenderRocket", true)
@@ -84,7 +85,7 @@ end
 --- Initialize ScpuiSystem and send relevant scpui.tbl files to the parser
 --- @return nil
 function ScpuiSystem:init()
-	ba.print("SCPUI Core is initializing. Standby...\n")
+	ba.print("SCPUI Core (v" .. version .. ") is initializing. Standby...\n")
 
 	if cf.fileExists("scpui.tbl", "", true) then
 		self:parseScpuiTable("scpui.tbl")
@@ -93,8 +94,11 @@ function ScpuiSystem:init()
 		self:parseScpuiTable(v)
 	end
 
-	self:loadSubmodels()
+	self:loadSubmodules()
 
+	self:loadExtensions()
+
+	-- Set up the in-game font multiplier option if it exists
 	if ba.isEngineVersionAtLeast(24, 3, 0) then
 		---@return option | nil
 		local function getFontOption()
@@ -114,33 +118,98 @@ function ScpuiSystem:init()
 	end
 
 	ScpuiSystem.data.CurrentBaseFontClass = "base_font" .. self:getFontPixelSize()
+
+	-- Prevent loading topics after initialization
+	Topics.registerTopic = nil
+	Topics.registerTopics = nil
 end
 
---- Load ScpuiSystem submodules (script files starting with `scpui_sm_`)
+--- Load submodules for SCPUI core or an extension
+--- @param prefix string|nil The unique identifier for the extension (e.g., "jrnl" for the Journal extension), or nil for the core system
 --- @return nil
-function ScpuiSystem:loadSubmodels()
+function ScpuiSystem:loadSubmodules(prefix)
     local files = cf.listFiles("data/scripts", "*.lua")
-	local submodules_prefix = "scpui_sm_"
+    local submodules_prefix = prefix and ("scpui_" .. prefix .. "_sm_") or "scpui_sm_"
+	local debug = "submodule: "
+	if prefix then
+		debug = prefix .. " submodule: "
+	end
 
     if not files then
         return
     end
 
     for _, filename in ipairs(files) do
-        if string.find(filename, submodules_prefix) then -- Check for "scpui_system_"
-            local module_name = filename:match(submodules_prefix .. "(.-).lua")
-            if module_name and module_name ~= "core" then
+        if string.find(filename, submodules_prefix) then
+            local module_name = filename:match(submodules_prefix .. "(.-)%.lua")
+            if module_name then
                 local module_path = string.format("%s%s", submodules_prefix, module_name)
                 local ok, module = pcall(require, module_path)
                 if ok then
-					require(module_path)
-                    ba.print("SCPUI loaded submodel: " .. module_name .. "\n")
+                    ba.print("SCPUI loaded " .. debug .. module_name .. " (from " .. submodules_prefix .. ")\n")
                 else
-                    ba.warning("SCPUI Error loading submodel " .. module_path .. ": " .. module .. "\n")
+                    ba.warning("SCPUI Error loading " .. debug .. module_path .. ": " .. tostring(module) .. "\n")
                 end
             end
         end
     end
+end
+
+--- Load ScpuiSystem extensions (script files starting with `scpui_ext_`) that add new UIs or features
+--- @return nil
+function ScpuiSystem:loadExtensions()
+    local files = cf.listFiles("data/scripts", "*.lua")
+	local extension_prefix = "scpui_ext_"
+
+    if not files then
+        return
+    end
+
+    for _, filename in ipairs(files) do
+        if string.find(filename, extension_prefix) then
+            local module_name = filename:match(extension_prefix .. "(.-).lua")
+
+            if module_name then
+                local module_path = string.format("%s%s", extension_prefix, module_name)
+
+                -- Attempt to load the extension
+                local ok, extension = pcall(require, module_path)
+                if ok and extension then
+                    -- Validate required metadata
+                    if not extension.Name or not extension.Version or not extension.Key then
+                        ba.error("SCPUI Error: Extension " .. module_path .. " missing Name, Version, or Key. Extension not loaded!\n")
+					elseif not extension.init then
+                        ba.error("SCPUI Error: Extension " .. module_path .. " is missing the required init() function\n")
+                    else
+                        -- Add to extensions table
+                        ScpuiSystem.extensions[extension.Key] = extension
+						ba.print("SCPUI loaded extension: " .. extension.Name .. " (v" .. extension.Version .. ")\n")
+
+						-- Initialize the extension
+						ScpuiSystem.extensions[extension.Key]:init()
+
+						-- Prevent double initializing
+						ScpuiSystem.extensions[extension.Key].init = nil
+                    end
+                else
+                    ba.warning("SCPUI Error loading extension " .. module_path .. ": " .. tostring(extension) .. "\n")
+                end
+            end
+        end
+    end
+end
+
+--- Register extension topics to the topics system
+--- @param category string The category of topics to register
+--- @param topics_table table The table of topics to register
+--- @return nil
+function ScpuiSystem:registerExtensionTopics(category, topics_table)
+	if not Topics.registerTopics then
+		ba.error("SCPUI Error: Topics cannot be registered after initialization!\n")
+	end
+
+    -- Register the topics in the specified category
+    Topics:registerTopics(category, topics_table)
 end
 
 --- Parse the medals section of the scpui.tbl
