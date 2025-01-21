@@ -324,27 +324,27 @@ local topics = {
 
 --- Register a new topic
 --- @param category string The category to add the topic to (e.g., "journal", "ships").
---- @param topicName string The name of the topic (e.g., "initialize").
---- @param topic any The topic instance to register.
-function topics:registerTopic(category, topicName, topic)
+--- @param topic_name string The name of the topic (e.g., "initialize").
+--- @param handler any The topic instance to register.
+function topics:registerTopic(category, topic_name, handler)
     if not self[category] then
         self[category] = {}
     end
 
-    if self[category][topicName] then
-        ba.error("SCPUI cannot override existing topic '" .. topicName .. "' in category '" .. category .. "'")
+    if self[category][topic_name] then
+        ba.error("SCPUI cannot override existing topic '" .. topic_name .. "' in category '" .. category .. "'")
     end
 
-    self[category][topicName] = topic
-    ba.print("SCPUI registered topic '" .. topicName .. "' in category '" .. category .. "'\n")
+    self[category][topic_name] = Topic(handler)
+    ba.print("SCPUI registered topic '" .. topic_name .. "' in category '" .. category .. "'\n")
 end
 
 --- Register multiple topics at once.
 --- @param category string The category to add the topics to.
---- @param newTopics table A table of topic names and instances.
-function topics:registerTopics(category, newTopics)
-    for topicName, topic in pairs(newTopics) do
-        self:registerTopic(category, topicName, topic)
+--- @param new_topics table A table of topic names and instances.
+function topics:registerTopics(category, new_topics)
+    for topic_name, handler in pairs(new_topics) do
+        self:registerTopic(category, topic_name, handler)
     end
 end
 

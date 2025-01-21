@@ -208,17 +208,8 @@ function ScpuiSystem:registerExtensionTopics(category, topics_table)
 		ba.error("SCPUI Error: Topics cannot be registered after initialization!\n")
 	end
 
-    local Topic = require("lib_topic")
-
-    local wrapped_topics = {}
-
-    -- Wrap the given topics in the Topic class
-    for topic_name, handler in pairs(topics_table) do
-        wrapped_topics[topic_name] = Topic(handler)
-    end
-
     -- Register the topics in the specified category
-    Topics:registerTopics(category, wrapped_topics)
+    Topics:registerTopics(category, topics_table)
 end
 
 --- Parse the medals section of the scpui.tbl
