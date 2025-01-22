@@ -1,0 +1,19 @@
+#Settings
+
+$Show New In Database: NO
+
+$Minimum Splash Time: 0
+$Draw Splash Images: false ;; Fade is automatically set to false if this is false
+$Draw Splash Text: false
+
+#State Replacement
+
+$State: GS_STATE_SCRIPTING_MISSION
+    +Substate: GCW Screen Map
+    +Markup: data/interface/markup/gcw_screen_map.rml
+
+$State: GS_STATE_SCRIPTING_MISSION
+    +Substate: GCW Screen Ships
+    +Markup: data/interface/markup/gcw_screen_ships.rml
+
+#End

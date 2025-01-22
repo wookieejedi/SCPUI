@@ -1,0 +1,18 @@
+/*
+
+THIS FILE IS MEANT TO BE EMPTY WITH THE EXCEPTION OF DEFAULT FONT SELECTION
+
+Custom.rcss is intended to be replaced by your mod's local version of Custom.rcss.
+Every RML file calls this RCSS file so you can put any customized css classes in the file
+to be loaded wherever needed.
+
+Use Custom.rcss to also redefine your default font preference.
+
+*/
+
+body
+{
+	font-family: Libre Franklin;
+	font-weight: normal;
+	font-style: normal;
+}

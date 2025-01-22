@@ -1,15 +1,15 @@
 {
   "mod_source": "nebula",
   "installed": true,
-  "id": "UITest",
-  "title": "Hi-Res Ui Test Mod",
+  "id": "FotG_UI",
+  "title": "FotG UI",
   "type": "mod",
-  "parent": "FS2",
+  "parent": "FotG",
   "version": "1.0.0",
-  "private": false,
-  "stability": "stable",
+  "private": true,
+  "stability": null,
   "description": "",
-  "notes": null,
+  "notes": "",
   "logo": null,
   "tile": null,
   "banner": null,
@@ -19,27 +19,27 @@
   "attachments": [],
   "first_release": null,
   "last_update": null,
-  "cmdline": "-output_scripting",
+  "cmdline": "",
   "mod_flag": [
-    "UITest",
-    "MVPS"
+    "FotG_UI",
+    "FotG"
   ],
   "dev_mode": true,
   "custom_build": null,
   "owners": null,
   "packages": [
     {
-      "name": "Content",
+      "name": "content",
       "notes": "",
       "status": "required",
       "dependencies": [
         {
-          "id": "FSO",
-          "version": ">=24.3.0-20241231",
+          "id": "FotG",
+          "version": "999.0.0-DevEnv",
           "packages": []
         },
         {
-          "id": "MVPS",
+          "id": "FSO",
           "version": null,
           "packages": []
         }
@@ -47,22 +47,47 @@
       "environment": null,
       "folder": "content",
       "is_vp": false,
-      "files": null,
-      "filelist": null,
+      "files": [],
+      "filelist": [],
       "executables": [],
       "check_notes": null,
       "isEnabled": true
     },
     {
       "name": "journal_ui",
-      "notes": "Adds the optional Journal FV UI screen",
-      "status": "optional",
-      "dependencies": null,
+      "notes": "",
+      "status": "required",
+      "dependencies": [
+        {
+          "id": "FotG",
+          "version": "999.0.0-DevEnv",
+          "packages": []
+        },
+        {
+          "id": "FSO",
+          "version": null,
+          "packages": []
+        }
+      ],
       "environment": null,
       "folder": "journal_ui",
       "is_vp": false,
-      "files": null,
-      "filelist": null,
+      "files": [],
+      "filelist": [],
+      "executables": [],
+      "check_notes": null,
+      "isEnabled": true
+    },
+    {
+      "name": "0_fotg",
+      "notes": "",
+      "status": "required",
+      "dependencies": null,
+      "environment": null,
+      "folder": "0_fotg",
+      "is_vp": false,
+      "files": [],
+      "filelist": [],
       "executables": [],
       "check_notes": null,
       "isEnabled": true

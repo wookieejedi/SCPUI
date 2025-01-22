@@ -1,0 +1,18 @@
+<rml>
+	<head>
+		<title>GCW Screen Ships</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="font_sizes.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="scroll_bars.rcss"/>
+		<link type="text/rcss" href="gcw_screen_ships.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
+		<script>
+			controller = require("ctrlr_gcw_screen_ships")()
+		</script>
+	</head>
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload(); controller = nil">
+
+	</body>
+
+</rml>
