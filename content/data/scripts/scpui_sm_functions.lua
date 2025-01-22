@@ -148,7 +148,7 @@ function ScpuiSystem:getFontPixelSize(val)
             val = convert(val)
         end
 
-        final_size = math.max(1, math.min(ScpuiSystem.data.NumFontSizes, pixel_size + val))
+        final_size = math.max(1, math.min(ScpuiSystem.constants.NUM_FONT_SIZES, pixel_size + val))
     end
 
 	return tostring(final_size)

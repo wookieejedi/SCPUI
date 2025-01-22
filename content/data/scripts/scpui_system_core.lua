@@ -15,10 +15,15 @@ local RenderCategory = engine.createTracingCategory("RenderRocket", true)
 
 ScpuiSystem = {}
 
+--- @type scpui_constants
+ScpuiSystem.constants = {
+	NUM_FONT_SIZES = 40,
+	INITIALIZED = false,
+}
+
 ---@type scpui_data
 ScpuiSystem.data = {
 	Active = true,
-	NumFontSizes = 40,
 	Replacements_List = {},
 	Backgrounds_List = {},
 	Brief_Backgrounds_List = {},
@@ -87,6 +92,8 @@ end
 --- Initialize ScpuiSystem and send relevant scpui.tbl files to the parser
 --- @return nil
 function ScpuiSystem:init()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
 	ba.print("SCPUI Core (v" .. version .. ") is initializing. Standby...\n")
 
 	if cf.fileExists("scpui.tbl", "", true) then
@@ -130,6 +137,8 @@ end
 --- @param prefix string|nil The unique identifier for the extension (e.g., "jrnl" for the Journal extension), or nil for the core system
 --- @return nil
 function ScpuiSystem:loadSubmodules(prefix)
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
     local files = cf.listFiles("data/scripts", "*.lua")
     local submodules_prefix = prefix and ("scpui_" .. prefix .. "_sm_") or "scpui_sm_"
 	local debug = "submodule: "
@@ -160,6 +169,8 @@ end
 --- Load ScpuiSystem extensions (script files starting with `scpui_ext_`) that add new UIs or features
 --- @return nil
 function ScpuiSystem:loadExtensions()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
     local files = cf.listFiles("data/scripts", "*.lua")
 	local extension_prefix = "scpui_ext_"
 
@@ -212,6 +223,37 @@ function ScpuiSystem:registerExtensionTopics(category, topics_table)
 
     -- Register the topics in the specified category
     Topics:registerTopics(category, topics_table)
+end
+
+--- Mark the constants table as read-only by utilizing a proxy table and custom metatable
+--- @return nil
+function ScpuiSystem:finalizeConstants()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
+	ScpuiSystem.constants.INITIALIZED = true
+
+    -- Ensure the original constants table exists
+    local original_data = ScpuiSystem.constants or {}
+    ScpuiSystem.constants = {}
+
+    -- Set up a proxy with a metatable
+    setmetatable(ScpuiSystem.constants, {
+        __index = original_data, -- Read values from the original table
+        __newindex = function(_, k, _)
+            ba.error("Attempt to modify read-only field '" .. k .. "' in ScpuiSystem.constants")
+        end,
+        __pairs = function()
+            return pairs(original_data) -- Make pairs work on the proxy
+        end
+    })
+
+	ba.print("SCPUI Core initialization complete!\n")
+end
+
+--- Completes the initialization of the SCPUI system. Runs after the preload methods are complete. (After the splash screens)
+--- @return nil
+function ScpuiSystem:completeInitialization()
+	ScpuiSystem:finalizeConstants()
 end
 
 --- Parse the medals section of the scpui.tbl
@@ -649,7 +691,7 @@ function ScpuiSystem:dialogFrame()
 	if hv.IsDeathPopup then
 		local submit = self.data.DeathDialog.Submit
 		if submit == nil and not ScpuiSystem.data.Dialog then
-			-- We aren't showing a death popup when we should be, which is a softlock;
+			-- We aren't showing a death popup when we should be, which is a soft lock;
 			-- default to 0 (Quickstart Mission) to get to a state we can proceed from
 			submit = 0
 		end
@@ -881,6 +923,7 @@ end
 if ba.inMissionEditor() then
 	ScpuiSystem.data.Active = nil
 	ScpuiSystem:init() -- Parse the tables and load the submodules for downstream extensions
+	ScpuiSystem:completeInitialization() -- Finalize the constants table and mark the system as initialized
 	return
 end
 

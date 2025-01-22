@@ -8,6 +8,7 @@
   "Lua.runtime.version": "Lua 5.1",
   "Lua.workspace.preloadFileSize": 1500,
   "cSpell.words": [
-    "Datasaver"
+    "Datasaver",
+    "RCSS"
   ]
 }

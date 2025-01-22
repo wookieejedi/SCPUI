@@ -5,6 +5,7 @@
 --- Run the preload system and interate through the preload coroutines
 --- @return nil
 function ScpuiSystem:preLoad()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
 
 	ba.print("SCPUI is starting preload functions...\n")
 
@@ -135,6 +136,7 @@ end
 --- Prepare the splash screen images and text for display
 --- @return nil
 function ScpuiSystem:prepareSplash()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
 
 	ScpuiSystem.data.memory.splash_screen = {
 		Image_List = {},
@@ -205,13 +207,14 @@ function ScpuiSystem:prepareSplash()
 	ScpuiSystem.data.memory.splash_screen.Index = 1
 
 	--start timing the "dots" animation
-	ScpuiSystem:calcFrames()
+	ScpuiSystem:calculateSplashDots()
 
 end
 
 --- Calculate the number of dots to append to the "Loading" text
 --- @return nil
-function ScpuiSystem:calcFrames()
+function ScpuiSystem:calculateSplashDots()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
 
 	if ScpuiSystem.data.state_init_status.PreLoad then
 		return
@@ -227,13 +230,14 @@ function ScpuiSystem:calcFrames()
 
 	async.run(function()
         async.await(AsyncUtil.wait_for(0.1))
-        self:calcFrames()
+        self:calculateSplashDots()
     end, async.OnFrameExecutor)
 end
 
 --- Actually draw the current splash screen and text
 --- @return nil
 function ScpuiSystem:drawSplash()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
 
 	io.setCursorHidden(true)
 
@@ -289,6 +293,8 @@ end
 --- Prepare the splash screens and run the preload system
 --- @return nil
 function ScpuiSystem:firstRun()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
 	ScpuiSystem:prepareSplash()
 
 	ScpuiSystem:drawSplash()
@@ -316,4 +322,5 @@ end
 
 ScpuiSystem:addHook("On Intro About To Play", function()
 	runPreload()
+	ScpuiSystem:completeInitialization()
 end)

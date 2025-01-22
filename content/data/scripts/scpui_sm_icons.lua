@@ -6,7 +6,7 @@ ScpuiSystem.data.Generated_Icons = {}
 
 --- Open the cache file and return the contents
 --- @return table
-function ScpuiSystem:openCache()
+function ScpuiSystem:openIconCache()
 
 	---@type json
 	local Json = require('dkjson')
@@ -38,7 +38,7 @@ end
 --- Save the icon cache to disk
 --- @param cache table
 --- @return nil
-function ScpuiSystem:saveCache(cache)
+function ScpuiSystem:saveIconCache(cache)
 
 	local Json = require('dkjson')
 	local location = 'data/config'
@@ -263,7 +263,9 @@ end
 --- Starts the generation of icons by opening the cache or creating a new one
 --- @return nil
 function ScpuiSystem:beginIconGeneration()
-	ScpuiSystem.data.Generated_Icons = ScpuiSystem:openCache()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
+	ScpuiSystem.data.Generated_Icons = ScpuiSystem:openIconCache()
 
 	if ScpuiSystem.data.Generated_Icons == nil or ScpuiSystem.data.Reset == true then
 		ba.print("SCPUI is resetting icon cache!\n")
@@ -277,7 +279,9 @@ end
 --- Finish the icon generation by saving the cache to disk and freeing all models
 --- @return nil
 function ScpuiSystem:finishIconGeneration()
-	ScpuiSystem:saveCache(ScpuiSystem.data.Generated_Icons)
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
+	ScpuiSystem:saveIconCache(ScpuiSystem.data.Generated_Icons)
 
 	ba.print("SCPUI successfully generated ship and weapon loadout icons!\n")
 
@@ -287,6 +291,7 @@ end
 --- Generate the scpui preload calls that will create the icons during the splash screens
 --- @return nil
 function ScpuiSystem:genIcons()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
 
 	if not ScpuiSystem.data.Active then
 		return
