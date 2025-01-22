@@ -45,7 +45,11 @@ ScpuiSystem.data = {
 				Width = 112,
 				Height = 48,
 			}
-		}
+		},
+		MinSplashTime = 2,
+		FadeSplashImages = true,
+		DrawSplashImages = true,
+		DrawSplashText = true,
 	},
 	state_init_status = {
 		Debrief = false,
@@ -323,6 +327,22 @@ function ScpuiSystem:parseScpuiTable(data)
 
 		if parse.optionalString("$Show New In Database:") then
 			ScpuiSystem.data.table_flags.DatabaseShowNew = parse.getBoolean()
+		end
+
+		if parse.optionalString("$Minimum Splash Time:") then
+			ScpuiSystem.data.table_flags.MinSplashTime = parse.getInt()
+		end
+
+		if parse.optionalString("$Fade Splash Images:") then
+			ScpuiSystem.data.table_flags.FadeSplashImages = parse.getBoolean()
+		end
+
+		if parse.optionalString("$Draw Splash Images:") then
+			ScpuiSystem.data.table_flags.DrawSplashImages = parse.getBoolean()
+		end
+
+		if parse.optionalString("$Draw Splash Text:") then
+			ScpuiSystem.data.table_flags.DrawSplashText = parse.getBoolean()
 		end
 
 	end

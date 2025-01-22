@@ -81,6 +81,10 @@
 --- @field DataSaverMultiplier integer A numeric multiplier used to generate SCPUI's save data hash. Generally this is not needed but can be useful if there are conflicts between mods.
 --- @field DatabaseShowNew boolean True if SCPUI should show the "NEW!" text in the database, false otherwise
 --- @field IconDimensions icon_dimensions The dimensions of the icons used in ship and weapon select
+--- @field MinSplashTime number The minimum time in seconds the splash screen should be displayed
+--- @field FadeSplashImages boolean True if SCPUI should fade the splash images, false otherwise
+--- @field DrawSplashImages boolean True if SCPUI should draw the splash images, false otherwise
+--- @field DrawSplashText boolean True if SCPUI should draw the splash text, false otherwise
 
 --- SCPUI Loadout Icon
 --- @class loadout_icon

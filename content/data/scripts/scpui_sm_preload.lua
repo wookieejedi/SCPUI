@@ -11,19 +11,22 @@ function ScpuiSystem:preLoad()
 
 	local yield_ts = time.getCurrentTime()
 	local splash_time = time.getCurrentTime()
+	local min_splash_time = ScpuiSystem.data.table_flags.MinSplashTime
 
 	if ScpuiSystem.data.state_init_status.PreLoad == true then
 		return
 	end
 
 	--fade in the splash screen
-	while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
-		if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
-			yield_ts = time.getCurrentTime()
-			async.await(async.yield())
-			local i = ScpuiSystem.data.memory.splash_screen.Index
-			ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A + (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
-			ScpuiSystem:drawSplash()
+	if ScpuiSystem.data.table_flags.FadeSplashImages then
+		while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
+			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
+				yield_ts = time.getCurrentTime()
+				async.await(async.yield())
+				local i = ScpuiSystem.data.memory.splash_screen.Index
+				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A + (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
+				ScpuiSystem:drawSplash()
+			end
 		end
 	end
 
@@ -49,8 +52,8 @@ function ScpuiSystem:preLoad()
 
 	ScpuiSystem.data.memory.splash_screen.DebugString = ""
 
-	--make sure the splash logo is shown for at least 2 seconds
-	while ((splash_time - yield_ts):getSeconds() * -1) < 2 do
+	--make sure the splash logo is shown for at least 'min_splash_time' seconds
+	while ((splash_time - yield_ts):getSeconds() * -1) < min_splash_time do
 		if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
 			yield_ts = time.getCurrentTime()
 			async.await(async.yield())
@@ -59,14 +62,16 @@ function ScpuiSystem:preLoad()
 	end
 
 	--fade out the splash screen
-	splash_time = time.getCurrentTime()
-	while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
-		if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
-			yield_ts = time.getCurrentTime()
-			async.await(async.yield())
-			local i = ScpuiSystem.data.memory.splash_screen.Index
-			ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A - (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
-			ScpuiSystem:drawSplash()
+	if ScpuiSystem.data.table_flags.FadeSplashImages then
+		splash_time = time.getCurrentTime()
+		while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
+			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
+				yield_ts = time.getCurrentTime()
+				async.await(async.yield())
+				local i = ScpuiSystem.data.memory.splash_screen.Index
+				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A - (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
+				ScpuiSystem:drawSplash()
+			end
 		end
 	end
 
@@ -75,13 +80,15 @@ function ScpuiSystem:preLoad()
 	splash_time = time.getCurrentTime()
 
 	--fade in the splash screen
-	while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
-		if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
-			yield_ts = time.getCurrentTime()
-			async.await(async.yield())
-			local i = ScpuiSystem.data.memory.splash_screen.Index
-			ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A + (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
-			ScpuiSystem:drawSplash()
+	if ScpuiSystem.data.table_flags.FadeSplashImages then
+		while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
+			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
+				yield_ts = time.getCurrentTime()
+				async.await(async.yield())
+				local i = ScpuiSystem.data.memory.splash_screen.Index
+				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A + (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
+				ScpuiSystem:drawSplash()
+			end
 		end
 	end
 
@@ -105,8 +112,8 @@ function ScpuiSystem:preLoad()
 
 	ScpuiSystem.data.memory.splash_screen.DebugString = ""
 
-	--make sure the splash logo is shown for at least 2 seconds
-	while ((splash_time - yield_ts):getSeconds() * -1) < 2 do
+	--make sure the splash logo is shown for at least 'min_splash_time' seconds
+	while ((splash_time - yield_ts):getSeconds() * -1) < min_splash_time do
 		if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
 			yield_ts = time.getCurrentTime()
 			async.await(async.yield())
@@ -117,14 +124,16 @@ function ScpuiSystem:preLoad()
 	ScpuiSystem.data.memory.splash_screen.TD = false
 
 	--fade out the splash screen
-	splash_time = time.getCurrentTime()
-	while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
-		if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
-			yield_ts = time.getCurrentTime()
-			async.await(async.yield())
-			local i = ScpuiSystem.data.memory.splash_screen.Index
-			ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A - (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
-			ScpuiSystem:drawSplash()
+	if ScpuiSystem.data.table_flags.FadeSplashImages then
+		splash_time = time.getCurrentTime()
+		while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
+			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
+				yield_ts = time.getCurrentTime()
+				async.await(async.yield())
+				local i = ScpuiSystem.data.memory.splash_screen.Index
+				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A - (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
+				ScpuiSystem:drawSplash()
+			end
 		end
 	end
 
@@ -137,6 +146,10 @@ end
 --- @return nil
 function ScpuiSystem:prepareSplash()
 	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
+	if not ScpuiSystem.data.table_flags.DrawSplashImages then
+		ScpuiSystem.data.table_flags.FadeSplashImages = false
+	end
 
 	ScpuiSystem.data.memory.splash_screen = {
 		Image_List = {},
@@ -241,6 +254,10 @@ function ScpuiSystem:drawSplash()
 
 	io.setCursorHidden(true)
 
+	if not ScpuiSystem.data.table_flags.DrawSplashImages and not ScpuiSystem.data.table_flags.DrawSplashText then
+		return
+	end
+
 	gr.clearScreen(0, 0, 0, 255)
 
 	--save the current color and set to white
@@ -261,6 +278,10 @@ function ScpuiSystem:drawSplash()
 	local w = ScpuiSystem.data.memory.splash_screen.Image_List[img].W
 	local h = ScpuiSystem.data.memory.splash_screen.Image_List[img].H
 
+	if not ScpuiSystem.data.table_flags.FadeSplashImages then
+		ScpuiSystem.data.memory.splash_screen.Image_List[img].A = 1
+	end
+
 	--handle alpha
 	if ScpuiSystem.data.memory.splash_screen.Image_List[img].A > 1 then
 		ScpuiSystem.data.memory.splash_screen.Image_List[img].A = 1
@@ -273,15 +294,20 @@ function ScpuiSystem:drawSplash()
 	local text = ScpuiSystem.data.memory.splash_screen.Text .. dots
 
 	--draw!
-	gr.drawImageCentered(file, x, y, w, h, 0, 0, 1, 1, a)
-	if ScpuiSystem.data.memory.splash_screen.TD then
-		gr.drawString(text, ScpuiSystem.data.memory.splash_screen.TX, ScpuiSystem.data.memory.splash_screen.TY)
-		if ba.inDebug() and string.len(ScpuiSystem.data.memory.splash_screen.DebugString) > 0 then
-			local ds = "(" .. ScpuiSystem.data.memory.splash_screen.DebugString .. ")"
-			local tw = gr.getStringWidth(ds)
-			local dx = (gr.getScreenWidth() / 2) - (tw / 2)
-			gr.setColor(255, 255, 255, 150)
-			gr.drawString(ds, dx, ScpuiSystem.data.memory.splash_screen.TY + 15)
+	if ScpuiSystem.data.table_flags.DrawSplashImages then
+		gr.drawImageCentered(file, x, y, w, h, 0, 0, 1, 1, a)
+	end
+
+	if ScpuiSystem.data.table_flags.DrawSplashText then
+		if ScpuiSystem.data.memory.splash_screen.TD then
+			gr.drawString(text, ScpuiSystem.data.memory.splash_screen.TX, ScpuiSystem.data.memory.splash_screen.TY)
+			if ba.inDebug() and string.len(ScpuiSystem.data.memory.splash_screen.DebugString) > 0 then
+				local ds = "(" .. ScpuiSystem.data.memory.splash_screen.DebugString .. ")"
+				local tw = gr.getStringWidth(ds)
+				local dx = (gr.getScreenWidth() / 2) - (tw / 2)
+				gr.setColor(255, 255, 255, 150)
+				gr.drawString(ds, dx, ScpuiSystem.data.memory.splash_screen.TY + 15)
+			end
 		end
 	end
 
