@@ -229,7 +229,9 @@ end
 --- Calculate the number of dots to append to the "Loading" text
 --- @return nil
 function ScpuiSystem:calculateSplashDots()
-	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+	if ScpuiSystem.constants.INITIALIZED then
+		return
+	end
 
 	if ScpuiSystem.data.state_init_status.PreLoad then
 		return
@@ -252,7 +254,9 @@ end
 --- Actually draw the current splash screen and text
 --- @return nil
 function ScpuiSystem:drawSplash()
-	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+	if ScpuiSystem.constants.INITIALIZED then
+		return
+	end
 
 	io.setCursorHidden(true)
 
@@ -372,4 +376,6 @@ end
 ScpuiSystem:addHook("On Intro About To Play", function()
 	runPreload()
 	ScpuiSystem:completeInitialization()
+	ScpuiSystem.data.Preload_Coroutines = nil -- Clean up
+	ScpuiSystem.data.memory.splash_screen = nil -- Clean up
 end)

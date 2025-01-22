@@ -783,6 +783,8 @@ end
 --- @param val number The priority of the preload coroutine, should be 1 or 2
 --- @return nil
 function ScpuiSystem:addPreload(message, text, run, val)
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
 	if self.data.Preload_Coroutines == nil then
 		self.data.Preload_Coroutines = {}
 	end
