@@ -2,6 +2,8 @@
 --This file runs SCPUI's preload system and shows the splash screens
 -----------------------------------
 
+local Topics = require("lib_ui_topics")
+
 --- Run the preload system and interate through the preload coroutines
 --- @return nil
 function ScpuiSystem:preLoad()
@@ -300,15 +302,34 @@ function ScpuiSystem:drawSplash()
 		gr.drawImageCentered(file, x, y, w, h, 0, 0, 1, 1, a)
 	end
 
+	-- Create a coords table
+    local text_coords = {
+        x = ScpuiSystem.data.memory.splash_screen.TX,
+        y = ScpuiSystem.data.memory.splash_screen.TY
+    }
+
+    -- Send the coordinates to the topic and allow modifications
+    text_coords = Topics.preload.loadingTextCoords:send(text_coords)
+
 	if ScpuiSystem.data.table_flags.DrawSplashText then
 		if ScpuiSystem.data.memory.splash_screen.TD then
-			gr.drawString(text, ScpuiSystem.data.memory.splash_screen.TX, ScpuiSystem.data.memory.splash_screen.TY)
+			gr.drawString(text, text_coords.x, text_coords.y)
 			if ba.inDebug() and string.len(ScpuiSystem.data.memory.splash_screen.DebugString) > 0 then
 				local ds = "(" .. ScpuiSystem.data.memory.splash_screen.DebugString .. ")"
 				local tw = gr.getStringWidth(ds)
 				local dx = (gr.getScreenWidth() / 2) - (tw / 2)
 				gr.setColor(255, 255, 255, 150)
-				gr.drawString(ds, dx, ScpuiSystem.data.memory.splash_screen.TY + gr.Fonts[1].Height + 5)
+
+				-- Create a coords table
+				local debug_text_coords = {
+					x = dx,
+					y = ScpuiSystem.data.memory.splash_screen.TY + gr.Fonts[1].Height + 5
+				}
+
+				-- Send the coordinates to the topic and allow modifications
+				debug_text_coords = Topics.preload.debugTextCoords:send(debug_text_coords)
+
+				gr.drawString(ds, debug_text_coords.x, debug_text_coords.y)
 			end
 		end
 	end

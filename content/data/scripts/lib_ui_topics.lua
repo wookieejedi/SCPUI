@@ -104,6 +104,10 @@ local topics = {
 	},
 
 	--Interfaces
+	preload = {
+		loadingTextCoords = Topic(function(x) return x end), --Runs arbitrary script and expects x and y returned in a table. Sends the x and y coordinates in a table
+		debugTextCoords = Topic(function(x) return x end), --Runs arbitrary script and expects x and y returned in a table. Sends the x and y coordinates in a table
+	},
 	pilotselect = {
 		initialize = Topic(nil), --Runs arbitrary script and expects no return value. Sends the document context
 		startsound = Topic(true), --Whether or not to start the default mainhall background sound. Sends the document context and expects boolean return
