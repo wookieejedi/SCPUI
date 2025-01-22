@@ -258,7 +258,9 @@ function ScpuiSystem:drawSplash()
 		return
 	end
 
-	gr.clearScreen(0, 0, 0, 255)
+	if ScpuiSystem.data.table_flags.DrawSplashImages then
+		gr.clearScreen(0, 0, 0, 255)
+	end
 
 	--save the current color and set to white
 	local r, g, b, a = gr.getColor()
@@ -306,7 +308,7 @@ function ScpuiSystem:drawSplash()
 				local tw = gr.getStringWidth(ds)
 				local dx = (gr.getScreenWidth() / 2) - (tw / 2)
 				gr.setColor(255, 255, 255, 150)
-				gr.drawString(ds, dx, ScpuiSystem.data.memory.splash_screen.TY + 15)
+				gr.drawString(ds, dx, ScpuiSystem.data.memory.splash_screen.TY + gr.Fonts[1].Height + 5)
 			end
 		end
 	end
