@@ -298,7 +298,7 @@ local function genIcons()
 	end
 
 	ScpuiSystem:addPreload(
-		"SCPUI is starting generation of ship and weapon loadout icons!",
+		"Starting generation of ship and weapon loadout icons!",
 		"Initializing icon generation...",
 		"ScpuiSystem:beginIconGeneration()",
 		1
