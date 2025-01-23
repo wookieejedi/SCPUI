@@ -3,27 +3,10 @@
 --It also contains the necessary methods to add tooltips to text
 -----------------------------------
 
---- Initialize the keywords system and send the files to the keywords parser
---- This function is called when the SCPUI system is initialized
---- @return nil
-function ScpuiSystem:initKeywords()
-    local utils = require("lib_utils")
-
-    ---@type scpui_keywords
-    local affixes = {Prefixes = {''}, Suffixes = {''}}
-    if cf.fileExists('keywords.tbl') then
-        affixes = ScpuiSystem:parseKeywords('keywords.tbl', affixes)
-    end
-
-    for _, v in ipairs(cf.listFiles("data/tables", "*-kwrd.tbm")) do
-        ScpuiSystem:parseKeywords(v, affixes)
-    end
-end
-
 --- Parse the affixes section of the keywords table
 --- @param source scpui_keywords
 --- @return scpui_keywords
-function ScpuiSystem:parseKeywordAffixes(source)
+local function parseKeywordAffixes(source)
     local prefixes = {}
     local suffixes = {}
     for _, prefix in ipairs(source.Prefixes) do
@@ -51,7 +34,7 @@ end
 --- @param data string The file to parse
 --- @param inherited_affixes scpui_keywords
 --- @return scpui_keywords
-function ScpuiSystem:parseKeywords(data, inherited_affixes)
+local function parseKeywords(data, inherited_affixes)
     local KeywordAlgorithm = require("lib_keyword_algorithm")
     parse.readFileText(data, "data/tables")
     local lang = "#" .. ba.getCurrentLanguage()
@@ -66,11 +49,11 @@ function ScpuiSystem:parseKeywords(data, inherited_affixes)
     end
 
     ---@type scpui_keywords
-    local global_affixes = ScpuiSystem:parseKeywordAffixes(inherited_affixes)
+    local global_affixes = parseKeywordAffixes(inherited_affixes)
     while parse.optionalString("$Style:") do
         local any = false
         local style = parse.getString()
-        local affixes = ScpuiSystem:parseKeywordAffixes(global_affixes)
+        local affixes = parseKeywordAffixes(global_affixes)
         while parse.optionalString("+Text:") do
             any = true
             local text = parse.getString()
@@ -95,6 +78,21 @@ function ScpuiSystem:parseKeywords(data, inherited_affixes)
     parse.requiredString("#End")
     parse.stop()
     return global_affixes
+end
+
+--- Initialize the keywords system and send the files to the keywords parser
+--- This function is called when the SCPUI system is initialized
+--- @return nil
+local function initKeywords()
+    ---@type scpui_keywords
+    local affixes = {Prefixes = {''}, Suffixes = {''}}
+    if cf.fileExists('keywords.tbl') then
+        affixes = parseKeywords('keywords.tbl', affixes)
+    end
+
+    for _, v in ipairs(cf.listFiles("data/tables", "*-kwrd.tbm")) do
+        parseKeywords(v, affixes)
+    end
 end
 
 --- Check the global timers table and show the tooltip if the timer is greater than 3
@@ -189,4 +187,4 @@ function ScpuiSystem:applyKeywordClasses(input_text)
     return KeywordAlgorithm.colorize(input_text)
 end
 
-ScpuiSystem:initKeywords()
+initKeywords()

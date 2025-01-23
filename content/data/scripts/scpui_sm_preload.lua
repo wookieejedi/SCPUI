@@ -4,231 +4,9 @@
 
 local Topics = require("lib_ui_topics")
 
---- Run the preload system and interate through the preload coroutines
---- @return nil
-function ScpuiSystem:preLoad()
-	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
-
-	ba.print("SCPUI is starting preload functions...\n")
-
-	local yield_ts = time.getCurrentTime()
-	local splash_time = time.getCurrentTime()
-	local min_splash_time = ScpuiSystem.data.table_flags.MinSplashTime
-
-	if ScpuiSystem.data.state_init_status.PreLoad == true then
-		return
-	end
-
-	--fade in the splash screen
-	if ScpuiSystem.data.table_flags.FadeSplashImages then
-		while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
-			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
-				yield_ts = time.getCurrentTime()
-				async.await(async.yield())
-				local i = ScpuiSystem.data.memory.splash_screen.Index
-				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A + (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
-				ScpuiSystem:drawSplash()
-			end
-		end
-	end
-
-	ScpuiSystem.data.memory.splash_screen.TD = true
-
-	-- Do any modular methods here
-	for _, v in ipairs(ScpuiSystem.data.Preload_Coroutines) do
-
-		if v.Priority == 1 then
-
-			ba.print("SCPUI: " .. v.DebugMessage .. "\n")
-			loadstring(v.FunctionString)()
-			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
-				yield_ts = time.getCurrentTime()
-				async.await(async.yield())
-				ScpuiSystem.data.memory.splash_screen.DebugString = v.DebugString
-				ScpuiSystem:drawSplash()
-			end
-
-		end
-
-	end
-
-	ScpuiSystem.data.memory.splash_screen.DebugString = ""
-
-	--make sure the splash logo is shown for at least 'min_splash_time' seconds
-	while ((splash_time - yield_ts):getSeconds() * -1) < min_splash_time do
-		if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
-			yield_ts = time.getCurrentTime()
-			async.await(async.yield())
-			ScpuiSystem:drawSplash()
-		end
-	end
-
-	--fade out the splash screen
-	if ScpuiSystem.data.table_flags.FadeSplashImages then
-		splash_time = time.getCurrentTime()
-		while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
-			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
-				yield_ts = time.getCurrentTime()
-				async.await(async.yield())
-				local i = ScpuiSystem.data.memory.splash_screen.Index
-				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A - (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
-				ScpuiSystem:drawSplash()
-			end
-		end
-	end
-
-	--switch to the second splash image
-	ScpuiSystem.data.memory.splash_screen.Index = 2
-	splash_time = time.getCurrentTime()
-
-	--fade in the splash screen
-	if ScpuiSystem.data.table_flags.FadeSplashImages then
-		while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
-			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
-				yield_ts = time.getCurrentTime()
-				async.await(async.yield())
-				local i = ScpuiSystem.data.memory.splash_screen.Index
-				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A + (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
-				ScpuiSystem:drawSplash()
-			end
-		end
-	end
-
-	-- Do any modular methods here
-	for _, v in ipairs(ScpuiSystem.data.Preload_Coroutines) do
-
-		if v.Priority == 2 then
-
-			ba.print("SCPUI: " .. v.DebugMessage .. "\n")
-			loadstring(v.FunctionString)()
-			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
-				yield_ts = time.getCurrentTime()
-				async.await(async.yield())
-				ScpuiSystem.data.memory.splash_screen.DebugString = v.DebugString
-				ScpuiSystem:drawSplash()
-			end
-
-		end
-
-	end
-
-	ScpuiSystem.data.memory.splash_screen.DebugString = ""
-
-	--make sure the splash logo is shown for at least 'min_splash_time' seconds
-	while ((splash_time - yield_ts):getSeconds() * -1) < min_splash_time do
-		if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
-			yield_ts = time.getCurrentTime()
-			async.await(async.yield())
-			ScpuiSystem:drawSplash()
-		end
-	end
-
-	ScpuiSystem.data.memory.splash_screen.TD = false
-
-	--fade out the splash screen
-	if ScpuiSystem.data.table_flags.FadeSplashImages then
-		splash_time = time.getCurrentTime()
-		while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
-			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
-				yield_ts = time.getCurrentTime()
-				async.await(async.yield())
-				local i = ScpuiSystem.data.memory.splash_screen.Index
-				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A - (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
-				ScpuiSystem:drawSplash()
-			end
-		end
-	end
-
-	ScpuiSystem.data.state_init_status.PreLoad = true
-
-	io.setCursorHidden(false)
-end
-
---- Prepare the splash screen images and text for display
---- @return nil
-function ScpuiSystem:prepareSplash()
-	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
-
-	if not ScpuiSystem.data.table_flags.DrawSplashImages then
-		ScpuiSystem.data.table_flags.FadeSplashImages = false
-	end
-
-	ScpuiSystem.data.memory.splash_screen = {
-		Image_List = {},
-		Fade = 2,
-		Text = "",
-		TX = 0,
-		TY = 0,
-		TW = 0,
-		F = 1,
-		TD = false,
-		Index = 1,
-	}
-
-	--first splash image
-	local file = "fsolua.png"
-
-	--screen center coords
-	local x = gr.getScreenWidth() / 2
-	local y = gr.getScreenHeight() / 2
-
-	--scale the image
-	local scale = math.min((gr.getScreenWidth() * 0.5)/gr.getImageWidth(file), (gr.getScreenHeight() * 0.5)/gr.getImageHeight(file))
-
-	local w = gr.getImageWidth(file) * scale
-	local h = gr.getImageHeight(file) * scale
-
-	--save the first image
-	ScpuiSystem.data.memory.splash_screen.Image_List[1] = {
-		File = file,
-		X = x,
-		Y = y,
-		W = w,
-		H = h,
-		A = 0
-	}
-
-	--second splash image
-	file = "SCPUI.png"
-
-	--scale the image
-	scale = math.min((gr.getScreenWidth() * 0.8)/gr.getImageWidth(file), (gr.getScreenHeight() * 0.8)/gr.getImageHeight(file))
-
-	w = gr.getImageWidth(file) * scale
-	h = gr.getImageHeight(file) * scale
-
-	--save the second image
-	ScpuiSystem.data.memory.splash_screen.Image_List[2] = {
-		File = file,
-		X = x,
-		Y = y,
-		W = w,
-		H = h,
-		A = 0
-	}
-
-	local text = "Loading"
-	local tw = gr.getStringWidth(text)
-
-	--save the text data
-	ScpuiSystem.data.memory.splash_screen.Text = text
-	ScpuiSystem.data.memory.splash_screen.TX = x - (tw / 2)
-	ScpuiSystem.data.memory.splash_screen.TY = h + (h * 0.01)
-	ScpuiSystem.data.memory.splash_screen.TW = tw
-	ScpuiSystem.data.memory.splash_screen.F = 1
-	ScpuiSystem.data.memory.splash_screen.TD = false
-
-	--start with the first image
-	ScpuiSystem.data.memory.splash_screen.Index = 1
-
-	--start timing the "dots" animation
-	ScpuiSystem:calculateSplashDots()
-
-end
-
 --- Calculate the number of dots to append to the "Loading" text
 --- @return nil
-function ScpuiSystem:calculateSplashDots()
+local function calculateSplashDots()
 	if ScpuiSystem.constants.INITIALIZED then
 		return
 	end
@@ -247,13 +25,13 @@ function ScpuiSystem:calculateSplashDots()
 
 	async.run(function()
         async.await(AsyncUtil.wait_for(0.1))
-        self:calculateSplashDots()
+        calculateSplashDots()
     end, async.OnFrameExecutor)
 end
 
 --- Actually draw the current splash screen and text
 --- @return nil
-function ScpuiSystem:drawSplash()
+local function drawSplash()
 	if ScpuiSystem.constants.INITIALIZED then
 		return
 	end
@@ -343,19 +121,241 @@ function ScpuiSystem:drawSplash()
 
 end
 
---- Prepare the splash screens and run the preload system
+--- Run the preload system and interate through the preload coroutines
 --- @return nil
-function ScpuiSystem:firstRun()
+local function preLoad()
 	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
 
-	ScpuiSystem:prepareSplash()
+	ba.print("SCPUI is starting preload functions...\n")
 
-	ScpuiSystem:drawSplash()
+	local yield_ts = time.getCurrentTime()
+	local splash_time = time.getCurrentTime()
+	local min_splash_time = ScpuiSystem.data.table_flags.MinSplashTime
+
+	if ScpuiSystem.data.state_init_status.PreLoad == true then
+		return
+	end
+
+	--fade in the splash screen
+	if ScpuiSystem.data.table_flags.FadeSplashImages then
+		while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
+			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
+				yield_ts = time.getCurrentTime()
+				async.await(async.yield())
+				local i = ScpuiSystem.data.memory.splash_screen.Index
+				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A + (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
+				drawSplash()
+			end
+		end
+	end
+
+	ScpuiSystem.data.memory.splash_screen.TD = true
+
+	-- Do any modular methods here
+	for _, v in ipairs(ScpuiSystem.data.Preload_Coroutines) do
+
+		if v.Priority == 1 then
+
+			ba.print("SCPUI: " .. v.DebugMessage .. "\n")
+			loadstring(v.FunctionString)()
+			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
+				yield_ts = time.getCurrentTime()
+				async.await(async.yield())
+				ScpuiSystem.data.memory.splash_screen.DebugString = v.DebugString
+				drawSplash()
+			end
+
+		end
+
+	end
+
+	ScpuiSystem.data.memory.splash_screen.DebugString = ""
+
+	--make sure the splash logo is shown for at least 'min_splash_time' seconds
+	while ((splash_time - yield_ts):getSeconds() * -1) < min_splash_time do
+		if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
+			yield_ts = time.getCurrentTime()
+			async.await(async.yield())
+			drawSplash()
+		end
+	end
+
+	--fade out the splash screen
+	if ScpuiSystem.data.table_flags.FadeSplashImages then
+		splash_time = time.getCurrentTime()
+		while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
+			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
+				yield_ts = time.getCurrentTime()
+				async.await(async.yield())
+				local i = ScpuiSystem.data.memory.splash_screen.Index
+				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A - (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
+				drawSplash()
+			end
+		end
+	end
+
+	--switch to the second splash image
+	ScpuiSystem.data.memory.splash_screen.Index = 2
+	splash_time = time.getCurrentTime()
+
+	--fade in the splash screen
+	if ScpuiSystem.data.table_flags.FadeSplashImages then
+		while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
+			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
+				yield_ts = time.getCurrentTime()
+				async.await(async.yield())
+				local i = ScpuiSystem.data.memory.splash_screen.Index
+				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A + (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
+				drawSplash()
+			end
+		end
+	end
+
+	-- Do any modular methods here
+	for _, v in ipairs(ScpuiSystem.data.Preload_Coroutines) do
+
+		if v.Priority == 2 then
+
+			ba.print("SCPUI: " .. v.DebugMessage .. "\n")
+			loadstring(v.FunctionString)()
+			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
+				yield_ts = time.getCurrentTime()
+				async.await(async.yield())
+				ScpuiSystem.data.memory.splash_screen.DebugString = v.DebugString
+				drawSplash()
+			end
+
+		end
+
+	end
+
+	ScpuiSystem.data.memory.splash_screen.DebugString = ""
+
+	--make sure the splash logo is shown for at least 'min_splash_time' seconds
+	while ((splash_time - yield_ts):getSeconds() * -1) < min_splash_time do
+		if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
+			yield_ts = time.getCurrentTime()
+			async.await(async.yield())
+			drawSplash()
+		end
+	end
+
+	ScpuiSystem.data.memory.splash_screen.TD = false
+
+	--fade out the splash screen
+	if ScpuiSystem.data.table_flags.FadeSplashImages then
+		splash_time = time.getCurrentTime()
+		while ((splash_time - yield_ts):getSeconds() * -1) < ScpuiSystem.data.memory.splash_screen.Fade do
+			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.01 then
+				yield_ts = time.getCurrentTime()
+				async.await(async.yield())
+				local i = ScpuiSystem.data.memory.splash_screen.Index
+				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A - (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
+				drawSplash()
+			end
+		end
+	end
+
+	ScpuiSystem.data.state_init_status.PreLoad = true
+
+	io.setCursorHidden(false)
+end
+
+--- Prepare the splash screen images and text for display
+--- @return nil
+local function prepareSplash()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
+	if not ScpuiSystem.data.table_flags.DrawSplashImages then
+		ScpuiSystem.data.table_flags.FadeSplashImages = false
+	end
+
+	ScpuiSystem.data.memory.splash_screen = {
+		Image_List = {},
+		Fade = 2,
+		Text = "",
+		TX = 0,
+		TY = 0,
+		TW = 0,
+		F = 1,
+		TD = false,
+		Index = 1,
+	}
+
+	--first splash image
+	local file = "fsolua.png"
+
+	--screen center coords
+	local x = gr.getScreenWidth() / 2
+	local y = gr.getScreenHeight() / 2
+
+	--scale the image
+	local scale = math.min((gr.getScreenWidth() * 0.5)/gr.getImageWidth(file), (gr.getScreenHeight() * 0.5)/gr.getImageHeight(file))
+
+	local w = gr.getImageWidth(file) * scale
+	local h = gr.getImageHeight(file) * scale
+
+	--save the first image
+	ScpuiSystem.data.memory.splash_screen.Image_List[1] = {
+		File = file,
+		X = x,
+		Y = y,
+		W = w,
+		H = h,
+		A = 0
+	}
+
+	--second splash image
+	file = "SCPUI.png"
+
+	--scale the image
+	scale = math.min((gr.getScreenWidth() * 0.8)/gr.getImageWidth(file), (gr.getScreenHeight() * 0.8)/gr.getImageHeight(file))
+
+	w = gr.getImageWidth(file) * scale
+	h = gr.getImageHeight(file) * scale
+
+	--save the second image
+	ScpuiSystem.data.memory.splash_screen.Image_List[2] = {
+		File = file,
+		X = x,
+		Y = y,
+		W = w,
+		H = h,
+		A = 0
+	}
+
+	local text = "Loading"
+	local tw = gr.getStringWidth(text)
+
+	--save the text data
+	ScpuiSystem.data.memory.splash_screen.Text = text
+	ScpuiSystem.data.memory.splash_screen.TX = x - (tw / 2)
+	ScpuiSystem.data.memory.splash_screen.TY = h + (h * 0.01)
+	ScpuiSystem.data.memory.splash_screen.TW = tw
+	ScpuiSystem.data.memory.splash_screen.F = 1
+	ScpuiSystem.data.memory.splash_screen.TD = false
+
+	--start with the first image
+	ScpuiSystem.data.memory.splash_screen.Index = 1
+
+	--start timing the "dots" animation
+	calculateSplashDots()
+
+end
+
+--- Prepare the splash screens and run the preload system
+--- @return nil
+local function firstRun()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
+	prepareSplash()
+
+	drawSplash()
 
 	ScpuiSystem.data.state_init_status.PreLoad = false
     async.awaitRunOnFrame(function()
         async.await(async.yield())
-        ScpuiSystem:preLoad()
+        preLoad()
     end)
 
 end
@@ -369,7 +369,7 @@ end
 --- @return nil
 local function runPreload()
 	if ScpuiSystem.data.Active and not ScpuiSystem.data.state_init_status.PreLoad then
-		ScpuiSystem:firstRun()
+		firstRun()
 	end
 end
 
