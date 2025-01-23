@@ -102,7 +102,7 @@ function ScpuiSystem:init()
 
 	self:loadSubmodules()
 
-	self:startScpuiTableParsing()
+	self:loadScpuiTables()
 
 	self:loadExtensions()
 

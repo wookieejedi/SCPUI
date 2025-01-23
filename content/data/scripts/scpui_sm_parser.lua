@@ -200,7 +200,7 @@ function ScpuiSystem:parseScpuiTable(data)
 	parse.stop()
 end
 
-function ScpuiSystem:startScpuiTableParsing()
+function ScpuiSystem:loadScpuiTables()
     if cf.fileExists("scpui.tbl", "", true) then
 		self:parseScpuiTable("scpui.tbl")
 	end
