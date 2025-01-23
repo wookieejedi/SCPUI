@@ -100,14 +100,9 @@ function ScpuiSystem:init()
 
 	ba.print("SCPUI Core (v" .. version .. ") is initializing. Standby...\n")
 
-	if cf.fileExists("scpui.tbl", "", true) then
-		self:parseScpuiTable("scpui.tbl")
-	end
-	for _, v in ipairs(cf.listFiles("data/tables", "*-ui.tbm")) do
-		self:parseScpuiTable(v)
-	end
-
 	self:loadSubmodules()
+
+	self:loadScpuiTables()
 
 	self:loadExtensions()
 
@@ -131,10 +126,6 @@ function ScpuiSystem:init()
 	end
 
 	ScpuiSystem.data.CurrentBaseFontClass = "base_font" .. self:getFontPixelSize()
-
-	-- Prevent loading topics after initialization
-	Topics.registerTopic = nil
-	Topics.registerTopics = nil
 end
 
 --- Load submodules for SCPUI core or an extension
@@ -142,6 +133,12 @@ end
 --- @return nil
 function ScpuiSystem:loadSubmodules(prefix)
 	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
+	if not prefix then
+		ba.print("SCPUI is loading core submodules...\n")
+	else
+		ba.print("SCPUI is loading " .. prefix .. " submodules...\n")
+	end
 
     local files = cf.listFiles("data/scripts", "*.lua")
     local submodules_prefix = prefix and ("scpui_" .. prefix .. "_sm_") or "scpui_sm_"
@@ -161,7 +158,7 @@ function ScpuiSystem:loadSubmodules(prefix)
                 local module_path = string.format("%s%s", submodules_prefix, module_name)
                 local ok, module = pcall(require, module_path)
                 if ok then
-                    ba.print("SCPUI loaded " .. debug .. module_name .. " (from " .. submodules_prefix .. ")\n")
+                    ba.print("SCPUI loaded " .. debug .. module_name .. " (" .. module_path .. ")\n")
                 else
                     ba.warning("SCPUI Error loading " .. debug .. module_path .. ": " .. tostring(module) .. "\n")
                 end
@@ -174,6 +171,8 @@ end
 --- @return nil
 function ScpuiSystem:loadExtensions()
 	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
+	ba.print("SCPUI is loading extensions...\n")
 
     local files = cf.listFiles("data/scripts", "*.lua")
 	local extension_prefix = "scpui_ext_"
@@ -216,244 +215,6 @@ function ScpuiSystem:loadExtensions()
     end
 end
 
---- Register extension topics to the topics system
---- @param category string The category of topics to register
---- @param topics_table table The table of topics to register
---- @return nil
-function ScpuiSystem:registerExtensionTopics(category, topics_table)
-	if not Topics.registerTopics then
-		ba.error("SCPUI Error: Topics cannot be registered after initialization!\n")
-	end
-
-    -- Register the topics in the specified category
-    Topics:registerTopics(category, topics_table)
-end
-
---- Mark the constants table as read-only by utilizing a proxy table and custom metatable
---- @return nil
-function ScpuiSystem:finalizeConstants()
-	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
-
-	ScpuiSystem.constants.INITIALIZED = true
-
-    -- Ensure the original constants table exists
-    local original_data = ScpuiSystem.constants or {}
-    ScpuiSystem.constants = {}
-
-    -- Set up a proxy with a metatable
-    setmetatable(ScpuiSystem.constants, {
-        __index = original_data, -- Read values from the original table
-        __newindex = function(_, k, _)
-            ba.error("Attempt to modify read-only field '" .. k .. "' in ScpuiSystem.constants")
-        end,
-        __pairs = function()
-            return pairs(original_data) -- Make pairs work on the proxy
-        end
-    })
-
-	ba.print("SCPUI Core initialization complete!\n")
-end
-
---- Completes the initialization of the SCPUI system. Runs after the preload methods are complete. (After the splash screens)
---- @return nil
-function ScpuiSystem:completeInitialization()
-	ScpuiSystem:finalizeConstants()
-end
-
---- Parse the medals section of the scpui.tbl
---- @return nil
-function ScpuiSystem:parseMedals()
-	while parse.optionalString("$Medal:") do
-
-		local id = parse.getString()
-
-		self.data.Medal_Info[id] = {}
-
-		if parse.optionalString("+Alt Bitmap:") then
-			self.data.Medal_Info[id].AltBitmap = parse.getString()
-		end
-
-		if parse.optionalString("+Alt Debrief Bitmap:") then
-			self.data.Medal_Info[id].AltDebriefBitmap = parse.getString()
-		end
-
-		parse.requiredString("+Position X:")
-		self.data.Medal_Info[id].X = parse.getFloat()
-
-		parse.requiredString("+Position Y:")
-		self.data.Medal_Info[id].Y = parse.getFloat()
-
-		parse.requiredString("+Width:")
-		self.data.Medal_Info[id].W = parse.getFloat()
-
-	end
-end
-
---- Parse the scpui.tbl file
---- @param data string The file to parse
---- @return nil
-function ScpuiSystem:parseScpuiTable(data)
-	parse.readFileText(data, "data/tables")
-
-	if parse.optionalString("#Settings") then
-
-		if parse.optionalString("$Hide Multiplayer:") then
-			ScpuiSystem.data.table_flags.HideMulti = parse.getBoolean()
-		end
-
-		if parse.optionalString("$Disable during Multiplayer:") then
-			ScpuiSystem.data.table_flags.DisableInMulti = parse.getBoolean()
-		end
-
-		if parse.optionalString("$Data Saver Multiplier:") then
-			ScpuiSystem.data.table_flags.DataSaverMultiplier = parse.getInt()
-		end
-
-		if parse.optionalString("$Ship Icon Width:") then
-			ScpuiSystem.data.table_flags.IconDimensions.ship.Width = parse.getInt()
-		end
-
-		if parse.optionalString("$Ship Icon Height:") then
-			ScpuiSystem.data.table_flags.IconDimensions.ship.Height = parse.getInt()
-		end
-
-		if parse.optionalString("$Weapon Icon Width:") then
-			ScpuiSystem.data.table_flags.IconDimensions.weapon.Width = parse.getInt()
-		end
-
-		if parse.optionalString("$Weapon Icon Height:") then
-			ScpuiSystem.data.table_flags.IconDimensions.weapon.Height = parse.getInt()
-		end
-
-		if parse.optionalString("$Show New In Database:") then
-			ScpuiSystem.data.table_flags.DatabaseShowNew = parse.getBoolean()
-		end
-
-		if parse.optionalString("$Minimum Splash Time:") then
-			ScpuiSystem.data.table_flags.MinSplashTime = parse.getInt()
-		end
-
-		if parse.optionalString("$Fade Splash Images:") then
-			ScpuiSystem.data.table_flags.FadeSplashImages = parse.getBoolean()
-		end
-
-		if parse.optionalString("$Draw Splash Images:") then
-			ScpuiSystem.data.table_flags.DrawSplashImages = parse.getBoolean()
-		end
-
-		if parse.optionalString("$Draw Splash Text:") then
-			ScpuiSystem.data.table_flags.DrawSplashText = parse.getBoolean()
-		end
-
-	end
-
-	if parse.optionalString("#State Replacement") then
-
-	while parse.optionalString("$State:") do
-		local state = parse.getString()
-
-		if state == "GS_STATE_SCRIPTING" or state == "GS_STATE_SCRIPTING_MISSION" then
-			local mission_state = state == "GS_STATE_SCRIPTING_MISSION"
-			parse.requiredString("+Substate:")
-			state = parse.getString()
-			parse.requiredString("+Markup:")
-			local markup = parse.getString()
-			ba.print("SCPUI found definition for script substate " .. state .. " : " .. markup .. "\n")
-			self.data.Replacements_List[state] = {
-				Markup = markup
-			}
-
-			if mission_state then
-				---@type LuaEnum
-				local enum = mn.LuaEnums["SCPUI_Menus"]
-				enum:addEnumItem(state)
-				enum:removeEnumItem("<none>")
-			end
-		else
-			parse.requiredString("+Markup:")
-			local markup = parse.getString()
-			ba.print("SCPUI found definition for game state " .. state .. " : " .. markup .. "\n")
-			self.data.Replacements_List[state] = {
-				Markup = markup
-			}
-		end
-	end
-
-	if parse.optionalString("#Background Replacement") then
-
-		while parse.optionalString("$Campaign Background:") do
-			parse.requiredString("+Campaign Filename:")
-			local campaign = Utils.strip_extension(parse.getString())
-
-			parse.requiredString("+RCSS Class Name:")
-			local classname = parse.getString()
-
-			self.data.Backgrounds_List[campaign] = classname
-		end
-
-	end
-
-	end
-
-	if parse.optionalString("#Background Replacement") then
-
-		while parse.optionalString("$Campaign Background:") do
-			parse.requiredString("+Campaign Filename:")
-			local campaign = Utils.strip_extension(parse.getString())
-
-			parse.requiredString("+RCSS Class Name:")
-			local classname = parse.getString()
-
-			self.data.Backgrounds_List[campaign] = classname
-		end
-
-	end
-
-	if parse.optionalString("#Briefing Stage Background Replacement") then
-
-		while parse.optionalString("$Briefing Grid Background:") do
-
-			parse.requiredString("+Mission Filename:")
-			local mission = Utils.strip_extension(parse.getString())
-
-			parse.requiredString("+Default Background Filename:")
-			local default_file = parse.getString()
-
-			if not Utils.hasExtension(default_file) then
-				ba.warning("SCPUI parsed background file, " .. default_file .. ", that does not include an extension!")
-			end
-
-			self.data.Brief_Backgrounds_List[mission] = {}
-
-			self.data.Brief_Backgrounds_List[mission]["default"] = default_file
-
-			while parse.optionalString("+Stage Override:") do
-				local stage = tostring(parse.getInt())
-
-				parse.requiredString("+Background Filename:")
-				local file = parse.getString()
-
-				if not Utils.hasExtension(file) then
-					ba.warning("SCPUI parsed background file, " .. default_file .. ", that does not include an extension!")
-				end
-
-				self.data.Brief_Backgrounds_List[mission][stage] = file
-			end
-
-		end
-
-	end
-
-	if parse.optionalString("#Medal Placements") then
-		ScpuiSystem:parseMedals()
-	end
-
-
-	parse.requiredString("#End")
-
-	parse.stop()
-end
-
 --- Get the current SCPUI document definition
 --- @param state string The current state key
 --- @return ui_replacement? The current SCPUI document definition
@@ -477,6 +238,81 @@ function ScpuiSystem:cleanSelf()
 	ScpuiSystem.data.CurrentDoc.Document = nil
 	ScpuiSystem.data.CurrentDoc = nil
 	ScpuiSystem.data.Tooltip_Timers = {}
+end
+
+--- Gets the name of a game state or substate in a table with indexed key 'Name'
+--- The primary purpose of this function is to handle the special case of SCPUI SCRIPTING SUBSTATE
+--- @param state gamestate The game state or substate
+--- @return gamestate state The game state or substate table
+function ScpuiSystem:getRocketUiHandle(state)
+	if state.Name == "GS_STATE_SCRIPTING" or state.Name == "GS_STATE_SCRIPTING_MISSION" then
+		return {Name = ScpuiSystem.data.Substate}
+	else
+		return state
+	end
+end
+
+--- This function is used to begin a new scripting substate in the GS_STATE_SCRIPTING or GS_STATE_SCRIPTING_MISSION game states
+--- @param state string The substate to begin
+--- @param mission_state boolean? True to use GS_STATE_SCRIPTING_MISSION instead of GS_STATE_SCRIPTING
+--- @return nil
+function ScpuiSystem:beginSubstate(state, mission_state)
+	ScpuiSystem.data.OldSubstate = ScpuiSystem.data.Substate
+	ScpuiSystem.data.Substate = state
+
+	local script_state = "GS_STATE_SCRIPTING"
+	if mission_state then
+		script_state = "GS_STATE_SCRIPTING_MISSION"
+	end
+	--If we're already in the scripting state then force loading the new scpui define
+	if ba.getCurrentGameState().Name == script_state then
+		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.data.Substate .. " in SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.data.OldSubstate .. "\n")
+		--We don't actually change game states so we need to manually clean up
+		ScpuiSystem:stateEnd(true)
+		--Now we can start the new state
+		ScpuiSystem:stateStart()
+	else
+		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.data.Substate .. "\n")
+		ba.postGameEvent(ba.GameEvents[script_state:gsub("STATE", "EVENT")])
+	end
+end
+
+--- Returns to a previous game state checking if we should return to a substate as well
+--- This allows for states to correctly return to the previous state even if has no rocket ui defined
+--- @param state gamestate The game state or substate
+--- @return nil
+function ScpuiSystem:returnToState(state)
+
+	local event
+
+	if state.Name == "GS_STATE_BRIEFING" then
+		event = "GS_EVENT_START_BRIEFING"
+	elseif state.Name == "GS_STATE_VIEW_CUTSCENES" then
+		event = "GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"
+	elseif state.Name == "GS_STATE_GAME_PLAY" then
+		event = "GS_EVENT_ENTER_GAME"
+	elseif state.Name == "GS_STATE_SCRIPTING" or state.Name == "GS_STATE_SCRIPTING_MISSION" then
+		ScpuiSystem:beginSubstate(ScpuiSystem.data.OldSubstate)
+		return
+	else
+		event = string.gsub(state.Name, "STATE", "EVENT")
+	end
+
+	ba.postGameEvent(ba.GameEvents[event])
+
+end
+
+--- Checks if a gamestate has an SCPUI document defined
+--- @param state gamestate The game state or substate
+--- @return boolean result If the game state or substate has an SCPUI document defined
+function ScpuiSystem:hasOverrideForState(state)
+	return self:getDef(state.Name) ~= nil
+end
+
+--- Checks if the current gamestate has an SCPUI document defined
+--- @return boolean result If the current game state or substate has an SCPUI document defined
+function ScpuiSystem:hasOverrideForCurrentState()
+	return self:hasOverrideForState(ScpuiSystem:getRocketUiHandle(ba.getCurrentGameState()))
 end
 
 --- On start of a new game state this function will try to load the related SCPUI document, if any exists for the state
@@ -558,81 +394,6 @@ function ScpuiSystem:stateEnd(substate)
 	if not substate and (hv.OldState.Name == "GS_STATE_SCRIPTING" or hv.OldState.Name == "GS_STATE_SCRIPTING_MISSION") then
 		ScpuiSystem.data.Substate = "none"
 	end
-end
-
---- Gets the name of a game state or substate in a table with indexed key 'Name'
---- The primary purpose of this function is to handle the special case of SCPUI SCRIPTING SUBSTATE
---- @param state gamestate The game state or substate
---- @return gamestate state The game state or substate table
-function ScpuiSystem:getRocketUiHandle(state)
-	if state.Name == "GS_STATE_SCRIPTING" or state.Name == "GS_STATE_SCRIPTING_MISSION" then
-		return {Name = ScpuiSystem.data.Substate}
-	else
-		return state
-	end
-end
-
---- This function is used to begin a new scripting substate in the GS_STATE_SCRIPTING or GS_STATE_SCRIPTING_MISSION game states
---- @param state string The substate to begin
---- @param mission_state boolean? True to use GS_STATE_SCRIPTING_MISSION instead of GS_STATE_SCRIPTING
---- @return nil
-function ScpuiSystem:beginSubstate(state, mission_state)
-	ScpuiSystem.data.OldSubstate = ScpuiSystem.data.Substate
-	ScpuiSystem.data.Substate = state
-
-	local script_state = "GS_STATE_SCRIPTING"
-	if mission_state then
-		script_state = "GS_STATE_SCRIPTING_MISSION"
-	end
-	--If we're already in the scripting state then force loading the new scpui define
-	if ba.getCurrentGameState().Name == script_state then
-		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.data.Substate .. " in SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.data.OldSubstate .. "\n")
-		--We don't actually change game states so we need to manually clean up
-		ScpuiSystem:stateEnd(true)
-		--Now we can start the new state
-		ScpuiSystem:stateStart()
-	else
-		ba.print("Got event SCPUI SCRIPTING SUBSTATE " .. ScpuiSystem.data.Substate .. "\n")
-		ba.postGameEvent(ba.GameEvents[script_state:gsub("STATE", "EVENT")])
-	end
-end
-
---- Returns to a previous game state checking if we should return to a substate as well
---- This allows for states to correctly return to the previous state even if has no rocket ui defined
---- @param state gamestate The game state or substate
---- @return nil
-function ScpuiSystem:returnToState(state)
-
-	local event
-
-	if state.Name == "GS_STATE_BRIEFING" then
-		event = "GS_EVENT_START_BRIEFING"
-	elseif state.Name == "GS_STATE_VIEW_CUTSCENES" then
-		event = "GS_EVENT_GOTO_VIEW_CUTSCENES_SCREEN"
-	elseif state.Name == "GS_STATE_GAME_PLAY" then
-		event = "GS_EVENT_ENTER_GAME"
-	elseif state.Name == "GS_STATE_SCRIPTING" or state.Name == "GS_STATE_SCRIPTING_MISSION" then
-		ScpuiSystem:beginSubstate(ScpuiSystem.data.OldSubstate)
-		return
-	else
-		event = string.gsub(state.Name, "STATE", "EVENT")
-	end
-
-	ba.postGameEvent(ba.GameEvents[event])
-
-end
-
---- Checks if a gamestate has an SCPUI document defined
---- @param state gamestate The game state or substate
---- @return boolean If the game state or substate has an SCPUI document defined
-function ScpuiSystem:hasOverrideForState(state)
-	return self:getDef(state.Name) ~= nil
-end
-
---- Checks if the current gamestate has an SCPUI document defined
---- @return boolean If the current game state or substate has an SCPUI document defined
-function ScpuiSystem:hasOverrideForCurrentState()
-	return self:hasOverrideForState(ScpuiSystem:getRocketUiHandle(ba.getCurrentGameState()))
 end
 
 --- SCPUI's override for the FSO dialog system
@@ -751,58 +512,6 @@ function ScpuiSystem:dialogEnd()
 	self:closeDialog()
 end
 
---- Gets the current mod title from FSO. If not defined then set it to 'SCPUI Development Mod'
---- If the mod root name is not 'SCPUI' then warn that a mod title is required
---- @return string title The current mod title
-function ScpuiSystem:getModTitle()
-    local title = ba.getModTitle()
-
-    if title == "" then
-        title = ba.getModRootName()
-
-        -- Extract title up to the first "-"
-        local extracted_title = title:match("^(.-)%s*%-")
-        if extracted_title then
-            title = extracted_title
-        end
-
-        if title ~= "SCPUI" then
-            ba.warning("It is highly recommended that you set a Mod Title in your game settings.tbl!")
-        else
-            title = "SCPUI Development Mod"
-        end
-    end
-
-    return title
-end
-
---- Adds a preload coroutine to the SCPUI system that will be run during the splash screens
---- @param message string The debug message to display
---- @param text string The debug string to display
---- @param run string The function to run using lua's loadstring method
---- @param val number The priority of the preload coroutine, should be 1 or 2
---- @return nil
-function ScpuiSystem:addPreload(message, text, run, val)
-	if self.data.Preload_Coroutines == nil then
-		self.data.Preload_Coroutines = {}
-	end
-
-	local num = #self.data.Preload_Coroutines + 1
-
-	if val > 1 then
-		val = 2
-	else
-		val = 1
-	end
-
-	self.data.Preload_Coroutines[num] = {
-		DebugMessage = message,
-		DebugString = text,
-		FunctionString = run,
-		Priority = val
-	}
-end
-
 --- Closes the current dialog and returns control to the state that called it
 --- @return nil
 function ScpuiSystem:closeDialog()
@@ -906,6 +615,62 @@ function ScpuiSystem:closeLoadScreen()
 	end
 end
 
+--- These methods must be available for submodules which are loaded after scpui_system_core
+
+--- Gets the current mod title from FSO. If not defined then set it to 'SCPUI Development Mod'
+--- If the mod root name is not 'SCPUI' then warn that a mod title is required
+--- @return string title The current mod title
+function ScpuiSystem:getModTitle()
+    local title = ba.getModTitle()
+
+    if title == "" then
+        title = ba.getModRootName()
+
+        -- Extract title up to the first "-"
+        local extracted_title = title:match("^(.-)%s*%-")
+        if extracted_title then
+            title = extracted_title
+        end
+
+        if title ~= "SCPUI" then
+            ba.warning("It is highly recommended that you set a Mod Title in your game settings.tbl!")
+        else
+            title = "SCPUI Development Mod"
+        end
+    end
+
+    return title
+end
+
+--- Adds a preload coroutine to the SCPUI system that will be run during the splash screens
+--- @param message string The debug message to display
+--- @param text string The debug string to display
+--- @param run string The function to run using lua's loadstring method
+--- @param val number The priority of the preload coroutine, should be 1 or 2
+--- @return nil
+function ScpuiSystem:addPreload(message, text, run, val)
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
+	if self.data.Preload_Coroutines == nil then
+		self.data.Preload_Coroutines = {}
+	end
+
+	local num = #self.data.Preload_Coroutines + 1
+
+	if val > 1 then
+		val = 2
+	else
+		val = 1
+	end
+
+	self.data.Preload_Coroutines[num] = {
+		DebugMessage = message,
+		DebugString = text,
+		FunctionString = run,
+		Priority = val
+	}
+end
+
 --- Wrapper to create an engine hook that also will print to the log that the hook was created by SCPUI and for which lua script
 --- @param hook_name string The name of the hook
 --- @param hook_function function The function to run when the hook is triggered
@@ -933,6 +698,50 @@ function ScpuiSystem:addHook(hook_name, hook_function, condition, override_funct
 	end
 
     ba.print("SCPUI registered hook '" .. hook_name .. "' for script document '" .. get_caller_file() .. "'\n")
+end
+
+--- Register extension topics to the topics system
+--- @param category string The category of topics to register
+--- @param topics_table table The table of topics to register
+--- @return nil
+function ScpuiSystem:registerExtensionTopics(category, topics_table)
+	if not Topics.registerTopics then
+		ba.error("SCPUI Error: Topics cannot be registered after initialization!\n")
+	end
+
+    -- Register the topics in the specified category
+    Topics:registerTopics(category, topics_table)
+end
+
+--- Mark the constants table as read-only by utilizing a proxy table and custom metatable
+--- @return nil
+function ScpuiSystem:finalizeConstants()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
+	ScpuiSystem.constants.INITIALIZED = true
+
+    -- Ensure the original constants table exists
+    local original_data = ScpuiSystem.constants or {}
+    ScpuiSystem.constants = {}
+
+    -- Set up a proxy with a metatable
+    setmetatable(ScpuiSystem.constants, {
+        __index = original_data, -- Read values from the original table
+        __newindex = function(_, k, _)
+            ba.error("Attempt to modify read-only field '" .. k .. "' in ScpuiSystem.constants")
+        end,
+        __pairs = function()
+            return pairs(original_data) -- Make pairs work on the proxy
+        end
+    })
+end
+
+--- Completes the initialization of the SCPUI system. Runs after the preload methods are complete. (After the splash screens)
+--- @return nil
+function ScpuiSystem:completeInitialization()
+	ScpuiSystem:finalizeConstants()
+
+	ba.print("SCPUI initialization complete!\n")
 end
 
 mn.LuaSEXPs["scpui-show-menu"].Action = function(state)

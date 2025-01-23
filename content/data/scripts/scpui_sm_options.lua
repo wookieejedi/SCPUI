@@ -50,7 +50,7 @@ function ScpuiSystem:parseOptions(data)
 		end
 
 		parse.requiredString("+Type:")
-		entry.Type = self:verifyParsedType(parse.getString())
+		entry.Type = self:verifyParsedOptionType(parse.getString())
 
 		if parse.optionalString("+Column:") then
 			entry.Column = parse.getInt()
@@ -226,7 +226,7 @@ end
 --- Verify the parsed option type is valid
 --- @param val string The parsed option type
 --- @return string type The valid option type
-function ScpuiSystem:verifyParsedType(val)
+function ScpuiSystem:verifyParsedOptionType(val)
 
 	if string.lower(val) == "header" then
 		return "Header"

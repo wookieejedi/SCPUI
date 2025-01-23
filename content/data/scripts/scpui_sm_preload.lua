@@ -2,9 +2,128 @@
 --This file runs SCPUI's preload system and shows the splash screens
 -----------------------------------
 
+local Topics = require("lib_ui_topics")
+
+--- Calculate the number of dots to append to the "Loading" text
+--- @return nil
+local function calculateSplashDots()
+	if ScpuiSystem.constants.INITIALIZED then
+		return
+	end
+
+	if ScpuiSystem.data.state_init_status.PreLoad then
+		return
+	end
+
+	if ScpuiSystem.data.memory.splash_screen.F < 3 then
+		ScpuiSystem.data.memory.splash_screen.F = ScpuiSystem.data.memory.splash_screen.F + 1
+	else
+		ScpuiSystem.data.memory.splash_screen.F = 1
+	end
+
+	local AsyncUtil = require("lib_async")
+
+	async.run(function()
+        async.await(AsyncUtil.wait_for(0.1))
+        calculateSplashDots()
+    end, async.OnFrameExecutor)
+end
+
+--- Actually draw the current splash screen and text
+--- @return nil
+local function drawSplash()
+	if ScpuiSystem.constants.INITIALIZED then
+		return
+	end
+
+	io.setCursorHidden(true)
+
+	if not ScpuiSystem.data.table_flags.DrawSplashImages and not ScpuiSystem.data.table_flags.DrawSplashText then
+		return
+	end
+
+	if ScpuiSystem.data.table_flags.DrawSplashImages then
+		gr.clearScreen(0, 0, 0, 255)
+	end
+
+	--save the current color and set to white
+	local r, g, b, a = gr.getColor()
+	gr.setColor(255, 255, 255, 255)
+
+	--calculate the number of dots to append
+	local dots = ""
+	for i = 1, ScpuiSystem.data.memory.splash_screen.F do
+		dots = dots .. "."
+	end
+
+	local img = ScpuiSystem.data.memory.splash_screen.Index
+
+	local file = ScpuiSystem.data.memory.splash_screen.Image_List[img].File
+	local x = ScpuiSystem.data.memory.splash_screen.Image_List[img].X
+	local y = ScpuiSystem.data.memory.splash_screen.Image_List[img].Y
+	local w = ScpuiSystem.data.memory.splash_screen.Image_List[img].W
+	local h = ScpuiSystem.data.memory.splash_screen.Image_List[img].H
+
+	if not ScpuiSystem.data.table_flags.FadeSplashImages then
+		ScpuiSystem.data.memory.splash_screen.Image_List[img].A = 1
+	end
+
+	--handle alpha
+	if ScpuiSystem.data.memory.splash_screen.Image_List[img].A > 1 then
+		ScpuiSystem.data.memory.splash_screen.Image_List[img].A = 1
+	end
+	if ScpuiSystem.data.memory.splash_screen.Image_List[img].A < 0 then
+		ScpuiSystem.data.memory.splash_screen.Image_List[img].A = 0
+	end
+	a = ScpuiSystem.data.memory.splash_screen.Image_List[img].A
+
+	local text = ScpuiSystem.data.memory.splash_screen.Text .. dots
+
+	--draw!
+	if ScpuiSystem.data.table_flags.DrawSplashImages then
+		gr.drawImageCentered(file, x, y, w, h, 0, 0, 1, 1, a)
+	end
+
+	-- Create a coords table
+    local text_coords = {
+        x = ScpuiSystem.data.memory.splash_screen.TX,
+        y = ScpuiSystem.data.memory.splash_screen.TY
+    }
+
+    -- Send the coordinates to the topic and allow modifications
+    text_coords = Topics.preload.loadingTextCoords:send(text_coords)
+
+	if ScpuiSystem.data.table_flags.DrawSplashText then
+		if ScpuiSystem.data.memory.splash_screen.TD then
+			gr.drawString(text, text_coords.x, text_coords.y)
+			if ba.inDebug() and string.len(ScpuiSystem.data.memory.splash_screen.DebugString) > 0 then
+				local ds = "(" .. ScpuiSystem.data.memory.splash_screen.DebugString .. ")"
+				local tw = gr.getStringWidth(ds)
+				local dx = (gr.getScreenWidth() / 2) - (tw / 2)
+				gr.setColor(255, 255, 255, 150)
+
+				-- Create a coords table
+				local debug_text_coords = {
+					x = dx,
+					y = ScpuiSystem.data.memory.splash_screen.TY + gr.Fonts[1].Height + 5
+				}
+
+				-- Send the coordinates to the topic and allow modifications
+				debug_text_coords = Topics.preload.debugTextCoords:send(debug_text_coords)
+
+				gr.drawString(ds, debug_text_coords.x, debug_text_coords.y)
+			end
+		end
+	end
+
+	--reset the color back to what it was.
+	gr.setColor(r, g, b, a)
+
+end
+
 --- Run the preload system and interate through the preload coroutines
 --- @return nil
-function ScpuiSystem:preLoad()
+local function preLoad()
 	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
 
 	ba.print("SCPUI is starting preload functions...\n")
@@ -25,7 +144,7 @@ function ScpuiSystem:preLoad()
 				async.await(async.yield())
 				local i = ScpuiSystem.data.memory.splash_screen.Index
 				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A + (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
-				ScpuiSystem:drawSplash()
+				drawSplash()
 			end
 		end
 	end
@@ -43,7 +162,7 @@ function ScpuiSystem:preLoad()
 				yield_ts = time.getCurrentTime()
 				async.await(async.yield())
 				ScpuiSystem.data.memory.splash_screen.DebugString = v.DebugString
-				ScpuiSystem:drawSplash()
+				drawSplash()
 			end
 
 		end
@@ -57,7 +176,7 @@ function ScpuiSystem:preLoad()
 		if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
 			yield_ts = time.getCurrentTime()
 			async.await(async.yield())
-			ScpuiSystem:drawSplash()
+			drawSplash()
 		end
 	end
 
@@ -70,7 +189,7 @@ function ScpuiSystem:preLoad()
 				async.await(async.yield())
 				local i = ScpuiSystem.data.memory.splash_screen.Index
 				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A - (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
-				ScpuiSystem:drawSplash()
+				drawSplash()
 			end
 		end
 	end
@@ -87,7 +206,7 @@ function ScpuiSystem:preLoad()
 				async.await(async.yield())
 				local i = ScpuiSystem.data.memory.splash_screen.Index
 				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A + (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
-				ScpuiSystem:drawSplash()
+				drawSplash()
 			end
 		end
 	end
@@ -103,7 +222,7 @@ function ScpuiSystem:preLoad()
 				yield_ts = time.getCurrentTime()
 				async.await(async.yield())
 				ScpuiSystem.data.memory.splash_screen.DebugString = v.DebugString
-				ScpuiSystem:drawSplash()
+				drawSplash()
 			end
 
 		end
@@ -117,7 +236,7 @@ function ScpuiSystem:preLoad()
 		if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
 			yield_ts = time.getCurrentTime()
 			async.await(async.yield())
-			ScpuiSystem:drawSplash()
+			drawSplash()
 		end
 	end
 
@@ -132,7 +251,7 @@ function ScpuiSystem:preLoad()
 				async.await(async.yield())
 				local i = ScpuiSystem.data.memory.splash_screen.Index
 				ScpuiSystem.data.memory.splash_screen.Image_List[i].A = ScpuiSystem.data.memory.splash_screen.Image_List[i].A - (1.0 / ((ScpuiSystem.data.memory.splash_screen.Fade) / ba.getRealFrametime()))
-				ScpuiSystem:drawSplash()
+				drawSplash()
 			end
 		end
 	end
@@ -144,7 +263,7 @@ end
 
 --- Prepare the splash screen images and text for display
 --- @return nil
-function ScpuiSystem:prepareSplash()
+local function prepareSplash()
 	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
 
 	if not ScpuiSystem.data.table_flags.DrawSplashImages then
@@ -220,117 +339,23 @@ function ScpuiSystem:prepareSplash()
 	ScpuiSystem.data.memory.splash_screen.Index = 1
 
 	--start timing the "dots" animation
-	ScpuiSystem:calculateSplashDots()
-
-end
-
---- Calculate the number of dots to append to the "Loading" text
---- @return nil
-function ScpuiSystem:calculateSplashDots()
-	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
-
-	if ScpuiSystem.data.state_init_status.PreLoad then
-		return
-	end
-
-	if ScpuiSystem.data.memory.splash_screen.F < 3 then
-		ScpuiSystem.data.memory.splash_screen.F = ScpuiSystem.data.memory.splash_screen.F + 1
-	else
-		ScpuiSystem.data.memory.splash_screen.F = 1
-	end
-
-	local AsyncUtil = require("lib_async")
-
-	async.run(function()
-        async.await(AsyncUtil.wait_for(0.1))
-        self:calculateSplashDots()
-    end, async.OnFrameExecutor)
-end
-
---- Actually draw the current splash screen and text
---- @return nil
-function ScpuiSystem:drawSplash()
-	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
-
-	io.setCursorHidden(true)
-
-	if not ScpuiSystem.data.table_flags.DrawSplashImages and not ScpuiSystem.data.table_flags.DrawSplashText then
-		return
-	end
-
-	if ScpuiSystem.data.table_flags.DrawSplashImages then
-		gr.clearScreen(0, 0, 0, 255)
-	end
-
-	--save the current color and set to white
-	local r, g, b, a = gr.getColor()
-	gr.setColor(255, 255, 255, 255)
-
-	--calculate the number of dots to append
-	local dots = ""
-	for i = 1, ScpuiSystem.data.memory.splash_screen.F do
-		dots = dots .. "."
-	end
-
-	local img = ScpuiSystem.data.memory.splash_screen.Index
-
-	local file = ScpuiSystem.data.memory.splash_screen.Image_List[img].File
-	local x = ScpuiSystem.data.memory.splash_screen.Image_List[img].X
-	local y = ScpuiSystem.data.memory.splash_screen.Image_List[img].Y
-	local w = ScpuiSystem.data.memory.splash_screen.Image_List[img].W
-	local h = ScpuiSystem.data.memory.splash_screen.Image_List[img].H
-
-	if not ScpuiSystem.data.table_flags.FadeSplashImages then
-		ScpuiSystem.data.memory.splash_screen.Image_List[img].A = 1
-	end
-
-	--handle alpha
-	if ScpuiSystem.data.memory.splash_screen.Image_List[img].A > 1 then
-		ScpuiSystem.data.memory.splash_screen.Image_List[img].A = 1
-	end
-	if ScpuiSystem.data.memory.splash_screen.Image_List[img].A < 0 then
-		ScpuiSystem.data.memory.splash_screen.Image_List[img].A = 0
-	end
-	a = ScpuiSystem.data.memory.splash_screen.Image_List[img].A
-
-	local text = ScpuiSystem.data.memory.splash_screen.Text .. dots
-
-	--draw!
-	if ScpuiSystem.data.table_flags.DrawSplashImages then
-		gr.drawImageCentered(file, x, y, w, h, 0, 0, 1, 1, a)
-	end
-
-	if ScpuiSystem.data.table_flags.DrawSplashText then
-		if ScpuiSystem.data.memory.splash_screen.TD then
-			gr.drawString(text, ScpuiSystem.data.memory.splash_screen.TX, ScpuiSystem.data.memory.splash_screen.TY)
-			if ba.inDebug() and string.len(ScpuiSystem.data.memory.splash_screen.DebugString) > 0 then
-				local ds = "(" .. ScpuiSystem.data.memory.splash_screen.DebugString .. ")"
-				local tw = gr.getStringWidth(ds)
-				local dx = (gr.getScreenWidth() / 2) - (tw / 2)
-				gr.setColor(255, 255, 255, 150)
-				gr.drawString(ds, dx, ScpuiSystem.data.memory.splash_screen.TY + gr.Fonts[1].Height + 5)
-			end
-		end
-	end
-
-	--reset the color back to what it was.
-	gr.setColor(r, g, b, a)
+	calculateSplashDots()
 
 end
 
 --- Prepare the splash screens and run the preload system
 --- @return nil
-function ScpuiSystem:firstRun()
+local function firstRun()
 	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
 
-	ScpuiSystem:prepareSplash()
+	prepareSplash()
 
-	ScpuiSystem:drawSplash()
+	drawSplash()
 
 	ScpuiSystem.data.state_init_status.PreLoad = false
     async.awaitRunOnFrame(function()
         async.await(async.yield())
-        ScpuiSystem:preLoad()
+        preLoad()
     end)
 
 end
@@ -344,11 +369,13 @@ end
 --- @return nil
 local function runPreload()
 	if ScpuiSystem.data.Active and not ScpuiSystem.data.state_init_status.PreLoad then
-		ScpuiSystem:firstRun()
+		firstRun()
 	end
 end
 
 ScpuiSystem:addHook("On Intro About To Play", function()
 	runPreload()
 	ScpuiSystem:completeInitialization()
+	ScpuiSystem.data.Preload_Coroutines = nil -- Clean up
+	ScpuiSystem.data.memory.splash_screen = nil -- Clean up
 end)

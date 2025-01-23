@@ -290,7 +290,7 @@ end
 
 --- Generate the scpui preload calls that will create the icons during the splash screens
 --- @return nil
-function ScpuiSystem:genIcons()
+local function genIcons()
 	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
 
 	if not ScpuiSystem.data.Active then
@@ -298,7 +298,7 @@ function ScpuiSystem:genIcons()
 	end
 
 	ScpuiSystem:addPreload(
-		"SCPUI is starting generation of ship and weapon loadout icons!",
+		"Starting generation of ship and weapon loadout icons!",
 		"Initializing icon generation...",
 		"ScpuiSystem:beginIconGeneration()",
 		1
@@ -364,4 +364,4 @@ ScpuiSystem:addHook("On Key Pressed", function()
 end,
 {KeyPress="F12"})
 
-ScpuiSystem:genIcons()
+genIcons()
