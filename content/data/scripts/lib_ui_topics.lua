@@ -331,6 +331,8 @@ local topics = {
 --- @param topic_name string The name of the topic (e.g., "initialize").
 --- @param handler any The topic instance to register.
 function topics:registerTopic(category, topic_name, handler)
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
     if not self[category] then
         self[category] = {}
     end
@@ -347,6 +349,8 @@ end
 --- @param category string The category to add the topics to.
 --- @param new_topics table A table of topic names and instances.
 function topics:registerTopics(category, new_topics)
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
     for topic_name, handler in pairs(new_topics) do
         self:registerTopic(category, topic_name, handler)
     end

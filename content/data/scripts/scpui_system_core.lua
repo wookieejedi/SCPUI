@@ -131,10 +131,6 @@ function ScpuiSystem:init()
 	end
 
 	ScpuiSystem.data.CurrentBaseFontClass = "base_font" .. self:getFontPixelSize()
-
-	-- Prevent loading topics after initialization
-	Topics.registerTopic = nil
-	Topics.registerTopics = nil
 end
 
 --- Load submodules for SCPUI core or an extension
