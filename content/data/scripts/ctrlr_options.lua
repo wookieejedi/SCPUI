@@ -238,8 +238,8 @@ function OptionsController:acceptChanges(state)
     builder:title(ba.XSTR("Restart required", 888385))
     builder:text(dialog_text)
 	builder:escape(false)
-    builder:button(Dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", 888091), false, string.sub(ba.XSTR("Cancel", 888091), 1, 1))
     builder:button(Dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Ok", 888286), true, string.sub(ba.XSTR("Ok", 888286), 1, 1))
+    builder:button(Dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("Cancel", 888091), false, string.sub(ba.XSTR("Cancel", 888091), 1, 1))
     builder:show(self.Document.context):continueWith(function(val)
         if val then
 
@@ -1530,8 +1530,8 @@ end
 function OptionsController:exit_game_clicked(element)
     local builder = Dialogs.new()
     builder:text(ba.XSTR("Exit Game?", 888390))
-    builder:button(Dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", 888298), false)
     builder:button(Dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Yes", 888296), true)
+    builder:button(Dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", 888298), false)
     builder:show(self.Document.context):continueWith(function(result)
         if not result then
             return
