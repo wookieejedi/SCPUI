@@ -46,6 +46,7 @@
 local JournalUi = {
 	Name = "Journal",
 	Version = "1.0.0",
+	Submodule = "jrnl",
 	Key = "JournalUi"
 }
 
@@ -99,8 +100,6 @@ function JournalUi:init()
 			end
 		end
 	else
-		ScpuiSystem:loadSubmodules("jrnl")
-
 		-- Register journal-specific topics
 		ScpuiSystem:registerExtensionTopics("journal", {
 			initialize = function() return nil end,

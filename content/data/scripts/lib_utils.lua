@@ -21,7 +21,7 @@ end
 ---  +Val: NAME "string", #
 --- and returns the string and id in a table That can be sent to ba.XSTR()
 --- @param text string The XSTR to parse
---- @return table<string, number> The parsed XSTR
+--- @return table<string, number> result The parsed XSTR
 function utils.parseCustomXSTR(text)
 
 	local input_string = text
@@ -255,7 +255,7 @@ function utils.loadConfig(filename)
 end
 
 --- A wrapper for ba.XSTR that can take a string or a table with a string and an id and return the translated string
---- @param message string|table<string, number> The message to translate
+--- @param message string|table<number, string|number> The message to translate
 --- @param id? number The id of the message to translate
 --- @return string text The translated string
 function utils.xstr(message, id)
@@ -265,7 +265,9 @@ function utils.xstr(message, id)
     ba.print('Utils.lua: Got string with missing XSTR index: ' .. message .. "\n")
     return message
   else
-    return ba.XSTR(message[1], message[2])
+    local text = tostring(message[1])
+    local index = tonumber(message[2]) or -1
+    return ba.XSTR(text, index)
   end
 end
 

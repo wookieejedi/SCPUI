@@ -75,8 +75,10 @@ function LoadScreenController:setLoadingBar()
 		-- Get the last frame or start at 1
 		index = ScpuiSystem.data.memory.loading_bar.LastProgress or 1
 
+		local frames_left = ScpuiSystem.data.memory.loading_bar.ImageTexture:getFramesLeft() or 0
+
 		-- Loop back to the first frame if we exceed the total frame count
-		if index > ScpuiSystem.data.memory.loading_bar.ImageTexture:getFramesLeft() then
+		if index > frames_left then
 			index = 1
 		end
 
