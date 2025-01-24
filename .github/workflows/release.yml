@@ -28,14 +28,29 @@ jobs:
         git config user.email "actions@github.com"
 
     - name: Create a New Branch and Commit Changes
+      id: create_branch
       run: |
+        # Create a new branch
         git checkout -b release/v.${{ github.event.inputs.release_name }}
+
+        # Update the version in the file
         sed -i 's/^local version = ".*"/local version = "${{ github.event.inputs.release_name }}"/' content/data/scripts/scpui_system_core.lua
+
+        # Stage the file
         git add content/data/scripts/scpui_system_core.lua
-        git commit -m "Update version to ${{ github.event.inputs.release_name }}"
-        git push origin release/v.${{ github.event.inputs.release_name }}
+
+        # Check if there are changes to commit
+        if ! git diff-index --quiet HEAD; then
+          git commit -m "Update version to ${{ github.event.inputs.release_name }}"
+          git push origin release/v.${{ github.event.inputs.release_name }}
+          echo "changes=true" >> $GITHUB_ENV
+        else
+          echo "No changes to commit. Skipping push."
+          echo "changes=false" >> $GITHUB_ENV
+        fi
 
     - name: Create Pull Request
+      if: env.changes == 'true'
       run: |
         gh pr create \
           --base master \
@@ -46,6 +61,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Bot Review PR
+      if: env.changes == 'true'
       run: |
         PR_URL=$(gh pr view --json url -q '.url')
         gh pr review $PR_URL --approve
@@ -53,6 +69,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.BOT_PAT }}
 
     - name: Merge Pull Request
+      if: env.changes == 'true'
       run: |
         PR_URL=$(gh pr view --json url -q '.url')
         gh pr merge $PR_URL --squash --delete-branch --admin
