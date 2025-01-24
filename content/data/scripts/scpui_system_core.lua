@@ -204,6 +204,11 @@ function ScpuiSystem:loadExtensions()
 						-- Initialize the extension
 						ScpuiSystem.extensions[extension.Key]:init()
 
+						-- Load the extension's submodules
+						if ScpuiSystem.extensions[extension.Key].Submodule then
+							ScpuiSystem:loadSubmodules(ScpuiSystem.extensions[extension.Key].Submodule)
+						end
+
 						-- Prevent double initializing
 						ScpuiSystem.extensions[extension.Key].init = nil
                     end
