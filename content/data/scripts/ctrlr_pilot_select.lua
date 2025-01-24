@@ -424,8 +424,8 @@ function PilotSelectController:actualPilotCreate(element, callsign, clone_from)
         builder:title(ba.XSTR("Warning", 888284))
         builder:text(ba.XSTR("A duplicate pilot exists\nOverwrite?", 888401))
         builder:escape(false)
-        builder:button(Dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", 888298), false, "n")
         builder:button(Dialogs.BUTTON_TYPE_POSITIVE, ba.XSTR("Yes", 888296), true, "y")
+        builder:button(Dialogs.BUTTON_TYPE_NEGATIVE, ba.XSTR("No", 888298), false, "n")
         builder:show(self.Document.context):continueWith(function(result)
             if not result then
                 return
@@ -498,8 +498,8 @@ function PilotSelectController:delete_player(element)
     builder:title(ba.XSTR("Warning!", 888395))
     builder:text(ba.XSTR("Are you sure you wish to delete this pilot?", 888407))
     builder:escape(false)
-    builder:button(Dialogs.BUTTON_TYPE_NEGATIVE, "No", false, "n")
     builder:button(Dialogs.BUTTON_TYPE_POSITIVE, "Yes", true, "y")
+    builder:button(Dialogs.BUTTON_TYPE_NEGATIVE, "No", false, "n")
     builder:show(self.Document.context):continueWith(function(result)
         if not result then
             return
