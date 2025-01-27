@@ -106,6 +106,8 @@ function ScpuiSystem:init()
 
 	self:loadExtensions()
 
+	self:loadPlugins()
+
 	-- Set up the in-game font multiplier option if it exists
 	if ba.isEngineVersionAtLeast(24, 3, 0) then
 		---@return option | nil
@@ -214,6 +216,36 @@ function ScpuiSystem:loadExtensions()
                     end
                 else
                     ba.warning("SCPUI Error loading extension " .. module_path .. ": " .. tostring(extension) .. "\n")
+                end
+            end
+        end
+    end
+end
+
+--- Load plugins for SCPUI which are downstream scripts that should be loaded last
+--- @return nil
+function ScpuiSystem:loadPlugins()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
+	ba.print("SCPUI is loading user plugins...\n")
+
+    local files = cf.listFiles("data/scripts", "*.lua")
+    local plugins_prefix = "scpui_plg_"
+
+    if not files then
+        return
+    end
+
+    for _, filename in ipairs(files) do
+        if string.find(filename, plugins_prefix) then
+            local module_name = filename:match(plugins_prefix .. "(.-)%.lua")
+            if module_name then
+                local module_path = string.format("%s%s", plugins_prefix, module_name)
+                local ok, module = pcall(require, module_path)
+                if ok then
+                    ba.print("SCPUI loaded plugin " .. module_name .. " (" .. module_path .. ")\n")
+                else
+                    ba.warning("SCPUI Error loading plugin " .. module_path .. ": " .. tostring(module) .. "\n")
                 end
             end
         end
