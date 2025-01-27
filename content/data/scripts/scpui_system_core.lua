@@ -441,7 +441,7 @@ function ScpuiSystem:dialogStart()
 	end
 
 	if hv.IsDeathPopup then
-		dialog:show(self.data.Context, self.data.Dialog.Abort)
+		dialog:show(self.data.Context, self.data.DeathDialog.Abort)
 			:continueWith(function(response)
 				self.data.DeathDialog.Submit = response
 			end)
