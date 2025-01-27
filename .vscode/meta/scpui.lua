@@ -291,6 +291,7 @@
 --- @field OverheadElement? Element The overhead element
 --- @field overheadEffect? number The overhead effect choice
 --- @field OverheadSave? integer A place to store the index of the overhead model being rendered temporarily
+--- @field Draw? boolean True if the model should be drawn, false otherwise. Not used in all cases!
 
 --- SCPUI Credits Image Data
 --- @class credits_image_memory
