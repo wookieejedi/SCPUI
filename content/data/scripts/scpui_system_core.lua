@@ -476,7 +476,9 @@ function ScpuiSystem:dialogFrame()
 	end
 	if hv.IsDeathPopup then
 		local submit = self.data.DeathDialog.Submit
-		if submit == nil and not ScpuiSystem.data.Dialog then
+		-- This really shouldn't happen, but just in case
+		if submit == nil and not ScpuiSystem.data.DialogDoc then
+			ba.warning("SCPUI Error: Death popup was not submitted and no dialog document is open!\n")
 			-- We aren't showing a death popup when we should be, which is a soft lock;
 			-- default to 0 (Quickstart Mission) to get to a state we can proceed from
 			submit = 0
