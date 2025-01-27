@@ -418,7 +418,7 @@ function ScpuiSystem:dialogStart()
 		dialog:input(hv.IsInputPopup)
 
 		if hv.IsDeathPopup then
-			dialog:style(2)
+			dialog:style(Dialogs.STYLE_DEATH)
 			dialog:text(Topics.deathpopup.setText:send(self))
 		else
 			dialog:escape(-1) --Assuming that all non-death built-in popups can be cancelled safely with a negative response!
