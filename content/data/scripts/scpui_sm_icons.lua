@@ -300,7 +300,10 @@ local function genIcons()
 	ScpuiSystem:addPreload(
 		"Starting generation of ship and weapon loadout icons!",
 		"Initializing icon generation...",
-		"ScpuiSystem:beginIconGeneration()",
+		function()
+			ScpuiSystem:beginIconGeneration()
+		end,
+		{},
 		1
 	)
 
@@ -309,11 +312,13 @@ local function genIcons()
 		local v = tb.WeaponClasses[i]
 
 		if v:isPlayerAllowed() then
-			local safe_name = v.Name:gsub("'", "\\'")
 			ScpuiSystem:addPreload(
 				"Generating icon for " .. v.Name,
 				"Generating " .. v.Name .. " icon",
-				"ScpuiSystem:setIconFrames('" .. safe_name .. "', false)",
+				function()
+					ScpuiSystem:setIconFrames(v.Name, false)
+				end,
+				{},
 				1
 			)
 		end
@@ -325,11 +330,13 @@ local function genIcons()
 		local v = tb.ShipClasses[i]
 
 		if v:isPlayerAllowed() then
-			local safe_name = v.Name:gsub("'", "\\'")
 			ScpuiSystem:addPreload(
 				"Generating icon for " .. v.Name,
 				"Generating " .. v.Name .. " icon",
-				"ScpuiSystem:setIconFrames('" .. safe_name .. "', true)",
+				function()
+					ScpuiSystem:setIconFrames(v.Name, true)
+				end,
+				{},
 				2
 			)
 		end
@@ -339,7 +346,10 @@ local function genIcons()
 	ScpuiSystem:addPreload(
 		"Saving ship and weapon loadout icons!",
 		"Finalizing icon generation...",
-		"ScpuiSystem:finishIconGeneration()",
+		function()
+			ScpuiSystem:finishIconGeneration()
+		end,
+		{},
 		2
 	)
 

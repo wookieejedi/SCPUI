@@ -682,33 +682,28 @@ function ScpuiSystem:getModTitle()
 end
 
 --- Adds a preload coroutine to the SCPUI system that will be run during the splash screens
---- @param message string The debug message to display
+--- @param message string The debug message to print
 --- @param text string The debug string to display
---- @param run string The function to run using lua's loadstring method
+--- @param func function The function to run
+--- @param args table The arguments to pass to the function
 --- @param val number The priority of the preload coroutine, should be 1 or 2
 --- @return nil
-function ScpuiSystem:addPreload(message, text, run, val)
-	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+function ScpuiSystem:addPreload(message, text, func, args, val)
+    assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
 
-	if self.data.Preload_Coroutines == nil then
-		self.data.Preload_Coroutines = {}
-	end
+    if self.data.Preload_Coroutines == nil then
+        self.data.Preload_Coroutines = {}
+    end
 
-	local num = #self.data.Preload_Coroutines + 1
-
-	if val > 1 then
-		val = 2
-	else
-		val = 1
-	end
-
-	self.data.Preload_Coroutines[num] = {
+    table.insert(self.data.Preload_Coroutines, {
 		DebugMessage = message,
 		DebugString = text,
-		FunctionString = run,
-		Priority = val
-	}
+		Function = func,
+		Args = args or {},
+		Priority = Utils.clamp(val, 1, 2)
+	})
 end
+
 
 --- Wrapper to create an engine hook that also will print to the log that the hook was created by SCPUI and for which lua script
 --- @param hook_name string The name of the hook
