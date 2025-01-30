@@ -1,5 +1,5 @@
 -- Version of SCPUI System
-local version = "1.1.0-RC3"
+local version = "1.1.0-RC4"
 
 local Utils = require("lib_utils")
 local Topics = require("lib_ui_topics")
@@ -105,6 +105,8 @@ function ScpuiSystem:init()
 	self:loadScpuiTables()
 
 	self:loadExtensions()
+
+	self:loadPlugins()
 
 	-- Set up the in-game font multiplier option if it exists
 	if ba.isEngineVersionAtLeast(24, 3, 0) then
@@ -214,6 +216,36 @@ function ScpuiSystem:loadExtensions()
                     end
                 else
                     ba.warning("SCPUI Error loading extension " .. module_path .. ": " .. tostring(extension) .. "\n")
+                end
+            end
+        end
+    end
+end
+
+--- Load plugins for SCPUI which are downstream scripts that should be loaded last
+--- @return nil
+function ScpuiSystem:loadPlugins()
+	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+
+	ba.print("SCPUI is loading user plugins...\n")
+
+    local files = cf.listFiles("data/scripts", "*.lua")
+    local plugins_prefix = "scpui_plg_"
+
+    if not files then
+        return
+    end
+
+    for _, filename in ipairs(files) do
+        if string.find(filename, plugins_prefix) then
+            local module_name = filename:match(plugins_prefix .. "(.-)%.lua")
+            if module_name then
+                local module_path = string.format("%s%s", plugins_prefix, module_name)
+                local ok, module = pcall(require, module_path)
+                if ok then
+                    ba.print("SCPUI loaded plugin " .. module_name .. " (" .. module_path .. ")\n")
+                else
+                    ba.warning("SCPUI Error loading plugin " .. module_path .. ": " .. tostring(module) .. "\n")
                 end
             end
         end
@@ -418,7 +450,7 @@ function ScpuiSystem:dialogStart()
 		dialog:input(hv.IsInputPopup)
 
 		if hv.IsDeathPopup then
-			dialog:style(2)
+			dialog:style(Dialogs.STYLE_DEATH)
 			dialog:text(Topics.deathpopup.setText:send(self))
 		else
 			dialog:escape(-1) --Assuming that all non-death built-in popups can be cancelled safely with a negative response!
@@ -441,7 +473,7 @@ function ScpuiSystem:dialogStart()
 	end
 
 	if hv.IsDeathPopup then
-		dialog:show(self.data.Context, self.data.Dialog.Abort)
+		dialog:show(self.data.Context, self.data.DeathDialog.Abort)
 			:continueWith(function(response)
 				self.data.DeathDialog.Submit = response
 			end)
@@ -476,7 +508,9 @@ function ScpuiSystem:dialogFrame()
 	end
 	if hv.IsDeathPopup then
 		local submit = self.data.DeathDialog.Submit
-		if submit == nil and not ScpuiSystem.data.Dialog then
+		-- This really shouldn't happen, but just in case
+		if submit == nil and not ScpuiSystem.data.DialogDoc then
+			ba.warning("SCPUI Error: Death popup was not submitted and no dialog document is open!\n")
 			-- We aren't showing a death popup when we should be, which is a soft lock;
 			-- default to 0 (Quickstart Mission) to get to a state we can proceed from
 			submit = 0
@@ -648,33 +682,28 @@ function ScpuiSystem:getModTitle()
 end
 
 --- Adds a preload coroutine to the SCPUI system that will be run during the splash screens
---- @param message string The debug message to display
+--- @param message string The debug message to print
 --- @param text string The debug string to display
---- @param run string The function to run using lua's loadstring method
+--- @param func function The function to run
+--- @param args table The arguments to pass to the function
 --- @param val number The priority of the preload coroutine, should be 1 or 2
 --- @return nil
-function ScpuiSystem:addPreload(message, text, run, val)
-	assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
+function ScpuiSystem:addPreload(message, text, func, args, val)
+    assert(not ScpuiSystem.constants.INITIALIZED, "SCPUI has already been Initialized!")
 
-	if self.data.Preload_Coroutines == nil then
-		self.data.Preload_Coroutines = {}
-	end
+    if self.data.Preload_Coroutines == nil then
+        self.data.Preload_Coroutines = {}
+    end
 
-	local num = #self.data.Preload_Coroutines + 1
-
-	if val > 1 then
-		val = 2
-	else
-		val = 1
-	end
-
-	self.data.Preload_Coroutines[num] = {
+    table.insert(self.data.Preload_Coroutines, {
 		DebugMessage = message,
 		DebugString = text,
-		FunctionString = run,
-		Priority = val
-	}
+		Function = func,
+		Args = args or {},
+		Priority = Utils.clamp(val, 1, 2)
+	})
 end
+
 
 --- Wrapper to create an engine hook that also will print to the log that the hook was created by SCPUI and for which lua script
 --- @param hook_name string The name of the hook

@@ -1042,9 +1042,9 @@ function TechDatabaseController:global_keydown(element, event)
 		self.ShowAll = not self.ShowAll
 		self:reloadList()
 	elseif event.parameters.key_identifier == rocket.key_identifier.UP and event.parameters.ctrl_key == 1 then
-		self:change_tech_state(element, 4)
+		self:change_tech_state(element, self.STATE_CREDITS)
 	elseif event.parameters.key_identifier == rocket.key_identifier.DOWN and event.parameters.ctrl_key == 1 then
-		self:change_tech_state(element, 2)
+		self:change_tech_state(element, self.STATE_SIMULATOR)
 	elseif event.parameters.key_identifier == rocket.key_identifier.TAB then
 		local new_section = self.SectionIndex + 1
 		if new_section == 4 then

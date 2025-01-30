@@ -157,7 +157,13 @@ local function preLoad()
 		if v.Priority == 1 then
 
 			ba.print("SCPUI: " .. v.DebugMessage .. "\n")
-			loadstring(v.FunctionString)()
+
+			-- Use pcall to handle errors gracefully
+			local success, err = pcall(v.Function, unpack(v.Args))
+			if not success then
+				ba.error("Error during preload: " .. err)
+			end
+
 			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
 				yield_ts = time.getCurrentTime()
 				async.await(async.yield())
@@ -217,7 +223,13 @@ local function preLoad()
 		if v.Priority == 2 then
 
 			ba.print("SCPUI: " .. v.DebugMessage .. "\n")
-			loadstring(v.FunctionString)()
+
+			-- Use pcall to handle errors gracefully
+			local success, err = pcall(v.Function, unpack(v.Args))
+			if not success then
+				ba.error("Error during preload: " .. err)
+			end
+
 			if (time.getCurrentTime() - yield_ts):getSeconds() > 0.1 then
 				yield_ts = time.getCurrentTime()
 				async.await(async.yield())

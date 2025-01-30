@@ -7,7 +7,8 @@
 --- @field Priority number 1 to run this coroutine during splash 1 and 2 for splash 2
 --- @field DebugMessage string The string message to print to the debug log when this coroutine rus
 --- @field DebugString string The string message to display on the splash screen when this coroutine runs
---- @field FunctionString string the function to run with lua's loadstring method
+--- @field Function function the function to call with pcall
+--- @field Args any[] The arguments to pass to the function
 
 --- SCPUI Medal Info
 --- @class medal_info
@@ -291,6 +292,7 @@
 --- @field OverheadElement? Element The overhead element
 --- @field overheadEffect? number The overhead effect choice
 --- @field OverheadSave? integer A place to store the index of the overhead model being rendered temporarily
+--- @field Draw? boolean True if the model should be drawn, false otherwise. Not used in all cases!
 
 --- SCPUI Credits Image Data
 --- @class credits_image_memory

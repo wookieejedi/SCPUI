@@ -12,6 +12,10 @@ module.BUTTON_TYPE_POSITIVE = 1
 module.BUTTON_TYPE_NEGATIVE = 2
 module.BUTTON_TYPE_NEUTRAL  = 3
 
+-- Regular or Death dialog style. Other styles can be added later if desired.
+module.STYLE_REGULAR         = 1
+module.STYLE_DEATH           = 2
+
 module.BUTTON_MAPPING       = {
     [module.BUTTON_TYPE_POSITIVE] = "button_positive",
     [module.BUTTON_TYPE_NEGATIVE] = "button_negative",
@@ -92,7 +96,7 @@ local function show_dialog(context, properties, finish_func, reject, abort_cb_ta
     ---@type Document
     local dialog_doc = nil
 
-    if properties.StyleValue == 2 then
+    if properties.StyleValue == module.STYLE_DEATH then
         dialog_doc = context:LoadDocument("data/interface/markup/death_dialog.rml")
         properties.ClickEscape = nil -- This is never allowed for death dialogs
     else
@@ -285,7 +289,7 @@ function module.new()
         InputChoice = false,
         EscapeValue = nil,
         ClickEscape = nil,
-        StyleValue = 1,
+        StyleValue = module.STYLE_REGULAR,
         BackgroundColor = nil
     }
     setmetatable(factory, factory_mt)

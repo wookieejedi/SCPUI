@@ -257,7 +257,7 @@ end
 --- Creates an element of the specified type and with the specified id
 --- @param context scpui_context The context to create the element in.
 --- @param t string The type of element to create like "div" or "p".
---- @param id string The id to assign to the element.
+--- @param id string? The id to assign to the element.
 --- @return Element
 function ScpuiSystem:makeElement(context, t, id)
 	local el = context.Document:CreateElement(t)
