@@ -220,6 +220,12 @@
 --- @field LoadProgress? number The current loading progress value for the loading screen
 --- @field LoopLoadBar? boolean True if the loading bar graphic should loop, false otherwise
 
+--- SCPUI Red Alert Memory
+--- @class red_alert_memory
+--- @field AlertFlashState boolean The state of the alert flash, true for visible, false for hidden
+--- @field AlertFlashSpeed number How often, in seconds, the alert should flash
+--- @field AlertElement Element The alert element to blink in the red alert screen
+
 --- SCPUI Medal Memory
 --- @class medal_memory
 --- @field Name string? The name of the medal
@@ -318,7 +324,7 @@
 --- @field MissionLoaded boolean True if a mission is loaded, false otherwise
 --- @field MultiJoinReady boolean True if the multi join game is ready, false otherwise
 --- @field MultiReady boolean True if the multi game is ready, false otherwise
---- @field AlertElement? Element The alert element to blink in the red alert screen
+--- @field alert_memory? red_alert_memory The alert ui memory for SCPUI
 --- @field WarningCountShown boolean True if the warning count has been shown, false otherwise
 --- @field briefing_map? briefing_map_memory The current briefing map memory for SCPUI
 --- @field hud_config? hud_draw_memory The current HUD drawing memory for SCPUI

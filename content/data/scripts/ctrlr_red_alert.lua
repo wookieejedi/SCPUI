@@ -20,7 +20,6 @@ function RedAlertController:init()
 	end
 	ScpuiSystem.data.memory.CutscenePlayed = true
 
-	self.AlertFlashState = true --- @type boolean the state of the alert flash, true for visiable, false for hidden
 	self.AlertFlashSpeed = 0.5 --- @type number How often, in seconds, the alert should flash
 	self.Document = nil --- @type Document the RML document
 	self.CurrentVoiceHandle = nil --- @type audio_stream the current voice handle
@@ -54,8 +53,12 @@ function RedAlertController:initialize(document)
 	--Whenever we start a new mission, we reset the log ui to goals
 	ScpuiSystem.data.memory.LogSection = 1
 
-	ScpuiSystem.data.memory.AlertElement = self.Document:GetElementById("incoming_transmission")
-	RedAlertController:blink()
+	ScpuiSystem.data.memory.alert_memory = {
+		AlertElement = self.Document:GetElementById("incoming_transmission"),
+		AlertFlashState = true,
+		AlertFlashSpeed = self.AlertFlashSpeed
+	}
+	self:blink()
 
 	Topics.redalert.initialize:send(self)
 
@@ -66,14 +69,14 @@ end
 function RedAlertController:blink()
 
 	async.run(function()
-        async.await(AsyncUtil.wait_for(self.AlertFlashSpeed))
-		if self.AlertFlashState then
-			ScpuiSystem.data.memory.AlertElement:SetClass("hidden", true)
-			self.AlertFlashState = false
+        async.await(AsyncUtil.wait_for(ScpuiSystem.data.memory.alert_memory.AlertFlashSpeed))
+		if ScpuiSystem.data.memory.alert_memory.AlertFlashState then
+			ScpuiSystem.data.memory.alert_memory.AlertElement:SetClass("hidden", true)
+			ScpuiSystem.data.memory.alert_memory.AlertFlashState = false
 			RedAlertController:blink()
 		else
-			ScpuiSystem.data.memory.AlertElement:SetClass("hidden", false)
-			self.AlertFlashState = true
+			ScpuiSystem.data.memory.alert_memory.AlertElement:SetClass("hidden", false)
+			ScpuiSystem.data.memory.alert_memory.AlertFlashState = true
 			RedAlertController:blink()
 		end
     end, async.OnFrameExecutor, async.context.captureGameState())
@@ -106,7 +109,7 @@ function RedAlertController:unload()
     if self.CurrentVoiceHandle ~= nil and self.CurrentVoiceHandle:isValid() then
         self.CurrentVoiceHandle:close(false)
     end
-	ScpuiSystem.data.memory.AlertElement = nil
+	ScpuiSystem.data.memory.alert_memory = nil
 	ScpuiSystem.data.memory.CutscenePlayed = nil
 	Topics.redalert.unload:send(self)
 end
