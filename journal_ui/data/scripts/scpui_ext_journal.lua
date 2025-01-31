@@ -74,6 +74,12 @@ function JournalUi:init()
 		end
 	end
 
+	-- Register journal-specific topics
+	ScpuiSystem:registerExtensionTopics("journal", {
+		initialize = function() return nil end,
+		unload = function() return nil end
+	})
+
 	--- If we're in FRED then create all the enums
 	if ba.inMissionEditor() then
 		local journal_files = cf.listFiles("data/tables", "*journal.tbl")
@@ -100,12 +106,6 @@ function JournalUi:init()
 			end
 		end
 	else
-		-- Register journal-specific topics
-		ScpuiSystem:registerExtensionTopics("journal", {
-			initialize = function() return nil end,
-			unload = function() return nil end
-		})
-
 		--- On campaign begin, clear the journal data
 		ScpuiSystem:addHook("On Campaign Begin", function()
 			self:clearAll()
