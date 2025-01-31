@@ -298,7 +298,7 @@ function ShipSelectController:activateShipSlot(slot)
 
 	--Add dragover detection
 	element:AddEventListener("dragdrop", function(_, _, _)
-		self:on_drag_overSlot(element, slot)
+		self:on_drag_over(element, slot)
 	end)
 
 	if slot_info.ShipClassIndex > 0 then
@@ -618,7 +618,7 @@ end
 --- @param element Element the element being dragged
 --- @param slot number the slot number
 --- @return nil
-function ShipSelectController:on_drag_overSlot(element, slot)
+function ShipSelectController:on_drag_over(element, slot)
 	self.replace = element
 	self.activeSlot = slot
 	element:SetPseudoClass("valid", false)
