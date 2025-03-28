@@ -88,14 +88,16 @@ function HudConfigController:initialize(document)
 	--get coords to draw at
 	local hx = hud_el.offset_left + hud_el.parent_node.offset_left  + hud_el.parent_node.parent_node.offset_left
 	local hy = hud_el.offset_top + hud_el.parent_node.offset_top  + hud_el.parent_node.parent_node.offset_top
-	local hw = hud_el.offset_width
+	local hw = hud_el.client_width
+	local hh = hud_el.client_height
 
 	--increase those coords by percentage
-	hx = hx + (0.02 * hx)
-	hy = hy + (-0.2 * hy)
-	hw = hw + (0.2 * hw)
+	hx = hx --+ (0.02 * hx)
+	hy = hy --+ (-0.2 * hy)
+	hw = hw --+ (0.2 * hw)
+	hh = hh --+ (0.2 * hh)
 
-	ui.HudConfig.initHudConfig(hx, hy, hw)
+	ui.HudConfig.initHudConfig(hx, hy, hw, hh)
 
 	ScpuiSystem.data.memory.hud_config.Mx = 0
 	ScpuiSystem.data.memory.hud_config.My = 0
@@ -343,6 +345,10 @@ function HudConfigController:global_keydown(element, event)
 		ScpuiSystem.data.memory.hud_config.Draw = nil
 		ui.HudConfig.closeHudConfig(false)
 		ba.postGameEvent(ba.GameEvents["GS_EVENT_PREVIOUS_STATE"])
+	elseif event.parameters.key_identifier == rocket.key_identifier.LEFT then
+		ui.HudConfig.selectPrevHud()
+	elseif event.parameters.key_identifier == rocket.key_identifier.RIGHT then
+		ui.HudConfig.selectNextHud()
 	end
 end
 
@@ -572,15 +578,15 @@ end
 --- Called by the RML to select all gauges
 --- @return nil
 function HudConfigController:select_all()
-	if self.SelectAll == true then
-		self.SelectAll = false
+	if self.SelectAll then
+		self:mouse_click()
 	else
+		self:mouse_click()
 		self.SelectAll = true
+		self.Document:GetElementById("select_all_btn"):SetPseudoClass("checked", self.SelectAll)
+		ui.HudConfig.selectAllGauges(self.SelectAll)
+		self:lockColorControls(not self.SelectAll)
 	end
-	self:mouse_click()
-	self.Document:GetElementById("select_all_btn"):SetPseudoClass("checked", self.SelectAll)
-	ui.HudConfig.selectAllGauges(self.SelectAll)
-	self:lockColorControls(not self.SelectAll)
 end
 
 --- Called by the RML to select a gauge. When click is try we capture the id of the gauge the mouse was over
@@ -591,6 +597,9 @@ function HudConfigController:mouse_click()
 	self.Document:GetElementById("hud_off_btn"):SetClass("hidden", true)
 	self.Document:GetElementById("popup_btn"):SetClass("hidden", true)
 	self:lockColorControls(false)
+	self.SelectAll = false
+	ui.HudConfig.selectNoGauges()
+	self.Document:GetElementById("select_all_btn"):SetPseudoClass("checked", self.SelectAll)
 
 	self.Click = true
 
