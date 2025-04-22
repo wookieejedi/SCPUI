@@ -115,6 +115,7 @@ div#hud_drawn_content
 	width: 93%;
 	height: 93%;
 	position: absolute;
+	z-index: 7;
 }
 
 /*ColorPanel Elements*/
