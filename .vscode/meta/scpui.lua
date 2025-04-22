@@ -246,6 +246,10 @@
 --- @field RunNetwork? boolean True if the network should be run, false otherwise
 --- @field LoadoutContext? any The context to use for the loadout handler for this game instance
 
+--- SCPUI Tech Cutscene Memory
+--- @class tech_cutscene_memory
+--- @field selected_name? string The name of the selected cutscene
+
 --- SCPUI Control Config Memory
 --- @class control_config_memory
 --- @field Context? scpui_context The context for the control config
@@ -336,6 +340,7 @@
 --- @field multiplayer_host multi_host_memory The current multi host memory for SCPUI
 --- @field control_config control_config_memory The current control config memory for SCPUI
 --- @field multiplayer_general multi_general_memory The current multiplayer general memory for SCPUI
+--- @field tech_cutscene tech_cutscene_memory The current tech cutscene memory for SCPUI
 
 --- SCPUI Custom Options Data
 --- @class custom_option_data

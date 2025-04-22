@@ -66,8 +66,25 @@ function TechCutscenesController:initialize(document)
 	if self.Cutscenes_List[1] then
 		self.Visible_List = {}
 		self:createCutsceneListElements(self.Cutscenes_List)
-		if self.Cutscenes_List[1].Name then
-			self:selectCutscene(self.Cutscenes_List[1])
+		local index = 1
+		--If we have a cutscene selected in memory, select it and scroll to it
+		if ScpuiSystem.data.memory.tech_cutscene.selected_name ~= nil then
+			for c, v in pairs(self.Cutscenes_List) do
+				if v.Filename == ScpuiSystem.data.memory.tech_cutscene.selected_name then
+					index = c
+					-- Scroll to the cutscene element
+					local element = self.Document:GetElementById(v.Filename)
+					local container = self.Document:GetElementById("cutscene_list")
+					if element and container then
+						container.scroll_top = math.max(0, element.offset_top - container.offset_height / 2 + element.offset_height / 2)
+					end
+					break
+				end
+			end
+			ScpuiSystem.data.memory.tech_cutscene = {} -- Clear the memory after using it
+		end
+		if self.Cutscenes_List[index].Name then
+			self:selectCutscene(self.Cutscenes_List[index])
 		end
 	end
 
@@ -281,6 +298,7 @@ end
 --- @return nil
 function TechCutscenesController:play_pressed(element)
 	if self.SelectedEntry ~= nil then
+		ScpuiSystem.data.memory.tech_cutscene.selected_name = self.SelectedEntry
 		ScpuiSystem.data.memory.Cutscene = self.SelectedEntry
 		ScpuiSystem:beginSubstate("Cutscene")
 		self.Document:Close()

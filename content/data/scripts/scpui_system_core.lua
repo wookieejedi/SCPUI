@@ -67,7 +67,8 @@ ScpuiSystem.data = {
 		loading_bar = {},
 		multiplayer_host = {},
 		control_config = {},
-		multiplayer_general = {}
+		multiplayer_general = {},
+		tech_cutscene = {},
 	},
 	Render = true,
 	Tooltip_Timers = {},
