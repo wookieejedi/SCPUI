@@ -1236,8 +1236,8 @@ function TechDatabaseController:saveSeenDataToFile(data)
 
 	config[ba.getCurrentPlayer():getName()][mod] = data
 
-	local utils = require("lib_utils")
-	config = utils.cleanPilotsFromSaveData(config)
+	local Utils = require("lib_utils")
+	config = Utils.cleanPilotsFromSaveData(config)
 
 	file = cf.openFile('scpui_seen_tech.cfg', 'w', location)
 	file:write(Json.encode(config))

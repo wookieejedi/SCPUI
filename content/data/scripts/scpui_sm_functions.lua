@@ -443,7 +443,7 @@ end
 --- @param recommendation? string The recommendation text to set, if any
 --- @return number lines The number of lines added
 function ScpuiSystem:setBriefingText(parent, brief_text, recommendation)
-	local utils = require("lib_utils")
+	local Utils = require("lib_utils")
 
 	--- Local function to add a text element to a parent element
 	--- @param parent Element The parent element to add the text element to
@@ -515,7 +515,7 @@ function ScpuiSystem:setBriefingText(parent, brief_text, recommendation)
 				else
 					-- We need to know if our word was terminated by white space or an explicit break so we store the whitespace
 					-- in a group and check that later
-					local range_end_start, range_end_end, whitespace = utils.find_first_either(line, { "(%s)", "%$|" }, search_index)
+					local range_end_start, range_end_end, whitespace = Utils.find_first_either(line, { "(%s)", "%$|" }, search_index)
 
 					local colored_text
 					if whitespace then
@@ -563,7 +563,7 @@ function ScpuiSystem:setBriefingText(parent, brief_text, recommendation)
         rml_mode = true
     end
 
-    local lines = utils.split(brief_text, "\n\n")
+    local lines = Utils.split(brief_text, "\n\n")
     local first = true
     ---@param line string
     for _, line in ipairs(lines) do
@@ -598,9 +598,9 @@ function ScpuiSystem:setBriefingText(parent, brief_text, recommendation)
 
     -- Try to estimate the amount of lines this will get. The value 130 is chosen based on the original width of the
     -- text window in retail FS2
-    local paragraph_lines = utils.table.map(lines, function(line)
+    local paragraph_lines = Utils.table.map(lines, function(line)
         return #line / 130
     end)
 
-    return utils.table.sum(paragraph_lines) + #lines
+    return Utils.table.sum(paragraph_lines) + #lines
 end

@@ -238,19 +238,19 @@ function AbstractBriefingController:goToStage(stage_idx)
 
 		local ani_wrapper_el = self.Document:GetElementById("cmd_anim")
 		if #stage.AniFilename > 0 then
-			local utils = require("lib_utils")
+			local Utils = require("lib_utils")
 			local ani_el = self.Document:CreateElement("ani")
 
 			local filename = stage.AniFilename
 			-- For legacy.. we need to try to load default
 			if string.lower(filename) == "<default>" then
 				filename = "cb_default"
-				if utils.animExists("2_cb_default") then
+				if Utils.animExists("2_cb_default") then
 					filename = "2_cb_default"
 				end
 			end
 
-			if utils.animExists(filename) then
+			if Utils.animExists(filename) then
 				ani_el:SetAttribute("src", filename)
 			end
 

@@ -128,8 +128,8 @@ function datasaver:saveDataToFile(source, data, persistent)
 
 	config[ba.getCurrentPlayer():getName()][source] = data
 
-	local utils = require("lib_utils")
-	config = utils.cleanPilotsFromSaveData(config)
+	local Utils = require("lib_utils")
+	config = Utils.cleanPilotsFromSaveData(config)
 
 	file = cf.openFile(filename, 'w', location)
 	file:write(Json.encode(config))

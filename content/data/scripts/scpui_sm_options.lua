@@ -336,14 +336,13 @@ end
 function ScpuiSystem:applyCustomOptions()
 	--Here we load the mod options save data for the selected player
 	ScpuiSystem.data.ScpuiOptionValues = {}
-	local utils = require("lib_utils")
 	ScpuiSystem.data.ScpuiOptionValues = ScpuiSystem:loadOptionsFromFile()
 
 	--load defaults if we have bad data
 	if type(ScpuiSystem.data.ScpuiOptionValues) ~= "table" then
 		ba.print("SCPUI: Got bad ScpuiSystem.data.ScpuiOptionValues data! Loading defaults!")
 		ScpuiSystem.data.ScpuiOptionValues = {}
-		for i, v in ipairs(ScpuiSystem.data.Custom_Options) do
+		for _, v in ipairs(ScpuiSystem.data.Custom_Options) do
 			ScpuiSystem.data.ScpuiOptionValues[v.Key] = v.Value
 		end
 		ScpuiSystem:saveOptionsToFile(ScpuiSystem.data.ScpuiOptionValues)

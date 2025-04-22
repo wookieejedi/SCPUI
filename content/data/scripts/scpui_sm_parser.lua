@@ -200,6 +200,8 @@ function ScpuiSystem:parseScpuiTable(data)
 	parse.stop()
 end
 
+--- Parses the scpui tbl and tbm files
+--- @return nil
 function ScpuiSystem:loadScpuiTables()
     if cf.fileExists("scpui.tbl", "", true) then
 		self:parseScpuiTable("scpui.tbl")
