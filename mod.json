@@ -35,7 +35,7 @@
       "dependencies": [
         {
           "id": "FSO",
-          "version": "24.3.0-20250327",
+          "version": null,
           "packages": []
         },
         {
@@ -63,6 +63,34 @@
       "is_vp": false,
       "files": null,
       "filelist": null,
+      "executables": [],
+      "check_notes": null,
+      "isEnabled": true
+    },
+    {
+      "name": "nodemap_ui",
+      "notes": "",
+      "status": "optional",
+      "dependencies": null,
+      "environment": null,
+      "folder": "nodemap_ui",
+      "is_vp": false,
+      "files": [],
+      "filelist": [],
+      "executables": [],
+      "check_notes": null,
+      "isEnabled": true
+    },
+    {
+      "name": "sysmap_ui",
+      "notes": "",
+      "status": "optional",
+      "dependencies": null,
+      "environment": null,
+      "folder": "sysmap_ui",
+      "is_vp": false,
+      "files": [],
+      "filelist": [],
       "executables": [],
       "check_notes": null,
       "isEnabled": true

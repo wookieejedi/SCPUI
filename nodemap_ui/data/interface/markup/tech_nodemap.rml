@@ -1,0 +1,107 @@
+<rml>
+	<head>
+		<title>Node Map</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="font_sizes.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="scroll_bars.rcss"/>
+		<link type="text/rcss" href="tech_nodemap.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
+		<script>
+			controller = require("ctrlr_tech_nodemap")()
+		</script>
+	</head>
+	<body id=main_background onload="controller:initialize(document)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload(); controller = nil">
+		<div id=node_map_panel_wrapper>
+			<div id=map_view_wrapper>
+				<div id=map_view>
+				</div>
+				<div id=make_a_selection>
+					<p>XSTR("Select a system for more information", 11631)</p>
+				</div>
+				<div id=opt_select>
+					<div id=button_wrapper>
+						<div id=oval_cont>
+							<button id="oval_btn" class="togglebutton button_1" onclick="controller:toggle_node_lines()">
+								<span id="oval_img" class="togglebutton button_img">
+									<img src="oval.png" class="psuedo_img"></img>
+								</span>
+								<span class="pos button_text_toggle">
+									<p>XSTR("Disable Node Lines", 11632)</p>
+								</span>
+							</button>
+						</div>
+					</div>
+					<div class="tooltip">
+						<span class="tooltiptext">XSTR("Toggle node lines on or off", 11633)</span>
+					</div>
+				</div>
+				<img src="tech-room-view-window.png"></img>
+			</div>
+		</div>
+		<div id=map_desc_wrapper>
+			<div id=map_desc_panel>
+				<div id=map_desc>
+					<p></p>
+				</div>
+				<div id=breakout_button>
+					<div id=breakout_cont>
+						<button id="breakout_btn" class="breakoutbutton button_1" onclick="controller:breakout_reader()">
+							<span id="breakout_img" class="breakoutbutton button_img">
+								<img src="oval.png" class="psuedo_img"></img>
+							</span>
+							<span id="breakout_button_text" class="pos button_text_right">
+								<p>XSTR("Read in window", 11634)</p>
+							</span>
+						</button>
+					</div>
+					<img src="ops-panel-horz.png"></img>
+				</div>
+				<img src="tech-room-text-window.png"></img>
+			</div>
+		</div>
+		<div id=bottom_panel_wrapper>
+			<div id=bottom_panel_a>
+				<div id=a_panel_wrapper>
+					<div id=accept_cont>
+						<button id="accept_btn" class="accept button_1" onclick="controller:accept_pressed(element)">
+							<span id="accept_img" class="accept button_img">
+								<img src="select.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>Exit</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-a.png"></img>
+			</div>
+			<div id=bottom_panel_b>
+				<div id=b_panel_wrapper>
+					<div id=help_cont>
+						<button id="help_btn" class="help button_1" onclick="controller:help_clicked()">
+							<span id="help_img" class="help button_img">
+								<img src="help.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_left">
+								<p>Help</p>
+							</span>
+						</button>
+					</div>
+					<div id=options_cont>
+						<button id="options_btn" class="options button_1" onclick="controller:options_button_clicked()">
+							<span id="options_img" class="options button_img">
+								<img src="diamonds.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_left">
+								<p>Options</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-b.png"></img>
+			</div>
+		</div>
+	</body>
+
+</rml>

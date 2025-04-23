@@ -1,0 +1,25 @@
+#Lua Enums
+
+$Name: SysMapObjects
+	+Enum: <none>
+
+#End
+
+#Lua SEXPs
+
+$Operator: set-sysmap-visibility
+$Category: Change
+$Subcategory: Scripted
+$Minimum Arguments: 2
+$Maximum Arguments: 2
+$Return Type: Nothing
+$Description: Sets whether an object is visible or not on the System Map for the current campaign.
+$Parameter:
+  +Description: The object to set
+  +Type: enum
+		+Enum name: SysMapObjects
+$Parameter:
+  +Description: The object's visibility. True to make visible, false to make invisible.
+  +Type: Boolean
+
+#End

@@ -1,0 +1,494 @@
+body
+{
+	z-index: bottom;
+	z-index: -1;
+}
+
+.below p
+{
+	padding-top:8%;
+}
+
+.new
+{
+	position: absolute;
+	bottom: 20%;
+	left: 10%;
+	color: red;
+	font-size: 1.5em;
+}
+
+div#node_map_panel_wrapper
+{
+	position: absolute;
+	width: 75%;
+	height: auto;
+	top: 2%;
+	left: 10%;
+}
+
+div#map_view_wrapper
+{
+	width: 90%;
+	height: auto;
+	overflow: hidden;
+	position: relative;
+	float: right;
+	margin-top: 3%;
+}
+
+div#map_view_wrapper img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#map_view
+{
+	position: absolute;
+	top: 3%;
+	margin-top: 2%;
+	margin-left: 2%;
+	margin-right: 15%;
+	overflow: hidden;
+	width: 92%;
+	height: 80%;
+	border-color: grey;
+	border-width: 1px;
+}
+
+div#make_a_selection
+{
+	position: absolute;
+	bottom: 10%;
+	text-align: center;
+	width: 92%;
+	height: auto;
+}
+
+div#map_desc_wrapper
+{
+	position: absolute;
+	width: 80%;
+	height: auto;
+	bottom: 2%;
+	left: 5%;
+}
+
+div#map_desc_panel
+{
+	width: 58%;
+	height: auto;
+	position: relative;
+	float: left;
+}
+
+div#map_desc_panel img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#map_desc
+{
+	position: absolute;
+	top: 3%;
+	width: 80%;
+	margin-top: 2%;
+	margin-left: 7%;
+	overflow: scroll;
+	height: 85%;
+	line-height: 75%;
+}
+
+div#breakout_button
+{
+	position: absolute;
+	top: -3%;
+	right: -15%;
+	width: 30%;
+}
+
+div#breakout_cont
+{
+	float: left;
+	width: 33%;
+	height: auto;
+	margin-left: 2%;
+	margin-top: 1%;
+}
+
+.breakoutbutton
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+span#breakout_button_text p
+{
+	margin-top: -83%;
+	margin-left: 100%;
+}
+
+#breakout_img
+{
+	background-decorator: image;
+	background-image: oval.png;
+}
+
+button#breakout_btn:hover #breakout_img
+{
+	background-decorator: image;
+	background-image: oval-h.png;
+}
+
+button#breakout_btn:active #breakout_img
+{
+	background-decorator: image;
+	background-image: oval-o.png;
+}
+
+button#breakout_btn:checked #breakout_img
+{
+	background-decorator: image;
+	background-image: oval-o.png;
+}
+
+/*Icon Buttons*/
+
+.icon
+{
+	display: block;
+	height: auto;
+
+}
+
+.icon_button
+{
+	position: absolute;
+}
+
+.icon_text
+{
+	white-space: nowrap;
+	overflow: visible;
+}
+
+div#opt_select
+{
+	position: absolute;
+	width: 20%;
+	bottom: 0;
+	right: 0;
+}
+
+/*Arrow Buttons*/
+
+div#oval_cont
+{
+	width: 50%;
+	height: auto;
+	margin-left: 19%;
+	margin-bottom: 2.2%;
+}
+
+.button_text_toggle
+{
+	text-align: center;
+}
+
+.button_text_toggle p
+{
+	display: block;
+	margin-top: -100%;
+	margin-left: -50%;
+	position: absolute;
+}
+
+.togglebutton
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#oval_img
+{
+	background-decorator: image;
+	background-image: oval.png;
+}
+
+button#oval_btn:hover #oval_img
+{
+	background-decorator: image;
+	background-image: oval-h.png;
+}
+
+button#oval_btn:active #oval_img
+{
+	background-decorator: image;
+	background-image: oval-o.png;
+}
+
+button#oval_btn:checked #oval_img
+{
+	background-decorator: image;
+	background-image: oval-o.png;
+}
+
+/*Bottom Panel Elements*/
+
+div#bottom_panel_wrapper
+{
+	width: 15%;
+	height: auto;
+	overflow: hidden;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+div#bottom_panel_a
+{
+	width: 66%;
+	height: auto;
+	position: relative;
+	float: right;
+}
+
+div#bottom_panel_a img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#bottom_panel_b
+{
+	width: 34%;
+	height: auto;
+	margin-top: 1.1%;
+	position: relative;
+	float: left;
+}
+
+div#bottom_panel_b img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+/*Accept Button*/
+
+div#a_panel_wrapper
+{
+	position: absolute;
+	bottom: 0;
+}
+
+div#accept_cont
+{
+	width: 100%;
+	height: auto;
+
+}
+
+.accept
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#accept_img
+{
+	background-decorator: image;
+	background-image: select.png;
+}
+button#accept_btn:hover #accept_img
+{
+	background-decorator: image;
+	background-image: select-neg-h.png;
+}
+
+button#accept_btn:active #accept_img
+{
+	background-decorator: image;
+	background-image: select-neg-o.png;
+}
+
+/*B Panel Buttons*/
+
+div#b_panel_wrapper
+{
+	position: absolute;
+	bottom: 5%;
+
+}
+
+.button_text_left p
+{
+	padding-top: 20%;
+	width: 100%;
+}
+
+/*Help Button*/
+
+div#help_cont
+{
+	width: 70%;
+	height: auto;
+	margin: auto;
+
+}
+
+.help
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#help_img
+{
+	background-decorator: image;
+	background-image: help.png;
+}
+
+button#help_btn:hover #help_img
+{
+	background-decorator: image;
+	background-image: help-h.png;
+}
+
+button#help_btn:active #help_img
+{
+	background-decorator: image;
+	background-image: help-o.png;
+}
+
+/*Options Button*/
+
+div#options_cont
+{
+	width: 70%;
+	height: auto;
+	margin: auto;
+}
+
+.options
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#options_img
+{
+	background-decorator: image;
+	background-image: diamonds.png;
+}
+button#options_btn:hover #options_img
+{
+	background-decorator: image;
+	background-image: diamonds-h.png;
+}
+
+button#options_btn:active #options_img
+{
+	background-decorator: image;
+	background-image: diamonds-o.png;
+}
+
+/*Scroll Buttons*/
+
+#map_desc scrollbarvertical
+{
+	scrollchange-sound: 9;
+	width: 10%;
+	position: absolute;
+	top: 19.5%;
+	left: -10.0%;
+	z-index: 5;
+}
+
+#map_desc scrollbarvertical slidertrack
+{
+	visibility: hidden;
+}
+
+#map_desc scrollbarvertical sliderbar
+{
+	visibility: hidden;
+}
+
+#map_desc scrollbarvertical sliderbar:hover
+{
+
+}
+
+#map_desc scrollbarvertical sliderbar:active
+{
+
+}
+
+#map_desc scrollbarvertical sliderarrowdec
+{
+	width: 100%;
+	height: 30%;
+	margin-top: 2%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
+}
+
+#map_desc scrollbarvertical sliderarrowinc
+{
+	width: 100%;
+	height: 30%;
+	margin-bottom: 22%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
+}
+
+#map_desc scrollbarvertical sliderarrowdec:hover
+{
+	icon-image: arrow-dbl-up-h.png;
+}
+
+#map_desc scrollbarvertical sliderarrowinc:hover
+{
+	icon-image: arrow-dbl-down-h.png;
+}
+
+#map_desc scrollbarvertical sliderarrowdec:active
+{
+	icon-image: arrow-dbl-up-o.png;
+}
+
+#map_desc scrollbarvertical sliderarrowinc:active
+{
+	icon-image: arrow-dbl-down-o.png;
+}
+
+/*Tooltip placements*/
+
+div#opt_select .tooltip
+{
+	width: 100%;
+	right: 0;
+
+}

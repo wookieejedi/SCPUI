@@ -1,0 +1,416 @@
+body
+{
+	z-index: bottom;
+	z-index: -5;
+}
+
+.below p
+{
+	padding-top:8%;
+}
+
+#main_background
+{
+
+}
+
+.noselect
+{
+	z-index: 0;
+}
+
+.select
+{
+	z-index: 5;
+}
+
+.exclamation
+{
+	z-index: 0;
+	position: absolute;
+	top: -30%;
+	left: 100%;
+}
+
+#map_container
+{
+	overflow: hidden;
+	height: 100%;
+}
+
+#map
+{
+	height: 100%;
+}
+
+#no_system_warning
+{
+	text-align: center;
+	width: 100%;
+	height: 4%;
+	margin-top: 32%;
+}
+
+#system_title
+{
+	position: absolute;
+	top: 1%;
+	left: 1%;
+	color: white;
+	width: 18%;
+	white-space: nowrap;
+	overflow: visible;
+	z-index: 15;
+}
+
+#closeup_container
+{
+	background-color: rgba(0, 0, 0, 200);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 20;
+}
+
+#object_view
+{
+	width: 50%;
+	height: 60%;
+	position: absolute;
+	top: 5%;
+	right: 25%;
+}
+
+#object_view img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/*Description Panel*/
+
+div#desc_panel
+{
+	width: 60%;
+	height: auto;
+	overflow: hidden;
+	position: absolute;
+	bottom: 2%;
+	left: 0;
+}
+
+div#desc_panel img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#desc_text_wrapper
+{
+	position: absolute;
+	top: 1%;
+	left: 8%;
+	width: 90%;
+	height: 98%;
+	overflow: scroll;
+}
+
+/*Description Panel Scrollbar*/
+
+#desc_text_wrapper scrollbarvertical
+{
+	scrollchange-sound: 9;
+	width: 8%;
+	position: absolute;
+	left: -9%;
+	z-index: 5;
+}
+
+#desc_text_wrapper scrollbarvertical slidertrack
+{
+	display:none;
+}
+
+#desc_text_wrapper scrollbarvertical sliderbar
+{
+	display:none;
+}
+
+#desc_text_wrapper scrollbarvertical sliderbar:hover
+{
+	display:none;
+}
+
+#desc_text_wrapper scrollbarvertical sliderbar:active
+{
+	display:none;
+}
+
+#desc_text_wrapper scrollbarvertical sliderarrowdec
+{
+	width: 100%;
+	height: 25%;
+	margin-top: 15%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-up.png;
+}
+
+#desc_text_wrapper scrollbarvertical sliderarrowinc
+{
+	width: 100%;
+	height: 25%;
+	margin-bottom: 15%;
+	mouseover-sound: 17;
+	click-sound: 0;
+	icon-decorator: image;
+	icon-image: arrow-dbl-down.png;
+}
+
+#desc_text_wrapper scrollbarvertical sliderarrowdec:hover
+{
+	icon-image: arrow-dbl-up-h.png;
+}
+
+#desc_text_wrapper scrollbarvertical sliderarrowinc:hover
+{
+	icon-image: arrow-dbl-down-h.png;
+}
+
+#desc_text_wrapper scrollbarvertical sliderarrowdec:active
+{
+	icon-image: arrow-dbl-up-o.png;
+}
+
+#desc_text_wrapper scrollbarvertical sliderarrowinc:active
+{
+	icon-image: arrow-dbl-down-o.png;
+}
+
+/*Close Button*/
+
+div#close_panel
+{
+	width: 8%;
+	height: auto;
+	overflow: hidden;
+	position: absolute;
+	top: 70%;
+	left: 65%;
+}
+
+div#close_panel img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#close_button_wrapper
+{
+	position: absolute;
+	bottom: 0;
+}
+
+div#close_cont
+{
+	width: 100%;
+	height: auto;
+	text-align: center;
+}
+
+/*Zoom Button*/
+
+div#zoom_panel
+{
+	width: 8%;
+	height: auto;
+	overflow: hidden;
+	position: absolute;
+	top: 75%;
+	left: 65%;
+}
+
+div#zoom_panel img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+div#zoom_button_wrapper
+{
+	position: absolute;
+	bottom: 0;
+}
+
+div#zoom_cont
+{
+	width: 100%;
+	height: auto;
+	text-align: center;
+}
+
+.title_desc
+{
+	margin-left: 3%;
+}
+
+/*Icon Buttons*/
+
+.icon
+{
+	display: block;
+	height: auto;
+
+}
+
+.icon_button
+{
+	position: absolute;
+}
+
+.icon_text
+{
+	white-space: nowrap;
+	overflow: visible;
+}
+
+/*Top Panel Elements*/
+
+div#top_panel_wrapper
+{
+	width: 4%;
+	height: auto;
+	overflow: hidden;
+	position: absolute;
+	top: 15%;
+	left: 0;
+}
+
+div#top_panel_a
+{
+	width: 100%;
+	height: auto;
+	position: relative;
+	float: right;
+}
+
+div#top_panel_a img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/*Back Button*/
+
+div#top_a_panel_wrapper
+{
+	position: absolute;
+	bottom: 0;
+}
+
+div#back_cont
+{
+	width: 80%;
+	height: auto;
+
+}
+
+.back
+{
+	display: block;
+	width: 100%;
+	height: auto;
+
+}
+
+#back_img
+{
+	background-decorator: image;
+	background-image: skip-l.png;
+}
+button#back_btn:hover #back_img
+{
+	background-decorator: image;
+	background-image: skip-l-h.png;
+}
+
+button#back_btn:active #back_img
+{
+	background-decorator: image;
+	background-image: skip-l-o.png;
+}
+
+/*Bottom Panel Elements*/
+
+div#bottom_panel_wrapper
+{
+	width: 7%;
+	height: auto;
+	overflow: hidden;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	z-index: 10;
+}
+
+div#bottom_panel_a
+{
+	width: 100%;
+	height: auto;
+	position: relative;
+	float: right;
+}
+
+div#bottom_panel_a img
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/*Accept Button*/
+
+div#a_panel_wrapper
+{
+	position: absolute;
+	bottom: 0;
+}
+
+div#accept_cont
+{
+	width: 85%;
+	height: auto;
+}
+
+.accept
+{
+	display: block;
+	width: 100%;
+	height: auto;
+	margin-left: 4%;
+}
+
+#accept_img
+{
+	background-decorator: image;
+	background-image: select.png;
+}
+button#fv_accept_btn:hover #accept_img
+{
+	background-decorator: image;
+	background-image: select-neg-h.png;
+}
+
+button#fv_accept_btn:active #accept_img
+{
+	background-decorator: image;
+	background-image: select-neg-o.png;
+}

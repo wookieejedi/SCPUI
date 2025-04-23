@@ -1,0 +1,90 @@
+<rml>
+	<head>
+		<title>System Map</title>
+		<link type="text/rcss" href="default.rcss"/>
+		<link type="text/rcss" href="font_sizes.rcss"/>
+		<link type="text/rcss" href="common.rcss"/>
+		<link type="text/rcss" href="scroll_bars.rcss"/>
+		<link type="text/rcss" href="system_map.rcss"/>
+		<link type="text/rcss" href="custom.rcss"/>
+		<script>
+			controller = require("ctrlr_system_map")()
+		</script>
+	</head>
+	<body id=main_background onload="controller:initialize(document)" onmousemove="controller:mouse_move(element, event)" onmousedown="controller:mouse_down(element, event)" onmouseup="controller:mouse_up(element, event)" onmousescroll="controller:mouse_scroll(element, event)" onkeydown="controller:global_keydown(element, event)" onunload="controller:unload(); controller = nil">
+		<div id=map_container>
+			<div id=map>
+			</div>
+		</div>
+		<div id=system_title>
+		</div>
+		<div id=closeup_container>
+			<div id=object_view>
+			</div>
+			<div id=desc_panel>
+				<div id=desc_text_wrapper>
+				</div>
+				<img src="campaign-text-window.png"></img>
+			</div>
+			<div id=close_panel>
+				<div id=close_button_wrapper>
+					<div id=close_cont>
+						<button id="close_btn" class="close button_1" onclick="controller:close_pressed(element)">
+							<span class="pos">
+								<p>Close</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="ops-panel-horz.png"></img>
+			</div>
+			<div id=zoom_panel>
+				<div id=zoom_button_wrapper>
+					<div id=zoom_cont>
+						<button id="zoom_btn" class="zoom button_1" onclick="controller:zoom_pressed(element)">
+							<span class="pos">
+								<p>Zoom To</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="ops-panel-horz.png"></img>
+			</div>
+		</div>
+		<div id=top_panel_wrapper>
+			<div id=top_panel_a>
+				<div id=top_a_panel_wrapper>
+					<div id=back_cont>
+						<button id="back_btn" class="back button_1" onmouseover="controller:toggle_mouse_scroll(true)" onmouseout="controller:toggle_mouse_scroll(false)" onclick="controller:back_pressed(element)">
+							<span id="back_img" class="back button_img">
+								<img src="skip-l.png" class="psuedo_img"></img>
+							</span>
+							<span class="pos button_text_top">
+								<p>Back</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="ops-panel-vert-l.png"></img>
+			</div>
+		</div>
+		<div id=bottom_panel_wrapper>
+			<div id=bottom_panel_a>
+				<div id=a_panel_wrapper>
+					<div id=accept_cont>
+						<button id="fv_accept_btn" class="accept button_1" onclick="controller:accept_pressed(element)">
+							<span id="accept_img" class="accept button_img">
+								<img src="select.png" class="psuedo_img"></img>
+							</span>
+							<span class="neg button_text_top">
+								<p>Exit</p>
+							</span>
+						</button>
+					</div>
+				</div>
+				<img src="bottom-panel-a.png"></img>
+			</div>
+		</div>
+	</body>
+
+</rml>
