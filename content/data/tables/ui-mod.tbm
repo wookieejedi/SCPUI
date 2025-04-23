@@ -1,7 +1,6 @@
-#GAME SETTINGS
+;; These settings are REQUIRED for SCPUI to function
 
-;$Mod title: SCPUI Development Mod
-;$Mod version: 1.0.0
+#GAME SETTINGS
 
 $Unicode mode: Yes
 $Enable in-game options: Yes
