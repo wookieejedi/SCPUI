@@ -212,8 +212,14 @@ function ScpuiSystem:loadExtensions()
 							ScpuiSystem:loadSubmodules(ScpuiSystem.extensions[extension.Key].Submodule)
 						end
 
+						-- If the extension defines a postInit function, call it now
+						if ScpuiSystem.extensions[extension.Key].postInit then
+							ScpuiSystem.extensions[extension.Key]:postInit()
+						end
+
 						-- Prevent double initializing
 						ScpuiSystem.extensions[extension.Key].init = nil
+						ScpuiSystem.extensions[extension.Key].postInit = nil
                     end
                 else
                     ba.warning("SCPUI Error loading extension " .. module_path .. ": " .. tostring(extension) .. "\n")
