@@ -86,15 +86,23 @@ NodemapUi.entries = {} --- @type node_map_entry[] The entries for the systems
 --- initialize the NodemapUi object. Called afer the nodemap extension is registered with SCPUI
 --- @return nil
 function NodemapUi:init()
-    self:parseTables()
-
     -- Register nodemap-specific topics
     ScpuiSystem:registerExtensionTopics("nodemap", {
         initialize = function() return nil end,
+        progressionFunction = function()
+            -- Default to returning a dummy function
+            return function(_) return 1 end
+        end,
         progress = function() return 99999 end,
         keydown = function() return false end,
         unload = function() return nil end
     })
+end
+
+--- after everything is loaded, parse the table
+--- @return nil
+function NodemapUi:postInit()
+    self:parseTables()
 end
 
 --- Parses the systems from the nodemap.tbl file.
@@ -262,8 +270,9 @@ function NodemapUi:parseSystems(data)
                     Nodes = {},
                 }
 
-                local BtA = require("btafunctions")
-                e.Key = BtA:getGameProgress(parse.getString())
+                local Topics = require("lib_ui_topics")
+                local getProgress = Topics.nodemap.progressionFunction:send()
+                e.Key = getProgress and getProgress(parse.getString()) or 1
 
                 if parse.optionalString("+Description:") then
                     e.Description = parse.getString()

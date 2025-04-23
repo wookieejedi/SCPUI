@@ -6,10 +6,19 @@
 
     local Topics = require("lib_ui_topics")
 
-    --Sets the node map progress value to the value from BtA's function
+    -- Returns a progression function: function() -> any
+    Topics.nodemap.progressionFunction:bind(9999, function(message, context)
+        return function() return nil end
+    end)
+
+    --Sets the node map progress value to the value from the mod's function
     Topics.nodemap.progress:bind(9999, function(message, context)
-        local BtA = require("btafunctions")
-        context.value = BtA:getGameProgress()
+        local getProgress = Topics.nodemap.progressionFunction:send()
+        if type(getProgress) == "function" then
+            context.value = getProgress()
+        else
+            context.value = nil
+        end
     end)
 
     -- Create the tech room buttons at the top left of the screen since we are using node map in the tech room
