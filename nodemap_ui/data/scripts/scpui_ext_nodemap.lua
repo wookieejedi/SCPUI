@@ -88,12 +88,16 @@ NodemapUi.entries = {} --- @type node_map_entry[] The entries for the systems
 function NodemapUi:init()
     -- Register nodemap-specific topics
     ScpuiSystem:registerExtensionTopics("nodemap", {
+        preload = function() return nil end,
         initialize = function() return nil end,
         progressionFunction = function()
             -- Default to returning a dummy function
             return function(_) return 1 end
         end,
         progress = function() return 99999 end,
+        renderBackground = function() return true end,
+        exit = function() return true end,
+        selectEntry = function() return nil end,
         keydown = function() return false end,
         unload = function() return nil end
     })

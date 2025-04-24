@@ -26,6 +26,8 @@ function TechNodeMapController:init()
 	self.Width = 0 ---@type number the width of the map
 	self.Height = 0 ---@type number the height of the map
 	self.DrawLines = true ---@type boolean whether to draw lines between nodes
+	self.LineWidth = 1.0 ---@type number the width of the node lines
+	self.NodeDiameter = 4 ---@type number the diameter of the nodes
 	self.SaveData = {} ---@type table<string, number> the save data for the nodes
 	self.ShowAll = false ---@type boolean whether to show all nodes
 	self.Texture = nil ---@type texture the texture for the map to draw lines to
@@ -57,6 +59,8 @@ function TechNodeMapController:initialize(document)
 
 	--Get the key for the game progression
 	self.Key = self:getPlayerProgress()
+
+	Topics.nodemap.preload:send(self)
 
 	self.MainMapElement = self.Document:GetElementById("map_view")
 	self.Width = self.MainMapElement.client_width
@@ -106,7 +110,7 @@ function TechNodeMapController:initialize(document)
 
 end
 
---- Get the player's current game progress. If no Topic is defined for this then it will return 99999.
+--- Get the player's current game progress.
 --- @return number progress The player's current game progress
 function TechNodeMapController:getPlayerProgress()
 	return Topics.nodemap.progress:send()
@@ -152,14 +156,14 @@ function TechNodeMapController:drawNodes()
 	for _, v in pairs(NodemapUi.entries) do
 		if #v.Nodes > 0 then
 			for _, node in pairs(v.Nodes) do
-				local diameter = 4 * self.Scale
+				local diameter = self.NodeDiameter * self.Scale
 
 				local center_x = (v.ButtonElement.client_width / 2) + v.BitmapX
 				local center_y = (v.ButtonElement.client_height / 2) + v.BitmapY
 
 				local x, y = self:polarToCoords(20 * self.Scale, node.Angle, center_x, center_y)
 				--No idea why the x coord needs adjustment to be properly centered and Y does not!
-				x = x - (diameter/4)
+				x = x - (diameter/self.NodeDiameter)
 
 				--Get the current values
 				local new_color = gr.createColor(node.Color[1], node.Color[2], node.Color[3], 255)
@@ -257,7 +261,9 @@ function TechNodeMapController:drawNodeLines()
 			local color = self:getLineColor(v.First, v.Second)
 			color.Alpha = 128
 			gr.setColor(color)
+			gr.setLineWidth(self.LineWidth)
 			gr.drawLine(v.First[1], v.First[2], v.Second[1], v.Second[2])
+			gr.setLineWidth(1.0)
 		end
 	end
 end
@@ -281,8 +287,10 @@ function TechNodeMapController:updateBackground()
 
 	gr.setTarget(self.Texture)
 
-	gr.clearScreen(0,0,0,255)
-	gr.drawImage(self.Background, 0, 0, self.Width, self.Height)
+	if Topics.nodemap.renderBackground:send(self) then
+		gr.clearScreen(0,0,0,255)
+		gr.drawImage(self.Background, 0, 0, self.Width, self.Height)
+	end
 
 	self:drawNodes()
 
@@ -517,6 +525,8 @@ function TechNodeMapController:selectEntry(entry, button)
 
 	--Hide the make a selection text
 	self.Document:GetElementById("make_a_selection"):SetClass("hidden", true)
+
+	Topics.nodemap.selectEntry:send(self)
 end
 
 --- Show a dialog box
@@ -600,6 +610,14 @@ function TechNodeMapController:calculateScaleFactor(screen_width, image_width)
     return scale_factor * 1.07
 end
 
+--- Function to exit the node map screen
+--- @return nil
+function TechNodeMapController:exit()
+	if Topics.nodemap.exit:send(self) then
+		ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+	end
+end
+
 --- Global keydown function handles all keypresses
 --- @param element Element The main document element
 --- @param event Event The event that was triggered
@@ -609,7 +627,7 @@ function TechNodeMapController:global_keydown(element, event)
 		if event.parameters.key_identifier == rocket.key_identifier.ESCAPE then
 			event:StopPropagation()
 
-			ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+			self:exit()
 		elseif event.parameters.key_identifier == rocket.key_identifier.S and event.parameters.ctrl_key == 1 and event.parameters.shift_key == 1 then
 			self.ShowAll  = not self.ShowAll
 			self:ReloadList()
@@ -644,7 +662,7 @@ end
 --- @return nil
 function TechNodeMapController:accept_pressed(element)
     ui.playElementSound(element, "click", "success")
-    ba.postGameEvent(ba.GameEvents["GS_EVENT_MAIN_MENU"])
+    self:exit()
 end
 
 --- Called by the RML to open the options menu
