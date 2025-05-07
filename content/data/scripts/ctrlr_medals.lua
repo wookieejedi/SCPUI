@@ -103,6 +103,10 @@ function MedalsController:initialize(document)
 	local hidden_string = "+" .. tostring(hidden_count) .. " " .. ba.XSTR("Hidden Achievements", 888564)
 	self.Document:GetElementById("hidden_achievements").inner_rml = hidden_string
 
+	if count == 0 and hidden_count == 0 then
+		self.Document:GetElementById("award_btn_3"):SetClass("hidden", true)
+	end
+
 	Topics.medals.initialize:send(self)
 
 	self:change_view(self.STATE_MEDALS)
