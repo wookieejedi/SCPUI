@@ -956,20 +956,24 @@ function TechDatabaseController:drawModel()
 			return
 		end
 
+		-- Get screen coordinates from the SCPUI element position/offset
 		local model_x = model_view.offset_left + model_view.parent_node.offset_left + model_view.parent_node.parent_node.offset_left --This is pretty messy, but it's functional
 		local model_y = model_view.parent_node.offset_top + model_view.parent_node.parent_node.offset_top + 2 --Does not include modelView.offset_top because that element's padding is set for anims
 		local model_w = model_view.offset_width
 		local model_h = model_view.offset_height + 10
 
+		-- Sx/Sy are the mouse coordinates when the left button was clicked. Mx/My are the mouse coordinates right now.
+		-- Get the difference to get how far the mouse has been dragged and invert the direction because otherwise it's wrong
 		local calculated_x = (ScpuiSystem.data.memory.model_rendering.Sx - ScpuiSystem.data.memory.model_rendering.Mx) * -1
 		local calculated_y = (ScpuiSystem.data.memory.model_rendering.Sy - ScpuiSystem.data.memory.model_rendering.My) * -1
 
+		-- Get the model's current orientation
 		local orient = ba.createOrientation(ScpuiSystem.data.memory.model_rendering.Angle, 0, ScpuiSystem.data.memory.model_rendering.RotationSpeed)
 
 		--Move model based on mouse coordinates
 		if ScpuiSystem.data.memory.model_rendering.Click then
-			local dx = calculated_x * 1
-			local dy = calculated_y * 1
+			local dx = calculated_x
+			local dy = calculated_y
 			local radius = 100
 
 			--reverse this one
@@ -1006,7 +1010,6 @@ function TechDatabaseController:drawModel()
 			orient = ScpuiSystem.data.memory.model_rendering.ClickOrientation * orient
 		end
 
-		--thisItem:renderTechModel(modelLeft, modelTop, modelLeft + modelWidth, modelTop + modelHeight, modelDraw.RotationSpeed, -15, 0, 1.1)
 		this_item:renderTechModel2(model_x, model_y, model_x + model_w, model_y + model_h, orient, 1.1)
 
 	end
